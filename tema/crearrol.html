@@ -1,0 +1,95 @@
+<?php 
+
+
+
+$oLista = new Lista('menu');
+
+$oLista->setFiltro('estado','=','1');
+
+$aMenu=$oLista->getLista();
+
+unset($oLista);
+
+
+?>
+
+
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Roles</li>
+
+          <li class="breadcrumb-item">Crear rol</li>
+
+        </ul>
+        <div class="section-body">
+
+          	<div class="row">
+
+            	<div class="col-md-12 col-lg-12">
+
+              		<div class="card">
+
+		                <div class="card-header">
+
+		                  <h4>Información General</h4>
+
+		                </div>
+
+	                	<div class="card-body">
+	                		<div class="row">
+
+			                    <div class="col-md-3">
+
+			                      <div class="form-group">
+			                      	<label>Nombre del rol:</label>
+			                      	<input type="text" name="datos[nombre]" id="datos[nombre]" class="form-control">
+			                      </div>
+			                  	</div>
+
+			              	</div>
+			              	<div class="row">
+			              		<div class="col-md-2">
+			              			<h3>Permisos:</h3>
+			              		</div>
+			              		<div class="col-md-2">
+			              			<input type="checkbox" class="form-check-input" name="seleccionarTodos" id="seleccionarTodos" value="1">
+			              			<label class="form-check-label" for="defaultCheck1">Seleccionar todos</label>
+			              		</div>
+			              	</div>
+			              	<br>
+			              	<div class="row">
+			              		
+			              		<?php foreach($aMenu as $index=>$menu){ ?>
+			              			<div class="col-md-3">
+			              				<div class="form-group">
+			              					<input class="menu" type="checkbox" name="item[<?php echo $index ?>][idMenu]" value="<?php echo $menu['idMenu']; ?>">
+			              					<label class="form-check-label" for="defaultCheck1"><?php echo $menu['nombre']; ?></label>
+			              				</div>
+			              			</div>
+			              	<?php } ?>
+			              	</div>
+	                	</div>
+	                	<div class="card-footer text-right">
+
+		                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+		                  </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+    </section>
+</form>

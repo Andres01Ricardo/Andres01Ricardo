@@ -1,0 +1,154 @@
+<?php 
+
+$aProductos=include_once ("functions/productosservicios/listarservicios.php");
+
+$oControl=new Control(); 
+
+// print_r($aProductos);
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Productos y servicios</li>
+
+          <li class="breadcrumb-item">Listar servicios</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Lista de servicios</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <!-- <th>Grupo</th>
+
+                            <th>Segmento</th>
+
+                            <th>Familia</th>
+
+                            <th>Clase</th>
+
+                            <th>Bien</th> -->
+
+                            <th>Servicio</th>
+
+                            <th>Empresa</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aProductos as $index => $iProducto){ 
+
+                          $aEncript['cadena']=$iProducto['idProductoServicio'];
+
+                          $id=$oControl->encriptar($aEncript); 
+
+                            ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <!-- <td><?php echo $iProducto["grupo"]; ?></td>
+
+                              <td><?php echo $iProducto["segmento"]; ?></td>
+
+                              <td><?php echo $iProducto["familia"]; ?></td>
+
+                              <td><?php echo $iProducto["clase"]; ?></td>
+
+                              <td><?php echo $iProducto["bienes"]; ?></td> -->
+
+                              <td><?php echo $iProducto["codigo"]." - ".$iProducto["nombre"]; ?></td>
+
+                              <td><?php echo $iProducto["razonSocial"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>editarproductoservicio/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 22px;"></i></a>
+
+                              </td>
+
+                                
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="settingSidebar">
+
+<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+
+</a> -->
+
+<div class="settingSidebar-body ps-container ps-theme-default">
+
+  <div class="fade show active" id="body-view">
+
+    
+
+  </div>
+
+</div>
+
+</div>
+

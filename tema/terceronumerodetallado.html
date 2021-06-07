@@ -1,0 +1,72 @@
+<?php 
+
+
+?>
+<style type="text/css">
+  .picker__box{
+       background-color: #0000;
+}
+</style>
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">TERCERO POR NUMERO DETALLADO</h3><br>
+            <form method="POST" action="terceronumerodetalladofiltrado">
+              <div class="swal-content">
+           <div class="row">
+             <div class="col-md-6">
+              <label class="negrita">FILTRAR POR:</label>
+              <select class=" form-control" name="tipoFiltro" id="tipoFiltro">
+                <option value="">SELECCIONE</option>
+                <option value="1">TERCERO</option>
+                <option value="2">CUENTA</option>
+              </select>
+            </div>
+            <div class="col-md-6" id="divTipoTercero">
+              <label class="negrita">TIPO TERCERO:</label>
+              <select class=" form-control" name="tipoTercero" id="tipoTercero">
+                <option value="">SELECCIONE</option>
+                <option value="1">CLIENTE</option>
+                <option value="2">PROVEEDOR</option>
+                <option value="3">OTRO</option>
+              </select>
+            </div>     
+          </div>
+          
+          
+          <div class="row">
+            <div class="col-md-6" id="divTercero">
+              <label class="negrita">TERCERO:</label>
+              <select class=" form-control" name="datos[tercero]" id="tercero">
+                <option value="0">TODOS</option>
+              </select>
+            </div>
+            <div class="col-md-6" id="divCuenta">
+              <label class="negrita">CUENTA:</label>
+              <select class=" form-control" name="cuenta" id="cuenta">
+                <option value="0">TODAS</option>
+              </select>
+            </div>
+          </div>
+
+    <div class="row">
+        <div class="col-md-6">
+          <label class="negrita">Desde: </label>
+          <input type="date" class="form-control" name="desde" id="periodoDesde"  required>
+        </div>
+
+      <div class="col-md-6">
+        <label class="negrita">Hasta: </label>  
+        <input type="date" class="form-control" name="hasta" id="periodoHasta"  required>
+      </div>
+    </div>
+  </div>
+  <br><br>
+        <div class="swal-footer">
+          <button type="submit" class="btn btn-info" id="btnFiltrar">FILTRAR</button>
+          <!-- <a href="terceronumerodetalladofiltrado" class="btn btn-info">FILTRAR</a> -->
+        </div>
+      </form>
+  </div>
+</div>

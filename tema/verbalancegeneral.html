@@ -1,0 +1,288 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+$oItem=new Data("balance_general","idBalanceGeneral", $id); 
+
+$aBalance=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre"; 
+
+
+
+$oItem=new Data("usuario","idUsuario", $aBalance["idUsuarioRegistra"]); 
+
+$aUsuario=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empresa","idEmpresa", $aBalance["idEmpresa"]); 
+
+$aEmpresa=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+
+$oLista = new Lista('balance_general_item');
+
+$oLista->setFiltro("idBalanceGeneral","=",$id);
+
+$aListado=$oLista->getLista();
+
+unset($oLista);
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+
+
+  .tddashboard{
+
+    height: 30px !important; 
+
+  }
+
+
+
+  .tablaestado{
+
+    width: 60%;
+
+    text-align: left;
+
+    margin: 0 auto;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<section class="section"  ondragstart="return false" onselectstart="return false">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Dashboard</li>
+
+          <li class="breadcrumb-item">Ver Balance General</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodo Pago<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" readonly value="<?php echo $meses[$aBalance["periodoMes"]]." de ".$aBalance["periodoAnio"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class=" col-md-4 ">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control numero" readonly value="<?php echo $aEmpresa["razonSocial"]; ?>" >
+
+                      </div>
+
+                    </div>
+
+                    <div class=" col-md-4 ">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Usuario Registra<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control numero" readonly value="<?php echo $aUsuario["nombreUsuario"]." ".$aUsuario["apellidoUsuario"]; ?>" readonly >
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                    <div class="card-body">
+
+                      <div class="row centrar">
+
+                      <table class="table table-striped mayusculas tablaestado" id="estadoFinanciero">
+
+                          <thead>
+
+                            <tr>
+
+                              <td class="text-center cabecera negrita" colspan="5"><h4><?php echo $aBalance["titulo"]; ?></h4>
+
+                                <span class="text-center fecha negrita" style="display: block;"><?php echo $aBalance["subtitulo"]; ?></span></td>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+
+                            <?php foreach($aListado as $listado){  ?>
+
+                            <tr class="negrita">
+
+                              <?php if($listado["tipo"]!=3){  ?>
+
+                              <td class="tddashboard centrar" colspan="5"><?php echo $listado["titulo"]; ?></td>
+
+                              <?php }else{  ?>
+
+                              <td class="tddashboard" ></td>
+
+                              <td class="tddashboard" ><?php echo $listado["titulo"]; ?></td>
+
+                              <td class="tddashboard" ></td>
+
+                              <td class="tddashboard" ><?php echo "$".number_format($listado["total"],0,".",","); ?></td>
+
+                              <td class="tddashboard" ><?php echo number_format($listado["porcentaje"],2,".",",")."%"; ?></td>
+
+                              <?php } ?>
+
+                            </tr>
+
+                            <?php 
+
+                            $oLista = new Lista('balance_general_cuenta');
+
+                            $oLista->setFiltro("idBalanceGeneralItem","=",$listado["idBalanceGeneralItem"]);
+
+                            $aItems=$oLista->getLista();
+
+                            unset($oLista);
+
+                            foreach($aItems as $iItems){  ?>
+
+                              <tr class="<?php if($iItems["tipo"]==4){ echo 'negrita';  ?>">
+
+                                <td class="tddashboard" ><?php echo $iItems["numeroCuenta"]; ?></td>
+
+                                <td class="tddashboard" ><?php echo $iItems["nombreCuenta"]; ?></td>
+
+                                <td class="tddashboard" ><?php if($iItems["tipo"]==5){ echo "$".number_format($iItems["valor"],0,".",","); } ?></td>
+
+                                <td class="tddashboard" ><?php if($iItems["tipo"]==4){ echo "$".number_format($iItems["valor"],0,".",","); } ?></td>
+
+                                <td class="tddashboard" ><?php if($iItems["tipo"]==4){ echo number_format($iItems["porcentaje"],2,".",",")."%"; } ?></td>
+
+                              </tr>
+
+                            <?php }} ?>    
+
+                          <?php } ?>
+
+                          </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+

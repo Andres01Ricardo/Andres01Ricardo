@@ -1,0 +1,117 @@
+<?php
+
+include("consultarcotizacion.php");
+require_once("class/consultarcotizacion.php"); 
+
+$oCotizacion=new Cotizacion(); 
+$aCotizacion=$oCotizacion->getCotizacion($_SESSION["idEmpresa"]);
+unset($oCotizacion);
+
+
+$oLista = new Lista('empresa');
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+
+$oItem=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+?>
+
+
+  
+
+<div>
+  <div class="card-body">
+    <center><h2><?php echo $rows['razonSocial']; ?></h2></center>
+  </div>
+</div>  
+
+<a href="crearcotizacion" class="btn btn-info">Nueva cotización</a>
+
+<br><br>
+<div class="card table-responsive">
+	<table class="table-striped">
+	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
+	    <tr style="height: 50px;">
+	      <th scope="col"># cotización</th>
+	      <th scope="col">estado</th>
+	      <th scope="col">Fecha cotización</th>
+	      <th scope="col">Fecha vencimiento</th>
+	      <th scope="col">Cliente</th>
+	      <th scope="col">Subtotal</th>
+	      <th scope="col">IVA</th>
+	      <th scope="col">Total</th>
+	      <th scope="col">Acciones</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<?php foreach($aCotizacion as $index =>$cotizacion){ ?>
+	    <tr style="text-align: center;">
+	      <th scope="row" class="mayusculas"><?php echo $cotizacion['numeroCotizacion'];?></th>
+	      <td ><?php 
+	      	if($cotizacion['estado']==1){
+	      		echo 'Pendiente';
+	      	}
+	      	if($cotizacion['estado']==2){
+	      		echo 'Aprobado';
+	      	}
+	      	if($cotizacion['estado']==3){
+	      		echo 'Facturado';
+	      	}
+	      	?></td>
+	      <td><?php echo $cotizacion['fechaRegistro'];?></td>
+	      <td><?php echo $cotizacion['fechaVencimientoCotizacion'];?></td>
+	      <td><?php echo $cotizacion['nombre'].' '.$cotizacion['apellidos']; ?></td>
+	      <td><?php echo $cotizacion['subtotal'];?></td>
+	      <td><?php echo $cotizacion['iva'];?></td>
+	      <td><?php echo $cotizacion['total'];?></td>
+	      <td>
+	      	<div class="btn-group">
+			  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Action
+			  </button>
+			  <div class="dropdown-menu menucotizacion">
+			    <a class="dropdown-item lista-menucotizacion"  href="vercotizacion/<?php echo $cotizacion['idCotizacion'];?>">Ver detalle</a>
+			  	<div class="dropdown-divider"></div>
+			  	<a class="dropdown-item lista-menucotizacion"  href="editarcotizacion/<?php echo $cotizacion['idCotizacion'];?>">Editar cotizacion</a>
+			  	<div class="dropdown-divider"></div>
+			  	<a class="dropdown-item lista-menucotizacion"  href="../functions/crm/eliminarcotizacion.php?id=<?php echo $cotizacion['idCotizacion'];?>">Eliminar</a>
+			    <div class="dropdown-divider"></div>
+			    <?php if($cotizacion['estado']==1) {?>
+			    <a class="dropdown-item lista-menucotizacion"  href="functions/crm/aprobarcotizacion.php?id=<?php echo $cotizacion['idCotizacion'];?>">Aprobar</a>
+			    <?php } ?>
+			    <!-- <?php if($cotizacion['estado']==2) {?>
+			    <a class="dropdown-item lista-menucotizacion"  href="#">Facturar</a>
+			    <?php } ?> -->
+			  </div>
+			</div>
+	      </td>
+	    </tr>
+	   <?php } ?>
+	  </tbody>
+</table>
+</div>
+
+<?php $rol= $_SESSION["idRol"];
+  if($rol==1 || $rol==2): ?>
+  <div class="card card-body">
+      <form method="POST" action="./functions/crm/cargarCotizaciones.php">
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <select class="custom-select mr-sm-2" id="selectIdEmpresa" name="selectIdEmpresa">
+            <option value="0">Seleccione la empresa</option>
+            <?php foreach($aEmpresa as $index => $iEmpresa){ ?>
+              <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+            <?php } ?>
+          </select>
+        </div>
+        <div class="col-auto my-1">
+          <button type="submit" class="btn btn-primary">CARGAR COTIZACIONES EMPRESA</button>
+          
+        </div>
+      </div>
+    </form>
+  </div>
+<?php endif;  ?>

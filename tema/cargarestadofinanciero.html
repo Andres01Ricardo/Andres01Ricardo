@@ -1,0 +1,375 @@
+<?php 
+
+require_once("class/empresa.php"); 
+
+
+
+$oEmpresa=new Empresa(); 
+
+
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+}
+else{
+  $aEmpresas=$oEmpresa->getEmpresas();
+}
+
+
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre"; 
+
+
+
+
+
+$nuevafecha = strtotime ( '-1 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha = date ( 'n' , $nuevafecha );
+
+
+$nuevafecha2 = strtotime ( '-2 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha2 = date ( 'n' , $nuevafecha2 );
+
+
+$nuevafecha3 = strtotime ( '-3 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha3 = date ( 'n' , $nuevafecha3 );
+
+$nuevafecha4 = strtotime ( '-4 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha4 = date ( 'n' , $nuevafecha4 );
+
+$nuevafecha5 = strtotime ( '-5 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha5 = date ( 'n' , $nuevafecha5 );
+
+$nuevafecha6 = strtotime ( '-6 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha6 = date ( 'n' , $nuevafecha6 );
+
+$nuevafecha7 = strtotime ( '-7 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha7 = date ( 'n' , $nuevafecha7 );
+
+$nuevafecha8 = strtotime ( '-8 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha8 = date ( 'n' , $nuevafecha8 );
+
+$nuevafecha9 = strtotime ( '-9 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha9 = date ( 'n' , $nuevafecha9 );
+
+$nuevafecha10 = strtotime ( '-10 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha10 = date ( 'n' , $nuevafecha10 );
+
+$nuevafecha11 = strtotime ( '-11 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha11 = date ( 'n' , $nuevafecha11 );
+
+$nuevafecha12 = strtotime ( '-12 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha12 = date ( 'n' , $nuevafecha12 );
+
+$nuevafecha13 = strtotime ( '-13 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha13 = date ( 'n' , $nuevafecha13 );
+
+$nuevafecha14 = strtotime ( '-14 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha14 = date ( 'n' , $nuevafecha14 );
+
+
+$nuevafecha15 = strtotime ( '-15 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha15 = date ( 'n' , $nuevafecha15 );
+
+$nuevafecha16 = strtotime ( '-16 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha16 = date ( 'n' , $nuevafecha16 );
+
+
+$nuevafecha17 = strtotime ( '-17 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha17 = date ( 'n' , $nuevafecha17 );
+
+
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+
+
+  .tddashboard{
+
+    height: 30px !important; 
+
+  }
+
+
+
+  .tablaestado{
+
+    width: 60%;
+
+    text-align: left;
+
+    margin: 0 auto;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="datos[titulo]" id="datos[titulo]">
+
+<input type="hidden" name="datos[subtitulo]" id="datos[subtitulo]">
+
+
+
+<section class="section"  ondragstart="return false" onselectstart="return false">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Financiera</li>
+
+          <li class="breadcrumb-item">Cargar Estado Financiera</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodo Pago<span class="requerido">*</span>:</label>
+
+                         <select class="form-control" name="datos[periodo]" id="datos[periodo]" required>
+
+                          <option value="">Seleccione una opción</option>
+                          <option value="1-2020"><?php echo $meses[$nuevafecha17  ]." de 2020"; ?></option>
+                          <option value="2-2020"><?php echo $meses[$nuevafecha16  ]." de 2020"; ?></option>
+                          <option value="3-2020"><?php echo $meses[$nuevafecha15  ]." de 2020"; ?></option>
+                          <option value="4-2020"><?php echo $meses[$nuevafecha14  ]." de 2020"; ?></option>
+                          <option value="5-2020"><?php echo $meses[$nuevafecha13  ]." de 2020"; ?></option>
+                          <option value="6-2020"><?php echo $meses[$nuevafecha12  ]." de 2020"; ?></option>
+                          <option value="7-2020"><?php echo $meses[$nuevafecha11  ]." de 2020"; ?></option>
+                          <option value="8-2020"><?php echo $meses[$nuevafecha10  ]." de 2020"; ?></option>
+                          <option value="9-2020"><?php echo $meses[$nuevafecha9  ]." de 2020"; ?></option>
+                          <option value="10-2020"><?php echo $meses[$nuevafecha8]." de 2020"; ?></option>
+                          <option value="11-2020"><?php echo $meses[$nuevafecha7]." de 2020"; ?></option>
+                          <option value="12-2020"><?php echo $meses[$nuevafecha6]." de 2020"; ?></option>
+                          <option value="1-2021"><?php echo $meses[$nuevafecha5]." de 2021"; ?></option>
+                          <!-- <option value="12-2020"><?php echo $meses[$nuevafecha4]." de 2020"; ?></option> -->
+                          <option value="<?php echo $nuevafecha4.'-'.date('Y'); ?>"><?php echo $meses[$nuevafecha4]." de 2021"; ?></option>
+                          <option value="<?php echo $nuevafecha3.'-'.date('Y'); ?>"><?php echo $meses[$nuevafecha3]." de ".date('Y'); ?></option>
+                          <option value="<?php echo $nuevafecha2.'-'.date('Y'); ?>"><?php echo $meses[$nuevafecha2]." de ".date('Y'); ?></option>
+
+                          <option value="<?php echo $nuevafecha.'-'.date('Y'); ?>"><?php echo $meses[$nuevafecha]." de ".date('Y'); ?></option>
+
+                          <option value="<?php echo date('n').'-'.date('Y'); ?>"><?php echo $meses[date('n')]." de ".date('Y'); ?></option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class=" col-md-4 ">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iItem){ ?>
+
+                          <option value="<?php echo $iItem["idEmpresa"]; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Archivo Estado Financiero<span class="requerido">*</span>:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="excel" name="excel" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-12">
+
+                      <div class="alert alert-info">
+
+                        Para cargar el estado financiero debe ser con la siguiente plantilla: <a href="<?php echo $URL.'assets/bundles/plantilla2.xls'; ?>" class="negrita">Plantilla.xls</a>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-info mr-1" id="btnGuardar" href="javascript:void(0)">Cargar</a>
+
+                  </div>
+
+                  <div class="ocultar estadoFinanciero">
+
+                   <div class=" card-header">
+
+                      <h4>Estado Financiero</h4>
+
+                    </div>
+
+                    <div class="card-body">
+
+                      <div class="row centrar">
+
+                      <table class="table table-striped mayusculas tablaestado" id="estadoFinanciero">
+
+                          <thead>
+
+                            <tr>
+
+                              <td class="text-center cabecera negrita" colspan="3"><h4></h4><span class="text-center fecha negrita" style="display: block;"></span></td>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+
+                          </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardarInfo" href="javascript:void(0)">Guardar</a>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+

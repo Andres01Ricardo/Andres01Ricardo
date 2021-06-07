@@ -1,0 +1,328 @@
+ 
+<?php 
+
+require_once("class/informes.php");
+
+$oControl=new Control(); 
+
+
+$idEmpresa=$_POST["empresa"];
+$desde=$_POST["desde"];
+$hasta=$_POST["hasta"];
+$cuentaPrimera=$_POST["cuentaPrimera"];
+$cuentaSegunda=$_POST["cuentaSegunda"];
+$terceroPrimeroF=$_POST["terceroPrimero"];
+$terceroSegundoF=$_POST["terceroSegundo"];
+
+
+
+
+
+
+if(empty($terceroSegundoF)){
+
+  $terceroSegundo=9999999999999999;
+   
+}
+if(empty($terceroPrimeroF)){
+  $terceroPrimero=0;
+  // print_r($terceroSegundo); 
+}
+
+
+if(!empty($terceroPrimeroF) && !empty($terceroSegundoF)){
+    $terceroPrimeroFF=explode(' - ',$terceroPrimeroF);
+    $terceroSegundoFF=explode(' - ',$terceroSegundoF);
+
+    $terceroPrimero=substr($terceroPrimeroFF[0], 0,5);
+    $terceroSegundo=substr($terceroSegundoFF[0], 0,5);
+}
+
+// print_r($terceroPrimero);
+// print_r($terceroSegundo);
+$oTerceroDetalladoCuenta=new Informes(); 
+$aTerceroDetalladoCuenta=$oTerceroDetalladoCuenta->getTerceroDetalladoCuenta(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda));
+
+
+
+
+
+
+$oItem=new Data("empresa","idEmpresa",$idEmpresa);
+$aEmpresa=$oItem->getDatos();
+
+
+
+?>
+
+  <div class="card">
+    <div class="card-header">
+      <table style="font-size: 14px;font-family: Arial;" class="table">
+        <tbody >
+          <tr>
+            <th>SmartBuss</th>
+            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="60" height="60">    <?php echo $aEmpresa['razonSocial'];?></th>
+            <th></th>
+            <th><?php echo date('Y/m/d'); ?></th>
+          </tr>
+          <tr>
+            <th> </th>
+            <th>Nit: <?php echo $aEmpresa['nit'];?> - <?php echo $aEmpresa['digitoVerificador'];?></th>
+            <th> </th>
+            <th> </th>
+          </tr> 
+          <tr>
+            <th></th>
+            <th >TERCERO DETALLADO </th>
+            <th> </th>
+          </tr>
+          <tr>
+            <th></th>
+            <th >DESDE:  <?php echo $desde;?> HASTA: <?php echo $hasta;?></th>
+            <th> </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-body">
+    	<div class="row">
+    		<a href="filtrarbalancetercerodetallado" class="btn btn-info">NUEVO FILTRO</a>
+    		<input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+    		<input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+    		<input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+    		<input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+    		<input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+    		<!-- <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>"> -->
+    		<input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
+    		<input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">
+    	</div>
+    	<br><br>
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      <table class="table-hover mayusculas " id="tablecomprobacion" style="font-size: 18px;font-family: 'Arial';width: 100%">
+                      	<thead>
+                      		<tr style="text-align: left;">
+                      			<th>COMPROBANTE </th>
+                            <th>FECHA </th>
+                      			<th>DETALLE</th>
+                      			<th></th>
+                      			<th>DEBITOS</th>
+                      			<th>CREDITOS</th>
+                      			<th>SALDO</th>
+                      		</tr>
+                      	</thead>
+                      	<tbody>
+                      		<?php 
+                          $totalDebitosGeneral=0;
+                          $totalCreditosGeneral=0;
+                      		foreach($aTerceroDetalladoCuenta as $keyG=> $valueG){ 
+                            switch ($valueG["tipoTercero"]) {
+                              case 'c':
+                                $oItem=new Data("cliente","idCliente",$valueG["idTercero"]);
+                                $aTercero=$oItem->getDatos();
+                                unset($oItem);
+                                $nit=$aTercero["nit"];
+                                $nitComparar=substr($aTercero["nit"],0,5);
+                                $nombre=$aTercero["razonSocial"];
+                                break;
+                              case 'p':
+                                $oItem=new Data("proveedor","idProveedor",$valueG["idTercero"]);
+                                $aTercero=$oItem->getDatos();
+                                unset($oItem);
+                                $nit=$aTercero["nit"];
+                                $nitComparar=substr($aTercero["nit"],0,5);
+                                $nombre=$aTercero["razonSocial"];
+                                break;
+                              case 'e':
+                                $oItem=new Data("empleado","idEmpleado",$valueG["idTercero"]);
+                                $aTercero=$oItem->getDatos();
+                                unset($oItem);
+                                $nit=$aTercero["numeroDocumento"];
+                                $nitComparar=substr($aTercero["numeroDocumento"],0,5);
+                                $nombre=$aTercero["nombre"].' '.$aTercero["apellido"];
+                                break;
+                              
+                              default:
+                                # code...
+                                break;
+                            }
+                            // print_r(substr($terceroPrimero, 0,1));
+                            // print_r('-');
+                            // print_r($terceroSegundo);
+                            // print_r('-');
+                            // print_r($nit);
+                            // print_r('-');
+                            // aca va el filtro por el nit
+                            if ($nitComparar >= $terceroPrimero && $nitComparar <= $terceroSegundo ) {
+                              // code...
+                            
+
+                          $oTerceroDetalladoCuentaAcumulado=new Informes(); 
+                          $aTerceroDetalladoCuentaAcumulado=$oTerceroDetalladoCuentaAcumulado->getTerceroDetalladoCuentaAcumulado(array("idEmpresa"=>$idEmpresa,"fecha"=>$desde,"cuenta"=>$valueG["codigoCuenta"],"tercero"=>$valueG["idTercero"]));
+
+                          // print_r($aTerceroDetalladoCuentaAcumulado);
+
+                          if (!empty($aTerceroDetalladoCuentaAcumulado)) {
+                            if ($aTerceroDetalladoCuentaAcumulado[0]["naturaleza"]=='debito') {
+                              $saldoM=$aTerceroDetalladoCuentaAcumulado[0]["debito"]-$aTerceroDetalladoCuentaAcumulado[0]["credito"];
+                            }
+                            if ($aTerceroDetalladoCuentaAcumulado[0]["naturaleza"]=='credito') {
+                              $saldoM=$aTerceroDetalladoCuentaAcumulado[0]["credito"]-$aTerceroDetalladoCuentaAcumulado[0]["debito"];
+                            }
+                          }
+                          if (empty($aTerceroDetalladoCuentaAcumulado)) {
+                            $saldoM=0;
+                          }
+                           // print_r($aTerceroDetalladoCuentaAcumulado);
+                           //  print_r('->->->');
+
+                      		?>
+                          <tr class="negrita">
+                            <td ></td>
+                            <td><strong><?php echo $nit; ?></strong></td>
+                            <td><strong><?php echo $nombre; ?></strong></td>
+                            <td><strong>CUENTA:<?php echo $valueG["codigoCuenta"] ?></strong></td>
+                            <td><strong><?php echo $valueG["nombre"] ?></strong></td>
+                            <td></td>
+                            <td><strong><?php echo number_format($saldoM,2,".",","); ?></strong></td>
+                            <!-- <td><?php echo number_format($saldoMayor,2,",","."); ?></td> -->
+                          </tr>
+
+                          <?php 
+                          $totalDebitos=0;
+                          $totalCreditos=0;
+                          if ($valueG["debito"]==0) {
+                            $valorConsultar=number_format($valueG["debito"],2,".",",");
+                          }
+                          if ($valueG["credito"]==0) {
+                            $valorConsultar=number_format($valueG["credito"],2,".",",");
+                          }
+                          
+                          $oTerceroDetalladoComprobante=new Informes(); 
+                          $aTerceroDetalladoComprobante=$oTerceroDetalladoComprobante->getTerceroDetalladoComprobante(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuenta"=>$valueG["codigoCuenta"],"idTercero"=>$valueG["idTercero"],"tipoTercero"=>$valueG["tipoTercero"]));
+                          // print_r($aTerceroDetalladoComprobante);
+                          // print_r('->->->');
+                          $saldoC=$saldoM;
+                          foreach ($aTerceroDetalladoComprobante as $key => $value) {
+
+                            switch ($value["tipoTercero"]) {
+                              case 'c':
+                                $oItem=new Data("cliente","idCliente",$value["idTercero"]);
+                                $aTerceroV=$oItem->getDatos();
+                                unset($oItem);
+                                $nitV=$aTerceroV["nit"];
+                                $nombreV=$aTerceroV["razonSocial"];
+                                break;
+                              case 'p':
+                                $oItem=new Data("proveedor","idProveedor",$value["idTercero"]);
+                                $aTerceroV=$oItem->getDatos();
+                                unset($oItem);
+                                $nitV=$aTerceroV["nit"];
+                                $nombreV=$aTerceroV["razonSocial"];
+                                break;
+                              case 'e':
+                                $oItem=new Data("empleado","idEmpleado",$value["idTercero"]);
+                                $aTerceroV=$oItem->getDatos();
+                                unset($oItem);
+                                $nitV=$aTerceroV["numeroDocumento"];
+                                $nombreV=$aTerceroV["nombre"].' '.$aTerceroV["apellido"];
+                                break;
+                              
+                              default:
+                                # code...
+                                break;
+                            }
+
+
+                            // print_r($value);
+                            // $oComprobante=new Informes(); 
+                            // $comprobante=$oComprobante->getComprobanteItem(array("idComprobante"=>$value["idComprobante"],"cuenta"=>$value["codigoCuenta"],"tercero"=>$nit,"valor"=>$valorConsultar));
+                            // print_r($comprobante);
+                            $oItem=new Data("comprobante","idComprobante",$value["idComprobante"]);
+                            $aComprobante=$oItem->getDatos();
+                            unset($oItem);
+
+                            $oLista=new Lista("comprobante_items");
+                            $oLista->setFiltro("idComprobante","=",$value["idComprobante"]);
+                            $oLista->setFiltro("cuenta","like",$value["codigCuenta"].'%');
+                            $oLista->setFiltro("tercero","like",$nitV.'%');
+                            $comprobanteItem=$oLista->getLista();
+                            unset($oLista);
+                           
+
+                            $oItem=new Data("tipos_documento_contable","idTiposDocumento",$aComprobante["idTipo"]); 
+                            $aDatos=$oItem->getDatos(); 
+                            unset($oItem); 
+
+                            $oItem=new Data("parametros_documentos","idParametrosDocumentos",$aComprobante["comprobante"]); 
+                            $aDatosP=$oItem->getDatos(); 
+                            unset($oItem); 
+
+
+
+                            $totalDebitos=$totalDebitos+$value["debito"];
+                            $totalCreditos=$totalCreditos+$value["credito"];
+                            if ($value["naturaleza"]=='debito') {
+                              $saldoC=$saldoC+$value["debito"]-$value["credito"];
+                            }
+                            if ($value["naturaleza"]=='credito') {
+                              $saldoC=$saldoC+$value["credito"]-$value["debito"];
+                            }
+                           ?>
+
+                          <tr>
+                            <td ><?php echo $aDatos["letra"].'-'.$aComprobante["comprobante"].'-'.$aComprobante["numero"]; ?></td>
+                            <td><?php echo $aComprobante["fecha"]; ?></td>
+                            <td><?php echo $comprobanteItem[0]["descripcion"]; ?></td>
+                            <td></td>
+                            <td><?php echo number_format($value["debito"],2,".",","); ?></td>
+                            <td><?php echo number_format($value["credito"],2,".",","); ?></td>
+                            <td><?php echo number_format($saldoC,2,".",","); ?></td>
+                          </tr>
+
+                          
+                          <?php 
+                          
+                        } 
+                        if ($valueG["naturaleza"]=='debito') {
+                          $totalCuenta=$saldoM+$totalDebitos-$totalCreditos;
+                        }
+                        if ($valueG["naturaleza"]=='credito') {
+                          $totalCuenta=$saldoM-$totalDebitos+$totalCreditos;
+                        }
+                        ?>
+                          <tr>
+                            <td ></td>
+                            <td></td>
+                            <td><strong>TOTAL </strong></td>
+                            <td></td>
+                            <td><strong><?php echo number_format($totalDebitos,2,".",","); ?></strong></td>
+                            <td><strong><?php echo number_format($totalCreditos,2,".",","); ?></strong></td>
+                            <td><strong><?php echo number_format($totalCuenta,2,".",","); ?></strong></td>
+                          </tr>
+
+                        <?php 
+                        $totalCreditosGeneral=$totalCreditosGeneral+$totalCreditos;
+                        $totalDebitosGeneral=$totalDebitosGeneral+$totalDebitos;
+
+                        }
+                        // aca cierra el if del tercero
+                      } ?>
+
+                        <tr>
+                            <td ></td>
+                            <td></td>
+                            <td><strong><h4>TOTAL GENERAL</h4></strong> </td>
+                            <td></td>
+                            <td><?php echo number_format($totalDebitosGeneral,2,".",","); ?></td>
+                            <td><?php echo number_format($totalCreditosGeneral,2,".",","); ?></td>
+                            <!-- <td><?php echo number_format($value["credito"],2,",","."); ?></td> -->
+                            <td></td>
+                          </tr>
+
+                      	</tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>

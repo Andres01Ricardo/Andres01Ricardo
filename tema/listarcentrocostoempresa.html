@@ -1,0 +1,160 @@
+<?php 
+
+require_once("class/terceros.php"); 
+require_once("class/proveedores.php"); 
+require_once("class/clientes.php"); 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+$oLista=new Lista("centro_costo");
+$oLista->setFiltro("idEmpresa","=",$id);
+$aCentroCosto=$oLista->getLista();
+unset($oLista);
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Centros de costo</li>
+
+          <li class="breadcrumb-item">Listar Centros de costo</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Lista de terceros</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableMovimientoGeneral" style="font-size: 84%">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Centro costo</th>
+
+                            <th>Responsable</th>
+
+                            <th>Dirección</th>
+
+                            <th>Telefono</th>
+
+                            <th>Email</th>
+
+                            <!-- <th>Dirección</th>
+
+                            <th>Telefono</th>
+
+                            <th>Acciones</th> -->
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <?php $numero=1;
+                          foreach($aCentroCosto as $index => $iProveedor){ 
+                            
+                            // $id=$oControl->encriptar($aEncript);
+
+                            ?>
+                          <tr>
+                            <td><?php echo $index+1; ?></td>
+                            <td><?php echo $iProveedor["centroCosto"];?></td>
+                            <td><?php echo $iProveedor["responsable"];?></td>
+                            <td><?php echo $iProveedor["direccion"];?></td>
+                            <td><?php echo $iProveedor["telefono1"];?></td>
+                            <td><?php echo $iProveedor["email"];?></td>
+                            
+
+                            
+                          </tr>
+                        <?php $numero=$index+1;
+                      } ?>
+                        
+
+                          
+
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="settingSidebar">
+
+<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+
+</a> -->
+
+<div class="settingSidebar-body ps-container ps-theme-default">
+
+  <div class="fade show active" id="body-view">
+
+    
+
+  </div>
+
+</div>
+
+</div>
+

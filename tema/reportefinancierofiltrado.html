@@ -1,0 +1,544 @@
+<?php 
+
+
+include("class/empresa.php"); 
+
+$oEmpresa=new Empresa(); 
+date_default_timezone_set("America/Bogota"); 
+
+$filtroCuentaReporte=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$filtroCuentaReporte; 
+
+if($filtroCuentaReporte==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$desde=$_GET["desde"];
+$hasta=$_GET["hasta"];
+if(!isset($_SESSION)){ session_start(); }
+
+$idEmpresa=$_SESSION["idEmpresa"]; 
+$anio=date('Y');
+
+if ($filtroCuentaReporte==1) {
+	
+$totalActivoCorrienteAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL ACTIVO CORRIENTE',"desde"=>$desde,"hasta"=>$hasta));
+
+$totalPasivoCorrienteAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL PASIVO CORRIENTE',"desde"=>$desde,"hasta"=>$hasta));
+
+
+
+$label='';
+$datos='';
+$liquidez=0.0;
+foreach ($totalActivoCorrienteAcumulado as $key => $value) {
+
+	switch ($value['periodoMes']) {
+		case '1':
+			$mes='Enero';
+			break;
+		case '2':
+			$mes='Febrero';
+			break;
+		case '3':
+			$mes='Marzo';
+			break;
+		case '4':
+			$mes='Abril';
+			break;
+		case '5':
+			$mes='Mayo';
+			break;
+		case '6':
+			$mes='Junio';
+			break;
+		case '7':
+			$mes='Julio';
+			break;
+		case '8':
+			$mes='Agosto';
+			break;
+		case '9':
+			$mes='Septiembre';
+			break;
+		case '10':
+			$mes='Octubre';
+			break;
+		case '11':
+			$mes='Noviembre';
+			break;
+		case '12':
+			$mes='Diciembre';
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$pasivoAcumulado=$totalPasivoCorrienteAcumulado[$key]['total'];
+	$liquidez=$value['total']/$pasivoAcumulado;
+	$liquidezAcumulada=number_format($liquidez,2,'.','');
+	$label= $label."'".$mes."',";
+    $datos =$datos.$liquidezAcumulada.",";
+    
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+  $cuentaReporte="Indice de liquidez";
+}
+if ($filtroCuentaReporte==2) {
+	
+
+$aActivoAcumulado=$oEmpresa->getActivoAcumulado(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"desde"=>$desde,"hasta"=>$hasta));
+
+$aPasivoAcumulado=$oEmpresa->getPasivoAcumulado(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"desde"=>$desde,"hasta"=>$hasta));
+
+
+
+$label='';
+$datos='';
+$solidez=0.0;
+foreach ($aActivoAcumulado as $key => $value) {
+
+	switch ($value['periodoMes']) {
+		case '1':
+			$mes='Enero';
+			break;
+		case '2':
+			$mes='Febrero';
+			break;
+		case '3':
+			$mes='Marzo';
+			break;
+		case '4':
+			$mes='Abril';
+			break;
+		case '5':
+			$mes='Mayo';
+			break;
+		case '6':
+			$mes='Junio';
+			break;
+		case '7':
+			$mes='Julio';
+			break;
+		case '8':
+			$mes='Agosto';
+			break;
+		case '9':
+			$mes='Septiembre';
+			break;
+		case '10':
+			$mes='Octubre';
+			break;
+		case '11':
+			$mes='Noviembre';
+			break;
+		case '12':
+			$mes='Diciembre';
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$pasivoAcumulado=$aPasivoAcumulado[$key]['total'];
+	$solidez=$value['total']/$pasivoAcumulado;
+	$solidezAcumulada=number_format($solidez,2,'.','');
+	$label= $label."'".$mes."',";
+    $datos =$datos.$solidezAcumulada.",";
+
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+  $cuentaReporte="Solidez";
+}
+ 
+
+
+if ($filtroCuentaReporte==3) {
+	
+$totalActivoCorrienteAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL ACTIVO CORRIENTE'));
+
+$totalPasivoCorrienteAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL PASIVO CORRIENTE'));
+
+
+$label='';
+$datos='';
+$liquidez=0.0;
+foreach ($totalActivoCorrienteAcumulado as $key => $value) {
+
+	switch ($value['periodoMes']) {
+		case '1':
+			$mes='Enero';
+			break;
+		case '2':
+			$mes='Febrero';
+			break;
+		case '3':
+			$mes='Marzo';
+			break;
+		case '4':
+			$mes='Abril';
+			break;
+		case '5':
+			$mes='Mayo';
+			break;
+		case '6':
+			$mes='Junio';
+			break;
+		case '7':
+			$mes='Julio';
+			break;
+		case '8':
+			$mes='Agosto';
+			break;
+		case '9':
+			$mes='Septiembre';
+			break;
+		case '10':
+			$mes='Octubre';
+			break;
+		case '11':
+			$mes='Noviembre';
+			break;
+		case '12':
+			$mes='Diciembre';
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$pasivoAcumulado=$totalPasivoCorrienteAcumulado[$key]['total'];
+	$liquidez=$value['total']/$pasivoAcumulado;
+	$liquidezAcumulada=number_format($liquidez,2,'.','');
+	$label= $label."'".$mes."',";
+    $datos =$datos.$liquidezAcumulada.",";
+    
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+  $cuentaReporte="Razon cobertura intereses";
+}
+
+
+
+
+
+if ($filtroCuentaReporte==4) {
+	
+
+
+$utilidadOperacionalAcumulado=$oEmpresa->getRentabilidadCuenta(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'UTILIDAD OPERACIONAL',"desde"=>$desde,"hasta"=>$hasta));
+
+
+ $totalPatrimonioAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL PATRIMONIO',"desde"=>$desde,"hasta"=>$hasta));
+
+$label='';
+$datos='';
+$rentabilidadPatrimonio=0.0;
+foreach ($utilidadOperacionalAcumulado as $key => $value) {
+
+	switch ($value['periodoMes']) {
+		case '1':
+			$mes='Enero';
+			break;
+		case '2':
+			$mes='Febrero';
+			break;
+		case '3':
+			$mes='Marzo';
+			break;
+		case '4':
+			$mes='Abril';
+			break;
+		case '5':
+			$mes='Mayo';
+			break;
+		case '6':
+			$mes='Junio';
+			break;
+		case '7':
+			$mes='Julio';
+			break;
+		case '8':
+			$mes='Agosto';
+			break;
+		case '9':
+			$mes='Septiembre';
+			break;
+		case '10':
+			$mes='Octubre';
+			break;
+		case '11':
+			$mes='Noviembre';
+			break;
+		case '12':
+			$mes='Diciembre';
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$patrimonioAcumulado=$totalPatrimonioAcumulado[$key]['total'];
+	$rentabilidadPatrimonio=$value['valor']/$patrimonioAcumulado;
+	$rentabilidadPatrimonioAcumulada=number_format($rentabilidadPatrimonio,5,'.','');
+	$label= $label."'".$mes."',";
+    $datos =$datos.$rentabilidadPatrimonioAcumulada.",";
+    	
+    
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+  $cuentaReporte="Rentabilidad patrimonio";
+  
+}
+
+
+
+
+
+if ($filtroCuentaReporte==5) {
+	
+
+$totalActivo=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL ACTIVO',"desde"=>$desde,"hasta"=>$hasta));
+
+$totalPatrimonioAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL PATRIMONIO',"desde"=>$desde,"hasta"=>$hasta));
+
+
+
+$label='';
+$datos='';
+$rentabilidadActivo=0.0;
+foreach ($totalActivo as $key => $value) {
+
+	switch ($value['periodoMes']) {
+		case '1':
+			$mes='Enero';
+			break;
+		case '2':
+			$mes='Febrero';
+			break;
+		case '3':
+			$mes='Marzo';
+			break;
+		case '4':
+			$mes='Abril';
+			break;
+		case '5':
+			$mes='Mayo';
+			break;
+		case '6':
+			$mes='Junio';
+			break;
+		case '7':
+			$mes='Julio';
+			break;
+		case '8':
+			$mes='Agosto';
+			break;
+		case '9':
+			$mes='Septiembre';
+			break;
+		case '10':
+			$mes='Octubre';
+			break;
+		case '11':
+			$mes='Noviembre';
+			break;
+		case '12':
+			$mes='Diciembre';
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$patrimonioAcumulado=$totalPatrimonioAcumulado[$key]['total'];
+	$rentabilidadActivo=$value['total']/$patrimonioAcumulado;
+	$rentabilidadActivoAcumulada=number_format($rentabilidadActivo,2,'.','');
+	$label= $label."'".$mes."',";
+    $datos =$datos.$rentabilidadActivoAcumulada.",";
+    
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+  $cuentaReporte="Rentabilidad activo";
+}
+
+
+
+
+if ($filtroCuentaReporte==6) {
+	
+$totalActivoCorrienteAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL ACTIVO CORRIENTE',"desde"=>$desde,"hasta"=>$hasta));
+
+$totalPasivoCorrienteAcumulado=$oEmpresa->getCuentaSituacionFinanciera(array("idEmpresa"=>$idEmpresa,"anio"=>$anio,"cuenta"=>'TOTAL PASIVO CORRIENTE',"desde"=>$desde,"hasta"=>$hasta));
+
+
+$label='';
+$datos='';
+$capitalTrabajo=0.0;
+foreach ($totalActivoCorrienteAcumulado as $key => $value) {
+
+	switch ($value['periodoMes']) {
+		case '1':
+			$mes='Enero';
+			break;
+		case '2':
+			$mes='Febrero';
+			break;
+		case '3':
+			$mes='Marzo';
+			break;
+		case '4':
+			$mes='Abril';
+			break;
+		case '5':
+			$mes='Mayo';
+			break;
+		case '6':
+			$mes='Junio';
+			break;
+		case '7':
+			$mes='Julio';
+			break;
+		case '8':
+			$mes='Agosto';
+			break;
+		case '9':
+			$mes='Septiembre';
+			break;
+		case '10':
+			$mes='Octubre';
+			break;
+		case '11':
+			$mes='Noviembre';
+			break;
+		case '12':
+			$mes='Diciembre';
+			break;
+		default:
+			# code...
+			break;
+	}
+
+	$pasivoAcumulado=$totalPasivoCorrienteAcumulado[$key]['total'];
+	$capitalTrabajo=$value['total']-$pasivoAcumulado;
+	$capitalTrabajoAcumulada=number_format($capitalTrabajo,2,'.','');
+	$label= $label."'".$mes."',";
+    $datos =$datos.$capitalTrabajoAcumulada.",";
+    
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+  $cuentaReporte="Capital trabajo";
+}
+
+
+
+?>
+
+
+<div class="card">
+	<div class="card-body">
+		<center><label>Seleccione filtrar si desdea ver rangos de meses especificos</label></center>
+        <canvas id="detalleReporteFinanciero" height="100"></canvas>
+        <br><br>
+        <div>
+        	<a href="../reportefinanciero" class="btn btn-warning">REGRESAR</a>
+        	<button class="btn btn-info" id="btnAbrirFiltrar">FILTRAR</button>
+        </div>
+	</div>
+</div>
+
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlayIndiceLiquidez" >
+    <div class="swal-modal popup" id="popupIndiceLiquidez">
+      <a  class="btn-cerrar" id="btnCerrarIndiceLiquidez" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">SELECCIONE LOS MESES A FILTRAR </h3><br>
+      <div class="swal-content">
+        <div class="col-auto my-1">
+              <label class="negrita">Desde: </label>
+            </div>
+          <div class="col-auto my-1" >
+              <select class="custom-select mr-sm-2" name="periodoDesde" id="periodoDesde">
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+            </div>
+            <div class="col-auto my-1">
+              <label class="negrita">Hasta: </label>
+            </div>
+            <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" name="periodoHasta" id="periodoHasta">
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+            </div>
+      </div>
+        <div class="swal-footer">
+        	<input type="text" name="cuentaReporteFiltrar" id="cuentaReporteFiltrar" class="ocultar" value="<?php echo $filtroCuentaReporte ?>">
+          <a  class="btn btn-info" id="btnFiltrar">FILTRAR</a>
+        </div>          
+    </div>
+  </div>
+
+<script type="text/javascript">
+	let miCanvas3 = document.getElementById("detalleReporteFinanciero").getContext("2d");
+   var label3= [<?php echo $label ?>];
+   var datos3= [<?php echo $datos ?>];
+   
+   var cuentaReporte = '<?php echo $cuentaReporte?>';
+
+   var stackedLine = new Chart(miCanvas3, {
+    type: 'line',
+    data:{
+      
+      datasets:[{label:cuentaReporte,
+        data: datos3,
+        borderColor:"rgb(130,174,255)",
+        backgroundColor:"rgba(130,174,255,0.2)",
+        
+        lineTension: 0.5,
+        order:1,
+        pointBorderWidth:18
+      }],
+      labels:label3
+      
+    },
+    
+    options: {
+        scales: {
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+  });
+</script>

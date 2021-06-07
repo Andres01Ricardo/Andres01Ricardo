@@ -1,0 +1,168 @@
+<?php 
+
+$oControl=new Control(); 
+
+if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
+  
+
+
+  $idEmpresa=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+    if($idEmpresa==""){
+
+      echo '<script>window.history.back()</script>'; 
+
+    }
+    $decrip["cadena"]=$idEmpresa; 
+
+    $idEmpresa=$oControl->desencriptar($decrip);
+  }else if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4){
+
+  $idEmpresa= $_SESSION["idEmpresa"];
+
+}
+
+include_once("class/legalizaciones.php");
+
+
+require_once("class/empleados.php"); 
+
+
+
+$oEmpleado=new Empleados(); 
+
+$oControl=new Control(); 
+
+$aData["idEmpresa"]=$idEmpresa; 
+
+
+$aEmpleados=$oEmpleado->getEmpleadosEmpresaUsuarios($aData);
+
+
+?>
+<style type="text/css">
+  .picker__box{
+       background-color: #0000;
+}
+</style>
+
+<section class="section">
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>NOMBRE</th>
+
+                            <th>APELLIDOS</th>
+
+                            <!-- <th>TIPO DOCUMENTO</th> -->
+
+                            <th>N° DOCUMENTO</th>
+
+                            <th>EMAIL</th>
+
+                            <!-- <th>SALDO POR LEGALIZAR</th> -->
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aEmpleados as $index => $iEmpleado){ 
+
+                            $oLista=new Lista("empleado_usuario"); 
+
+                            $oLista->setFiltro("idEmpleado","=",$iEmpleado['idEmpleado']); 
+
+                            $aLista=$oLista->getLista(); 
+
+                            unset($oItem);
+
+                            $oLegalizacion=new Legalizaciones();
+   
+                            $trabajador=$iEmpleado[idEmpleado];
+
+                            $aLegalizacion=$oLegalizacion->getSaldoLegalizacionesEmpleado($trabajador);
+                            unset($oLegalizacion);
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iEmpleado['nombre']; ?></td>
+
+                              <td><?php echo $iEmpleado['apellido']; ?></td>
+
+                              <td><?php echo $iEmpleado['numeroDocumento']; ?></td>
+
+                              <td><?php echo $iEmpleado['email']; ?></td>
+
+                              <!-- <td class="centrar"><?php 
+                              if (empty($aLegalizacion)) {
+                                echo "$0";
+                              }else{
+                                echo "$".number_format($aLegalizacion[0]["total"],0,".",",");
+                                
+                              }
+                               ?></td> -->
+                              <td class="centrar">
+
+                                <a href="<?php  echo $URL; ?>listarproyectoslegalizacion/<?php echo $trabajador; ?>" name="<?php echo $trabajador; ?>"  data-toggle="tooltip" data-placement="top" title="Legalizaciones"><i class="fas fa-route" style="color: #FF8D0C;font-size: 20px;"></i></a>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+

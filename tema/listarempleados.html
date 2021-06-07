@@ -1,0 +1,164 @@
+<?php 
+
+require_once("class/empleados.php"); 
+
+
+
+$oEmpleado=new Empleados(); 
+
+
+
+$oControl=new Control(); 
+
+$aData["idEmpresa"]=$_SESSION["idEmpresa"]; 
+
+if($_SESSION["idRol"]==2){
+
+  $aData["idUsuario"]=$_SESSION["idUsuario"]; 
+
+}
+
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aData);
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Listar empleados</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableEmpleados">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Nombres</th>
+
+                            <th>Apellidos</th>
+
+                            <th>Tipo Documento</th>
+
+                            <th>N° Documento</th>
+
+                            <th>Email</th>
+
+                            <th>Estado</th>
+
+                            <?php if($_SESSION["idRol"]==1||$_SESSION["idRol"]==2){ ?>
+
+                            <th>Empresa</th>
+
+                            <?php } ?>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aEmpleados as $index => $iEmpleado){ 
+
+                            $aEncript['cadena']=$iEmpleado['idEmpleado']; 
+
+                            $id=$oControl->encriptar($aEncript);
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iEmpleado["fechaRegistro"]; ?></td>
+
+                              <td><?php echo $iEmpleado["nombre"]; ?></td>
+
+                              <td><?php echo $iEmpleado["apellido"]; ?></td>
+
+                              <td><?php echo $iEmpleado["tipoDocumento"]==1?'Cédula Ciudadania':'Pasaporte'; ?></td>
+
+                              <td><?php echo $iEmpleado["numeroDocumento"]; ?></td>
+
+                              <td><?php echo $iEmpleado["email"]; ?></td>
+
+                              <td><?php if($iEmpleado["estado"]==1){ echo 'Activo'; }elseif($iEmpleado["estado"]==2){ echo 'Retirado'; } ?></td>
+
+                              <?php if($_SESSION["idRol"]==1||$_SESSION["idRol"]==2){ ?>
+
+                              <td><?php echo $iEmpleado["razonSocial"]; ?></td>
+
+                              <?php } ?>
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>verempleado/<?php echo $id ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
+
+                                <a href="<?php $aEncript['cadena']=$iEmpresa['idEmpresa']; echo $URL; ?>editarempleado/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 20px;"></i></a>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+

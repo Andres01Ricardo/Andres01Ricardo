@@ -1,0 +1,3490 @@
+<!-- <link rel="stylesheet" href="assets/bundles/fullcalendar/fullcalendar.min.css"> -->
+<?php 
+  if ($_SESSION["idRol"]==1 or $_SESSION["idRol"]==2) {
+    $oEmpresa=new Lista('empresa');
+    $aEmpresa=$oEmpresa->getLista();
+  
+  foreach ($aEmpresa as $key => $value) {
+    $digitoEmpresa=substr($value["nit"], -1);
+    switch ($digitoEmpresa) {
+      case 0:
+        $empresa0[$key]=$value["razonSocial"];    
+        break;
+      case 1:
+        $empresa1[$key]=$value["razonSocial"];    
+        break;
+      case 2:
+        $empresa2[$key]=$value["razonSocial"];    
+        break;
+      case 3:
+        $empresa3[$key]=$value["razonSocial"];    
+        break;
+      case 4:
+        $empresa4[$key]=$value["razonSocial"];    
+        break;
+      case 5:
+        $empresa5[$key]=$value["razonSocial"];    
+        break;
+      case 6:
+        $empresa6[$key]=$value["razonSocial"];    
+        break;
+      case 7:
+        $empresa7[$key]=$value["razonSocial"];    
+        break;
+      case 8:
+        $empresa8[$key]=$value["razonSocial"];    
+        break;
+      case 9:
+        $empresa9[$key]=$value["razonSocial"];    
+        break;
+      
+      default:
+        # code...
+        break;
+    }
+    
+    }
+  $oLista = new Lista('fecha_impuesto_digito');
+  $oLista->setGrupo("idFechaImpuesto");
+  $aFechaIG=$oLista->getLista();
+  unset($oLista);
+  // print_r($aFechaIG);
+foreach($aFechaIG as $key=>$value){
+  $oItem=new Data("fecha_impuesto","idFechaImpuesto",$value["idFechaImpuesto"]);
+  $aItem=$oItem->getDatos();
+  unset($oItem);
+  $oItem=new Data("ciudad","idCiudad",$aItem["idCiudad"]);
+  $aCiudad=$oItem->getDatos();
+  unset($oItem);
+
+  $oLista = new Lista('fecha_impuesto_empresa');
+  $oLista->setFiltro("idFechaImpuesto","=",$value["idFechaImpuesto"]);
+  $aFechaEmpresa=$oLista->getLista();
+  unset($oLista);
+  // print_r($aFechaEmpresa);
+  if (!empty($aFechaEmpresa)) {
+    $hay[]=$value["idFechaImpuesto"];
+    $sihay=$value["idFechaImpuesto"];
+  }
+  foreach ($aFechaEmpresa as $keyFE => $valueFE) {
+    $oItem=new Data("empresa","idEmpresa",$valueFE["idEmpresa"]);
+    $aEmpresaFecha=$oItem->getDatos();
+    unset($oItem);
+    $digitoEmpresaFecha=substr($aEmpresaFecha["nit"], -1);
+    switch ($digitoEmpresaFecha) {
+      case 0:
+        $empresaIca0[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 1:
+        $empresaIca1[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 2:
+        $empresaIca2[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 3:
+        $empresaIca3[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 4:
+        $empresaIca4[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 5:
+        $empresaIca5[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 6:
+        $empresaIca6[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 7:
+        $empresaIca7[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 8:
+        $empresaIca8[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      case 9:
+        $empresaIca9[$sihay][]=$aEmpresaFecha["razonSocial"];    
+        break;
+      
+      default:
+        # code...
+        break;
+    }
+    // $empresaIca[]=$aEmpresaFecha["razonSocial"];
+
+  }
+}
+  // print_r($hay);
+  foreach ($hay as $keyh => $valueh) {
+    $oLista = new Lista('fecha_impuesto_digito');
+    $oLista->setFiltro("idFechaImpuesto","=",$valueh);
+    $aFechaI=$oLista->getLista();
+    unset($oLista);
+
+foreach($aFechaI as $key=>$value){
+
+  $fecha=explode("-",$value["diaPago"]);
+  switch ($value["digito"]) {
+    case 0:
+      $empFec=$empresaIca0[$valueh];
+      break;
+    case 1:
+      $empFec=$empresaIca1[$valueh];
+      break;
+    case 2:
+      $empFec=$empresaIca2[$valueh];
+      break;
+    case 3:
+      $empFec=$empresaIca3[$valueh];
+      break;
+    case 4:
+      $empFec=$empresaIca4[$valueh];
+      break;
+    case 5:
+      $empFec=$empresaIca5[$valueh];
+      break;
+    case 6:
+      $empFec=$empresaIca6[$valueh];
+      break;
+    case 7:
+      $empFec=$empresaIca7[$valueh];
+      break;
+    case 8:
+      $empFec=$empresaIca8[$valueh];
+      break;
+    case 9:
+      $empFec=$empresaIca9[$valueh];
+      break;
+    case 10:
+      $empFec=$empresaIca10[$valueh];
+      break;
+    case 11:
+      $empFec=$empresaIca11[$valueh];
+      break;
+    case 12:
+      $empFec=$empresaIca12[$valueh];
+      break;
+
+    default:
+      # code...
+      break;
+  }
+  $oItem=new Data("fecha_impuesto","idFechaImpuesto",$value["idFechaImpuesto"]);
+  $aItem=$oItem->getDatos();
+  unset($oItem);
+  $oItem=new Data("ciudad","idCiudad",$aItem["idCiudad"]);
+  $aCiudad=$oItem->getDatos();
+  unset($oItem);
+  if(intval($fecha[1])==2 and !empty($empFec)){
+    $febreroDigito[]=$value["digito"];
+    $febreroCiudad[]=$aCiudad["nombre"];
+    $febreroFecha[]=intval($fecha[2]);
+    $febreroEmpresa[]=$empFec;
+  }
+  if(intval($fecha[1])==3 and !empty($empFec)){
+    $marzoDigito[]=$value["digito"];
+    $marzoCiudad[]=$aCiudad["nombre"];
+    $marzoFecha[]=intval($fecha[2]);
+    $marzoEmpresa[]=$empFec;
+  }
+}
+  }
+
+
+
+$oLista = new Lista('fecha_retencion_iva_item');
+
+$aFechaRI=$oLista->getLista();
+
+unset($oLista);
+
+
+foreach($aFechaRI as $keyR=>$valueR){
+  switch ($valueR["digito"]) {
+    case 0:
+      $emp=$empresa0;
+      break;
+    case 1:
+      $emp=$empresa1;
+      break;
+    case 2:
+      $emp=$empresa2;
+      break;
+    case 3:
+      $emp=$empresa3;
+      break;
+    case 4:
+      $emp=$empresa4;
+      break;
+    case 5:
+      $emp=$empresa5;
+      break;
+    case 6:
+      $emp=$empresa6;
+      break;
+    case 7:
+      $emp=$empresa7;
+      break;
+    case 8:
+      $emp=$empresa8;
+      break;
+    case 9:
+      $emp=$empresa9;
+      break;
+    case 10:
+      $emp=$empresa10;
+      break;
+    case 11:
+      $emp=$empresa11;
+      break;
+    case 12:
+      $emp=$empresa12;
+      break;
+
+    default:
+      # code...
+      break;
+  }
+  $fecha=explode("-",$valueR["fechaLimite"]);
+  if(intval($fecha[1])==1 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+      $eneroDigitoR[$keyR]=$emp;
+    $eneroFechaR[$keyR]=intval($fecha[2]);
+    }if ($valueR['tipo']==2) {
+      $eneroDigitoI[$keyR]=$emp;
+      $eneroFechaI[$keyR]=intval($fecha[2]);
+    }
+    
+  }
+  if(intval($fecha[1])==2 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+      $febreroDigitoR[$keyR]=$emp;
+      $febreroFechaR[$keyR]=intval($fecha[2]);
+    }if ($valueR['tipo']==2) {
+      $febreroDigitoI[$keyR]=$emp;
+      $febreroFechaI[$keyR]=intval($fecha[2]);
+    }
+  }
+  if(intval($fecha[1])==3 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $marzoDigitoR[$keyR]=$emp;
+    $marzoFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $marzoDigitoI[$keyR]=$emp;
+    $marzoFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==4 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+      $abrilDigitoR[$keyR]=$emp;
+      $abrilFechaR[$keyR]=intval($fecha[2]);
+    }if ($valueR['tipo']==2) {
+      $abrilDigitoI[$keyR]=$emp;
+      $abrilFechaI[$keyR]=intval($fecha[2]);
+    }
+  }
+  if(intval($fecha[1])==5 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+      $mayoDigitoR[$keyR]=$emp;
+      $mayoFechaR[$keyR]=intval($fecha[2]);
+    }if ($valueR['tipo']==2) {
+      $mayoDigitoI[$keyR]=$emp;
+      $mayoFechaI[$keyR]=intval($fecha[2]);
+    }
+  }
+  if(intval($fecha[1])==6 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $junioDigitoR[$keyR]=$emp;
+    $junioFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $junioDigitoI[$keyR]=$emp;
+    $junioFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==7 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $julioDigitoR[$keyR]=$emp;
+    $julioFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $julioDigitoI[$keyR]=$emp;
+    $julioFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==8 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $agostoDigitoR[$keyR]=$emp;
+    $agostoFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $agostoDigitoI[$keyR]=$emp;
+    $agostoFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==9 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $septiembreDigitoR[$keyR]=$emp;
+    $septiembreFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $septiembreDigitoI[$keyR]=$emp;
+    $septiembreFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==10 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $octubreDigitoR[$keyR]=$emp;
+    $octubreFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $octubreDigitoI[$keyR]=$emp;
+    $octubreFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==11 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $noviembreDigitoR[$keyR]=$emp;
+    $noviembreFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $noviembreDigitoI[$keyR]=$emp;
+    $noviembreFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+  if(intval($fecha[1])==12 and $fecha[0]=='2021'){
+    if ($valueR['tipo']==1) {
+    $diciembreDigitoR[$keyR]=$emp;
+    $diciembreFechaR[$keyR]=intval($fecha[2]);
+  }if ($valueR['tipo']==2) {
+    $diciembreDigitoI[$keyR]=$emp;
+    $diciembreFechaI[$keyR]=intval($fecha[2]);
+  }
+  }
+}
+  }
+
+
+  if ($_SESSION["idRol"]==3 or $_SESSION["idRol"]==4) {
+              $oEmpresa=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]);
+              $aEmpresa=$oEmpresa->getDatos();
+
+              $digito=substr($aEmpresa["nit"], -1);
+
+            $oLista = new Lista('fecha_impuesto_digito');
+            $aFechaI=$oLista->getLista();
+
+          unset($oLista);
+
+          foreach($aFechaI as $key=>$value){
+            $fecha=explode("-",$value["diaPago"]);
+            if ($value["digito"]==$digito) {
+                if(intval($fecha[1])==2){
+                $febreroDigito[$key]=$aEmpresa["razonSocial"];
+                $febreroFecha[$key]=intval($fecha[2]);
+              }
+              if(intval($fecha[1])==3){
+                $marzoDigito[$key]=$aEmpresa["razonSocial"];
+                $marzoFecha[$key]=intval($fecha[2]);
+              }              
+            }
+          }
+          $oLista = new Lista('fecha_retencion_iva_item');
+
+          $aFechaRI=$oLista->getLista();
+
+          unset($oLista);
+          $emp=$aEmpresa["razonSocial"];
+
+              foreach($aFechaRI as $keyR=>$valueR){
+                if($valueR["digito"]==$digito) {
+                    $fecha=explode("-",$valueR["fechaLimite"]);
+                    if(intval($fecha[1])==1 and $fecha[0]=='2021'){
+                      enero();
+                    }
+                    if(intval($fecha[1])==2 and $fecha[0]=='2021'){
+                      
+                      if ($valueR['tipo']==1) {
+                        $febreroDigitoR[$keyR]=$emp;
+                        $febreroFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $febreroDigitoI[$keyR]=$emp;
+                        $febreroFechaI[$keyR]=intval($fecha[2]);
+                      }
+
+                    }
+                    if(intval($fecha[1])==3 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $marzoDigitoR[$keyR]=$emp;
+                        $marzoFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $marzoDigitoI[$keyR]=$emp;
+                        $marzoFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==4 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $abrilDigitoR[$keyR]=$emp;
+                        $abrilFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $abrilDigitoI[$keyR]=$emp;
+                        $abrilFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==5 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $mayoDigitoR[$keyR]=$emp;
+                        $mayoFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $mayoDigitoI[$keyR]=$emp;
+                        $mayoFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==6 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $junioDigitoR[$keyR]=$emp;
+                        $junioFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $junioDigitoI[$keyR]=$emp;
+                        $junioFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==7 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $julioDigitoR[$keyR]=$emp;
+                        $julioFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $julioDigitoI[$keyR]=$emp;
+                        $julioFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==8 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $agostoDigitoR[$keyR]=$emp;
+                        $agostoFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $agostoDigitoI[$keyR]=$emp;
+                        $agostoFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==9 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $septiembreDigitoR[$keyR]=$emp;
+                        $septiembreFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $septiembreDigitoI[$keyR]=$emp;
+                        $septiembreFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==10 and $fecha[0]=='2021'){
+                     if ($valueR['tipo']==1) {
+                        $octubreDigitoR[$keyR]=$emp;
+                        $octubreFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $octubreDigitoI[$keyR]=$emp;
+                        $octubreFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==11 and $fecha[0]=='2021'){
+                      if ($valueR['tipo']==1) {
+                        $noviembreDigitoR[$keyR]=$emp;
+                        $noviembreFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $noviembreDigitoI[$keyR]=$emp;
+                        $noviembreFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    if(intval($fecha[1])==12 and $fecha[0]=='2021'){
+                       if ($valueR['tipo']==1) {
+                        $diciembreDigitoR[$keyR]=$emp;
+                        $diciembreFechaR[$keyR]=intval($fecha[2]);
+                      }if ($valueR['tipo']==2) {
+                        $diciembreDigitoI[$keyR]=$emp;
+                        $diciembreFechaI[$keyR]=intval($fecha[2]);
+                      }
+                    }
+                    
+            }
+          }
+  }
+// print_r($febreroDigito);
+// print_r($empresaIca0);
+// print_r('---');
+// print_r($empresaIca9);
+// print_r($empresaIca9);
+
+?>
+<style type="text/css">
+  th, td {
+  padding: 1px;
+}
+</style>
+
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Calendario Impuestos</li>
+
+          <li class="breadcrumb-item">Calendario</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                  <div class="card-body">
+
+                    <!-- <div class="fc-overflow"> -->
+
+                      <!-- <div id="calendar"></div> -->
+
+
+
+                  <ul class="nav nav-tabs" id="myTab2" role="tablist">
+
+                    <li class="nav-item">
+
+                      <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#home2" role="tab"
+
+                        aria-controls="home" aria-selected="true">ENERO</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#profile2" role="tab"
+
+                        aria-controls="profile" aria-selected="false">FEBRERO</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#contact2" role="tab"
+
+                        aria-controls="contact" aria-selected="false">MARZO</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="abril-" data-toggle="tab" href="#abril" role="tab"
+
+                        aria-controls="contact" aria-selected="false">ABRIL</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="mayo-" data-toggle="tab" href="#mayo" role="tab"
+
+                        aria-controls="contact" aria-selected="false">MAYO</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="junio-" data-toggle="tab" href="#junio" role="tab"
+
+                        aria-controls="contact" aria-selected="false">JUNIO</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="julio-" data-toggle="tab" href="#julio" role="tab"
+
+                        aria-controls="contact" aria-selected="false">JULIO</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="agosto-" data-toggle="tab" href="#agosto" role="tab"
+
+                        aria-controls="contact" aria-selected="false">AGOSTO</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="septiembre-" data-toggle="tab" href="#septiembre" role="tab"
+
+                        aria-controls="contact" aria-selected="false">SEPTIEMBRE</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="octubre-" data-toggle="tab" href="#octubre" role="tab"
+
+                        aria-controls="contact" aria-selected="false">OCTUBRE</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="noviembre-" data-toggle="tab" href="#noviembre" role="tab"
+
+                        aria-controls="contact" aria-selected="false">NOVIEMBRE</a>
+
+                    </li>
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="diciembre-" data-toggle="tab" href="#diciembre" role="tab"
+
+                        aria-controls="contact" aria-selected="false">DICIEMBRE</a>
+
+                    </li>
+                    
+
+                  </ul>
+
+                  <div class="tab-content tab-bordered" id="myTab3Content">
+
+                    <div class="tab-pane fade show active" id="home2" role="tabpanel" aria-labelledby="home-tab2">
+
+                      <div class="card-body table-responsive">
+
+                      <div class="row">
+                     
+                           <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+
+
+
+
+                            $inicio=5;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+
+
+                            ?>
+                            <tr>
+                              <td><div style="">
+                                <?php if($inicio==8 and $cont<31){echo $cont+=1;};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}
+
+                                ?>
+                              </div><div></div></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($eneroFechaI as $keyE => $valueE) {
+                                if ($dia==$valueE) {
+
+                                  echo "IVA:".$eneroDigitoI[$keyE];
+                                }
+                              }
+                              foreach ($eneroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  foreach ($eneroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              };
+                              if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}
+
+                              
+                              ?>
+                                
+                              </td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($eneroFechaI as $keyE => $valueE) {
+                                if ($dia==$valueE) {
+                                  echo "IVA:".$eneroDigitoI[$keyE];
+                                }
+                              }
+                              foreach ($eneroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  echo "Retención:".$eneroDigitoR[$keyR];
+                                }
+                              }
+                              };
+                                if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?>
+                                  
+                                </td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($eneroFechaI as $keyE => $valueE) {
+                                if ($dia==$valueE) {
+                                  echo "IVA:".$eneroDigitoI[$keyE];
+                                }
+                              }
+                              foreach ($eneroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  echo "Retención:".$eneroDigitoR[$keyR];
+                                }
+                              }
+                              };
+                                if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($eneroFechaI as $keyE => $valueE) {
+                                if ($dia==$valueE) {
+                                  echo "IVA:".$eneroDigitoI[$keyE];
+                                }
+                              }
+                              foreach ($eneroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  echo "Retención:".$eneroDigitoR[$keyR];
+                                }
+                              }
+                              };
+                                if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($eneroFechaI as $keyE => $valueE) {
+                                if ($dia==$valueE) {
+                                  echo "IVA:".$eneroDigitoI[$keyE];
+                                }
+                              }
+                              foreach ($eneroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  echo "Retención:".$eneroDigitoR[$keyR];
+                                }
+                              }
+                              };
+                                if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<31){
+                                $dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($eneroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$eneroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($eneroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  echo "Retención:".$eneroDigitoR[$keyR];
+                                }
+                              }
+                              }
+                                if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                    
+
+
+                      </div>
+
+                
+                     
+
+                      </div>
+
+                  
+
+
+                    </div>
+
+                    <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="profile-tab2">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered" >
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=1;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><div style="text-align: left;">
+                                
+                              <?php if($inicio==8 and $cont<28){
+                                $dia=$cont+=1; 
+                                echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                   
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                                
+                                foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  
+                                  
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                  
+
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              }
+                                if($inicio==1){ 
+                                echo $seguir; 
+                                $cont=$seguir;$inicio=8;
+                              }?>
+                              </div>
+                              <div style="text-align: center;color: red;">
+                                
+                              <?php
+                             
+                               
+                                ?></div></td>
+                              <td><?php if($inicio==8 and $cont<28){$dia=$cont+=1; echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                            }
+                                if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}
+
+                                
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<28){$dia=$cont+=1; echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+}
+                                if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<28){$dia=$cont+=1; echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+}
+                                if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}
+                               
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<28){$dia=$cont+=1; echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+}
+                                if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}
+                               
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<28){$dia=$cont+=1; echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+}
+                                if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}
+                               
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<28){$dia=$cont+=1; echo $dia;
+                                foreach ($febreroFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$febreroDigito[$key].' '.$febreroCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+
+                                      foreach ($febreroEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$febreroCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($febreroFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$febreroDigitoI[$keyE];
+
+                                  }
+                              }
+                              foreach ($febreroFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$febreroDigitoR[$keyR];
+                                  }
+                                  foreach ($febreroDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+}
+                                if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                
+                                ?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+
+                    <div class="tab-pane fade" id="contact2" role="tabpanel" aria-labelledby="contact-tab2">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=1;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($marzoFecha as $key => $value) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  }
+                                    if ($dia==$value) {
+
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                                  
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                                foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }}
+                                if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                  
+                                ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($marzoFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+                                    
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }}
+                                if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                 ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($marzoFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  } 
+                                  if ($dia==$value) {
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                 ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($marzoFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                 ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($marzoFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                 ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($marzoFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  }
+                                  if ($dia==$value) {
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                 ?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($marzoFecha as $key => $value) {
+                                  if ($_SESSION["idRol"]==3) {
+                                    if ($dia==$value) {
+                                      echo "<br>";
+                                      echo "ICA: ".$marzoDigito[$key].' '.$marzoCiudad[$key];
+
+                                    }
+                                  } 
+                                 if ($dia==$value) {
+                                      foreach ($marzoEmpresa[$key] as $keyD => $valueD) {    
+                                      echo "<br>";
+                                      echo "ICA: ".$valueD.' '.$marzoCiudad[$key];
+                                    }
+                                  }
+                              }
+                              foreach ($marzoFechaR as $keyR => $valueR) {
+                                if ($dia==$valueR) {
+                                  echo "<br>";
+                                  if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$marzoDigitoR[$keyR];
+                                  }
+                                  foreach ($marzoDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+                                }
+                              }
+                              foreach ($marzoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "IVA:".$marzoDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}
+                                 ?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+                    </div>
+
+                  
+                  <div class="tab-pane fade" id="abril" role="tabpanel" aria-labelledby="abril-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=4;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                                foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                 foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                              foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                 foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                              foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                 foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                              foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                 foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                              foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                 foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                              foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                 foreach ($abrilFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$abrilDigitoR[$keyR];
+                                  }
+                                    foreach ($abrilDigitoR[$keyR] as $key => $value) {
+                                    echo "<br>";
+                                    echo "Retención: ".$value;
+                                  }
+
+                                  }
+                              }
+                              foreach ($abrilFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    echo "<br>";
+                                    echo "IVA:".$abrilDigitoI[$keyE];
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="mayo" role="tabpanel" aria-labelledby="mayo-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=6;
+                            $seguir=1;
+
+                            for($i=0;$i<6;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                 foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($mayoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$mayoDigitoR[$keyR];
+                                  }
+                                    foreach ($mayoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($mayoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$mayoDigitoI[$keyE];
+                                  }
+                                    foreach ($mayoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="junio" role="tabpanel" aria-labelledby="junio-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=2;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$junioDigitoI[$keyE];
+                                  }
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($junioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$junioDigitoR[$keyR];
+                                  }
+                                    foreach ($junioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($junioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($junioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+
+                    <div class="tab-pane fade" id="julio" role="tabpanel" aria-labelledby="julio-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=4;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($julioFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$julioDigitoR[$keyR];
+                                  }
+                                    foreach ($julioDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($julioFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($julioDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="agosto" role="tabpanel" aria-labelledby="agosto-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=7;
+                            $seguir=1;
+
+                            for($i=0;$i<6;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($agostoFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$agostoDigitoR[$keyR];
+                                  }
+                                    foreach ($agostoDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($agostoFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($agostoDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="septiembre" role="tabpanel" aria-labelledby="septiembre-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=3;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                     if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($septiembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$septiembreDigitoR[$keyR];
+                                  }
+                                    foreach ($septiembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($septiembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "IVA: ".$septiembreDigitoI[$keyE];
+                                  }
+                                    foreach ($septiembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="octubre" role="tabpanel" aria-labelledby="octubre-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=5;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($octubreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$octubreDigitoR[$keyR];
+                                  }
+                                    foreach ($octubreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($octubreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($octubreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="noviembre" role="tabpanel" aria-labelledby="noviembre-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=1;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                               foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                                foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<30){$dia=$cont+=1; echo $dia;
+                              foreach ($noviembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$noviembreDigitoR[$keyR];
+                                  }
+                                    foreach ($noviembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($noviembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($noviembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+                    <div class="tab-pane fade" id="diciembre" role="tabpanel" aria-labelledby="diciembre-">
+
+                      <div class="card-body table-responsive">
+
+                        <div class="row">
+
+                        
+                          <table class="table table-bordered">
+                          <thead>
+                            
+                            <tr>
+                              <th>Lunes</th>
+                              <th>Martes</th>
+                              <th>Miercoles</th>
+                              <th>Jueves</th>
+                              <th>Viernes</th>
+                              <th>Sabado</th>
+                              <th>Domingo</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <?php
+                            $inicio=3;
+                            $seguir=1;
+
+                            for($i=0;$i<5;$i++){ 
+                            ?>
+                            <tr>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==1){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==2){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==3){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==4){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                               foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==5){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==6){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                              <td><?php if($inicio==8 and $cont<31){$dia=$cont+=1; echo $dia;
+                                foreach ($diciembreFechaR as $keyR => $valueR) {
+                                    
+                                  if ($dia==$valueR) {
+                                    if ($_SESSION["idRol"]==3) {
+                                    echo "<br>";
+                                    echo "Retención: ".$diciembreDigitoR[$keyR];
+                                  }
+                                    foreach ($diciembreDigitoR[$keyR] as $key => $value) {
+                                      echo "<br>";
+                                      echo "Retención: ".$value;
+                                    }
+
+                                  }
+                              }
+                              foreach ($diciembreFechaI as $keyE => $valueE) {
+                                    
+                                  if ($dia==$valueE) {
+                                    foreach ($diciembreDigitoI[$keyE] as $key => $value) {
+                                      echo "<br>";
+                                      echo "IVA:".$value;
+                                    }
+
+
+                                  }
+                              }};if($inicio==7){ echo $seguir; $cont=$seguir;$inicio=8;}?></td>
+                            </tr>
+                            <?php $inicio=8;} ?>
+                          </tbody>
+                        </table>
+                        </div>
+                      </div>
+
+                    
+
+                    </div>
+
+                </div>
+                
+</div>
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- <script src="assets/bundles/fullcalendar/fullcalendar.min.js"></script> -->

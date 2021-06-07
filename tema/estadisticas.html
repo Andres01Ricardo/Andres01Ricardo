@@ -1,0 +1,356 @@
+<?php
+
+  require_once("class/estadisticas.php"); 
+  date_default_timezone_set('America/bogota');
+  // print_r('Antes de');
+
+ 
+ ?>
+ 
+
+
+        <div class="section-body">
+         
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-3">
+              <div class="card">
+                <center><label>Clientes por publicidad</label></center>
+                <canvas id="grafica" ></canvas>
+              </div>
+            </div>
+             <div class="col-lg-6 col-md-6 col-sm-3">
+              <div class="card">
+                <center><label>Clientes por encargo</label></center>
+                <canvas id="graficaEmpleados" ></canvas>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-3">
+              <div class="card">
+                <canvas id="grafica3" ></canvas>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-3">
+              <div class="card">
+                <canvas id="grafica4" ></canvas>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-3">
+              <div class="card">
+                <canvas id="grafica5" ></canvas>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-3">
+              <div class="card">
+                <canvas id="grafica6" ></canvas>
+              </div>
+            </div>
+          </div> 
+        </div>
+    
+
+
+<?php 
+
+  // require_once("class/estadisticas.php"); 
+
+$oEstadistica1=new Estadistica(); 
+$aEstadisticaProcedencia=$oEstadistica1->getEstadisticaProcedencia();
+$oEstadistica2=new Estadistica(); 
+$aEncargadoClientes=$oEstadistica2->getEncargadoClientes($_SESSION["idEmpresa"]);
+
+  // print_r($aEstadisticaProcedencia);
+  $label="";
+  $datos="";
+
+  foreach($aEstadisticaProcedencia as $row){
+    $label= $label."'".$row['nombre']."',";
+    $datos =$datos.$row['total'].",";
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+
+// print_r($label);
+// print_r($datos);
+  $label2="";
+  $datos2="";
+
+  foreach($aEncargadoClientes as $row2) {
+    $label2= $label2."'".$row2['empleado']."',";
+    $datos2 =$datos2.$row2['total'].",";
+
+  }
+  $label2 = rtrim($label2,",");
+  $datos2 = rtrim($datos2,",");
+
+
+$oEstadistica3=new Estadistica(); 
+$aNegocioMesG=$oEstadistica3->getNegociosGanadosMeses($_SESSION["idEmpresa"]);
+unset($oEstadistica2);
+
+  $label3="";
+  $datos3="";
+
+  foreach($aNegocioMesG as $rowg){
+    $label3= $label3."'".$rowg['fecha']."',";
+    $datos3 =$datos3.$rowg['total'].",";
+  }
+  $label3 = rtrim($label3,",");
+  $datos3 = rtrim($datos3,",");
+
+$oEstadistica4=new Estadistica(); 
+$aNegocioMesP=$oEstadistica4->getNegociosPerdidosMeses($_SESSION["idEmpresa"]);
+unset($oEstadistica2);
+
+
+  $label4="";
+  $datos4="";
+
+  foreach($aNegocioMesP as $rowp){
+    $label4= $label4."'".$rowp['fecha']."',";
+    $datos4 =$datos4.$rowp['total'].",";
+  }
+  $label4 = rtrim($label4,",");
+  $datos4 = rtrim($datos4,",");
+
+
+
+
+
+$oEstadistica5=new Estadistica(); 
+$aNegocioMesGd=$oEstadistica5->getNegociosGanadosdia($_SESSION["idEmpresa"]);
+unset($oEstadistica5);
+
+  $label5="";
+  $datos5="";
+
+  foreach($aNegocioMesGd as $rowgd){
+    $label5= $label5."'".$rowgd['fecha']."',";
+    $datos5 =$datos5.$rowgd['total'].",";
+  }
+  $label5 = rtrim($label5,",");
+  $datos5 = rtrim($datos5,",");
+
+
+
+
+
+  $oEstadistica6=new Estadistica(); 
+$aNegocioMesPd=$oEstadistica6->getNegociosPerdidosdia($_SESSION["idEmpresa"]);
+unset($oEstadistica6);
+
+
+  $label6="";
+  $datos6="";
+
+  foreach($aNegocioMesPd as $rowpd){
+    $label6= $label6."'".$rowpd['fecha']."',";
+    $datos6 =$datos6.$rowpd['total'].",";
+  }
+  $label6 = rtrim($label6,",");
+  $datos6 = rtrim($datos6,",");
+
+
+
+?>
+ 
+
+
+
+
+ 
+<script>
+   let miCanvas = document.getElementById("grafica").getContext("2d");
+   var label= [<?php echo $label ?>];
+   var datos= [<?php echo $datos ?>];
+   if (label.length==0) {
+    label=["Todos tipos publicidad"];
+    datos[0];
+   }
+   
+   var chart= new Chart(miCanvas,{
+      type:"pie",
+      data:{
+        labels:label,
+        datasets:[
+          {
+            label:"Procedencia publicidad",
+            backgroundColor:[
+            "rgb(58, 168, 255)",
+            "rgb(255, 131, 121)",
+
+            "rgb(150,255,192)",
+            "rgb(33,255,233)",
+            "rgb(252,255,33)",
+
+            
+            "rgb(94,255,65)",
+            "rgb(255,94,65)",
+            "rgb(255, 99, 132)",
+            
+            "rgb(255, 206, 86)",
+            "rgb(75, 192, 192)",
+            "rgb(153, 102, 255)",
+            "rgb(255, 159, 64)"
+            ],
+            data:datos
+          }
+        ]
+      }
+   });
+   let miCanvas2 = document.getElementById("graficaEmpleados").getContext("2d");
+   var label2= [<?php echo $label2 ?>];
+   var datos2= [<?php echo $datos2 ?>];
+   
+   var chart2= new Chart(miCanvas2,{
+
+      type:"bar",
+      data:{
+        labels:label2,
+        datasets:[
+          {
+            label:'Clientes por encargados',
+            data:datos2,
+            backgroundColor:[
+            "rgba(255,94,65,0.7)",
+            "rgba(33,255,250,0.7)",
+            "rgba(157,33,255,0.7)",
+            "rgba(255, 99, 132,0.7)",
+            "rgba(54, 162, 235,0.7)",
+            "rgba(255, 206, 86,0.7)",
+            "rgba(75, 192, 192,0.7)",
+            "rgba(153, 102, 255,0.7)",
+            "rgba(255, 159, 64,0.7)"
+            ],
+
+          }
+        ]
+      },
+      options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+        
+    }
+   });
+
+   let miCanvas3 = document.getElementById("grafica3").getContext("2d");
+   var label3= [<?php echo $label3 ?>];
+   var datos3= [<?php echo $datos3 ?>];
+
+   var stackedLine = new Chart(miCanvas3, {
+    type: 'line',
+    data:{
+      
+      datasets:[{label:"Ventas ganadas por meses",
+        data: datos3,
+        borderColor:"rgb(150,255,192)",
+        backgroundColor:"rgba(150,255,192,0.4)",
+        
+        lineTension: 0.5,
+        order:1,
+        pointBorderWidth:8
+      }],
+      labels:label3
+      
+    },
+    
+    options: {
+        scales: {
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+  });
+
+   let miCanvas4 = document.getElementById("grafica4").getContext("2d");
+   var label4= [<?php echo $label4 ?>];
+   var datos4= [<?php echo $datos4 ?>];
+
+   var stackedLine = new Chart(miCanvas4, {
+    type: 'line',
+    data:{
+      labels:label4,
+      datasets:[{label:"Ventas perdidas por meses",
+        data: datos4,
+        
+        borderColor:"rgb(255, 91, 91)",
+        backgroundColor:"rgba(255, 0, 0,0.1)",
+        lineTension: 0.5,
+        pointBorderWidth:8
+      }]
+      
+    },
+    
+    options: {
+        scales: {
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+  });
+
+
+   let miCanvas5 = document.getElementById("grafica5").getContext("2d");
+   var label5= [<?php echo $label5 ?>];
+   var datos5= [<?php echo $datos5 ?>];
+
+   var stackedLine = new Chart(miCanvas5, {
+    type: 'line',
+    data:{
+      labels:label5,
+      datasets:[{label:"Ventas ganadas por día",
+        data: datos5,
+        
+        borderColor:"rgb(150,255,192)",
+        backgroundColor:"rgba(150,255,192,0.4)",
+        lineTension: 0.5,
+        pointBorderWidth:8
+      }]
+      
+    },
+    
+    options: {
+        scales: {
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+  });
+
+
+   let miCanvas6 = document.getElementById("grafica6").getContext("2d");
+   var label6= [<?php echo $label6 ?>];
+   var datos6= [<?php echo $datos6 ?>];
+
+   var stackedLine = new Chart(miCanvas6, {
+    type: 'line',
+    data:{
+      labels:label6,
+      datasets:[{label:"Ventas perdidas por día",
+        data: datos6,
+        
+        borderColor:"rgb(255, 91, 91)",
+        backgroundColor:"rgba(255, 0, 0,0.1)",
+        lineTension: 0.5,
+        pointBorderWidth:8
+      }]
+      
+    },
+    
+    options: {
+        scales: {
+            yAxes: [{
+                stacked: true
+            }]
+        }
+    }
+  });
+ </script>
+

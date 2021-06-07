@@ -1,0 +1,734 @@
+<?php 
+
+require_once("class/facturaventa.php"); 
+
+require_once("class/clientes.php"); 
+
+
+
+$oClientes=new Clientes();
+
+$oFactura=new FacturaVenta(); 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("factura_venta","idFacturaVenta",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+
+$aEmpresa=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("cliente","idCliente",$aDatos["idCliente"]); 
+
+$aCliente=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oLista = new Lista('factura_venta_item');
+
+$oLista->setFiltro("idFacturaVenta","=",$id);
+
+$aItems=$oLista->getLista();
+
+unset($oLista);
+
+
+$oLista = new Lista('factura_venta_deduccion');
+
+$oLista->setFiltro("idFacturaVenta","=",$id);
+
+$aDeduccion=$oLista->getLista();
+
+unset($oLista);
+
+
+$oLista = new Data('factura_venta_gestion',"idFacturaVenta",$id);
+
+$aGestion=$oLista->getDatos();
+
+unset($oLista);
+
+$aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos["idEmpresa"]));
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+  .no-producto{
+
+    width: calc(100% - 18px) !important;
+
+    display: inline-block;
+
+  }
+
+</style>
+
+
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Factura de venta</li>
+
+          <li class="breadcrumb-item">Editar factura</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+                  <input type="hidden" name="datos[idFactura]" value="<?php echo $id; ?>">
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empresa:</label>
+
+                        <input type="text" class="form-control mayusculas" value="<?php echo $aEmpresa['razonSocial']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <?php } ?>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha registro:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaRegistro']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha factura:</label>
+
+                        <input type="text" class="form-control datepicker" name="datos[fechaFactura]" id="datos[fechaFactura]" value="<?php echo $aDatos['fechaFactura']; ?>" required readonly>
+                        
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                          <label class="negrita">N° Factura:</label>
+
+                          <input type="text" class="form-control mayusculas" name="datos[nroFactura]" id="datos[nroFactura]" value="<?php echo $aDatos['nroFactura']; ?>" placeholder="N° Factura" required >
+                          
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                          <label class="negrita">Cliente:</label>
+
+                          <!-- <input type="text" class="form-control mayusculas" name="datos[idCliente]" id="datos[idCliente]" value="<?php echo $aCliente['razonSocial']; ?>" required readonly> -->
+                          <select class="form-control select2 mayusculas" name="datos[idCliente]" id="datos[idCliente]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aClientes as $iCliente){ ?>
+
+                          <option <?php if($aCliente['idCliente']==$iCliente['idCliente']){echo 'selected';} ?> value="<?php echo $iCliente["idCliente"]; ?>"><?php echo $iCliente["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select>
+                          <!-- <select class="form-control select2 mayusculas" name="datos[idCliente]" id="datos[idCliente]" required>
+
+                            <option value="">Seleccione una opción</option>
+
+                            <?php foreach($aClientes as $iCliente){ 
+                              $select=""; 
+
+                            if($aDatos['idCliente']==$iCliente["idCliente"]){
+
+                              $select="selected"; 
+
+                            }
+                            ?>
+
+                            <option <?php echo $select; ?> value="<?php echo $iCliente["idCliente"]; ?>"><?php echo $iCliente["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select> -->
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Factura<span class="requerido">*</span>:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Fecha vencimiento:</label>
+
+                        <input type="text" class="form-control datepicker" name="datos[fechaVencimientoFactura]" id="datos[fechaVencimientoFactura]" value="<?php echo $aDatos['fechaVencimiento']; ?>" required readonly>
+                        
+
+                      </div>
+                    </div>
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Detalles Factura</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Productos</th>
+
+                            <th>Descripción</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Unidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Subtotal</th>
+
+                            <th>Iva(%)</th>
+
+                            <th>Total</th>
+
+                            
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aItems as $index => $item){
+
+                            $oItem=new Data("unidad","idUnidad",$item["idUnidad"]); 
+
+                            $aUnidad=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+                           ?>
+
+                            <tr class="filaItem">
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $item["detalleProducto"]; ?></td>
+
+                              <td><?php echo $item["descripcion"]; ?></td>
+
+                              <td><?php echo $item["cantidad"]; ?></td>
+
+                              <td><?php echo $aUnidad["nombre"]; ?></td>
+
+                             <!--  <td style="text-align: right;"><?php echo "$".number_format($item["valorUnitario"],0,".",","); ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["subtotal"],0,".",","); ?></td>
+
+                              <td style="text-align: right;"><?php echo $item["iva"]."%"; ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["total"],0,".",","); ?></td> -->
+
+                               <td style="text-align: right;"><?php echo "$".number_format($item["valorUnitario"],2,",","."); ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["subtotal"],2,",","."); ?></td>
+
+                              <td style="text-align: right;"><?php echo $item["iva"]."%"; ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["total"],2,",","."); ?></td>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                        <tfoot>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[subtotal]" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["subtotal"],2,",","."); ?>" readonly ></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["descuento"],2,",","."); ?>' readonly ></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["iva"],2,",","."); ?>' readonly ></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[totalFactura]" id="totalFactura" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["total"],2,",","."); ?>' readonly ></td>
+
+                          </tr>
+
+                        </tfoot>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+                  <div class="row">
+
+                      <div class=" col-md-3 ">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Tipo deducción<span class="requerido">*</span>:</label>
+
+                            <select class="form-control mayusculas" id="tipoDeduccion">
+
+                            <option value="">Seleccione una opción</option>
+
+                            <option value="3">ARL</option>
+
+                            <option value="4">Otros descuentos autorizados</option>
+
+                            <option value="2">RETE ICA</option>
+
+                            <option value="1">Retención</option>
+
+                            <option value="5">Retención salarios</option>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3 ocultar concepto-select">
+
+                        <div class="form-group">
+
+                            <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+
+                            <select class="form-control" name="conceptoSelect" id="conceptoSelect">
+
+                            <option value="">Seleccione una opción</option>
+
+                            
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 concepto-texto">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Concepto<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="conceptoText" id="conceptoText" >
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-2 ocultar baseimpuestos">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Base Impuestos<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda decimales" name="baseImpuestos" id="baseImpuestos">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 valor">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Valor<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda " name="valor" id="valor">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 boton-agregar">
+
+                        <div class="form-group text-right">
+
+                            <label class="negrita d-block">&nbsp;</label>
+
+                            <a class="btn btn-success mr-1" id="btnAgregar">Agregar</a>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  <div class="row">
+
+                      <div class="col-md-12 col-lg-12 table-responsive">
+
+                        <table class="table table-striped mayusculas centrar" id="tableDeducciones">
+
+                          <thead>
+
+                            <tr>
+
+                              <th>Tipo Deducción</th>
+
+                              <th>Descripción</th>
+                              
+                              <th>Base Impuestos</th>
+
+                              <th>Valor</th>
+
+                              <!-- <th class="text-center" style="width: 50px">-</th> -->
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+                            <?php foreach($aDeduccion as $key=>$deduccion){ 
+
+                            switch ($deduccion["tipoDeduccion"]) {
+
+                                case '1':
+
+                                  $tipodeduccion="Retención"; 
+
+                                  break;
+
+                                case '2':
+
+                                  $tipodeduccion="RETE ICA"; 
+
+                                  break;
+
+                                case '3':
+
+                                  $tipodeduccion="ARL"; 
+
+                                  break;
+
+                                case '4':
+
+                                  $tipodeduccion="Otros descuentos autorizados"; 
+
+                                  break;
+
+                                case '5':
+
+                                  $tipodeduccion="Retención salarios"; 
+
+                                  break;
+
+                                default:
+
+                                  # code...
+
+                                  break;
+
+                                }
+
+                                $oLista = new Lista('retencion');
+
+                                $oLista->setFiltro("tipo","=",$deduccion["tipoDeduccion"]);
+
+                                $oLista->setFiltro("estado","=",1);
+
+                                $aRetencion=$oLista->getLista();
+
+                                unset($oLista);
+                                $totalDeduccion+=$deduccion["valor"];
+                            ?>
+                            <tr>
+                              <input type="hidden" name="baseImpuestos[<?php echo $key?>][idFacturaVentaDeduccion]" value="<?php echo $deduccion['idFacturaVentaDeduccion'];?>">
+                              <td><div class="form-group">
+
+                            <label class="negrita">Tipo deducción<span class="requerido">*</span>:</label>
+
+                            <select class="form-control mayusculas tipoDeduccion" id="tipoDeduccion[<?php echo $key?>][tipoDeduccion]" name="baseImpuestos[<?php echo $key?>][tipoDeduccion]">
+
+                            <option value="">Seleccione una opción</option>
+                          
+                            <option <?php if($deduccion["tipoDeduccion"]==1){ echo 'selected';} ?> value="1">Retención</option>
+                            <option <?php if($deduccion["tipoDeduccion"]==2){ echo 'selected';} ?> value="2">RETE ICA</option>
+                            <option <?php if($deduccion["tipoDeduccion"]==3){ echo 'selected';} ?> value="3">ARL</option>
+                            <option <?php if($deduccion["tipoDeduccion"]==4){ echo 'selected';} ?> value="4">Otros descuentos autorizados</option>
+                            <option <?php if($deduccion["tipoDeduccion"]==5){ echo 'selected';} ?> value="5">Retención salarios</option>
+
+                          </select>
+
+                        </div></td>
+                              <!-- <td><?php echo $deduccion["concepto"]; ?></td> -->
+                              <td><div class="form-group">
+
+                            <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+
+                            <select class="form-control conceptoSelect" name="baseImpuestos[<?php echo $key?>][conceptoSelect]" id="conceptoSelect[<?php echo $key?>]">
+
+                            <option value="">Seleccione una opción</option>
+                            <?php foreach($aRetencion as $item=>$retencion){ ?>
+                            <option <?php if($deduccion["idConcepto"]==$retencion["idRetencion"]){ echo 'selected';
+                          $cTexto=$retencion['valor'].'% - '.$retencion['descripcion'];} ?> porcentaje="<?php echo $retencion['valor']?>" value="<?php echo $retencion['idRetencion']?>"><?php echo $retencion['valor'];?>% - <?php echo $retencion['descripcion']?></option>
+                          <?php } ?>
+                            <input type="hidden" name="baseImpuestos[<?php echo $key?>][conceptoSelectTexto]" id="conceptoSelectTexto[<?php echo $key?>]" value="<?php echo $cTexto?>">
+
+                          </select>
+
+                        </div></td>
+                              <td><input type="text" name="baseImpuestos[<?php echo $key?>][baseImpuestos]" id="baseImpuestos[<?php echo $key?>]" class="form-control moneda decimales baseImpuestos" value='<?php echo "$".number_format($deduccion["baseImpuestos"],2,",","."); ?>' </td>
+                              <td><input type="text" name="baseImpuestos[<?php echo $key?>][valorDeduccion]" id="valor[<?php echo $key?>]" class="form-control moneda valorDeduccion valorSumar" value='<?php echo "$".number_format($deduccion["valor"],2,",","."); ?>' readonly></td>
+                              
+                            </tr>
+                            <?php } ?>
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total Deducciones:</label>
+
+                            <input type="text" class="form-control mayusculas moneda" name="datos[totalDeduccion]" id="totalDeduccion" value='<?php echo "$".number_format($totalDeduccion,2,",",".");?>' readonly>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Amortización:</label>
+
+                            <input type="text" class="form-control mayusculas moneda numero" name="datos[amortizacion]" id="amortizacion" value='<?php echo "$".number_format($aGestion["valorAmortizacion"],2,",",".");?>' required>
+
+                        </div>
+
+                      </div>
+                      <?php 
+                            if($aGestion["totalPagar"]==0){
+                              $totalPagar=$aDatos["total"]-$totalDeduccion;
+                            }
+                            if($aGestion["totalPagar"]!=0){
+                              $totalPagar=$aGestion["totalPagar"];
+                            }
+                            ?>
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total a Pagar:</label>
+
+                            <input type="text" class="form-control mayusculas moneda" name="datos[totalPago]" id="totalPago" value='<?php echo "$".number_format($totalPagar,2,",","."); ?>' readonly required>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    
+                      <?php if($aDatos['estado']==3){ ?>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Fecha Pago Real:</label>
+
+                            <input type="text" class="form-control mayusculas" value="<?php echo $aDatos['fechaPagoReal']; ?>" readonly >
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Comprobante de ingreso:</label>
+
+                            <input type="text" class="form-control mayusculas" value="<?php echo $aGestion['comprobanteIngreso']; ?>" readonly >
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <?php } }?>
+                      
+
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+
+

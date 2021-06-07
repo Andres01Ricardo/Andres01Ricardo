@@ -1,0 +1,80 @@
+<?php 
+require_once("class/clientes.php"); 
+
+$oClientes=new Clientes(); 
+
+$oControl=new Control(); 
+
+$aClientes=$oClientes->getClientesEmpresa();
+
+?>
+<style type="text/css">
+	.picker__box{
+       background-color: #0000;
+}
+</style>
+<?php 
+
+
+require_once("class/facturacompra.php"); 
+
+$oFactura=new FacturaCompra(); 
+
+$oControl=new Control(); 
+
+$aProveedor=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idEmpresa"]));
+
+
+?>
+<style type="text/css">
+  .picker__box{
+       background-color: #0000;
+}
+</style>
+<div class="card card-body">
+  <h3>Cuentas no pagas a proveedores</h3>
+</div>
+  <hr>
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">ESCOJA LOS FILTROS</h3><br>
+            <form method="POST" action="saldoproveedores">
+              <div class="swal-content">
+          <label class="negrita">PROVEEDOR:</label>
+          
+          <div >
+            <select class=" form-control" name="proveedor" id="proveedor" required>
+              <option value="0">TODOS</option>
+              <?php foreach($aProveedor as $index => $iProveedor){ ?>
+              <option value="<?php echo $iProveedor['idProveedor']; ?>"><?php echo $iProveedor['razonSocial']; ?></option>
+              <?php } ?>
+            </select>
+          </div>
+         
+                  <br>
+
+        <div class="form-row align-items-center">
+      <div class="col-auto my-1">
+        <label class="negrita">Factura desde: </label>
+      </div>
+
+      <div class="col-auto my-1">
+ 
+        <input type="date" class="form-control" name="periodoDesde" id="periodoDesde"  required>
+        
+      </div>
+      <div class="col-auto my-1">
+        <label class="negrita">Sin pagar hasta: </label>
+      </div>
+      <div class="col-auto my-1">
+        <input type="date" class="form-control" name="periodoHasta" id="periodoHasta"  required>
+      </div>
+    </div>
+        </div>
+        <div class="swal-footer">
+          <button type="submit" class="btn btn-light" id="btnFiltrar">FILTRAR</button>
+        </div>
+      </form>
+  </div>
+</div>

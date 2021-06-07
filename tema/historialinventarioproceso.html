@@ -1,0 +1,130 @@
+
+<?php 
+
+include("functions/inventario/listarinventario.php") ; 
+
+
+
+if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
+  
+
+
+  $idEmpresa=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+    if($idEmpresa==""){
+
+      echo '<script>window.history.back()</script>'; 
+
+    }
+  }else if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4){
+
+  $idEmpresa= $_SESSION["idEmpresa"];
+
+}
+
+
+
+$oInventarios = new Inventario();
+$aInventario =$oInventarios->getHistorialInventarioProceso(array("idEmpresa"=>$idEmpresa));
+
+?>
+
+      <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Historial inventarios</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+                      
+
+                      <table class="table table-striped mayusculas centrar" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Insumo/Producto</th>
+
+                            <th>Tipo movimiento</th>
+
+                            <th>Tipo inventario</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Cantidad anterior</th>
+
+                            <th>Cantidad actual</th>
+
+                            <th>Motivo</th>
+
+                            <th>Usuario registra</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+
+                          <?php foreach($aInventario as $index => $iInventario){   ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iInventario["producto"]; ?></td>
+
+                              <td><?php 
+                                if($iInventario["tipoMovimiento"]==1){
+
+                                echo 'Agrego inventario'; 
+                              }
+                              else if($iInventario["tipoMovimiento"]==2){
+
+                                echo 'Desconto inventario'; 
+                              }
+                                ?></td>
+
+                              <td><?php 
+                                if($iInventario["tipoInventario"]==1){
+
+                                echo 'INSUMO'; 
+                              }
+                              else if($iInventario["tipoInventario"]==2){
+
+                                echo 'PRODUCTO FINAL'; 
+                              }
+                             
+                              ?></td>
+
+                              <td><?php echo  $iInventario["fechaRegistro"]; ?></td>
+
+                              <td><?php echo  $iInventario["cantidadAnterior"]; ?></td>
+
+                              <td><?php echo  $iInventario["cantidadActual"]; ?> </td>
+                              <td><?php echo  $iInventario["motivo"]; ?></td>
+                              <td>
+                                <?php echo  $iInventario["nombreUsuario"].' '.$iInventario["apellidoUsuario"]; ?>
+                              </td>
+                            </tr>
+
+                            <?php } ?>
+
+                        </tbody>
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>

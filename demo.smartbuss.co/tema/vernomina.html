@@ -1,0 +1,362 @@
+<?php 
+$oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+  echo '<script>window.history.back()</script>'; 
+}
+$decrip["cadena"]=$id; 
+$id=$oControl->desencriptar($decrip); 
+
+require_once("class/nomina.php"); 
+
+$oNomina=new Nomina();
+
+$aData["idNomina"]=$id;  
+$aNomina=$oNomina->getNomina($aData)[0];
+
+$oLista=new Lista("nomina_empleado"); 
+$oLista->setFiltro("idNomina","=",$id); 
+$aLista=$oLista->getLista(); 
+unset($oItem);
+
+$meses[1]="Enero"; 
+$meses[2]="Febrero"; 
+$meses[3]="Marzo"; 
+$meses[4]="Abril"; 
+$meses[5]="Mayo"; 
+$meses[6]="Junio"; 
+$meses[7]="Julio"; 
+$meses[8]="Agosto"; 
+$meses[9]="Septiembre"; 
+$meses[10]="Octubre"; 
+$meses[11]="Noviembre"; 
+$meses[12]="Diciembre"; 
+
+$aFiltroS["idNomina"]=$id; 
+$aFiltroS["tipoConcepto"]=1; 
+$aSaludEmpresa=$oNomina->getTotalParafiscales($aFiltroS);
+
+$saludEmpleado=0; 
+$saludEmpleador=0; 
+foreach($aSaludEmpresa as $iSalud){
+  if($iSalud["tipoDeduccion"]==1){
+    $saludEmpleado+=$iSalud["valor"]; 
+  }else{
+    $saludEmpleador+=$iSalud["valor"];
+  }
+}
+$aFiltroP["idNomina"]=$id; 
+$aFiltroP["tipoConcepto"]=2; 
+$aPensionEmpresa=$oNomina->getTotalParafiscales($aFiltroP);
+
+$pensionEmpleado=0; 
+$pensionEmpleador=0; 
+foreach($aPensionEmpresa as $iPension){
+  if($iPension["tipoDeduccion"]==1){
+    $pensionEmpleado+=$iPension["valor"]; 
+  }else{
+    $pensionEmpleador+=$iPension["valor"];
+  }
+}
+
+$aFiltroA["idNomina"]=$id; 
+$aFiltroA["tipoConcepto"]=3; 
+$aFiltroA["tipoDeduccion"]=2; 
+$aArlEmpresa=$oNomina->getTotalParafiscales($aFiltroA)[0];
+
+$aFiltroC["idNomina"]=$id; 
+$aFiltroC["tipoConcepto"]=4; 
+$aFiltroC["tipoDeduccion"]=2; 
+$aCajaEmpresa=$oNomina->getTotalParafiscales($aFiltroC)[0];
+
+$valorNomina=0; 
+foreach($aLista as $index=> $iLista){
+  $valorNomina+=$iLista["valorPagar"]; 
+}
+?>
+<style type="text/css">
+  input[readonly], textarea[readonly]{
+    background-color: #FFFF !important;
+    text-transform: uppercase;
+  }
+</style>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Nomina</li>
+          <li class="breadcrumb-item">Ver Nomina</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Empresa:</label>
+                        <input type="text" class="form-control mayusculas" value="<?php echo $aNomina['razonSocial']; ?>" required readonly>
+                      </div>
+                    </div>
+                    <?php } ?>
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Fecha registro:</label>
+                        <input type="text" class="form-control " value="<?php echo $aNomina['fechaRegistro']; ?>" required readonly>
+                      </div>
+                    </div>
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Periodo Pago:</label>
+                        <input type="text" class="form-control " value="<?php echo $meses[$aNomina["periodoMes"]]." de ".$aNomina["periodoAnio"]; ?>" required readonly>
+                      </div>
+                    </div>
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Total Nomina Empleados:</label>
+                        <input type="text" class="form-control " value="<?php echo "$".number_format($valorNomina,0,".",","); ?>" required readonly>
+                      </div>
+                    </div>
+                  </div>
+                  <?php if($aNomina["linkPlanilla"]!=""){ ?>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Ver Link Planilla:</label>
+                        <a href="<?php echo $aNomina['linkPlanilla']; ?>" style='display:block;' target="_blank">LINK</a>
+                      </div>
+                    </div>
+                  </div>
+                  <?php } ?>
+                  <div class="card-header">
+                    <h4>Pago Seguridad Social Empleador</h4>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Salud:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($saludEmpleador,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Pensión:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($pensionEmpleador,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago ARL:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($aArlEmpresa["valor"],0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Caja Compensación:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($aCajaEmpresa["valor"],0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-header">
+                    <h4>Pago Seguridad Social Empleados</h4>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Salud:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($saludEmpleado,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Pensión:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($pensionEmpleado,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-header">
+                    <h4>Nomina General</h4>
+                  </div>
+                  <?php 
+                  $saludGeneral=$saludEmpleador+$saludEmpleado; 
+                  $pensionGeneral=$pensionEmpleador+$pensionEmpleado; 
+
+                  $totalNomina=$saludGeneral+$pensionGeneral+$aCajaEmpresa["valor"]+$aArlEmpresa["valor"]+$valorNomina; 
+                  ?>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Salud Nomina:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($saludGeneral,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Pensión Nomina:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($pensionGeneral,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago ARL Nomina:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($aArlEmpresa["valor"],0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Total Pago Caja Compensación Nomina:</label>
+                        <input type="text" class="form-control " value='<?php echo "$".number_format($aCajaEmpresa["valor"],0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-9">
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group text-rigth">
+                        <label class="negrita">Total Nomina:</label>
+                        <input type="text" class="form-control text-rigth" value='<?php echo "$".number_format($totalNomina,0,".",","); ?>' required readonly>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-header">
+                    <h4>Detalles </h4>
+                  </div>
+                  <div class="card-body">
+                   <div id="accordion">
+                      <?php foreach($aLista as $index=> $iLista){ 
+                        $oItem=new Data("empleado","idEmpleado", $iLista["idEmpleado"]); 
+                        $aEmpleado=$oItem->getDatos(); 
+                        unset($oItem); 
+
+                        $oLista=new Lista("nomina_empleado_adiciones"); 
+                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+                        $aAdiciones=$oLista->getLista(); 
+                        unset($oItem);
+
+                        $oLista=new Lista("nomina_empleado_parafiscales"); 
+                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+                        $oLista->setFiltro("tipoDeduccion","=",1); 
+                        $aLeyes=$oLista->getLista(); 
+                        unset($oItem);
+
+                        $oLista=new Lista("nomina_empleado_deducciones"); 
+                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+                        $aDeducciones=$oLista->getLista(); 
+                        unset($oItem);
+                        ?>
+                      <div class="accordion">
+                        <div class="accordion-header" role="button" data-toggle="collapse" data-target="#panel-body-<?php echo $index; ?>"
+                          aria-expanded="true">
+                          <h4 style="text-transform: capitalize;"><?php echo $aEmpleado["numeroDocumento"]." - ".$aEmpleado["nombre"]." ".$aEmpleado["apellido"]; ?></h4>
+                        </div>
+                        <div class="accordion-body collapse show" id="panel-body-<?php echo $index; ?>" data-parent="#accordion">
+                          <table class="table table-striped mayusculas">
+                            <tbody>
+                              <tr>
+                                <td>Salario:</td>
+                                <td><?php echo "$".number_format($iLista["salarioEmpleado"],0,".",","); ?></td>
+                                <td>Valor a Pagar:</td>
+                                <td class="negrita"><?php echo "$".number_format($iLista["valorPagar"],0,".",","); ?></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <?php if(count($aAdiciones)>0){ ?>
+                          <p class="negrita">Devengado</p>
+                          <table class="table table-striped mayusculas">
+                            <thead>
+                              <tr>
+                                <th class="tddashboard" style="width: 40%">Concepto</th>
+                                <th class="tddashboard" style="width: 10%">Valor</th>
+                                <th class="tddashboard" style="width: 40%">Concepto</th>
+                                <th class="tddashboard" style="width: 10%">Valor</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <?php $i=0;  foreach($aAdiciones as $indexA=>$iAdiciones){ ?>
+                                <?php if($i==0){  ?>
+                                <tr>
+                                <?php } ?>
+                                <td class="tddashboard" style="width: 40%"><?php echo $iAdiciones["concepto"]; ?></td>
+                                <td class="tddashboard" style="width: 10%"><?php echo "$".number_format($iAdiciones["valor"],0,".",","); ?></td>
+                                <?php $i++; if($i==2||count($aAdiciones)==($indexA+1)){ $i=0;  ?>
+                                </tr>
+                                <?php } ?>
+                              <?php } ?>
+                            </tbody>
+                          </table>
+                          <?php } ?>
+                          <?php if(count($aLeyes)>0){ ?>
+                          <p class="negrita">Deducciones de ley</p>
+                          <table class="table table-striped mayusculas">
+                            <thead>
+                              <tr>
+                                <th class="tddashboard" style="width: 40%">Concepto</th>
+                                <th class="tddashboard" style="width: 10%">Valor</th>
+                                <th class="tddashboard" style="width: 40%">Concepto</th>
+                                <th class="tddashboard" style="width: 10%">Valor</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <?php $i=0;  foreach($aLeyes as $indexA=>$iDeduccion){ ?>
+                                <?php if($i==0){  ?>
+                                <tr>
+                                <?php } ?>
+                                <td class="tddashboard" style="width: 40%"><?php echo $iDeduccion["concepto"]; ?></td>
+                                <td class="tddashboard" style="width: 10%"><?php echo "$".number_format($iDeduccion["valor"],0,".",","); ?></td>
+                                <?php $i++; if($i==2||count($aLeyes)==($indexA+1)){ $i=0;  ?>
+                                </tr>
+                                <?php } ?>
+                              <?php } ?>
+                            </tbody>
+                          </table>
+                          <?php } ?>
+                          <?php if(count($aDeducciones)>0){ ?>
+                          <p class="negrita">Otras Deducciones</p>
+                          <table class="table table-striped mayusculas">
+                            <thead>
+                              <tr>
+                                <th class="tddashboard" style="width: 40%">Concepto</th>
+                                <th class="tddashboard" style="width: 10%">Valor</th>
+                                <th class="tddashboard" style="width: 40%">Concepto</th>
+                                <th class="tddashboard" style="width: 10%">Valor</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <?php $i=0;  foreach($aDeducciones as $indexA=>$iDeduccion){ ?>
+                                <?php if($i==0){  ?>
+                                <tr>
+                                <?php } ?>
+                                <td class="tddashboard" style="width: 40%"><?php echo $iDeduccion["concepto"]; ?></td>
+                                <td class="tddashboard" style="width: 10%"><?php echo "$".number_format($iDeduccion["valor"],0,".",","); ?></td>
+                                <?php $i++; if($i==2||count($iDeduccion)==($indexA+1)){ $i=0;  ?>
+                                </tr>
+                                <?php } ?>
+                              <?php } ?>
+                            </tbody>
+                          </table>
+                          <?php } ?>
+                        </div>
+                      </div>
+                      <?php } ?>
+                    </div>
+                  </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>
+

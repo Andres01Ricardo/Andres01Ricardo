@@ -1,0 +1,188 @@
+<?php 
+
+require_once("class/proveedores.php"); 
+
+
+
+$oProveedor=new Proveedores(); 
+
+
+
+$oControl=new Control(); 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  
+  $aProveedores=$oProveedor->getProveedoresEmpresa(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+}else{
+  
+  $aProveedores=$oProveedor->getProveedoresEmpresa();
+}
+
+
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Proveedores</li>
+
+          <li class="breadcrumb-item">Listar proveedores</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Lista de proveedores</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableProveedores">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Tipo Persona</th>
+
+                            <th>NIT</th>
+
+                            <th>Razón Social</th>
+
+                            <th>Residencia</th>
+
+                            <th>Dirección</th>
+
+                            <th>Telefono</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aProveedores as $index => $iProveedor){ 
+
+                            $digito=$iProveedor["tipoPersona"]==1?"":"-".$iProveedor["digitoVerificador"];
+
+                            $aEncript['cadena']=$iProveedor['idProveedor'];
+
+                            $id=$oControl->encriptar($aEncript);
+
+                            ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iProveedor["tipoPersona"]==1?'Persona Natural':'Persona Juridica'; ?></td>
+
+                              <td><?php echo $iProveedor["nit"].$digito; ?></td>
+
+                              <td><?php echo $iProveedor["razonSocial"]; ?></td>
+
+                              <td><?php 
+                                echo $iProveedor["ciudad"]." - ".$iProveedor["departamento"]." - ".$iProveedor["pais"]; ?></td>
+
+                              <td><?php echo $iProveedor["direccion"]; ?></td>
+
+                              <td><?php echo $iProveedor["telefono"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>verproveedor/<?php echo $id ?>"  data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-briefcase" style="color: #0B08FF;font-size: 22px;"></i></a>
+
+                                <a href="<?php echo $URL; ?>editarproveedor/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 22px;"></i></a>
+
+                                <?php if($_SESSION["idRol"]!=3){ ?>
+
+                                <a href="<?php echo $URL; ?>asociarproveedores/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Asociar empresas" c><i class="fas fa-sitemap" style="color: #A2D7FF;font-size: 22px;"></i></a>
+
+                                <?php } ?>
+
+                              </td>
+
+                                
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="settingSidebar">
+
+<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+
+</a> -->
+
+<div class="settingSidebar-body ps-container ps-theme-default">
+
+  <div class="fade show active" id="body-view">
+
+    
+
+  </div>
+
+</div>
+
+</div>
+

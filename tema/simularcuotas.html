@@ -1,0 +1,77 @@
+
+<?php
+$idEmpleado=$_POST["idEmpleado"];
+$cuotas = $_POST["cuotas"];
+$valorCredito=$_POST["valorSolicitado"];
+$tasaInteres=$_POST["tasaInteres"];
+$tasaInteresAnual=$tasaInteres *12;
+
+$oItem=new Data("empleado","idEmpleado",$idEmpleado); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+
+$porcentajeTasaInteres= $tasaInteres/100;
+$valorCuota = ($valorCredito*(($porcentajeTasaInteres)*(pow(1+$porcentajeTasaInteres,$cuotas))))/((pow(1+$porcentajeTasaInteres,$cuotas))-1);
+
+$montoTotalPagar=$valorCuota*$cuotas;
+$totalInteresesPagar = $montoTotalPagar - $valorCredito;
+
+$totalInteresesPagar=round($totalInteresesPagar);
+$montoTotalPagar=round($montoTotalPagar);
+?>
+
+<div class="card card-body">
+  <div style="background-color: #01A3FF; color: white"><h2>Caracteristicas del credito</h2></div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th></th>
+      <th>Numero de solicitud:</th>
+      <th>100</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Plazo en meses:</th>
+      <td><?php echo $cuotas ?></td>
+      <th>Valor solicitado:</th>
+      <td><?php echo "$".number_format($valorCredito,0,".",",") ?></td>
+    </tr>
+    <tr>
+      <th scope="row">Tasa de interes:</th>
+      <td><?php echo $tasaInteres; ?>%</td>
+      <th>Tasa de interes anual calculada:</th>
+      <td><?php echo $tasaInteresAnual; ?>%</td>
+    </tr>
+    <tr>
+      <th scope="row">Estado de la solicitud:</th>
+      <td>Pendiente</td>
+      <th>Nombre/Cedula:</th>
+      <td><?php echo $rows['nombre'].' '.$rows['apellido'];?> / <?php echo $rows['numeroDocumento']; ?></td>
+    </tr>
+    <tr>
+      <th scope="row">Monto a pagar mensualmente:</th>
+      <td><?php echo "$".number_format($valorCuota,0,".",","); ?></td>
+      <th>Monto total a pagar:</th>
+      <td><?php echo "$".number_format($montoTotalPagar,0,".",",") ?></td>
+    </tr>
+    <tr>
+      <th scope="row">Total de intereses a pagar:</th>
+      <td><?php echo "$".number_format($totalInteresesPagar,0,".",",") ?></td>
+      <th>Valor desembolso:</th>
+      <td><?php echo "$".number_format($valorCredito,0,".",",") ?></td>
+    </tr>
+  </tbody>
+</table>
+<div>
+  <form method="POST" action="./functions/nomina/guardasimulacionlibranza.php">
+    <input type="text" name="idEmpleado" id="idEmpleado" class="ocultar" value="<?php echo $idEmpleado;?>">
+    <input type="text" name="cuotas" id="cuotas" class="ocultar" value="<?php echo $cuotas; ?>">
+    <input type="text" name="valorCredito" id="valorCredito" class="ocultar" value="<?php echo $valorCredito;?>">
+    <input type="text" name="tasaInteres" id="tasaInteres" class="ocultar" value="<?php echo $tasaInteres;?>">
+    <button id="btnAceptarCuotas" type="submit" class="btn btn-success">ACEPTAR CUOTAS</button>
+  </form>
+  <a href="crearsolicitudlibranza" class="btn btn-danger">REGRESAR</a>
+</div>
+</div>

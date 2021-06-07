@@ -1,0 +1,23 @@
+<?php
+date_default_timezone_set("America/Bogota"); 
+$idLibranza=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+if(!isset($_SESSION)){ session_start(); }
+?>
+<div class="card card-body">
+	
+
+	<form enctype="multipart/form-data" id="frmGuardar">
+	  <div class="form-group">
+	    <h3 >A continuacion cargue la autorización de la libranza firmada por el empleado</h3><br><br>
+	    <input type="file" class="form-control-file" id="autorizacionLibranza" name="autorizacionLibranza">
+	    <input type="text" name="datos[idLibranza]" id="datos[idLibranza]" value="<?php echo $idLibranza; ?>" class="ocultar">
+	  </div>
+	  <button type="button" class="btn btn-success" id="btnCargar">CARGAR AUTORIZACION</button>
+	</form>
+</div>

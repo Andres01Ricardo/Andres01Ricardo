@@ -1,0 +1,68 @@
+<?php
+
+include("consultarremision.php");
+require_once("class/consultarremision.php"); 
+
+$oRemision=new Remision(); 
+$aRemision=$oRemision->getRemision($_SESSION["idEmpresa"]);
+unset($oRemision);
+?>
+
+<a href="crearremision" class="btn btn-info">Nueva remision</a>
+
+<br><br><br>
+<div class="card">
+	<table class="table-striped">
+	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
+	    <tr style="height: 50px;">
+	      <th scope="col"># cotización</th>
+	        <th scope="col">estado</th>
+	      <th scope="col">Fecha remision</th>
+	      <th scope="col">Sucursal Cliente</th>
+	      <th scope="col">Cliente</th>
+	      <th scope="col">Bodega</th>
+	      <th scope="col">Observaciones</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<?php foreach($aRemision as $index =>$remision){ ?>
+	    <tr style="text-align: center;">
+	      <th scope="row"><?php echo $remision['idRemision'];?></th>
+	      <td><?php if($remision['estado']==1){
+	      		echo 'Pendiente';
+	      	}
+	      	if($remision['estado']==2){
+	      		echo 'Aprobado';
+	      	}
+	      	if($remision['estado']==3){
+	      		echo 'Facturado';
+	      	}
+	      	?></td>
+		<td><?php echo $remision['fecha'];?></td> 
+	      
+	      <td><?php echo $remision['nombre'].' '.$remision['apellidos']; ?></td>
+	      <td><?php echo $remision['bodega'];?></td>
+	      <td><?php echo $remision['observaciones'];?></td> 
+	      <td>
+	      	<div class="btn-group">
+			  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Action
+			  </button> 
+			  <div class="dropdown-menu menucotizacion">
+			    <a class="dropdown-item lista-menucotizacion"  href="verremision/<?php echo $remision['idRemision'];?>">Ver detalle</a>
+			  	<div class="dropdown-divider"></div>
+			  	<a class="dropdown-item lista-menucotizacion"  href="functions/crm/eliminarremision.php?id=<?php echo $remision['idRemision'];?>">Eliminar</a>
+			    <div class="dropdown-divider"></div>
+			    <?php if($remision['estado']==1) {?>
+			    <a class="dropdown-item lista-menucotizacion"  href="functions/crm/aprobarcotizacion.php?id=<?php echo $remision['idRemision'];?>">Aprobar</a>
+			    <?php } if($remision['estado']==2) {?>
+			    <a class="dropdown-item lista-menucotizacion"  href="#">Facturar</a>
+			    <?php } ?>
+			  </div>
+			</div>
+	      </td>
+	    </tr>
+	   <?php } ?>
+	  </tbody>
+</table>
+</div>

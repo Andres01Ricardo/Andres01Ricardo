@@ -1,0 +1,61 @@
+<?php 
+
+require_once("class/facturaventa.php");
+
+$desde=$_POST['periodoDesde'];
+$hasta=$_POST['periodoHasta'];
+$cliente=$_POST['cliente'];
+$oSaldos=new FacturaVenta();
+if($cliente ==0){
+   
+
+  $aSaldos=$oSaldos->getSaldosClientes($_SESSION["idEmpresa"],$desde,$hasta);
+  unset($oSaldos);
+}else{ 
+
+  $aSaldos=$oSaldos->getSaldoCliente($_SESSION["idEmpresa"],$cliente,$desde,$hasta);
+  unset($oSaldos);
+
+  $oCliente = new Data("cliente","idCliente",$cliente);
+  $aCliente=$oCliente->getDatos();
+  unset($oCliente);
+}
+
+
+?>
+
+        <div class="card">
+          <div class="card-header">
+            <h4>SALDO TOTAL DE CLIENTES POR COBRAR</h4>
+          </div>
+            <div class="card-body">
+              <div class="col-lg-4 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                  <div class="card-icon l-bg-cyan imagen-cuenta">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="padding-20">
+                      <div class="text-right">
+                        <h3 class="font-light mb-0">
+                          <i class="ti-arrow-up text-success"></i> <?php 
+                         
+
+                          echo "$".number_format($aSaldos[0]["totalGeneral"],2,",","."); ?>
+                         
+                        </h3>
+                        <div><span class="text-muted">Desde: <?php echo $desde?> Hasta: <?php echo $hasta ?></span></div>
+                        <div><span class="text-muted">Cliente: <?php 
+                          if($cliente ==0){
+                          echo 'Todos los clientes';
+                        }else{
+                        echo $aCliente['razonSocial'];}?></span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a href="filtrarsaldoclientes" type="button" class="btn btn-primary">Nuevo filtro</a>
+            </div>
+          
+        </div>

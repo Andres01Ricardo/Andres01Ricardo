@@ -1,0 +1,176 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$oLista = new Lista('usuario');
+
+$oLista->setFiltro("idRol","IN","1,2,5,6,7,8,9,10,11,12,13,14,15,16,17");
+
+$aUsuario=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Usuarios</li>
+
+          <li class="breadcrumb-item">Crear usuario</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableUsers">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Nombres</th>
+
+                            <th>Apellidos</th>
+
+                            <th>N° Documento</th>
+
+                            <th>Correo</th>
+
+                            <th>Telefono</th>
+
+                            <th>Rol</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aUsuario as $index => $iUsuario){ 
+
+                            $oItem=new data("rol","idRol",$iUsuario["idRol"]); 
+
+                            $aRol=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+                            
+
+                            ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iUsuario["nombreUsuario"]; ?></td>
+
+                              <td><?php echo $iUsuario["apellidoUsuario"]; ?></td>
+
+                              <td><?php echo $iUsuario["numeroDocumento"]; ?></td>
+
+                              <td><?php echo $iUsuario["correo"]; ?></td>
+
+                              <td><?php echo $iUsuario["telefono"]; ?></td>
+
+                              <td><?php echo $aRol["nombre"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" name="<?php echo $iUsuario['idUsuario']; ?>" class="settingPanelToggle" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-user-tie" style="color: #0B08FF;font-size: 22px;"></i></a>
+
+                                <a href="<?php $aEncript['cadena']=$iUsuario['idUsuario']; echo $URL; ?>editarusuario/<?php echo $oControl->encriptar($aEncript); ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 22px;"></i></a>
+
+                                <?php if($iUsuario["estado"]==1){ ?>
+
+                                <a href="javascript:void(0)"  data-toggle="tooltip" data-placement="top" title="Desactivar" accion="1" name="<?php echo $iUsuario['idUsuario']; ?>"><i class="fas fa-user-slash" style="color: #FF5D5D;font-size: 22px;"></i></a>
+
+                                <?php }else{ ?>
+
+                                <a href="javascript:void(0)"  accion="2" name="<?php echo $iUsuario['idUsuario']; ?>" data-toggle="tooltip" data-placement="top" title="Activar"><i class="fas fa-check" style="color: #65E572;font-size: 22px;"></i></a>
+
+                                <?php } ?>
+
+                                <?php if($iUsuario["estado"]==1&&$iUsuario["idRol"]==2){ ?>
+
+                                <a href="<?php $aEncript['cadena']=$iUsuario['idUsuario']; echo $URL; ?>asociarusuarios/<?php echo $oControl->encriptar($aEncript); ?>" data-toggle="tooltip" data-placement="top" title="Asociar empresas" ><i class="fas fa-sitemap" style="color: #A2D7FF;font-size: 22px;"></i></a>
+
+                                <?php } ?>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="settingSidebar">
+
+<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+
+</a> -->
+
+<div class="settingSidebar-body ps-container ps-theme-default">
+
+  <div class="fade show active" id="body-view">
+
+    
+
+  </div>
+
+</div>
+
+</div>
+

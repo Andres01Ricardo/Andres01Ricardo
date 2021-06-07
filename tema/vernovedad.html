@@ -1,0 +1,1064 @@
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("empresa_novedad","idEmpresaNovedad",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("usuario","idUsuario",$aDatos["idUsuarioRegistra"]); 
+
+$aDatosU=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+
+$aDatosE=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("novedades","idNovedades",$aDatos["idNovedades"]); 
+
+$aDatosN=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empleado","idEmpleado",$aDatos["idEmpleado"]); 
+
+$aDatosEmpleado=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre"; 
+
+?>
+
+<style type="text/css">
+
+  input[readonly], textarea[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+  .no-producto{
+
+    width: calc(100% - 18px) !important;
+
+    display: inline-block;
+
+  }
+
+</style>
+
+
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Ver novedad</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empresa:</label>
+
+                        <input type="text" class="form-control mayusculas" value="<?php echo $aDatosE['razonSocial']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <?php } ?>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha registro:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaRegistro']; ?>" required readonly>
+                        <input type="hidden" name="datos[idNovedad]" value="<?php echo $id; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empleado:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatosEmpleado['nombre'].' '.$aDatosEmpleado['apellido']; ?>" required readonly>
+                        <input type="hidden" name="datos[idEmpleado]" value="<?php echo $aDatosEmpleado['idEmpleado']?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Novedad:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatosN['nombre']; ?>" required readonly>
+                        <input type="hidden" name="datos[tipoNovedad]" value="<?php echo $aDatos['idNovedades'] ?>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Detalles Novedad</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <?php 
+
+                    switch ($aDatos["idNovedades"]) {
+
+                        case '1':
+
+                          $oItem=new Data("empresa_descuento_empleado","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+                          $oLista=new Lista("empresa_descuento_empleado_cuota"); 
+
+                          $oLista->setFiltro("idEmpresaDescuentoEmpleado","=",$aData["idEmpresaDescuentoEmpleado"]); 
+
+                          $aCuotas=$oLista->getLista(); 
+
+                          unset($oItem);
+
+                          ?>
+
+                          <div class="row">
+
+                            <div class="col-md-4">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Descripción:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo $aData['descripcion']; ?>" required>
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Fecha Inicio Descuento:</label>
+
+                                <input type="date" class="form-control mayusculas" value="<?php echo $aData['fechaInicioDescuento']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Valor Descuento:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo "$".number_format($aData["valorDescuento"],0,",","."); ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-12 col-lg-12">
+
+                                <table class="table table-striped mayusculas" id="tableProductos">
+
+                                  <thead>
+
+                                    <tr>
+
+                                      <th class="text-center"># Cuota</th>
+
+                                      <th>Valor</th>
+
+                                      <th>Fecha Pago</th>
+
+                                      <th>Estado</th>
+
+                                    </tr>
+
+                                  </thead>
+
+                                  <tbody>
+
+                                    <?php foreach($aCuotas as $index => $cuota){ ?>
+
+                                      <tr>
+
+                                        <td class="centrar"><?php echo $index+1; ?></td>
+
+                                        <td><?php echo "$".number_format($cuota["valorCuota"],0,",",".");; ?></td>
+
+                                        <td><?php echo $cuota['fechaDescuento']; ?></td>
+
+                                        <td><?php echo $cuota['estado']==1?'Pendiente':'Liquidada'; ?></td>
+
+                                      </tr>
+
+                                    <?php } ?>
+
+                                  </tbody>
+
+                                </table>
+
+                              </div>
+
+                            </div>
+
+                      <?php  break; ?>
+
+
+
+                      <?php  case '2': 
+
+                          $oItem=new Data("empleado_permiso","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); ?>
+
+                          <div class="row">
+
+                            <div class="col-md-6">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Fecha Solicitud:</label>
+
+                                <input type="date" class="form-control mayusculas" value="<?php echo $aData['fechaSolicitudPermiso']; ?>" required>
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Tipo Permiso:</label>
+
+                                  <input type="text" class="form-control mayusculas" value="<?php echo $aData['tipoPermiso']==1?'Remunerado':'No Remunerado'; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                            <div class="col-md-12">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Motivo Permiso:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo $aData['motivoPermiso']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Inicio Permiso:</label>
+
+                                  <input type="date" class="form-control mayusculas" value="<?php echo $aData['fechaInicio']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Fin Permiso:</label>
+
+                                  <input type="date" class="form-control mayusculas" value="<?php echo $aData['fechaFin']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Cantidad Dias:</label>
+
+                                  <input type="text" class="form-control mayusculas" value="<?php echo $aData['totalDias']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+
+
+                     <?php  case '3': 
+
+                          $oItem=new Data("empleado_horas_extras","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); ?>
+
+                          <div class="row">
+
+                            <div class="col-md-4">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Fecha Reporte:</label>
+
+                                <input type="date" class="form-control mayusculas" value="<?php echo $aData['fechaHoraExtra']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Horas Extras Diurnas<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control decimal" value="<?php echo $aData['horaDiurna']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Horas Extras Nocturnas<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control decimal" value="<?php echo $aData['horaNocturna']; ?>"  required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Horas Extras Diurna Dominical/Festivo<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control decimal" value="<?php echo $aData['horaDiurnaDominical']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Horas Extras Nocturnas Dominical/Festivo<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control decimal" value="<?php echo $aData['horaNocturnaDominical']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+                    <?php  case '4': 
+
+                          $oItem=new Data("empleado_vacaciones","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); ?>
+
+                          <div class="row">
+
+                            <div class="col-md-6">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Fecha Solicitud:</label>
+
+                                <input type="date" class="form-control mayusculas" name="datos[fechaSolicitudVacaciones]" value="<?php echo $aData['fechaSolicitud']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Cantidad Dias<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control numero" name="datos[cantidadDiasVacaciones]" value="<?php echo $aData['cantidadDias']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Inicio<span class="requerido">*</span>:</label>
+
+                                  <input type="date" class="form-control" name="datos[fechaInicioVacaciones]" value="<?php echo $aData['fechaInicio']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Fin<span class="requerido">*</span>:</label>
+
+                                  <input type="date" class="form-control" name="datos[fechaFinVacaciones]" value="<?php echo $aData['fechaFin']; ?>"  required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Reinicio Actividades<span class="requerido">*</span>:</label>
+
+                                  <input type="date" class="form-control" name="datos[fechaReinicioVacaciones]" value="<?php echo $aData['fechaReinicioActividades']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+                    <?php  case '5': 
+
+                          $oItem=new Data("empleado_incapacidad_medica","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+                          $oItem=new Data("tipo_incapacidad","idTipoIncapacidad",$aData["idTipoIncapacidad"]); 
+
+                          $aTipo=$oItem->getDatos(); 
+
+                          unset($oItem);
+
+
+
+                          ?>
+
+                          <div class="row">
+
+                            <div class="col-md-3">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Tipo Incapacidad:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo $aTipo['nombre']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Inicio<span class="requerido">*</span>:</label>
+
+                                  <input type="date" class="form-control decimal" value="<?php echo $aData['fechaInicio']; ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Fecha Fin<span class="requerido">*</span>:</label>
+
+                                  <input type="date" class="form-control decimal" value="<?php echo $aData['fechaFinal']; ?>"  required >
+
+                                </div>
+
+                              </div>
+
+                            <div class="col-md-3">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Archivo<span class="requerido">*</span>:</label>
+
+                                  <div class="d-block"><a href="<?php echo $URL.$aData["anexo"]; ?>">Archivo</a></div>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                            <div class="col-md-12">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Descripcion:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo $aData['descripcion']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+                    <?php  case '6': 
+
+                          $oItem=new Data("empleado_cambio_salario","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+                          ?>
+
+                          <div class="row">
+
+                            <div class="col-md-4">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Fecha Aplicacion Nuevo Salario:</label>
+
+                                <input type="date" class="form-control mayusculas" value="<?php echo $aData['fechaAplicacionCambio']; ?>" required >
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Salario Anterior<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control decimal" value="<?php echo "$".number_format($aData["salarioAnterior"],0,",","."); ?>" required >
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Nuevo Salario<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control decimal" value="<?php echo "$".number_format($aData["nuevoSalario"],0,",","."); ?>"  required >
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+                    <?php  case '7': 
+
+                          $oItem=new Data("empleado_auxilios_extralegales","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+                          $oItem=new Data("auxilio_extralegal","idAuxilioExtralegal",$aData["idAuxilioExtralegal"]); 
+
+                          $aExtralegal=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+                          ?>
+
+                          <div class="row">
+
+                            <div class="<?php if($aData["idAuxilioExtralegal"]==3){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Tipo Auxilio:</label>
+
+                                <input type="hidden" class="form-control mayusculas" id="inputIdTipoAuxilio" name="datos[tipoAuxilio]" value="<?php echo $aData["idAuxilioExtralegal"]; ?>" required readonly>
+                                <select class="form-control" name="datos[idAuxilioExtralegal]" id="idAuxilioExtralegal">
+                                  <option value="2" <?php if($aData["idAuxilioExtralegal"]==2){ echo 'selected';}?>>AUXILIO ALIMENTACION</option>
+                                  <option value="3" <?php if($aData["idAuxilioExtralegal"]==3){ echo 'selected';}?>>OTRO</option>
+                                </select>
+
+                              </div>
+
+                            </div>
+
+
+                            
+                            <div class="col-md-4"  id='divOtroAuxilio'>
+
+                              <div class="form-group">
+
+                                <label class="negrita">Cual?<span class="requerido">*</span>:</label>
+
+                                <input type="text" class="form-control" value="<?php echo $aData["otroAuxilio"]; ?>"  name="datos[otroAuxilioExtralegal]" id="otroAuxilioExtralegal"  >
+
+                              </div>
+
+                            </div>
+
+                            <div class="<?php if($aData["idAuxilioExtralegal"]==3){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Valor Auxilio<span class="requerido">*</span>:</label>
+
+                                <input type="text" class="form-control numero moneda" name="datos[valorAuxilioExtralegal]" value="<?php echo "$".number_format($aData["valorAuxilio"],0,",","."); ?>"  required >
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+                    <?php  case '8': 
+
+                          $oItem=new Data("empleado_cambio_seguridad_social","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+                          $tipo="";
+
+                          if($aData["tipoCambio"]==1){
+
+                            $tipo="EPS";
+
+                          }else if($aData["tipoCambio"]==2){
+
+                            $tipo="Fondo Pensiones";
+
+                          }else{
+
+                            $tipo="Fondo Cesantias";
+
+                          }
+
+                          $oItem=new Data("seguridad_social","idSeguridadSocial",$aData["idEntidadNueva"]); 
+
+                          $aNueva=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+
+
+
+
+                          $oItem=new Data("seguridad_social","idSeguridadSocial",$aData["idEntidadAnterior"]); 
+
+                          $aAntiguo=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+                          ?>
+
+                          <div class="row">
+
+                            <div class=" col-md-3">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Tipo Cambio:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo $tipo; ?>" required readonly>
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Fecha Traslado<span class="requerido">*</span>:</label>
+
+                                <input type="text" class="form-control decimal" value="<?php echo $aData["fechaTraslado"]; ?>" required readonly>
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Entidad Anterior<span class="requerido">*</span>:</label>
+
+                                <input type="text" class="form-control decimal" value="<?php echo $aAntiguo["nombre"]; ?>"  required readonly>
+
+                              </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Nueva Entidad<span class="requerido">*</span>:</label>
+
+                                <input type="text" class="form-control decimal" value="<?php echo $aNueva["nombre"]; ?>"  required readonly>
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                    <?php break; ?>
+
+                    <?php 
+
+                        case '9': 
+
+                          $oItem=new Data("empleado_comision","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                          $aData=$oItem->getDatos(); 
+
+                          unset($oItem); ?>
+
+                          <div class="row">
+
+                            <div class="col-md-12">
+
+                              <div class="form-group">
+
+                                <label class="negrita">Descripción:</label>
+
+                                <input type="text" class="form-control mayusculas" value="<?php echo $aData['descripcion']; ?>" required readonly>
+
+                              </div>
+
+                            </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Valor Comision:</label>
+
+                                  <input type="text" class="form-control mayusculas" value="<?php echo "$".number_format($aData["valorComision"],0,",","."); ?>" required readonly>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Mes:</label>
+
+                                  <input type="text" class="form-control mayusculas" value="<?php echo $meses[$aData["mes"]]; ?>" required readonly>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Año:</label>
+
+                                  <input type="text" class="form-control mayusculas" value="<?php echo $aData['anio']; ?>" required readonly>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+
+
+                    <?php 
+
+                     break; ?>
+
+                    <?php  case '10': 
+
+                    $oItem=new Data("empleado_retiro","idEmpresaNovedad",$aDatos["idEmpresaNovedad"]); 
+
+                    $aData=$oItem->getDatos(); 
+
+                    unset($oItem); 
+
+
+
+                    
+
+                    ?>
+
+                    <div class="row">
+
+                      <div class=" col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Fecha Retiro:</label>
+
+                          <input type="text" class="form-control mayusculas" value="<?php echo $aData["fechaRetiro"]; ?>" required readonly>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Retiro Voluntario<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control decimal" value="<?php echo $aData["retiroVoluntario"]==1?'Si':'No'; ?>" required readonly>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Archivo<span class="requerido">*</span>:</label>
+
+                          <div class="d-block"><a href="<?php echo $URL.$aData["anexoRetiro"]; ?>">Archivo</a></div>
+
+                        </div>
+
+                      </div>
+
+                      </div>
+
+                      <div class="row">
+
+                        <div class="col-md-12">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Motivo Retiro:</label>
+
+                            <textarea row="5" class="form-control mayusculas" readonly><?php echo $aData['motivoRetiro']; ?></textarea>
+
+                          </div>
+
+                        </div>
+
+                        </div>
+
+                      <?php break; ?>
+
+                      <?php }
+
+                      ?>
+
+                   
+
+                  </div>
+
+                  
+
+            <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+
+

@@ -1,0 +1,100 @@
+<?php 
+require_once("class/empleados.php"); 
+
+$oEmpleado=new Empleados(); 
+
+$oControl=new Control(); 
+
+$aFiltro["estado"]=1; 
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aFiltro);
+
+
+?>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<form enctype="multipart/form-data" id="frmGuardar">
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Nomina</li>
+          <li class="breadcrumb-item">Registrar Permiso</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Empleado<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idEmpleado]" id="datos[idEmpleado]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aEmpleados as $item){ ?>
+                          <option cc="<?php echo $item["numeroDocumento"]; ?>" value='<?php echo $item["idEmpleado"]; ?>'><?php echo $item["nombre"]." ".$item["apellido"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">N° Documento<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" readonly id="numeroDocumento" required>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-header">
+                  <h4>Gestión Retiro Empleado</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Fecha Retiro<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control datepicker" name="datos[fechaRetiro]" id="datos[fechaRetiro]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="custom-switch mt-2">
+                        <input type="hidden" name="datos[retiroVoluntario]" id="datos[retiroVoluntario]" value="0">
+                        <input type="checkbox" name="datos[retiroVoluntario]" id="datos[retiroVoluntario]" value="1" class="custom-switch-input">
+                        <span class="custom-switch-indicator"></span>
+                        <span class="custom-switch-description">Retiro Voluntario</span>
+                      </label>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Anexo Retiro<span class="requerido">*</span>:</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="file" name="file" >
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label class="negrita">Motivo Retiro<span class="requerido">*</span>:</label>
+                        <textarea class="form-control" name="datos[motivo]" id="datos[motivo]"  required></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>

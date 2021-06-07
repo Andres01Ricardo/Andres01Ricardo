@@ -1,0 +1,215 @@
+<?php 
+
+require_once("class/empresa.php"); 
+
+
+
+$validarIngreso=1; 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+
+}
+
+$oEmpresa=new Empresa(); 
+
+
+
+$aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+
+
+  .tddashboard{
+
+    height: 30px !important; 
+
+  }
+
+
+
+  .tablaestado{
+
+    width: 70%;
+
+    text-align: left;
+
+    margin: 0 auto;
+
+  }
+
+</style>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section"  ondragstart="return false" onselectstart="return false">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Financiera</li>
+
+          <li class="breadcrumb-item">Estado de Situación Financiera Acumulado</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class=" col-md-6 ">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iItem){ ?>
+
+                          <option value="<?php echo $iItem["idEmpresa"]; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodo Pago<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[periodo]" id="datos[periodo]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php for($i=2020; $i<=date('Y'); $i++){?>
+
+                          <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class=" col-md-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableCuentas" style="max-width: 100%;font-size: 80%;">
+
+                          <thead>
+
+                            <tr>
+
+                              
+
+                              <th>Cuenta</th>
+
+                              <th>Enero</th>
+
+                              <th>Febrero</th>
+
+                              <th>Marzo</th>
+
+                              <th>Abril</th>
+
+                              <th>Mayo</th>
+
+                              <th>Junio</th>
+
+                              <th>Julio</th>
+
+                              <th>Agosto</th>
+
+                              <th>Septiembre</th>
+
+                              <th>Octubre</th>
+
+                              <th>Noviembre</th>
+
+                              <th>Diciembre</th>
+                              <th>Total</th>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody id="contenido"></tbody>
+
+                        </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

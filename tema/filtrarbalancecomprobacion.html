@@ -1,0 +1,135 @@
+<?php 
+
+
+
+// $oLista=new Lista("empresa");
+// $aEmpresas=$oLista->getLista();
+// unset($oLista);  
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+$validarIngreso=1; 
+$oEmpresa=new Empresa(); 
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+}
+
+
+
+
+
+if($_SESSION["idRol"]==5){
+
+  $aEmpresas=$oEmpresa->getEmpresasExterno();
+}
+
+if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  
+
+}
+
+
+
+
+?>
+<style type="text/css">
+  .picker__box{
+       background-color: #0000;
+}
+</style>
+<div class="card card-body">
+  <h3>BALANCE COMPROBACIÓN</h3>
+</div>
+  <hr>
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">ESCOJA LOS FILTROS</h3><br>
+            <form method="POST" action="verbalancecomprobacion">
+              <div class="swal-content">
+                <label>EMPRESA</label>
+                <select class=" form-control" name="empresa" id="empresa" required>
+                  
+                  <?php foreach($aEmpresas as $index => $iEmpresa){ ?>
+                  <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+                  <?php } ?>
+                </select>
+                
+          <br>
+          <br>
+          <div >
+            <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance1" value="1" checked>
+            <label class="form-check-label" for="radioBalance1">Gru</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance2" value="2">
+            <label class="form-check-label" for="radioBalance2">Cta</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance3" value="3">
+            <label class="form-check-label" for="radioBalance3">Subc</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance4" value="4">
+            <label class="form-check-label" for="radioBalance4">Aux</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance5" value="5">
+            <label class="form-check-label" for="radioBalance5">Saux</label>
+          </div>
+          <!-- <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance6" value="6">
+            <label class="form-check-label" for="radioBalance6">Cos</label>
+          </div> -->
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="filtroCuenta" id="radioBalance7" value="7">
+            <label class="form-check-label" for="radioBalance7">Ter</label>
+          </div>
+
+          </div>
+         
+                  <br>
+
+    <div class="form-row align-items-center">
+      <div class="col-auto my-1">
+        <label class="negrita">DESDE: </label>
+      </div>
+
+      <div class="col-auto my-1">
+ 
+        <input type="date" class="form-control" name="desde" id="desde"  required>
+        
+      </div>
+      <div class="col-auto my-1">
+        <label class="negrita">HASTA: </label>
+      </div>
+      <div class="col-auto my-1">
+        <input type="date" class="form-control" name="hasta" id="hasta"  required>
+      </div>
+    </div>
+        </div>
+        <br><br>
+        <div class="swal-footer">
+          <button type="submit" class="btn btn-info" id="btnFiltrar">FILTRAR</button>
+        </div>
+      </form>
+  </div>
+</div>

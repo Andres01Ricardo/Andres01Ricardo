@@ -1,0 +1,62 @@
+<?php 
+require_once("class/clientes.php"); 
+
+$oClientes=new Clientes(); 
+
+$oControl=new Control(); 
+
+$aClientes=$oClientes->getClientesEmpresa();
+
+?>
+<style type="text/css">
+	.picker__box{
+       background-color: #0000;
+}
+</style>
+<div class="card card-body">
+	<h3>Saldos no pagados de clientes</h3>
+	<h3>Escoja los filtros</h3>
+</div>
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">ESCOJA COMO FILTRAR</h3><br>
+            <form method="POST" action="saldoclientes">
+              <div class="swal-content">
+					<label class="negrita">CLIENTE:</label>
+					
+					<div >
+						<select class=" form-control" name="cliente" id="cliente">
+							<option value="0">TODOS</option>
+							<?php foreach($aClientes as $index => $iCliente){ ?>
+							<option value="<?php echo $iCliente['idCliente']; ?>"><?php echo $iCliente['razonSocial']; ?></option>
+							<?php } ?>
+						</select>
+					</div>
+         
+                  <br>
+
+       	<div class="form-row align-items-center">
+			<div class="col-auto my-1">
+				<label class="negrita">Desde: </label>
+			</div>
+
+			<div class="col-auto my-1">
+ 
+				<input type="date" class="form-control" name="periodoDesde" id="periodoDesde"  required>
+				
+			</div>
+			<div class="col-auto my-1">
+				<label class="negrita">Hasta: </label>
+			</div>
+			<div class="col-auto my-1">
+				<input type="date" class="form-control" name="periodoHasta" id="periodoHasta"  required>
+			</div>
+		</div>
+	      </div>
+	      <div class="swal-footer">
+	        <button type="submit" class="btn btn-light" id="btnFiltrar">FILTRAR</button>
+	      </div>
+	  	</form>
+	</div>
+</div>

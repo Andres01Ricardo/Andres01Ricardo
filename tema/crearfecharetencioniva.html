@@ -1,0 +1,232 @@
+<?php 
+
+$oLista = new Lista('periodo_pago');
+
+$aPeriodos=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$nuevafecha = strtotime ( '-1 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha = date ( 'Y-n' , $nuevafecha );
+
+$nuevafecha=explode("-",$nuevafecha); 
+
+
+
+?>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Calendario Impuestos</li>
+
+          <li class="breadcrumb-item">Fecha Impuesto Retención e IVA</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Año<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[anio]" id="datos[anio]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="<?php echo date('Y'); ?>"><?php echo date('Y'); ?></option>
+
+                          <option value="<?php echo date('Y')+1; ?>"><?php echo date('Y')+1; ?></option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Impuesto<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[tipo]" id="datos[tipo]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Retención</option>
+
+                          <option value="2">IVA</option>
+
+                          </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodicidad <span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[periocidad]" id="datos[periocidad]" required>
+
+                          <option value="" valor="">Seleccione una opción</option>
+
+                          <?php foreach($aPeriodos as $iPeriodo){ ?>
+
+                            <option value="<?php echo $iPeriodo['idPeriodoPago'] ?>" valor="<?php echo $iPeriodo['periodoMes'] ?>"><?php echo $iPeriodo['nombre'] ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row" id="fechas">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tablaDigitos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th></th>
+
+                          </tr>
+
+                          <tr>
+
+                            <th>Ultimo Digito</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">0</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">9</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">8</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">7</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">6</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">5</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">4</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">3</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">2</td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td class="centrar" style="width: 5%">1</td>
+
+                          </tr>
+
+                        </tbody>
+
+                      </table>
+
+                  </div>
+
+            </div>
+
+            <div class="card-footer text-right">
+
+                <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+              </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

@@ -1,0 +1,110 @@
+<?php
+date_default_timezone_set("America/Bogota"); 
+$idLibranza=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($idLibranza==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+if(!isset($_SESSION)){ session_start(); }
+
+$oLista = new Lista('libranza_item');
+
+$oLista->setFiltro("idLibranza","=",$idLibranza);
+
+$aLibranza=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oItem=new Data("libranza","idLibranza", $idLibranza); 
+
+$aLibranzaTotal=$oItem->getDatos(); 
+
+unset($oItem);
+?>
+
+<div class="card card-body">
+  <table class="table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#Cuota numero</th>
+        <th scope="col">Deuda inicial</th>
+        <th scope="col">Pago intereses</th>
+        <th scope="col">Pago capital</th>
+        <th scope="col">Valor cuota</th>
+        <th scope="col">Valor pagado cuota</th>
+        <th scope="col">Fecha vencimiento cuota</th>
+        <th scope="col">Estado cuota</th>
+        <th scope="col">Comprobante pago</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php  $numeroLibranza = 1;
+      foreach($aLibranza as $libranzaFinal){ ?>
+      <tr>
+        <th scope="row"><?php echo $numeroLibranza; ?></th>
+        <td><?php echo $libranzaFinal['deudaInicial']; ?></td>
+        <td><?php echo $libranzaFinal['pagoIntereses']; ?></td>
+        <td><?php echo $libranzaFinal['pagoCapital']; ?></td>
+        <td><?php echo $libranzaFinal['valorCuota']; ?></td>
+        <td><?php echo $libranzaFinal['valorPagadoCuota']; ?></td>
+        <td><?php echo $libranzaFinal['fechaVencimientoCuota']; ?></td>
+        <td><?php echo $libranzaFinal['estadoCuota']; ?></td>
+        <td><?php echo $libranzaFinal['comprobantePago']; ?></td>
+      </tr>
+      <?php $numeroLibranza++;
+    } ?>
+    </tbody>
+  </table>
+
+
+
+
+    <!-- <a style="float: right;" data-toggle="tooltip" title="Aprobar" data-placement="top" href="functions/crm/aprobarcotizacion.php?id=<?php echo $cotizacion['idCotizacion'];?>"><i class="fas fa-check" style="color: blue; font-size: 30px;"></i></a>
+
+    <a style="float: right;" data-toggle="tooltip" title="Facturar" data-placement="top" href="#"><i class="fas fa-file-invoice-dollar" style="color: blue; font-size: 30px;"></i></a> -->
+
+
+
+ <!--  <a style="float: right;" data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" href="../functions/crm/pdfcotizacion.php?id=<?php echo $aCotizacionTotal['idCotizacion'];?>&url=<?php echo $URL ?>"><i class="fas fa-file-pdf" style="color: blue; font-size: 30px;"></i></a> -->
+
+
+  <!-- <a style="float: right;" data-toggle="tooltip" title="Imprimir" data-placement="top" type="button" onclick="javascript:imprim2();"><i class="fas fa-print" style="color: blue; font-size: 30px;"></i></a>
+ -->
+ <br><br>
+<div>
+
+    <a class="btn btn-primary" data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" href="../functions/nomina/pdfLibranzaFinal.php?idLibranza=<?php echo $idLibranza ?>">GENERAR PDF</a>
+  <?php if($aLibranzaTotal['estadoSolicitud'] =='Aprobada' || $aLibranzaTotal['estadoSolicitud']=='Rechazada'){ ?>
+  <a class="btn btn-light" data-toggle="tooltip" title="REGRESAR" data-placement="top" href="../verlibranza">REGRESAR</a>
+<?php }else{?>
+    <a class="btn btn-success" data-toggle="tooltip" title="Aprobar" data-placement="top" href="../functions/nomina/aprobarlibranza.php?idLibranza=<?php echo $idLibranza;?>">APROBAR</a>
+
+    <a class="btn btn-danger" data-toggle="tooltip" title="Facturar" data-placement="top" href="#">RECHAZAR</a>
+    <?php } ?>
+</div>
+  
+</div>
+
+
+<script>
+function imprim2(){
+    var mywindow = window.open('', 'PRINT');
+    mywindow.document.write('<html><head>');
+  mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
+    mywindow.document.write('</head><body >');
+
+    mywindow.document.write(document.getElementById('muestra').innerHTML);
+    mywindow.document.write('</body></html>');
+    mywindow.document.close(); 
+    mywindow.focus(); 
+    mywindow.print();
+    
+    
+    return true;}
+
+    $('[data-toggle="tooltip"]').tooltip();
+</script> 

@@ -1,0 +1,150 @@
+  
+<?php
+
+require_once("class/timeline.php"); 
+  date_default_timezone_set('America/bogota');
+  $fechaActual = date('d-m-Y');
+
+$oLista = new Lista('tipo_documento');
+$aDocumento=$oLista->getLista();
+unset($oLista);
+
+
+$oLista = new Lista('t_procedencia');
+$aProcedencia=$oLista->getLista();
+unset($oLista);
+
+
+$oLista = new Lista('t_etapas');
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+$aEtapa=$oLista->getLista();
+unset($oLista);
+
+$idEmpresa = $_SESSION["idEmpresa"];
+
+$oActividad=new Actividades(); 
+$aEncargado=$oActividad->getEmpleados($idEmpresa  );
+unset($oActividad);
+
+ ?>
+
+<form  id="formAgregarCliente" action="functions/crm/insertarcliente.php" method="POST"  >
+  <section class="section">
+    <ul class="breadcrumb breadcrumb-style ">
+      <li class="breadcrumb-item">
+        <a href="<?php echo $URL; ?>">
+        <i class="fas fa-home"></i></a>
+      </li>
+      <li class="breadcrumb-item">CRM</li>
+      <li class="breadcrumb-item">Agregar cliente</li>
+    </ul>
+    <div class="section-body">
+      <div class="row">
+        <div class="col-md-12 col-lg-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>DATOS PERSONALES CLIENTE</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+               <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Tipo de documento<span class="requerido">*</span>:</label>
+                    <select class="form-control" name="tipoDocumento" id="tipoDocumento"> 
+                      <option value="">Seleccione</option>
+                      
+                      <?php foreach($aDocumento as $rowstd){ ?>
+                      <option value="<?php echo $rowstd['idTipoDocumento'] ?>"><?php echo $rowstd['nombre'] ?></option>
+                        <?php } ?>
+                    </select>
+                 </div>
+               </div>
+               <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Numero de documento<span class="requerido">*</span>:</label>
+                   <input type="text" class="form-control" onkeypress="return numeros(event);"  name="documento" id="documento" placeholder="Numero de documento" required="true">
+                 </div>
+               </div>
+               <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+                   <input type="text" name="nombre" id="nombre" class="form-control" onkeypress="return letras(event);" onkeyup="aMayusculas(this.value,this.id);"   placeholder="Ingrese el nombre" required="true">
+                 </div>
+               </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
+                   <input type="text" name="apellidos" id="apellidos" class="form-control" onkeypress="return letras(event);" onkeyup="aMayusculas(this.value,this.id);"   placeholder="Ingrese los apellidos" required="true">
+                 </div>
+              </div>
+              <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Email<span class="requerido">*</span>:</label>
+                   <input type="email" name="email" id="email" placeholder="ejemplo@ejemplo.com" class="form-control " required="true">
+                 </div>
+              </div>
+              <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+                   <input type="text" name="telefono" id="telefono" placeholder="# de telefono" onkeypress="return numeros(event);" class="form-control " required="true">
+                 </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+                   <input type="text" name="direccion" id="direccion" placeholder="Direccion completa" class="form-control" required="true">
+                 </div>
+              </div>
+              <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Procedencia<span class="requerido">*</span>:</label>
+                   <select class="form-control" name="procedencia" id="procedencia"> 
+                    <option value="0">Seleccione</option>
+                    <?php foreach($aProcedencia as $rowsp){ ?>
+                        <option value="<?php echo $rowsp['idProcedencia'] ?>"><?php echo $rowsp['nombreProcedencia']?></option>
+                        <?php } ?>
+                  </select>
+                 </div>
+              </div>
+              <div class="col-md-4">
+                 <div class="form-group">
+                   <label class="negrita">Etapa<span class="requerido">*</span>:</label>
+                   <select class="form-control" name="etapa" id="etapa"> 
+                      <option value="0">Seleccione</option>
+                      <?php foreach($aEtapa as $rowset){ ?>
+                      <option value="<?php echo $rowset['codigo'] ?>"><?php echo $rowset['nombreEtapa']?></option>
+                        <?php } ?>
+                  </select>
+                 </div>
+              </div>
+            </div>
+            <div class="rows">
+              <div class="col-md-4">
+                 <div class="form-group">
+                  <label class="negrita">Encargado<span class="requerido">*</span>:</label>
+                    <select class="form-control" id="empleadoEncargado" name="empleadoEncargado" class="form-control"> 
+                          <option value="0">Seleccione</option>
+                          <?php foreach($aEncargado as $rowse){ ?>
+                          <option value="<?php echo $rowse['idUsuario'] ?>"><?php echo $rowse['nombre'],' ',$rowse['apellido'] ?></option>
+                          <?php } ?>
+                        </select>
+                 </div>
+                 
+               </div>
+            </div>
+            <div class="col-12">
+              <div class="card-footer text-right">
+                <button type="submit" id="btnAgregarCliente" class="btn btn-primary"><i class="fas fa-save"></i>GUARDAR</button><span style="visibility: hidden;">-----</span><button type="reset" class="btn btn-danger"><i class="fas fa-times-circle"></i>CANCELAR</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</form>

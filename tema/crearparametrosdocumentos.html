@@ -1,0 +1,109 @@
+<?php
+
+require_once("./class/cuentascontables.php");
+
+$oLista = new Lista('tipos_documento_contable');
+$tiposDocumento=$oLista->getLista();
+
+unset($oLista);
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+$oEmpresa=new Empresa(); 
+
+
+$validarIngreso=1; 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+}
+
+
+
+if($_SESSION["idRol"]==5){
+
+	$aEmpresa=$oEmpresa->getEmpresasExterno();
+}
+
+if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
+	$aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+	
+
+}
+
+
+
+
+
+
+
+?>
+
+<div class="card card-body">
+	<form enctype="multipart/form-data" id="frmGuardar">
+	<br>
+	<div class="row">
+		<div class="col-md-3">
+			<label>Empresa</label>
+			<select class="form-control" name="datos[idEmpresa]" id="idEmpresa" required>
+				<option value="">Seleccione</option>
+				<?php foreach($aEmpresa as $index => $iEmpresa){?>
+					<option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
+				<?php } ?>
+			</select>
+		</div>
+		
+		<div class="col-md-4">
+	
+			<label>Tipo</label>
+			<select class="custom-select" name="datos[tipoDocumento]" id="tipoDocumento"   required>
+		      <option value="">Seleccione una opción</option>
+
+                <?php foreach($tiposDocumento as $item){ ?>
+                	<option value='<?php echo $item["idTiposDocumento"]; ?>'><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
+		      	<?php } ?>
+		    </select>
+		
+		</div>
+		<div class="col-md-2">
+			
+			<label>Comprobante</label>
+
+			<input type="text" class="form-control" name="datos[comprobante]" id="comprobante" placeholder="#" value="0"  required>
+			
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-3">
+			<label>Descripción</label>
+			<input type="text"  class="form-control" name="datos[descripcion]" id="descripcion" required>
+		</div>
+		<div class="col-md-3">
+			<label>Numeracion inicial</label>
+			<input type="text" name="datos[numeracionInicial]" id="numeracionInicial" class="form-control numero" required>
+		</div>
+		
+	</div>
+			<div class="card-footer text-right">
+        		<a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+        	</div>
+		</div>
+	</form>
+</div>

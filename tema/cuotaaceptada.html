@@ -1,0 +1,121 @@
+<?php
+
+
+date_default_timezone_set("America/Bogota"); 
+$idLibranza=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+if(!isset($_SESSION)){ session_start(); }
+
+// $valorCuota=$_GET["valorCuota"];
+// $valorCredito=$_GET["valorCredito"];
+$hoy=date("d-m-Y");
+$mes=date("m");
+
+ switch ($mes) {
+	case 1:
+		$mes='Enero';
+		break;
+	case 2:
+		$mes='Febrero';
+		break;
+	case 3:
+		$mes='Marzo';
+		break;
+	case 4:
+		$mes='Abril';
+		break;
+	case 5:
+		$mes='Mayo';
+		break;
+	case 6:
+		$mes='Junio';
+		break;
+	case 7:
+		$mes='Julio';
+		break;
+	case 8:
+		$mes='Agosto';
+		break;
+	case 9:
+		$mes='Septiembre';
+		break;
+	case 10:
+		$mes='Octubre';
+		break;
+	case 11:
+		$mes='Noviembre';
+		break;
+	case 12:
+		$mes='Diciembre';
+		break;
+	default:
+		# code...
+		break;
+}; 
+
+$oItem=new Data("libranza","idLibranza",$idLibranza); 
+$rowsl=$oItem->getDatos(); 
+unset($oItem);
+
+$idEmpleado=$rowsl['idEmpleado'];
+$oItem=new Data("empresa","idEmpresa",$_SESSION['idEmpresa']); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+
+$oItem=new Data("empleado","idEmpleado",$idEmpleado); 
+$rowse=$oItem->getDatos(); 
+unset($oItem);
+
+
+$valorCuota=$rowsl['cuota'];
+$valorCredito=$rowsl['valorSolicitado'];
+$cuotas=$rowsl['plazo'];
+?>
+
+<div id="cartaAutorizacion">
+	<label>Bucaramanga, <?php echo $hoy; ?></label>
+	<br><br>
+	<label>Señores</label><br>
+	<label><strong><?php echo $rows['razonSocial'];?></strong></label><br>
+	<label>Ciudad</label>
+	<br><br><br>
+	<label>Cordial saludo.</label><br><br>
+	<p>Por medio del presente yo, <?php echo $rowse['nombre'].' '.$rowse['apellido'];?>, identificado con cedula de ciudadania No. <?php echo $rowse['numeroDocumento'];?> autorizo a <?php echo $rows['razonSocial'];?>, para que descuente de mi nomina mensual la suma de <?php echo "$".number_format($valorCuota,0,".",",");?>, por concepto de la libranza, monto total aprobado <?php echo "$".number_format($valorCredito,0,".",","); ?> a mi nombre aprobada.</p><br>
+	<p>
+		la presente libranza es liquidada a <?php echo $cuotas ?> meses y se descontara a partir de la nómina del mes de <?php echo $mes; ?> del año <?php echo substr($hoy,6,9)?>.
+	</p><br>
+	<p>
+		En caso de retiro o por terminación del contrato de trabajo, autorizo a <?php echo $rows['razonSocial'];?>, a girar todos los dineros correspondientes de mi liquidación, sueldo y demás emolumentos que pueda percibir, con el fin de cubrir el saldo de la libranza si lo hubiere.
+	</p><br><br>
+	<p>Atentamente,</p><br><br><br>
+
+	<p>____________________________________</p><br>
+	<p>C.C.________________________________</p>
+
+
+</div>
+
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlayLibranza">
+    <div class="swal-modal popup" id="popupLibranza">
+      
+          <h3 class="swal-title">CARTA AUTORIZACION</h3><br>
+            <form method="POST" >
+              <div class="swal-content">
+					<label class="negrita">A continuacion por favor descargue la carta de autorizacion de libranza para ser firmada por el empleado</label>
+                  <br>
+	      </div>
+	      <div class="swal-footer">
+	        
+	        <a data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" id="btnCargarPdf" href="../functions/nomina/pdflibranza.php?idEmpleado=<?php echo $idEmpleado;?>&valorCuota=<?php echo $valorCuota ?>&valorCredito=<?php echo $valorCredito;?>&cuotas=<?php echo $cuotas;?>"><i class="fas fa-file-pdf" style="color: blue; font-size: 40px;"></i></a>
+	        <span class="ocultar">----</span>
+	        <a href="../cargarautorizacion/<?php echo $idLibranza;?>" id="btnContinuar" class="btn btn-success ocultar">CONTINUAR</a>
+	      </div>
+	  	</form>
+	</div>
+</div>

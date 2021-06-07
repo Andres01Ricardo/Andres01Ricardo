@@ -1,0 +1,458 @@
+ 
+<?php 
+
+require_once("class/informes.php");
+
+$oControl=new Control(); 
+
+
+$idEmpresa=$_POST["empresa"];
+$desde=$_POST["desde"];
+$hasta=$_POST["hasta"];
+$filtroCuenta=$_POST["filtroCuenta"];
+
+$oBalanceComprobacion=new Informes(); 
+$oBalanceComprobacionT=new Informes(); 
+
+
+// $aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"hasta"=>$hasta));
+$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+$g=0;
+
+
+
+// switch ($filtroCuenta) {
+// 	case 1:
+// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionG(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+// 		$g=1;
+// 		$tipoB='GRUPO';
+// 		break;
+// 	case 2:
+// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+// 		$tipoB='CUENTA';
+// 		break;
+// 	case 4:
+// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoSC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+// 		$tipoB='SUBCUENTA';
+// 		break;
+// 	case 4:
+// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+// 		$tipoB='AUXILIAR';
+// 		break;
+// 	case 5:
+// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoSA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+// 		$tipoB='SUBAUXILIAR';
+// 		break;
+	
+	
+// 	default:
+// 		# code...
+// 		break;
+// }
+
+$oBalanceComprobacionG=new Informes(); 
+$aBalanceComprobacionG=$oBalanceComprobacionG->getBalanceComprobacionGrupoAcumulado(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+
+$oItem=new Data("empresa","idEmpresa",$idEmpresa);
+$aEmpresa=$oItem->getDatos();
+
+
+
+
+
+$oIngresos=new Informes(); 
+$aIngresos=$oIngresos->getIngresosResultado(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
+
+
+$oGastos=new Informes(); 
+$aGastos=$oGastos->getGastosResultado(array("idEmpresa"=>$idEmpresa,"resultados"=>'5',"hasta"=>$hasta));
+
+$oCostosVentas=new Informes(); 
+$aCostosVentas=$oCostosVentas->getCostosVentasResultado(array("idEmpresa"=>$idEmpresa,"resultados"=>'6',"hasta"=>$hasta));
+
+$oCostosProduccion=new Informes(); 
+$aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmpresa"=>$idEmpresa,"resultados"=>'7',"hasta"=>$hasta));
+
+
+
+
+?>
+<div class="card">
+  <div class="card-header">
+      <table style="font-size: 14px;font-family: Arial;" class="table">
+        <tbody >
+          <tr>
+            <th>SmartBuss</th>
+            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="60" height="60">    <?php echo $aEmpresa['razonSocial'];?></th>
+            <th></th>
+            <th><?php echo date('Y/m/d'); ?></th>
+          </tr>
+          <tr>
+            <th> </th>
+            <th>Nit: <?php echo $aEmpresa['nit'];?> - <?php echo $aEmpresa['digitoVerificador'];?></th>
+            <th> </th>
+            <th> </th>
+          </tr> 
+          <tr>
+            <th></th>
+            <th >ESTADO DE RESULTADOS INTEGRAL</th>
+            <th> </th>
+          </tr>
+          <tr>
+            <th></th>
+            <th >DESDE:  <?php echo $desde;?> HASTA: <?php echo $hasta;?></th>
+            <th> </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <a href="filtrarestadosituacionfinanciera" class="btn btn-info">NUEVO FILTRO</a>
+        <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+        <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+        <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+        <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+        <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+        <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>">
+        <input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
+        <input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">
+      </div>
+      <br><br>
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      <table class="table-hover mayusculas " id="tablecomprobacion" style="font-size: 18px;font-family: 'Arial'; width: 100%;" >
+                        <thead>
+                          <tr>
+                            <th> </th>
+                            <th> </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php 
+
+                            # code...
+                          $CuenControl=substr($aBalanceComprobacion[0]["codigoCuenta"], 0,4);
+                          $CueTControl=substr($aBalanceComprobacion[0]['codigoCuenta'], 0,4);
+                          
+                          $cont=1;
+                          foreach($aBalanceComprobacionG as $keyG=> $valueG){ 
+                            // if (substr($aBalanceComprobacionG[$keyG+1]["codigoCuenta"],0,1)!=substr($valueG["codigoCuenta"], 0,1)) {
+                            $app=substr($valueG["codigoCuenta"], 0,1);
+                            switch ($app) {
+                              case 4:
+                                $tipoAPP='TOTAL INGRESOS';
+                                $saldoMayor=$aIngresos[0]["saldoCredito"]-$aIngresos[0]["saldoDebito"];
+                                $totalIngreso=$saldoMayor;
+                                break;
+                              case 5:
+                                $tipoAPP='TOTAL GASTOS';
+                                $saldoMayor=$aGastos[0]["saldoDebito"]-$aGastos[0]["saldoCredito"];
+                                $totalGasto=$saldoMayor;
+                                break;
+                              case 6:
+                                $tipoAPP='COSTOS DE VENTAS O PRESTACION DE SER';
+                                $saldoMayor=$aCostosVentas[0]["saldoDebito"]-$aCostosVentas[0]["saldoCredito"];
+                                $totalCostoVenta=$saldoMayor;
+                                break;
+                              case 7:
+                                $tipoAPP='COSTOS DE PRODUCCION';
+                                $saldoMayor=$aCostosProduccion[0]["saldoDebito"]-$aCostosProduccion[0]["saldoCredito"];
+                                $totalCostoProduccion=$saldoMayor;
+                                break;
+                              
+                              default:
+                                # code...
+                                break;
+                            }
+                          // }
+                            if (substr($valueG["codigoCuenta"], 0,1)==4 or substr($valueG["codigoCuenta"], 0,1)==5 or substr($valueG["codigoCuenta"], 0,1)==6 or substr($valueG["codigoCuenta"], 0,1)==7) {
+                              if ($cont==1) {
+                                if ($saldoMayor!=0) {
+                                  // code...
+                                
+                          ?>
+                          <tr>
+                            <td ><?php echo $app;?></td>
+                            <td><?php 
+                                echo $tipoAPP;
+                              ?></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><?php echo number_format($saldoMayor,2,".",","); ?></td>
+                          </tr>
+                      
+                        <?php 
+                        
+                        }
+                        }
+                        } 
+                        if (substr($valueG["codigoCuenta"], 0,1)!=9) {
+                                if ($valueG['naturaleza']=='debito') {
+                                $saldoNG=$valueG['debito']-$valueG['credito'];
+                              }
+                              if ($valueG['naturaleza']=='credito') {
+                                $saldoNG=$valueG['credito']-$valueG['debito'];
+                              }
+                                
+                        ?>
+                        
+                          <tr>
+                            <td class="<?php if(strlen($valueG['codigoCuenta']) ==2){echo 'negrita';}else{ echo 'cuenta';} ?>"><?php echo $valueG["codigoCuenta"];?></td>
+                            <td><?php echo $valueG["denominacion"];?></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><?php echo number_format($saldoNG,2,".",",");?></td>
+                            <td></td>
+                          </tr>
+                          
+                          <?php 
+                          }
+                          if ($g==0) {
+                            
+                          foreach($aBalanceComprobacion as $key=> $value){ 
+
+                            
+                          
+
+                            $CuenControl=substr($value['codigoCuenta'], 0,4);
+
+                            if ($valueG['codigoCuenta']==substr($value['codigoCuenta'], 0,2)) {
+                              if (substr($valueG["codigoCuenta"], 0,1)!=9) {
+                              
+                              if ($value['naturaleza']=='debito') {
+                                $saldoN=$value['debito']-$value['credito'];
+                              }
+                              if ($value['naturaleza']=='credito') {
+                                $saldoN=$value['credito']-$value['debito'];
+                              }
+                          ?>
+
+                          <tr>
+                            <td style="text-align: center;" class="centrado"><?php echo substr($value["codigoCuenta"],0,2);?></td>
+                            <td><?php echo $value["nombre"];?></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><?php 
+                            if (strlen($value["codigoCuenta"])==4) {
+                            echo number_format($saldoN,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            
+                            ?></td>
+                            <td><?php 
+                            
+                            // echo number_format($value["saldoNuevo".,2,",",".");
+                            ?></td>
+                          </tr>
+                          <?php 
+
+                          $oBalanceComprobacionSC=new Informes();
+    $aBalanceComprobacionSC=$oBalanceComprobacionSC->getBalanceComprobacionAcumuladoSC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta,"cuenta"=>$value["codigoCuenta"]));
+
+      foreach ($aBalanceComprobacionSC as $keySC => $valueSC) { 
+
+                              if ($valueSC['naturaleza']=='debito') {
+                                $saldoNSC=$valueSC['debito']-$valueSC['credito'];
+                              }
+                              if ($valueSC['naturaleza']=='credito') {
+                                $saldoNSC=$valueSC['credito']-$valueSC['debito'];
+                              }
+                              if (strlen($valueSC["codigoCuenta"])==6) {
+        ?>
+
+                          <tr>
+                            <td ><?php echo $valueSC["codigoCuenta"];?></td>
+                            <td><?php echo $valueSC["nombre"];?></td>
+                            <td><?php 
+                            if (strlen($valueSC["codigoCuenta"])==10) {
+                            echo number_format($saldoNSC,2,".",",");
+                            }
+
+                              ?></td>
+                            <td><?php 
+                            if (strlen($valueSC["codigoCuenta"])==8) {
+                            echo number_format($saldoNSC,2,".",",");
+                            }
+                            
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueSC["codigoCuenta"])==6) {
+                            echo number_format($saldoNSC,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueSC["codigoCuenta"])==4) {
+                            echo number_format($saldoNSC,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueSC["codigoCuenta"])==2) {
+                            echo number_format($saldoNSC,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            
+                            // echo number_format($valueSC["saldoNuevo".,2,",",".");
+                            ?></td>
+                          </tr>
+
+                            <?php
+
+                            $oBalanceComprobacionA=new Informes(); 
+   $aBalanceComprobacionA=$oBalanceComprobacionA->getBalanceComprobacionAcumuladoA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta,"cuenta"=>$valueSC["codigoCuenta"]));
+                          foreach ($aBalanceComprobacionA as $keyA => $valueA) { 
+
+                              if ($valueA['naturaleza']=='debito') {
+                                $saldoNA=$valueA['debito']-$valueA['credito'];
+                              }
+                              if ($valueA['naturaleza']=='credito') {
+                                $saldoNA=$valueA['credito']-$valueA['debito'];
+                              }
+
+
+                              if (strlen($valueA["codigoCuenta"])==8) {
+                            ?>
+                            
+                            <tr>
+                            <td ><?php echo $valueA["codigoCuenta"];?></td>
+                            <td><?php echo $valueA["nombre"];?></td>
+                            <td><?php 
+                            if (strlen($valueA["codigoCuenta"])==10) {
+                            echo number_format($saldoNA,2,".",",");
+                            }
+
+                              ?></td>
+                            <td><?php 
+                            if (strlen($valueA["codigoCuenta"])==8) {
+                            echo number_format($saldoNA,2,".",",");
+                            }
+                            
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueA["codigoCuenta"])==6) {
+                            echo number_format($saldoNA,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueA["codigoCuenta"])==4) {
+                            echo number_format($saldoNA,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueA["codigoCuenta"])==2) {
+                            echo number_format($saldoNA,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            
+                            // echo number_format($valueA["saldoNuevo".,2,",",".");
+                            ?></td>
+                          </tr>
+                          <?php 
+                          $oBalanceComprobacionSA=new Informes(); 
+   $aBalanceComprobacionSA=$oBalanceComprobacionSA->getBalanceComprobacionAcumuladoSA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta,"cuenta"=>$valueA["codigoCuenta"]));
+
+                  foreach ($aBalanceComprobacionSA as $keySA => $valueSA) { 
+
+                              if ($valueSA['naturaleza']=='debito') {
+                                $saldoNSA=$valueSA['debito']-$valueSA['credito'];
+                              }
+                              if ($valueSA['naturaleza']=='credito') {
+                                $saldoNSA=$valueSA['credito']-$valueSA['debito'];
+                              }
+                              if (strlen($valueSA["codigoCuenta"])==10) {
+
+                          ?>
+                          <tr>
+                            <td ><?php echo $valueSA["codigoCuenta"];?></td>
+                            <td><?php echo $valueSA["nombre"];?></td>
+                            <td><?php 
+                            if (strlen($valueSA["codigoCuenta"])==10) {
+                            echo number_format($saldoNSA,2,".",",");
+                            }
+
+                              ?></td>
+                            <td><?php 
+                            if (strlen($valueSA["codigoCuenta"])==8) {
+                            echo number_format($saldoNSA,2,".",",");
+                            }
+                            
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueSA["codigoCuenta"])==6) {
+                            echo number_format($saldoNSA,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueSA["codigoCuenta"])==4) {
+                            echo number_format($saldoNSA,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            if (strlen($valueSA["codigoCuenta"])==2) {
+                            echo number_format($saldoNSA,2,".",",");
+                            }
+                            ?></td>
+                            <td><?php 
+                            
+                            // echo number_format($valueSA["saldoNuevo".,2,",",".");
+                            ?></td>
+                          </tr>
+                            <?php
+                          }
+                          }
+                          }
+                            }
+                            }
+                            }
+                            }
+                            }
+                            }
+                            ?>
+                          
+
+                          <?php } 
+                            if (substr($aBalanceComprobacionG[$keyG+1]["codigoCuenta"],0,1)==($app+1)) {
+                              
+                              
+                              $app++;
+                              $cont=1;
+                            }else{
+                              $cont=0;
+                            }
+
+                           }?>
+                           <tr>
+                            <td></td>
+                            <td> RESULTADO DEL EJERCICIO</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><?php 
+                            $totalEjercicio=$totalIngreso-$totalGasto-$totalCostoVenta-$totalCostoProduccion;
+                            echo number_format($totalEjercicio,2,".",",");
+                            ?></td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>

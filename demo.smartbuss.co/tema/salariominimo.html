@@ -1,0 +1,103 @@
+<?php 
+$oLista = new Lista('salario_minimo');
+$aListas=$oLista->getLista();
+unset($oLista);
+
+$nuevafecha = strtotime ( '+1 Years' , strtotime ( date('Y') ) ) ;
+$nuevafecha = date ( 'Y' , $nuevafecha );
+?>
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Configuracion</li>
+          <li class="breadcrumb-item">Salario Minimo</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Salario Minimo Legal Mensual Vigente</h4>
+                </div>
+                <div class="card-body">
+                  <form enctype="multipart/form-data" id="frmGuardar">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Año<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[anio]" id="datos[anio]" required>
+                          <option value="">Seleccione una opción</option>
+                          <option value="<?php echo date('Y'); ?>"><?php echo date('Y'); ?></option>
+                          <option value="<?php echo $nuevafecha; ?>"><?php echo $nuevafecha; ?></option>
+                        </select>
+                      </div>
+                    </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="negrita">Salario Mensual<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control moneda" placeholder="Salario Mensual" name="datos[salarioMensual]" id="datos[salarioMensual]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="negrita">Salario Minimo Dia<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control moneda" placeholder="Salario Minimo Dia" name="datos[salarioDiario]" id="datos[salarioDiario]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="negrita">Salario Minimo Hora<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control moneda" placeholder="Salario Minimo Hora" name="datos[salarioHora]" id="datos[salarioHora]" required>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-right">
+                  <a class="btn btn-outline-secondary mr-1" id="limpiar">Limpiar</a>
+                  <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                </div>
+                <div class="card-header">
+                  <h4>Listado Historico</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                      <table class="table table-striped mayusculas" id="tableImpuestos">
+                        <thead>
+                          
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Año</th>
+                            <th>Salario Minimo Mensual</th>
+                            <th>Salario Minimo Dia</th>
+                            <th>Salario Minimo Hora</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($aListas as $index => $iItem){ 
+                            ?>
+                            <tr>
+                              <td><?php echo $index+1; ?></td>
+                              <td><?php echo $iItem['anio']; ?></td>
+                              <td><?php echo "$".number_format($iItem["salarioMensual"],0,".",","); ?></td>
+                              <td><?php echo "$".number_format($iItem["salarioDiario"],0,".",","); ?></td>
+                              <td><?php echo "$".number_format($iItem["salarioHora"],0,".",","); ?></td>
+                            </tr>
+                          <?php } ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

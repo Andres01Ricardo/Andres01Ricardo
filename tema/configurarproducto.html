@@ -1,0 +1,337 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$id; 
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+ $decrip["cadena"]=$id; 
+
+ $idEmpresa=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Lista("cuenta_bancaria");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aBancos=$oItem->getLista();
+unset($oItem);
+
+$oLista=new Lista("producto_servicio");
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+$producto=$oLista->getLista();
+unset($oLista);
+
+
+
+$oItem=new Lista("parametros_documentos");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aParametros=$oItem->getLista();
+unset($oItem);
+
+?>
+
+
+
+
+
+<section>
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+		<div class="card">
+			<div class="card-body">
+
+				<div class="card-header">Productos</div>
+				<?php foreach ($producto as $key=> $value){ ?>
+				<div class="row">
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          <label class="negrita d-block">Producto:</label>
+	                          <input type="text" class="form-control producto" name="item[<?php echo $key?>][productoCompra]" value="<?php echo $value['codigo'].'-'.$value['nombre']; ?>" disabled readonly>
+	                          <input type="hidden" class="form-control producto" name="item[<?php echo $key?>][idProductoCompra]" value="<?php echo $value['idProductoServicio']; ?>">
+
+	                          
+	                      </div>
+					</div>
+					<?php 
+							$oLista=new Lista("producto_cuenta_contable");
+							$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+							$oLista->setFiltro("idProducto","=",$value['idProductoServicio']);
+							$oLista->setFiltro("tipoFactura","=","compra");
+							$productoCuen=$oLista->getLista();
+							unset($oLista); 
+							// print_r($productoCuen);
+							if(!empty($productoCuen)){
+								
+								// print_r($empCuenta);
+								$oLista=new Data("cuenta_contable","idCuentaContable",$productoCuen[0]["idEmpresaCuenta"]);						
+								$cuentaC=$oLista->getDatos();
+								unset($oLista); 
+
+								
+							?>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+							
+
+				
+                          <label class="negrita d-block">Cuenta contable:</label>
+							<input type="text" class="form-control cuentaContable" name="item[<?php echo $key?>][cuentaContableProductoCompra]"  value="<?php echo $cuentaC["codigoCuenta"].'-'.$cuentaC["nombre"]; ?>">
+							<input type="hidden" class="form-control idCuentaContable" name="item[<?php echo $key?>][idCuentaContableProductoCompra]" value="<?php echo $cuentaC["idCuentaContable"]; ?>">
+							<input type="hidden" class="form-control naturaleza" name="item[<?php echo $key?>][naturalezaProductoCompra]"  value="<?php echo $cuentaC["naturaleza"]; ?>">
+	                          
+	                      </div>
+					</div>
+					<div class=" col-md-3 ">
+	                          <label class="negrita d-block">Tipo documento:</label>
+						<div class="form-inline">
+								<div class="form-group mb-1">
+								<select class="form-control" name="item[<?php echo $key?>][tipoDocumentoProductoCompra]" >
+									<?php foreach ($aParametros as $keyT => $valueT) {
+									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueT["tipo"]);
+									$aTipo=$oItem->getDatos();
+								 ?>
+								
+
+									<option value="<?php echo $valueT["idParametrosDocumentos"]; ?>"><?php echo $aTipo['letra'].'-'.$valueT["comprobante"].'-'.$valueT['descripcion']; ?></option> 
+								<?php } ?>
+								</select>
+								
+	                          </div>
+	                      </div>
+					</div>
+
+
+					
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          <label class="negrita d-block">Tipo Factura:</label>
+								<!-- <select class="form-control" name="item[<?php echo $key?>][naturalezaNuevaProducto]" id="" >
+									<option value="1">CREDITO</option>
+									<option value="2">DEBITO</option>
+								</select> -->
+								<input type="text" class="form-control" name="item[<?php echo $key?>][compraProducto]" readonly value="COMPRA">
+	                          
+	                      </div>
+					</div>
+					<?php	}
+					if(empty($productoCuen)){
+					 ?>
+
+							
+					<div class=" col-md-3 ">
+						<div class="form-group">
+							
+
+					
+	                          <label class="negrita d-block">Cuenta contable:</label>
+								<input type="text" class="form-control cuentaContable" name="item[<?php echo $key?>][cuentaContableProductoCompra]"  >
+								<input type="hidden" class="form-control idCuentaContable" name="item[<?php echo $key?>][idCuentaContableProductoCompra]" >
+								<input type="hidden" class="form-control naturaleza" name="item[<?php echo $key?>][naturalezaProductoCompra]" >
+	                          
+	                      </div>
+					</div>
+					<div class=" col-md-3 ">
+	                          <label class="negrita d-block">Tipo documento:</label>
+						<div class="form-inline">
+								<div class="form-group mb-1">
+								<select class="form-control" name="item[<?php echo $key?>][tipoDocumentoProductoCompra]" >
+									<?php foreach ($aParametros as $keyT => $valueT) {
+									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueT["tipo"]);
+									$aTipo=$oItem->getDatos();
+								 ?>
+									<option 
+
+									value="<?php echo $valueT["idParametrosDocumentos"];  ?>"><?php echo $aTipo['letra'].'-'.$valueT["comprobante"].'-'.$valueT['descripcion']; ?></option> 
+									
+								<?php } ?>
+								</select>
+								
+	                          </div>
+	                      </div>
+					</div>
+
+				
+					
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          <label class="negrita d-block">Tipo Factura:</label>
+								<!-- <select class="form-control" name="item[<?php echo $key?>][naturalezaNuevaProducto]" id="" >
+									<option value="1">CREDITO</option>
+									<option value="2">DEBITO</option>
+								</select> -->
+								<input type="text" class="form-control" name="item[<?php echo $key?>][compraProducto]" readonly value="COMPRA">
+	                          
+	                      </div>
+					</div>
+
+<?php } ?>
+
+
+				</div>
+				<div class="row">
+					
+
+					<?php 
+							$oLista=new Lista("producto_cuenta_contable");
+							$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+							$oLista->setFiltro("idProducto","=",$value['idProductoServicio']);
+							$oLista->setFiltro("tipoFactura","=","venta");
+							$productoCuen=$oLista->getLista();
+							unset($oLista); 
+							// print_r($productoCuen);
+							if(!empty($productoCuen)){
+								
+								// print_r($empCuenta);
+								$oLista=new Data("cuenta_contable","idCuentaContable",$productoCuen[0]["idEmpresaCuenta"]);						
+								$cuentaC=$oLista->getDatos();
+								unset($oLista); 
+
+								
+							?>
+
+					<div class=" col-md-3 ">
+						<div class="form-group">
+						
+	                          <label class="negrita d-block">Producto:</label>
+	                          <input type="text" class="form-control producto" name="item[<?php echo $key?>][productoVenta]" value="<?php echo $value['codigo'].'-'.$value['nombre']; ?>" disabled readonly>
+	                          <input type="hidden" class="form-control producto" name="item[<?php echo $key?>][idProductoVenta]" value="<?php echo $value['idProductoServicio']; ?>">
+
+	                          
+	                      </div>
+					</div>
+					
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          <label class="negrita d-block">Cuenta contable:</label>
+								<input type="text" class="form-control cuentaContable" name="item[<?php echo $key?>][cuentaContableProductoVenta]"  value="<?php echo $cuentaC["codigoCuenta"].'-'.$cuentaC["nombre"]; ?>">
+								<input type="hidden" class="form-control idCuentaContable" name="item[<?php echo $key?>][idCuentaContableProductoVenta]" value="<?php echo $cuentaC["idCuentaContable"]; ?>">
+								<input type="hidden" class="form-control naturaleza" name="item[<?php echo $key?>][naturalezaProductoVenta]"  value="<?php echo $cuentaC["naturaleza"]; ?>">	                          
+	                          
+	                      </div>
+					</div>
+					<div class=" col-md-3 ">
+	                          <label class="negrita d-block">Tipo documento:</label>
+						<div class="form-inline">
+								<div class="form-group mb-1">
+								<select class="form-control" name="item[<?php echo $key?>][tipoDocumentoProductoVenta]" >
+									<?php foreach ($aParametros as $keyTV => $valueTv) {
+									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueTv["tipo"]);
+									$aTipo=$oItem->getDatos();
+								 ?>
+									<option 
+									<?php 
+								
+								$c=$aTipo['letra'].'-'.$valueTv["comprobante"].'-'.$aTipo['descripcion'];
+								// print_r($c);
+									if ($c == $productoCuen[0]["tipoDocumento"]) {
+										echo 'selected';
+									} ?>
+									value="<?php echo $valueTv["idParametrosDocumentos"]; ?>"><?php echo $aTipo['letra'].'-'.$valueTv["comprobante"].'-'.$valueTv['descripcion']; ?></option> 
+									
+								<?php } ?>
+								</select>
+								
+	                          </div>
+	                      </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          
+								<input type="text" class="form-control" name="item[<?php echo $key?>][ventaProducto]" readonly value="VENTA">
+	                          
+	                      </div>
+					</div>
+
+				<?php } ?>
+				<?php 
+							 
+							// print_r($productoCuen);
+							if(empty($productoCuen)){
+								
+							?>
+
+					<div class=" col-md-3 ">
+						<div class="form-group">
+						
+	                          <label class="negrita d-block">Producto:</label>
+	                          <input type="text" class="form-control producto" name="item[<?php echo $key?>][productoVenta]" value="<?php echo $value['codigo'].'-'.$value['nombre']; ?>" disabled readonly>
+	                          <input type="hidden" class="form-control producto" name="item[<?php echo $key?>][idProductoVenta]" value="<?php echo $value['idProductoServicio']; ?>">
+
+	                          
+	                      </div>
+					</div>
+					
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          <label class="negrita d-block">Cuenta contable:</label>
+								<input type="text" class="form-control cuentaContable" name="item[<?php echo $key?>][cuentaContableProductoVenta]"  >
+								<input type="hidden" class="form-control idCuentaContable" name="item[<?php echo $key?>][idCuentaContableProductoVenta]" >
+								<input type="hidden" class="form-control naturaleza" name="item[<?php echo $key?>][naturalezaProductoVenta]"  >	                          
+	                          
+	                      </div>
+					</div>
+					<div class=" col-md-3 ">
+	                          <label class="negrita d-block">Tipo documento:</label>
+						<div class="form-inline">
+								<div class="form-group mb-1">
+								<select class="form-control" name="item[<?php echo $key?>][tipoDocumentoProductoVenta]" >
+									<?php foreach ($aParametros as $keyTV => $valueTv) {
+									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueTv["tipo"]);
+									$aTipo=$oItem->getDatos();
+								 ?>
+									<option 
+									
+									value="<?php echo $valueTv["idParametrosDocumentos"]; ?>"><?php echo $aTipo['letra'].'-'.$valueTv["comprobante"].'-'.$valueTv['descripcion']; ?></option> 
+									
+								<?php } ?>
+								</select>
+								
+	                          </div>
+	                      </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+
+	                          <!-- <label class="negrita d-block">Tipo factura:</label> -->
+								<!-- <select class="form-control" name="item[<?php echo $key?>][naturalezaNuevaProducto]" id="" >
+									<option value="1">CREDITO</option>
+									<option value="2">DEBITO</option>
+								</select> -->
+								<input type="text" class="form-control" name="item[<?php echo $key?>][ventaProducto]" readonly value="VENTA">
+	                          
+	                      </div>
+					</div>
+				<?php } ?>
+					
+				</div>
+				<hr>
+				<?php } ?>
+
+			</div>
+			<div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                </div>
+		</div>
+	</form>
+</section>
+
+
+
+
+
+

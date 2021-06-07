@@ -1,0 +1,618 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("empleado","idEmpleado",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oLista = new Lista('ciudad');
+
+$oLista->setFiltro("idDepartamento","=",$aDatos["idDepartamentoResidencia"]);
+
+$aCiudad=$oLista->getLista();
+
+unset($oLista);
+
+$oItem=new Data("empleado_contacto_emergencia","idEmpleado",$id); 
+
+$aContactoEmergencia=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+$oLista = new Lista('seguridad_social');
+
+$aSeguridad=$oLista->getLista();
+
+unset($oLista);
+
+
+$oItem=new Data("empleado_informacion_laboral","idEmpleado",$id); 
+
+$aInformacionLaboral=$oItem->getDatos(); 
+
+unset($oItem);
+
+$oLista = new Lista('riesgo_laboral');
+
+$aRiesgo=$oLista->getLista();
+
+unset($oLista);
+
+$oLista = new Lista('tipo_contrato');
+
+$aContratos=$oLista->getLista();
+
+unset($oLista);
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+  <input type="hidden" name="datos[id]" id="id" value="<?php echo $aDatos["idEmpleado"]; ?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Empleados</li>
+
+          <li class="breadcrumb-item">Editar empleado</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control "  value="<?php echo $aDatos["nombre"]; ?>" name="datos[nombre]" id="datos[nombre]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control"  value="<?php echo $aDatos["apellido"]; ?>" name="datos[apellido]" id="datos[apellido]" required>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Email<span class="requerido">*</span>:</label>
+
+                        <input type="email" class="form-control" value="<?php echo $aDatos["email"]; ?>" name="datos[email]" id="datos[email]" required>
+
+                      </div>
+
+                    </div>
+                    
+
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Genero<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[genero]" id="datos[genero]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option <?php if($aDatos["genero"]==1){ echo 'selected'; } ?> value="1">Masculino</option>
+
+                          <option <?php if($aDatos["genero"]==2){ echo 'selected'; } ?> value="2">Femenino</option>
+
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo documento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[tipoDocumento]" id="datos[tipoDocumento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option <?php if($aDatos["tipoDocumento"]==1){ echo 'selected'; } ?> value="1">Cedula Ciudadania</option>
+
+                          <option <?php if($aDatos["tipoDocumento"]==2){ echo 'selected'; } ?> value="2">Pasaporte</option>
+
+                          <option <?php if($aDatos["tipoDocumento"]==3){ echo 'selected'; } ?> value="3">NIT</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Numero documento<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["numeroDocumento"]; ?>" name="datos[numeroDocumento]" id="datos[numeroDocumento]" required>
+
+                      </div>
+
+                    </div>
+
+
+                    
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" value="<?php echo $aDatos["telefono"]; ?>" name="datos[telefono]" id="datos[telefono]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ 
+
+
+
+                            ?>
+
+                          <option <?php if($item["idDepartamento"]==$aDatos["idDepartamentoResidencia"]){ echo 'selected'; } ?> value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aCiudad as $item){ ?>
+
+                          <option <?php if($item["idCiudad"]==$aDatos["idCiudadResidencia"]){ echo 'selected'; } ?> value='<?php echo $item["idCiudad"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["direccion"]; ?>" name="datos[direccion]" id="datos[direccion]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="card-header">
+
+                    <h4>Información Contacto Emergencia</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nombre contacto emergencia<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[contactoEmergenciaNombre]" id="datos[contactoEmergenciaNombre]" value="<?php echo $aContactoEmergencia['nombre']; ?>" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono contacto emergencia<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[contactoEmergenciaTelefono]" id="datos[contactoEmergenciaTelefono]" value="<?php echo $aContactoEmergencia['telefono']; ?>" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Parentezco<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" name="datos[contactoEmergenciaParentezco]" id="datos[contactoEmergenciaParentezco]" value="<?php echo $aContactoEmergencia['parentezco']; ?>" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Información Contrato</h4>
+
+                  </div>
+
+                  <div class="card-body">
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Tipo contrato<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[tipoContrato]" id="contrato[tipoContrato]" required>
+
+                            <!-- <option value="">Seleccione una opción</option> -->
+
+                            <?php foreach($aContratos as $item){ ?>
+
+                            <option value='<?php echo $item["idTipoContrato"]; ?>' <?php if($aInformacionLaboral['tipoContrato']==$item["idTipoContrato"]){echo 'selected';} ?> ><?php echo $item["nombre"]; ?></option>
+
+                            <?php } ?>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Cargo<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control" name="datos[cargo]" id="contrato[cargo]" value="<?php echo $aInformacionLaboral['cargo'];?>" required>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Tipo salario<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[tipoSalario]" id="contrato[tipoSalario]" required>
+
+                            <!-- <option value="">Seleccione una opción</option> -->
+
+                            <option value="1"  <?php if($aInformacionLaboral['tipoSalario']==1){echo 'selected';} ?> >Salario Integral</option>
+
+                            <option value="2" <?php if($aInformacionLaboral['tipoSalario']==2){echo 'selected';} ?> >Salario Ordinario</option>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="row">
+
+                      <div class="col-md-12">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Funciones<span class="requerido">*</span>:</label>
+
+                          <textarea class="form-control" name="datos[funciones]" id="contrato[funciones]" required><?php echo $aInformacionLaboral['funciones']; ?></textarea>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Fondo Cesantias<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[idFondoCesantias]" id="datos[idFondoCesantias]" required>
+
+                            <option value="">Seleccione una opción</option>
+
+                            <?php foreach($aSeguridad as $item){ 
+
+                              if($item["tipo"]==3){
+
+                              ?>
+
+                            <option <?php if($item["idSeguridadSocial"]==$aInformacionLaboral["idFondoCesantias"]){ echo 'selected'; } ?> value='<?php echo $item["idSeguridadSocial"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                            <?php } } ?>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Fondo Pensiones<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[idFondoPensiones]" id="datos[idFondoPensiones]" required>
+
+                            <option value="">Seleccione una opción</option>
+
+                            <?php foreach($aSeguridad as $item){ 
+
+                              if($item["tipo"]==4){
+
+                              ?>
+
+                            <option  <?php if($item["idSeguridadSocial"]==$aInformacionLaboral["idFondoPensiones"]){ echo 'selected'; } ?> value='<?php echo $item["idSeguridadSocial"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                            <?php } } ?>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">EPS<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[idEps]" id="datos[idEps]" required>
+
+                            <option value="">Seleccione una opción</option>
+
+                            <?php foreach($aSeguridad as $item){ 
+
+                              if($item["tipo"]==1){
+
+                              ?>
+
+                            <option  <?php if($item["idSeguridadSocial"]==$aInformacionLaboral["idEps"]){ echo 'selected'; } ?> value='<?php echo $item["idSeguridadSocial"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                            <?php } } ?>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">ARL<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[idArl]" id="datos[idArl]" required>
+
+                            <option value="">Seleccione una opción</option>
+
+                            <?php foreach($aSeguridad as $item){ 
+
+                              if($item["tipo"]==2){
+
+                              ?>
+
+                            <option  <?php if($item["idSeguridadSocial"]==$aInformacionLaboral["idArl"]){ echo 'selected'; } ?> value='<?php echo $item["idSeguridadSocial"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                            <?php } } ?>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Riesgo<span class="requerido">*</span>:</label>
+
+                          <select class="form-control" name="datos[riesgoLaboral]" id="datos[riesgoLaboral]" required>
+
+                            <option value="">Seleccione una opción</option>
+
+                            <?php foreach($aRiesgo as $itemR){  ?>
+
+                            <option  <?php if($itemR["idRiesgoLaboral"]==$aInformacionLaboral["riesgoLaboral"]){ echo 'selected'; } ?> value='<?php echo $itemR["idRiesgoLaboral"]; ?>'><?php echo 'Riesgo '.$itemR["clase"].'  -  '.$itemR["tarifa"].'%'; ?></option>
+ 
+                            <?php } ?>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Auxilio de transporte<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control numero" name="datos[auxilioTransporte]" id="datos[auxilioTransporte]" value="<?php echo $aInformacionLaboral['auxilioTransporte']; ?>" required>
+
+
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Salario<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control numero" name="datos[salario]" id="datos[salario]" value="<?php echo $aInformacionLaboral['valorSalario']; ?>" required>
+
+
+                        </div>
+
+                      </div>
+                    </div>
+                    <div class="row">
+
+                    <div class="form-group">
+
+                      <label class="custom-switch mt-2">
+
+                        <input type="hidden" name="crearUsuario" id="crearUsuario" value="0">
+
+                        <input type="checkbox" name="crearUsuario" id="crearUsuario" value="1" class="custom-switch-input">
+
+                        <span class="custom-switch-indicator"></span>
+
+                        <span class="custom-switch-description">Crear Usuario De Acceso</span>
+
+                      </label>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+
+                  </div>
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

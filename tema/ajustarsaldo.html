@@ -1,0 +1,144 @@
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("cuenta_bancaria","idCuentaBancaria",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem);  
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Cuentas Bancarias</li>
+
+          <li class="breadcrumb-item">Ajustar Saldo</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General <?php echo $aDatos["nombreCuenta"]; ?></h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">N° Cuenta<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["numeroCuenta"]; ?>" readonly id="numeroDocumento" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Saldo<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" value="<?php echo "$".number_format($aDatos["saldoActual"],2,",","."); ?>" readonly id="numeroDocumento" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nuevo Saldo<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control moneda decimales" name="datos[nuevoSaldo]" id="datos[nuevoSaldo]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-12">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Descripción del movimiento<span class="requerido">*</span>:</label>
+
+                        <textarea class="form-control" name="datos[descripcion]" id="datos[descripcion]"  required></textarea>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

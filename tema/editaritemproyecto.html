@@ -1,0 +1,277 @@
+<?php 
+
+
+$idProyectoItem=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+  $url=$idProyectoItem; 
+
+  if($idProyectoItem==""){
+
+    echo '<script>window.history.back()</script>'; 
+
+  }
+
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+$oLista = new Lista('empresa');
+
+$oLista->setFiltro("estado","=",1);
+
+$oLista->setOrden("razonSocial","ASC");
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+$oData = new Data('legalizaciones','idLegalizacion',$idProyectoItem);
+$aLegalizacion=$oData->getDatos();
+
+unset($oData);
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Legalizar viaticos</li>
+
+         
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+                  <input type="hidden" name="datos[idProyectoLegalizacion]" id="datos[idProyectoLegalizacion]" value="<?php echo $aLegalizacion['idProyectoLegalizacion']; ?>">
+
+                  <input type="hidden" name="datos[idItemProyectoLegalizacion]" id="datos[idItemProyectoLegalizacion]" value="<?php echo $idProyectoItem; ?>">
+
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label class="negrita">Tipo legalización<span class="requerido">*</span>:</label>
+                      <select class="form-control " name="datos[tipoLegalizacion]" id="datos[tipoLegalizacion]" required>
+                        <option value="">SELECCIONE</option>
+                        <option value="1" <?php if ($aLegalizacion['tipoLegalizacion']==1) { ?>
+                        	selected="selected"
+                        <?php } ?>>ALIMENTACION</option>
+                        <option value="2" <?php if ($aLegalizacion['tipoLegalizacion']==2) { ?>
+                        	selected="selected"
+                        <?php } ?>>HOSPEDAJE</option>
+                        <option value="3" <?php if ($aLegalizacion['tipoLegalizacion']==3) { ?>
+                        	selected="selected"
+                        <?php } ?>>TRANSPORTE</option>
+                        <option value="4" <?php if ($aLegalizacion['tipoLegalizacion']==4) { ?>
+                        	selected="selected"
+                        <?php } ?>>OTROS</option>
+                      </select>
+
+
+                      
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Concepto<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[concepto]" id="datos[concepto]" value="<?php echo $aLegalizacion['concepto'] ?>" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Valor<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[valor]" id="datos[valor]" value="<?php echo $aLegalizacion['valor'] ?>" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Legalizar con:<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[legalizarcon]" id="datos[legalizarcon]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Factura</option>
+
+                          <option value="2">Documento equivalente</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Quien emite la factura<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[emiteFactura]" id="datos[emiteFactura]" value="<?php echo $aLegalizacion['emiteFactura'] ?>" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Numero factura<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control mayusculas" name="datos[numeroFacura]" id="datos[numeroFacura]" value="<?php echo $aLegalizacion['numeroFactura'] ?>" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha factura<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control datepicker" name="datos[fechaFactura]" id="datos[fechaFactura]" value="<?php echo $aLegalizacion['fechaFactura'] ?>" required>   
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ ?>
+
+                          <option value='<?php echo $item["idDepartamento"]; ?>' <?php if ($aLegalizacion['idDepartamento']===$item["idDepartamento"]) { ?>
+                        	selected="selected"
+                        <?php } ?>><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad<span class="requerido">*</span>:</label>
+                        <input type="hidden" name="idCiudad" id="idCiudad" value="<?php echo $aLegalizacion['idCiudad']; ?>">
+
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Factura<span class="requerido">*</span>:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" required>
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

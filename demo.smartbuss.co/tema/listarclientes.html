@@ -1,0 +1,88 @@
+<?php 
+
+require_once("class/clientes.php"); 
+
+$oClientes=new Clientes(); 
+
+$oControl=new Control(); 
+
+$aClientes=$oClientes->getClientesEmpresa();
+
+?>
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Clientes</li>
+          <li class="breadcrumb-item">Listar clientes</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Lista de clientes</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                      <table class="table table-striped mayusculas" id="tableClientes">
+                        <thead>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Tipo Persona</th>
+                            <th>NIT</th>
+                            <th>Razón Social</th>
+                            <th>Ciudad</th>
+                            <th>Dirección</th>
+                            <th>Telefono</th>
+                            <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($aClientes as $index => $iCliente){ 
+                            
+                            $digito=$iCliente["tipoPersona"]==1?"":"-".$iCliente["digitoVerificador"];
+
+                            $aEncript['cadena']=$iCliente['idCliente'];
+                            $id=$oControl->encriptar($aEncript);
+                            ?>
+                            <tr>
+                              <td><?php echo $index+1; ?></td>
+                              <td><?php echo $iCliente["tipoPersona"]==1?'Persona Natural':'Persona Juridica'; ?></td>
+                              <td><?php echo $iCliente["nit"].$digito; ?></td>
+                              <td><?php echo $iCliente["razonSocial"]; ?></td>
+                              <td><?php echo $iCliente["ciudad"]." - ".$iCliente["departamento"]; ?></td>
+                              <td><?php echo $iCliente["direccion"]; ?></td>
+                              <td><?php echo $iCliente["telefono"]; ?></td>
+                              <td class="centrar">
+                                <a href="<?php echo $URL; ?>vercliente/<?php echo $id ?>" class="btn btn-icon btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-briefcase"></i></a>
+                                <a href="<?php echo $URL; ?>editarcliente/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" class="btn btn-icon btn-sm btn-warning"><i class="fas fa-pencil-alt"></i></a>
+                                <?php if($_SESSION["idRol"]!=3){ ?>
+                                <a href="<?php echo $URL; ?>asociarclientes/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Asociar empresas" class="btn btn-icon btn-sm btn-info"><i class="fas fa-sitemap"></i></a>
+                                <?php } ?>
+                              </td>
+                                
+                            </tr>
+                          <?php } ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="settingSidebar">
+<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+</a> -->
+<div class="settingSidebar-body ps-container ps-theme-default">
+  <div class="fade show active" id="body-view">
+    
+  </div>
+</div>
+</div>

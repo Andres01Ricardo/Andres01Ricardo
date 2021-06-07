@@ -1,0 +1,237 @@
+<?php 
+
+require_once("class/empresa.php"); 
+
+ include("class/clientes.php") ; 
+
+
+$oEmpresa=new Empresa(); 
+
+
+
+$aEmpresas=$oEmpresa->getEmpresas();
+
+
+
+$oLista = new Lista('unidad');
+
+$oLista->setOrden("nombre","ASC");
+
+$aUnidades=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oLista=new Lista("t_clientes"); 
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]); 
+
+$acLista=$oLista->getLista(); 
+
+unset($oItem);
+
+
+$oClientes=new Clientes(); 
+
+$oControl=new Control(); 
+
+$aLista=$oClientes->getClientesEmpresa();
+
+?>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+
+
+
+
+
+<form enctype="multipart/form-data"  id="frmGuardar" >
+
+<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+<div class="card card-body">
+<div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="negrita">Cliente<span class="requerido">*</span>:</label>
+        <select class="form-control" name="datos[cliente]" id="datos[cliente]"> 
+          <option value="0">Seleccione</option>
+            <!-- <?php foreach($aLista as $rowsp){ ?>
+            <option value="<?php echo $rowsp['idCliente'] ?>"><?php echo $rowsp['razonSocial']?></option>
+            <?php } ?> -->
+            <?php foreach($acLista as $rowsp){ ?>
+            <option value="<?php echo $rowsp['codigoCliente'] ?>"><?php echo $rowsp['nombre'].' '.$rowsp['apellidos'];?></option>
+            <?php } ?>
+            
+      </select>
+      </div>
+    </div>
+    <div class="col-md-4">
+
+      <div class="form-group">
+          <label class="negrita">Vencimiento<span class="requerido">*</span>:</label>
+          <input type="date" readonly class="form-control datepicker" name="datos[fechaVencimientoCotizacion]" id="datos[fechaVencimientoCotizacion]" required>
+      </div>
+
+    </div>
+    <!-- <div class="col-md-4">
+    <div class="form-group">
+          <label class="negrita">Nro. comprobante<span class="requerido">*</span>:</label>
+          <input type="text" class="form-control"  name="datos[nroComprobante]" id="datos[nroComprobante]" required>
+      </div>
+      
+
+    </div> -->
+</div>
+<div class="row">
+  <div class="col-md-4">
+<div class="form-group">
+          <label class="negrita">Observaciones<span class="requerido">*</span>:</label>
+          <textarea class="form-control"  name="datos[observaciones]" id="datos[observaciones]" required></textarea>
+      </div>
+    </div>
+</div>
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Productos</th>
+
+                            <th>Descripción</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Unidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Subtotal</th>
+
+                            <th>Iva(%)</th>
+
+                            <th>Total</th>
+
+                            <th class="text-center">
+
+                              <a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+
+                            </th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                              <td>1</td>
+
+                              <td><input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="Detalle">
+
+                                <input type="hidden" name="item[0][idProducto]" id="item[0][idProducto]" class="form-control idProducto" ></td>
+
+                              <td><input type="text" class="form-control descripcion mayusculas" name="item[0][descripcion]" id="item[0][descripcion]" placeholder="Descripción" required></td>
+
+                              <td><input type="text" class="form-control decimales cantidad" name="item[0][cantidad]" id="item[0][cantidad]" placeholder="Cantidad" required></td>
+
+                              <td><select class="form-control mayusculas idUnidad" name="item[0][idUnidad]" id="item[0][idUnidad]" required>
+
+                                  <option value="">Seleccione una opción</option>
+
+                                  <?php foreach($aUnidades as $iUnidades){ ?>
+
+                                  <option value="<?php echo $iUnidades['idUnidad']; ?>"><?php echo $iUnidades["nombre"]; ?></option>
+
+                                  <?php } ?>
+
+                                </select></td>
+
+                              <td><input type="text" class="form-control moneda decimales valorUnitario mayusculas" name="item[0][valorUnitario]" id="item[0][valorUnitario]" placeholder="Valor Unitario" required></td>
+
+                              <td><input type="text" class="form-control moneda subtotal mayusculas" name="item[0][subtotal]" id="item[0][subtotal]" placeholder="Subtotal" required readonly></td>
+
+                              <td><input type="text" class="form-control decimales iva mayusculas" name="item[0][iva]" id="item[0][iva]" placeholder="IVA" required></td>
+
+                              <td><input type="text" class="form-control moneda total mayusculas" name="item[0][total]" id="item[0][total]" placeholder="TOTAL" required readonly></td>
+
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+
+                              </td>
+
+                            </tr>
+
+                        </tbody>
+
+                        <tfoot>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[subtotal]" id="datos[subtotal]" placeholder="SUBTOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td><input type="text" class="form-control moneda decimales" name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value=0></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[iva]" id="datos[iva]" placeholder="IVA" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[total]" id="datos[total]" placeholder="TOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                        </tfoot>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1"  id="btnGuardar">Guardar</a>
+
+                  </div>
+                </div>
+              </form>

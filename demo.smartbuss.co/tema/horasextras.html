@@ -1,0 +1,108 @@
+<?php 
+$oLista = new Lista('horas_extras');
+$aListas=$oLista->getLista();
+unset($oLista);
+
+$nuevafecha = strtotime ( '+1 Years' , strtotime ( date('Y') ) ) ;
+$nuevafecha = date ( 'Y' , $nuevafecha );
+?>
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Configuracion</li>
+          <li class="breadcrumb-item">Horas Extras</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Configurar horas extras</h4>
+                </div>
+                <div class="card-body">
+                  <form enctype="multipart/form-data" id="frmGuardar">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="negrita">Año<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[anio]" id="datos[anio]" required>
+                          <option value="">Seleccione una opción</option>
+                          <option value="<?php echo date('Y'); ?>"><?php echo date('Y'); ?></option>
+                          <option value="<?php echo $nuevafecha; ?>"><?php echo $nuevafecha; ?></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="negrita">Extra Diurna (%)<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control decimal" name="datos[diurna]" id="datos[diurna]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label class="negrita">Extra Nocturna (%)<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control decimal" name="datos[nocturna]" id="datos[nocturna]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Extra Diurna Dominical/Festivo (%)<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control decimal" name="datos[diurnaDominical]" id="datos[diurnaDominical]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Extra Nocturna Dominical/Festivo (%)<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control decimal" name="datos[nocturnaDominical]" id="datos[nocturnaDominical]" required>
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+                <div class="card-footer text-right">
+                  <a class="btn btn-outline-secondary mr-1" id="limpiar">Limpiar</a>
+                  <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                </div>
+                <div class="card-header">
+                  <h4>Listado Historico</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                      <table class="table table-striped mayusculas" id="tableImpuestos">
+                        <thead>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Año</th>
+                            <th>Extra Diurna</th>
+                            <th>Extra Nocturna</th>
+                            <th>Extra Diurna Dominical/Festivo</th>
+                            <th>Extra Nocturna Dominical/Festivo</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($aListas as $index => $iItem){ 
+                            ?>
+                            <tr>
+                              <td><?php echo $index+1; ?></td>
+                              <td><?php echo $iItem['anio']; ?></td>
+                              <td><?php echo $iItem["diurna"]."%"; ?></td>
+                              <td><?php echo $iItem["nocturna"]."%"; ?></td>
+                              <td><?php echo $iItem["diurnaDominical"]."%"; ?></td>
+                              <td><?php echo $iItem["nocturnaDominical"]."%"; ?></td>
+                            </tr>
+                          <?php } ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

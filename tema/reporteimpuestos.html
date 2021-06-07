@@ -1,0 +1,102 @@
+<?php 
+
+require_once("functions/impuestos/impuestospagados.php"); 
+
+$_SESSION['idEmpresa']=$_POST['selectIdEmpresa'];
+$desde=$_POST['periodoDesde'];
+$hasta=$_POST['periodoHasta'];
+$impuesto=$_POST['impuesto'];
+
+$oImpuestos=new Impuestos(); 
+
+$aImpuestos=$oImpuestos->getImpuestosPagadosFiltro($_SESSION["idEmpresa"],$desde,$hasta,$impuesto);
+unset($oImpuestos); 
+
+?>
+<div>
+<center><h2>IMPUESTOS PAGADOS</h2> </center>
+
+    <a href="historialpagoimpuesto" style="float: right;" class="btn btn-light">FILTRAR</a>
+</div>
+<br>
+<br>
+
+
+<?php
+	if (!empty($aImpuestos)) {
+	
+	foreach($aImpuestos as $index => $iImpuestos){      
+
+ ?>
+<div class="list-group">
+ 	<div id="<?php echo $iImpuestos['periodoMes']; ?>">
+   <label  class="list-group-item list-group-item-action flex-column align-items-start ">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1"><?php echo $iImpuestos['nombreCuenta']; ?></h5>
+      <h6>Fecha registro: <?php echo $iImpuestos['fechaRegistro']; ?></h6>
+      <h6>Periodo pagado:
+      	
+       <?php 
+    switch ($iImpuestos['periodoMes']) {
+    	case 1:
+    		echo 'Enero de '.$iImpuestos['periodoAnio']; 
+    		break;
+    	case 2:
+    		echo 'Febrero de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 3:
+    		echo 'Marzo de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 4:
+    		echo 'Abril de '.$iImpuestos['periodoAnio'];    		
+    		break;
+    	case 5:
+    		echo 'Mayo de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 6:
+    		echo 'Junio de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 7:
+    		echo 'Julio de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 8:
+    		echo 'Agosto de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 9:
+    		echo 'Septiembre de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 10:
+    		echo 'Octubre de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 11:
+    		echo 'Noviembre de '.$iImpuestos['periodoAnio'];
+    		break;
+    	case 12:
+    		echo 'Diciembre de '.$iImpuestos['periodoAnio'];
+    		break;
+    	default:
+    		# code...
+    		break;
+    	} ?>
+      </h6>
+    </div>
+   
+    <div class="d-flex w-100 justify-content-between">
+    	<h6 class="mb-1">Valor: <?php echo "$".number_format($iImpuestos['valor'],0,".",",") ; ?></h6>
+		<div class="col-auto my-1">
+			<h6>Sanciones: <?php echo "$".number_format($iImpuestos['sanciones'],0,".",","); ?></h6>
+		</div>
+		<div class="col-auto my-1">
+			<h6>Intereses: <?php echo "$".number_format($iImpuestos['intereses'],0,".",","); ?></h6>
+		</div>
+    </div>
+  </label>
+</div>
+
+</div>
+  <?php }}else{ ?>
+    <div class="card card-body">
+        <h2>No hay registros</h2>
+    </div>
+  <?php } ?>
+

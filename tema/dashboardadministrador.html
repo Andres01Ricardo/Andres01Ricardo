@@ -1,0 +1,423 @@
+<?php
+
+
+
+//require_once("class/empleados.php"); 
+
+
+
+//$oEmpleados=new Empleados(); 
+
+
+
+$oLista=new Lista("proveedor"); 
+
+$aProveedores=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$oLista=new Lista("empresa"); 
+
+$aEmpresas=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$oLista=new Lista("factura_compra"); 
+
+$oLista->setFiltro("estado","!=",3); 
+
+$aLista=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$valorC=0;
+
+foreach ($aLista as $key => $value) {
+
+  $valorC+=$value["subtotal"]; 
+
+}
+
+
+
+$oLista=new Lista("factura_venta");  
+
+$aLista2=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$valorV=0;
+
+foreach ($aLista2 as $key => $value) {
+
+  $valorV+=$value["subtotal"]; 
+
+}
+
+
+
+
+
+$oLista=new Lista("usuario"); 
+
+$oLista->setFiltro("idRol","IN","1,2");  
+
+$aUsuarios=$oLista->getLista(); 
+
+unset($oItem);
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+
+
+
+
+$validarIngreso=1; 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+
+}
+
+$oEmpresa=new Empresa(); 
+
+
+
+$aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+
+
+?>
+
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/morris/morris.css">
+
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/summernote/summernote-bs4.css">
+
+<section class="section">
+
+	<ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Inicio</li>
+
+    </ul>
+
+	<div class="section-body">
+
+    
+
+		<div class="row">
+
+      <div class="col-lg-3 col-md-3 col-sm-4 d-flex">
+
+        <div class="card card-statistic-2">
+
+          <div class="card-icon shadow-primary bg-purple" style="width: 15%;height: 15%;">
+
+            <i class="fas fa-shopping-cart"></i>
+
+          </div>
+
+          <div class="card-wrap float-right">
+
+            <div class="card-header elipsis">
+
+              <h4>Proveedores</h4>
+
+            </div>
+
+            <div class="card-body">
+
+              <?php echo count($aProveedores); ?>
+
+            </div>
+
+          </div>
+
+          <div class="card-chart">
+
+            <canvas id="smallChart1" height="80"></canvas>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-4 d-flex">
+
+        <div class="card card-statistic-2">
+
+          <div class="card-icon shadow-primary bg-orange" style="width: 15%;height: 15%;">
+
+            <i class="fas fa-building"></i>
+
+          </div>
+
+          <div class="card-wrap float-right">
+
+            <div class="card-header">
+
+              <h4>Empresas</h4>
+
+            </div>
+
+            <div class="card-body">
+
+              <?php echo count($aEmpresas); ?>
+
+            </div>
+
+          </div>
+
+          <div class="card-chart">
+
+            <canvas id="smallChart2" height="80"></canvas>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-4 d-flex">
+
+        <div class="card card-statistic-2">
+
+          <div class="card-icon shadow-primary bg-green" style="width: 15%;height: 15%;">
+
+            <i class="fas fa-money-check-alt"></i>
+
+          </div>
+
+          <div class="card-wrap float-right">
+
+            <div class="card-header">
+
+              <h4>Facturas de compra</h4>
+
+            </div>
+
+            <div class="card-body">
+
+              <h4><?php echo "$".number_format($valorC,0,".",","); ?></h4>
+
+            </div>
+
+          </div>
+
+          <div class="card-chart">
+
+            <canvas id="smallChart3" height="80"></canvas>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-4 d-flex">
+
+        <div class="card card-statistic-2">
+
+          <div class="card-icon shadow-primary bg-blue" style="width: 15%;height: 15%;">
+
+            <i class="fas fa-dollar-sign" ></i>
+
+          </div>
+
+          <div class="card-wrap float-right">
+
+            <div class="card-header">
+
+              <h4>Facturas de venta</h4>
+
+            </div>
+
+            <div class="card-body">
+
+              <h4><?php echo "$".number_format($valorV,0,".",","); ?></h4>
+
+            </div>
+
+          </div>
+
+          <div class="card-chart">
+
+            <canvas id="smallChart4" height="80"></canvas>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Empresas registradas</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table  table-striped  mayusculas" style="font-size: 11px;width: 100%" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Tipo Persona</th>
+
+                            <th>NIT</th>
+
+                            <th>Razón Social</th>
+
+                            <th>Ciudad</th>
+
+                            <th>Dirección</th>
+
+                            <th>Telefono</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aEmpresa as $index => $iEmpresa){ 
+
+
+
+                            $digito=$iEmpresa["tipoPersona"]==1?"":"-".$iEmpresa["digitoVerificador"]; 
+
+
+
+                            $aEncript['cadena']=$iEmpresa['idEmpresa'];
+
+                            $id=$oControl->encriptar($aEncript); 
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iEmpresa["tipoPersona"]==1?'Persona Natural':'Persona Juridica'; ?></td>
+
+                              <td><?php echo $iEmpresa["nit"].$digito; ?></td>
+
+                              <td><?php echo $iEmpresa["razonSocial"]; ?></td>
+
+                              <td><?php echo $iEmpresa["ciudad"]." - ".$iEmpresa["departamento"]; ?></td>
+
+                              <td><?php echo $iEmpresa["direccion"]; ?></td>
+
+                              <td><?php echo $iEmpresa["telefono"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php  echo $URL; ?>verempresa/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
+
+                                <a href="<?php echo $URL; ?>editarempresa/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 20px;"></i></a>
+
+                                <?php if($iEmpresa["estado"]==1){ ?>
+
+                                <a href="javascript:void(0)" class="activar" data-toggle="tooltip" data-placement="top" title="Bloquear" accion="1" name="<?php echo $iEmpresa['idEmpresa']; ?>"><i class="fas fa-lock" style="color: #FF5D5D;font-size: 20px;"></i></a>
+
+                                <?php }else{ ?>
+
+                                <a href="javascript:void(0)"  accion="2" name="<?php echo $iEmpresa['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Desbloquear"><i class="fas fa-lock-open" style="color: #65E572;font-size: 20px;"></i></a>
+
+                                <?php } ?>
+
+                                 <?php if($validarIngreso==1){ ?>
+
+                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a empresa" ><i class="fas fa-arrow-circle-right" style="color: #A2D7FF;font-size: 20px;"></i></a>
+
+                                <?php } ?>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+	</div>
+
+</section>
+
+<script src="<?php echo $URL ?>assets/bundles/morris/morris.min.js"></script>
+
+<script src="<?php echo $URL ?>assets/bundles/morris/raphael-min.js"></script>
+
+<!-- Page Specific JS File -->
+
+<script src="<?php echo $URL ?>assets/js/page/chart-morris.js"></script>
+
+<script src="assets/bundles/apexcharts/apexcharts.min.js"></script>
+
+  <script src="assets/bundles/summernote/summernote-bs4.js"></script>
+
+  <script src="<?php echo $URL ?>assets/bundles/chartjs/chart.min.js"></script>

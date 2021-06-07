@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from www.radixtouch.in/templates/logicswave/jiva/source/light/auth-login.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 22 May 2020 13:36:25 GMT -->
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>Juriscon - ERP</title>
+  <!-- General CSS Files -->
+  <link rel="stylesheet" href="<?php echo $URL ?>assets/css/app.min.css">
+  <link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/bootstrap-social/bootstrap-social.css">
+  <!-- Template CSS -->
+  <link rel="stylesheet" href="<?php echo $URL ?>assets/css/style.css">
+  <link rel="stylesheet" href="<?php echo $URL ?>assets/css/estilo.css">
+  <link rel="stylesheet" href="<?php echo $URL ?>assets/css/components.css">
+  <!-- Custom style CSS -->
+  <link rel="stylesheet" href="<?php echo $URL ?>assets/css/custom.css">
+  <link rel='shortcut icon' type='image/x-icon' href='<?php echo $URL ?>assets/img/favicon.ico' />
+  <link href="<?php echo $URL ?>assets/plugins/sweet-alert/sweetalert.css" rel="stylesheet" />
+</head>
+
+<body class="fondo-login">
+  <div class="loader"></div>
+  <div id="app">
+    <section class="section">
+      <div class="container mt-5" style="margin-top: 9% !important;">
+        <div class="row">
+          <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 centrar">
+            <img class="image-login" src="<?php echo $URL ?>assets/img/SmartBusslogo-04.png" /> 
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h4>Login</h4>
+              </div>
+              <div class="card-body">
+                <form method="POST" id="frmLogin" class="needs-validation">
+                  <div class="form-group">
+                    <label for="email">N° Documento: </label>
+                    <input id="usuario" class="form-control" name="usuario" tabindex="1" required autofocus>
+                  </div>
+                  <div class="form-group">
+                    <div class="d-block">
+                      <label for="password" class="control-label">Clave: </label>
+                      <div class="float-right">
+                        <a href="auth-forgot-password.html" class="text-small">
+                          Olvidaste tu clave?
+                        </a>
+                      </div>
+                    </div>
+                    <input id="contrasena" type="password" class="form-control" name="contrasena" tabindex="2" required>
+                  </div>
+                  <div class="form-group">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="ingresar()" id="btnIniciar">Ingresar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- General JS Scripts -->
+  <script src="<?php echo $URL ?>assets/js/app.min.js"></script>
+  <!-- JS Libraies -->
+  <!-- Page Specific JS File -->
+  <!-- Template JS File -->
+  <script src="<?php echo $URL ?>assets/js/scripts.js"></script>
+  <!-- Custom JS File -->
+  <script src="<?php echo $URL ?>assets/js/custom.js"></script>
+  <script src="<?php echo $URL; ?>assets/js/parsley.min.js"></script>
+  <script src="<?php echo $URL; ?>assets/scripts/login.js"></script>
+  <script src="<?php echo $URL; ?>assets/bundles/sweetalert/sweetalert.min.js"></script>
+  <script src="<?php echo $URL; ?>assets/js/page/sweetalert.js"></script>
+</body>
+
+</html>
+
+

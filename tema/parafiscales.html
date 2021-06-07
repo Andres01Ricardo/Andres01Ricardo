@@ -1,0 +1,168 @@
+<?php 
+$oLista = new Lista('aportes_parafiscales');
+$aListas=$oLista->getLista();
+unset($oLista);
+
+$nuevafecha = strtotime ( '+1 Years' , strtotime ( date('Y') ) ) ;
+$nuevafecha = date ( 'Y' , $nuevafecha );
+?>
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Configuracion</li>
+          <li class="breadcrumb-item">Aportes Parafiscales</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Configurar Aportes Parafiscales</h4>
+                </div>
+                <div class="card-body">
+                  <form enctype="multipart/form-data" id="frmGuardar">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Año<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[anio]" id="datos[anio]" required>
+                          <option value="">Seleccione una opción</option>
+                          <option value="<?php echo date('Y'); ?>"><?php echo date('Y'); ?></option>
+                          <option value="<?php echo $nuevafecha; ?>"><?php echo $nuevafecha; ?></option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Caja Compensacion (%)<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control decimal" placeholder="Caja Compensacion" name="datos[cajaCompensacion]" id="datos[cajaCompensacion]" required>
+                      </div>
+                     </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Aportes Salud Empleado (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Aportes Salud" name="datos[saludEmpleado]" id="datos[saludEmpleado]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Aportes Salud Empleador (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Aportes Salud" name="datos[saludEmpleador]" id="datos[saludEmpleador]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Aportes Pension Empleado (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Aportes Pension" name="datos[pensionEmpleado]" id="datos[pensionEmpleado]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Aportes Pension Empleador (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Aportes Pension" name="datos[pensionEmpleador]" id="datos[pensionEmpleador]" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="negrita">Riesgos Profesional I (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Nivel I" name="datos[riesgo1]" id="datos[riesgo1]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="negrita">Riesgos Profesional II (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Nivel II" name="datos[riesgo2]" id="datos[riesgo2]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="negrita">Riesgos Profesional III (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Nivel III" name="datos[riesgo3]" id="datos[riesgo3]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="negrita">Riesgos Profesional IV (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Nivel IV" name="datos[riesgo4]" id="datos[riesgo4]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="negrita">Riesgos Profesional V (%)<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control decimal" placeholder="Nivel V" name="datos[riesgo5]" id="datos[riesgo5]" required>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-right">
+                  <a class="btn btn-outline-secondary mr-1" id="limpiar">Limpiar</a>
+                  <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                </div>
+                <div class="card-header">
+                  <h4>Listado Historico</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                      <table class="table table-striped mayusculas" id="tableImpuestos">
+                        <thead>
+                          <tr>
+                            <th class="text-center"></th>
+                            <th></th>
+                            <th class="text-center" colspan="2">Salud</th>
+                            <th class="text-center" colspan="2">Pension</th>
+                            <th></th>
+                            <th class="text-center" colspan="5">Riesgos Profesionales</th>
+                          </tr>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Año</th>
+                            <th>Empleado</th>
+                            <th>Empleador</th>
+                            <th>Empleado</th>
+                            <th>Empleador</th>
+                            <th>Caja Compensación</th>
+                            <th>Nivel I</th>
+                            <th>Nivel II</th>
+                            <th>Nivel III</th>
+                            <th>Nivel IV</th>
+                            <th>Nivel V</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($aListas as $index => $iItem){ 
+                            ?>
+                            <tr>
+                              <td><?php echo $index+1; ?></td>
+                              <td><?php echo $iItem['anio']; ?></td>
+                              <td><?php echo $iItem['saludEmpleado']."%"; ?></td>
+                              <td><?php echo $iItem["saludEmpleador"]."%"; ?></td>
+                              <td><?php echo $iItem["pensionEmpleado"]."%"; ?></td>
+                              <td><?php echo $iItem["pensionEmpleador"]."%"; ?></td>
+                              <td><?php echo $iItem["cajaCompensacion"]."%"; ?></td>
+                              <td><?php echo $iItem["riesgo1"]."%"; ?></td>
+                              <td><?php echo $iItem["riesgo2"]."%"; ?></td>
+                              <td><?php echo $iItem["riesgo3"]."%"; ?></td>
+                              <td><?php echo $iItem["riesgo4"]."%"; ?></td>
+                              <td><?php echo $iItem["riesgo5"]."%"; ?></td>
+                            </tr>
+                          <?php } ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

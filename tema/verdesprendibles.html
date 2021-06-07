@@ -1,0 +1,723 @@
+<?php 
+
+require_once("class/nomina.php"); 
+// require_once("class/numeroaletra.php"); 
+
+//------------------------------------------------------------------------
+
+
+function convertirNumeroLetra($numero){
+			$numeroSeparado=explode(',',$numero);
+		    $numf = milmillon($numeroSeparado[0]);
+
+		    if ($numeroSeparado[1]>0) {
+		    	$decimalF=decena($numeroSeparado[1]);
+		    	$letrasFinal=$numf." COMA ".$decimalF." PESOS";	
+		    }
+		    if ($numeroSeparado[1]==0) {
+		    	$letrasFinal=$numf." PESOS";	
+		    }
+
+		    
+		    return $letrasFinal;
+		}
+		
+
+		function milmillon($nummierod){
+		        if ($nummierod >= 1000000000 && $nummierod <2000000000){
+		            $num_letrammd = "MIL ".(cienmillon($nummierod%1000000000));
+		        }
+		        if ($nummierod >= 2000000000 && $nummierod <10000000000){
+		            $num_letrammd = unidad(Floor($nummierod/1000000000))." MIL ".(cienmillon($nummierod%1000000000));
+		        }
+		        if ($nummierod < 1000000000)
+		            $num_letrammd = cienmillon($nummierod);
+		        
+		        return $num_letrammd;
+		    }
+
+		function cienmillon($numcmeros){
+		        if ($numcmeros == 100000000)
+		            $num_letracms = "CIEN MILLONES";
+		        if ($numcmeros >= 100000000 && $numcmeros <1000000000){
+		            $num_letracms = centena(Floor($numcmeros/1000000))." MILLONES ".(millon($numcmeros%1000000));       
+		        }
+		        if ($numcmeros < 100000000)
+		            $num_letracms = decmillon($numcmeros);
+		        return $num_letracms;
+		    }
+
+
+		function decmillon($numerodm){
+		        if ($numerodm == 10000000)
+		            $num_letradmm = "DIEZ MILLONES";
+		        if ($numerodm > 10000000 && $numerodm <20000000){
+		            $num_letradmm = decena(Floor($numerodm/1000000))."MILLONES ".(cienmiles($numerodm%1000000));        
+		        }
+		        if ($numerodm >= 20000000 && $numerodm <100000000){
+		            $num_letradmm = decena(Floor($numerodm/1000000))." MILLONES ".(millon($numerodm%1000000));      
+		        }
+		        if ($numerodm < 10000000)
+		            $num_letradmm = millon($numerodm);
+		        
+		        return $num_letradmm;
+		    }
+
+		 function millon($nummiero){
+		        if ($nummiero >= 1000000 && $nummiero <2000000){
+		            $num_letramm = "UN MILLON ".(cienmiles($nummiero%1000000));
+		        }
+		        if ($nummiero >= 2000000 && $nummiero <10000000){
+		            $num_letramm = unidad(Floor($nummiero/1000000))." MILLONES ".(cienmiles($nummiero%1000000));
+		        }
+		        if ($nummiero < 1000000)
+		            $num_letramm = cienmiles($nummiero);
+		        
+		        return $num_letramm;
+		    }
+
+
+
+
+		 function cienmiles($numcmero){
+		        if ($numcmero == 100000)
+		            $num_letracm = "CIEN MIL";
+		        if ($numcmero >= 100000 && $numcmero <1000000){
+		            $num_letracm = centena(Floor($numcmero/1000))." MIL ".(centena($numcmero%1000));        
+		        }
+		        if ($numcmero < 100000)
+		            $num_letracm = decmiles($numcmero);
+		        return $num_letracm;
+		    }
+
+
+
+		 function decmiles($numdmero){
+		        if ($numdmero == 10000)
+		            $numde = "DIEZ MIL";
+		        if ($numdmero > 10000 && $numdmero <20000){
+		            $numde = decena(Floor($numdmero/1000))."MIL ".(centena($numdmero%1000));        
+		        }
+		        if ($numdmero >= 20000 && $numdmero <100000){
+		            $numde = decena(Floor($numdmero/1000))." MIL ".(miles($numdmero%1000));     
+		        }       
+		        if ($numdmero < 10000)
+		            $numde = miles($numdmero);
+		        
+		        return $numde;
+		    }
+
+
+		 function miles($nummero){
+		        if ($nummero >= 1000 && $nummero < 2000){
+		            $numm = "MIL ".(centena($nummero%1000));
+		        }
+		        if ($nummero >= 2000 && $nummero <10000){
+		            $numm = unidad(Floor($nummero/1000))." MIL ".(centena($nummero%1000));
+		        }
+		        if ($nummero < 1000)
+		            $numm = centena($nummero);
+		        
+		        return $numm;
+		    }
+
+
+
+
+		 function centena($numc){
+		        if ($numc >= 100)
+		        {
+		            if ($numc >= 900 && $numc <= 999)
+		            {
+		                $numce = "NOVECIENTOS ";
+		                if ($numc > 900)
+		                    $numce = $numce.(decena($numc - 900));
+		            }
+		            else if ($numc >= 800 && $numc <= 899)
+		            {
+		                $numce = "OCHOCIENTOS ";
+		                if ($numc > 800)
+		                    $numce = $numce.(decena($numc - 800));
+		            }
+		            else if ($numc >= 700 && $numc <= 799)
+		            {
+		                $numce = "SETECIENTOS ";
+		                if ($numc > 700)
+		                    $numce = $numce.(decena($numc - 700));
+		            }
+		            else if ($numc >= 600 && $numc <= 699)
+		            {
+		                $numce = "SEISCIENTOS ";
+		                if ($numc > 600)
+		                    $numce = $numce.(decena($numc - 600));
+		            }
+		            else if ($numc >= 500 && $numc <= 599)
+		            {
+		                $numce = "QUINIENTOS ";
+		                if ($numc > 500)
+		                    $numce = $numce.(decena($numc - 500));
+		            }
+		            else if ($numc >= 400 && $numc <= 499)
+		            {
+		                $numce = "CUATROCIENTOS ";
+		                if ($numc > 400)
+		                    $numce = $numce.(decena($numc - 400));
+		            }
+		            else if ($numc >= 300 && $numc <= 399)
+		            {
+		                $numce = "TRESCIENTOS ";
+		                if ($numc > 300)
+		                    $numce = $numce.(decena($numc - 300));
+		            }
+		            else if ($numc >= 200 && $numc <= 299)
+		            {
+		                $numce = "DOSCIENTOS ";
+		                if ($numc > 200)
+		                    $numce = $numce.(decena($numc - 200));
+		            }
+		            else if ($numc >= 100 && $numc <= 199)
+		            {
+		                if ($numc == 100)
+		                    $numce = "CIEN ";
+		                else
+		                    $numce = "CIENTO ".(decena($numc - 100));
+		            }
+		        }
+		        else
+		            $numce = decena($numc);
+		        
+		        return $numce;  
+		}
+
+
+
+		function decena($numdero){
+		    
+		        if ($numdero >= 90 && $numdero <= 99)
+		        {
+		            $numd = "NOVENTA ";
+		            if ($numdero > 90)
+		                $numd = $numd."Y ".(unidad($numdero - 90));
+		        }
+		        else if ($numdero >= 80 && $numdero <= 89)
+		        {
+		            $numd = "OCHENTA ";
+		            if ($numdero > 80)
+		                $numd = $numd."Y ".(unidad($numdero - 80));
+		        }
+		        else if ($numdero >= 70 && $numdero <= 79)
+		        {
+		            $numd = "SETENTA ";
+		            if ($numdero > 70)
+		                $numd = $numd."Y ".(unidad($numdero - 70));
+		        }
+		        else if ($numdero >= 60 && $numdero <= 69)
+		        {
+		            $numd = "SESENTA ";
+		            if ($numdero > 60)
+		                $numd = $numd."Y ".(unidad($numdero - 60));
+		        }
+		        else if ($numdero >= 50 && $numdero <= 59)
+		        {
+		            $numd = "CINCUENTA ";
+		            if ($numdero > 50)
+		                $numd = $numd."Y ".(unidad($numdero - 50));
+		        }
+		        else if ($numdero >= 40 && $numdero <= 49)
+		        {
+		            $numd = "CUARENTA ";
+		            if ($numdero > 40)
+		                $numd = $numd."Y ".(unidad($numdero - 40));
+		        }
+		        else if ($numdero >= 30 && $numdero <= 39)
+		        {
+		            $numd = "TREINTA ";
+		            if ($numdero > 30)
+		                $numd = $numd."Y ".(unidad($numdero - 30));
+		        }
+		        else if ($numdero >= 20 && $numdero <= 29)
+		        {
+		            if ($numdero == 20)
+		                $numd = "VEINTE ";
+		            else
+		                $numd = "VEINTI".(unidad($numdero - 20));
+		        }
+		        else if ($numdero >= 10 && $numdero <= 19)
+		        {
+		            switch ($numdero){
+		            case 10:
+		            {
+		                $numd = "DIEZ ";
+		                break;
+		            }
+		            case 11:
+		            {               
+		                $numd = "ONCE ";
+		                break;
+		            }
+		            case 12:
+		            {
+		                $numd = "DOCE ";
+		                break;
+		            }
+		            case 13:
+		            {
+		                $numd = "TRECE ";
+		                break;
+		            }
+		            case 14:
+		            {
+		                $numd = "CATORCE ";
+		                break;
+		            }
+		            case 15:
+		            {
+		                $numd = "QUINCE ";
+		                break;
+		            }
+		            case 16:
+		            {
+		                $numd = "DIECISEIS ";
+		                break;
+		            }
+		            case 17:
+		            {
+		                $numd = "DIECISIETE ";
+		                break;
+		            }
+		            case 18:
+		            {
+		                $numd = "DIECIOCHO ";
+		                break;
+		            }
+		            case 19:
+		            {
+		                $numd = "DIECINUEVE ";
+		                break;
+		            }
+		            }   
+		        }
+		        else
+		            $numd = unidad($numdero);
+		    return $numd;
+		}
+
+
+
+
+
+		function unidad($numuero){
+		    switch ($numuero)
+		    {
+		        case 9:
+		        {
+		            $numu = "NUEVE";
+		            break;
+		        }
+		        case 8:
+		        {
+		            $numu = "OCHO";
+		            break;
+		        }
+		        case 7:
+		        {
+		            $numu = "SIETE";
+		            break;
+		        }       
+		        case 6:
+		        {
+		            $numu = "SEIS";
+		            break;
+		        }       
+		        case 5:
+		        {
+		            $numu = "CINCO";
+		            break;
+		        }       
+		        case 4:
+		        {
+		            $numu = "CUATRO";
+		            break;
+		        }       
+		        case 3:
+		        {
+		            $numu = "TRES";
+		            break;
+		        }       
+		        case 2:
+		        {
+		            $numu = "DOS";
+		            break;
+		        }       
+		        case 1:
+		        {
+		            $numu = "UN";
+		            break;
+		        }       
+		        case 0:
+		        {
+		            $numu = "";
+		            break;
+		        }       
+		    }
+		    return $numu;   
+		}
+
+
+//------------------------------------------------------------------
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$id; 
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip);
+
+
+
+
+
+
+
+
+// echo $aNumeroLetra;
+
+
+$oNomina=new Nomina();
+
+
+
+$aData["idNomina"]=$id;  
+
+$aNomina=$oNomina->getNomina($aData)[0];
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre"; 
+
+$oLista=new Lista("nomina_empleado"); 
+
+$oLista->setFiltro("idNomina","=",$id); 
+
+$aLista=$oLista->getLista(); 
+
+unset($oItem);
+
+
+$oEmpresa=new Data("empresa","idEmpresa",$aNomina['idEmpresa']);
+$aEmpresa=$oEmpresa->getDatos();
+unset($oEmpresa);
+
+?>
+
+
+
+<style type="text/css">
+
+  input[readonly], textarea[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+  .logo{
+  	width:  60%;
+  }
+
+</style>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Ver Nomina</li>
+
+        </ul>
+
+        <div style="text-align: right;">
+          <a href="javascript:void(0)" data-toggle="tooltip" onclick="return imprimir();" title="Imprimir" ><i class="fas fa-print" style="color: #FFAE30;font-size: 50px;"></i></a>
+
+          <!-- <a href="../functions/nomina/pdfdesprendibles.php?id=<?php echo $id;?>&url=<?php echo $URL ?>" data-toggle="tooltip" id="btnPDF" title="Generar pdf" target="_blank"><i class="far fa-file-pdf" style="color: #FFAE30;font-size: 50px;"></i></a> -->
+          <!-- <a href="javascript:void(0)" data-toggle="tooltip" id="btnCrearPdfPrueba" title="Generar pdf" download="Prueba.pdf" ><i class="far fa-file-pdf" style="color: #FFAE30;font-size: 50px;"></i></a> -->
+          <!-- <a href="javascript:void(0)" data-toggle="tooltip" id="btnCrearPdf" title="Generar pdf" ><i class="far fa-file-pdf" style="color: #FFAE30;font-size: 50px;"></i></a> -->
+          
+          
+        </div>
+
+
+       <div class="section-body" id="nominaEmpresa">
+          
+       		<?php 
+       		$numeroComp=1;
+       		foreach($aLista as $index=> $iLista){ 
+
+                        $oItem=new Data("empleado","idEmpleado", $iLista["idEmpleado"]); 
+
+                        $aEmpleado=$oItem->getDatos(); 
+
+                        unset($oItem); 
+
+                        $oItem=new Data("empleado_informacion_laboral","idEmpleado", $iLista["idEmpleado"]); 
+
+                        $aEmpleadoInfo=$oItem->getDatos(); 
+
+                        unset($oItem); 
+
+                        $oLista=new Lista("nomina_empleado_adiciones"); 
+
+                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+
+                        $aAdiciones=$oLista->getLista(); 
+
+                        unset($oItem);
+
+
+
+                        $oLista=new Lista("nomina_empleado_parafiscales"); 
+
+                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+
+                        $oLista->setFiltro("tipoDeduccion","=",1); 
+
+                        $aLeyes=$oLista->getLista(); 
+
+                        unset($oItem);
+
+
+
+                        $oLista=new Lista("nomina_empleado_deducciones"); 
+
+                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+
+                        $aDeducciones=$oLista->getLista(); 
+
+                        unset($oItem);
+                        $totalAdiciones=0;
+                        foreach ($aAdiciones as $key => $valueA) {
+                        	$totalAdiciones+=$valueA["valor"];
+                        }
+                        $totalDeducciones=0;
+                        foreach ($aDeducciones as $key => $valueD) {
+                        	$totalDeducciones+=$valueD["valor"];
+                        }
+                        if(empty($aLeyes)){
+                        	$diasTrabajados=30;
+                    	}
+                    	if(!empty($aLeyes)){
+                        	$valorLeyes=$aLeyes[0]["valor"];
+                        	$diasTrabajados=((100*$valorLeyes)/(4*$iLista["salarioEmpleado"]))*30;
+                        	$diasTrabajados=ceil($diasTrabajados);
+                    	}
+                        
+                        ?>
+
+            <div  style="height: 100%">
+	          <!-- <div class="row"> -->
+
+	            <div class="col-md-12 col-lg-12 table-responsive">
+
+	              <div class="card border border-primary">
+
+			                <div class="card-body" >
+			                  <table class=" mayusculas" style="width: 100%;text-align: center;border-color: #81BCFF;border-style: 4px solid;" cellpadding="8" >
+			                  	<thead>
+			                  		<tr>
+			                  			<th rowspan="2" style="width: 20%;"><img class="logo" width="100" src="<?php echo $URL.$aEmpresa['logo'];?>" ></th>
+			                  			<th colspan="4"><?php echo $aEmpresa["razonSocial"];?></th>
+			                  			<th>comprobante No.</th>
+			                  		</tr>
+			                  		<tr>
+			                  			<th colspan="4"><?php echo $aEmpresa["nit"];?></th>
+			                  			<th><?php echo date('m').'-'.$numeroComp; ?></th>
+			                  		</tr>
+			                  	</thead>
+			                  	<tbody class="table-bordered">
+			                  		<tr class="negrita">
+			                  			<td>Identificación</td>
+			                  			<td colspan="3">Nombres y apellidos</td>
+			                  			<td>Sueldo basico</td>
+			                  			<td>Auxilio transporte</td>
+			                  		</tr>
+			                  		<tr>
+			                  			<td><?php echo $aEmpleado["numeroDocumento"]; ?></td>
+			                  			<td colspan="3"><?php echo $aEmpleado["nombre"]." ".$aEmpleado["apellido"]; ?></td>
+			                  			<td><?php echo "$".number_format(($iLista["salarioEmpleado"]),2,",","."); ?></td>
+			                  			<td><?php echo "$".number_format($aEmpleadoInfo["auxilioTransporte"],2,",","."); ?></td>
+			                  		</tr>
+			                  		<tr>
+			                  			<td colspan="3">Desprendible de pago: </td>
+			                  			<td colspan="3"><?php echo $meses[$aNomina["periodoMes"]]." de ".$aNomina["periodoAnio"]; ?></td>
+			                  			
+			                  		</tr>
+			                  		<tr>
+			                  			<td colspan="6"></td>
+			                  			
+			                  		</tr>
+			                  		<tr class="negrita">
+			                  			<td colspan="2">DESCRIPCIÓN CONCEPTO</td>
+			                  			<td >CANTIDAD</td>
+			                  			<td>DEVENGADO</td>
+			                  			<td>DEDUCIDO </td>
+			                  			<td>SALDO</td>
+			                  		</tr>
+			                  		<?php 
+			                  		$saldo=0;
+			                  		$devengados=0;
+			                  		$deducidos=0;
+			                  		?>
+			                  		<tr>
+			                  			<td colspan="2">SUELDO BASICO</td>
+			                  			<td ><?php echo $diasTrabajados; ?></td><?php $salarioDevengado=($iLista["salarioEmpleado"]/30)*$diasTrabajados; ?>
+			                  			<td><?php echo "$".number_format($salarioDevengado,2,",","."); ?></td>
+			                  			<td>-</td>
+			                  			<td><?php echo "$".number_format($salarioDevengado,2,",","."); ?></td>
+			                  		</tr><?php $saldo=$saldo+$salarioDevengado;
+			                  		$devengados+=$salarioDevengado;	?>
+			                  		<tr>
+			                  			<td colspan="2">AUXILIO TRANSPORTE</td>
+			                  			<td ><?php echo $diasTrabajados; ?></td><?php $auxilioDevengado=($aEmpleadoInfo["auxilioTransporte"]/30)*$diasTrabajados; ?>
+			                  			<td><?php echo "$".number_format($auxilioDevengado,2,",","."); ?></td>
+			                  			<td>-</td><?php $saldo=$saldo+$auxilioDevengado;
+			                  			$devengados+=$auxilioDevengado;
+			                  			?>
+			                  			<td><?php echo "$".number_format($saldo,2,",","."); ?></td>
+			                  		</tr>
+			                  		<?php foreach($aAdiciones as $index=> $iAdicion){?>
+
+			                  			<tr>
+			                  			<td colspan="2"><?php echo $iAdicion["concepto"]; ?></td>
+			                  			<td ><?php echo $diasTrabajados; ?></td>
+			                  			<td><?php echo "$".number_format($iAdicion["valor"],2,",","."); ?></td>
+			                  			<td>-</td><?php $saldo=$saldo+$iAdicion["valor"];
+			                  			$devengados+=$iAdicion["valor"]; ?>
+			                  			<td><?php echo "$".number_format($saldo,2,",","."); ?></td>
+			                  		</tr>
+			                  		<?php }?>
+			                  		<?php foreach($aDeducciones as $index=> $iDeduccion){?>
+
+			                  			<tr>
+			                  			<td colspan="2"><?php echo $iDeduccion["concepto"]; ?></td>
+			                  			<td ><?php echo $diasTrabajados; ?></td>
+			                  			<td>-</td><?php $saldo=$saldo-$iDeduccion["valor"];
+			                  			$deducidos+=$iDeduccion["valor"]; ?>
+			                  			<td><?php echo "$".number_format($iDeduccion["valor"],2,",","."); ?></td>
+			                  			<td><?php echo "$".number_format($saldo,2,",","."); ?></td>
+			                  		</tr>
+			                  		<?php }?>
+			                  		<?php foreach($aLeyes as $index=> $Ley){?>
+
+			                  			<tr>
+			                  			<td colspan="2"><?php echo $Ley["concepto"]; ?></td>
+			                  			<td><?php echo $diasTrabajados; ?></td>
+			                  			<td>-</td><?php $saldo=$saldo-$Ley["valor"];
+			                  			$deducidos+=$Ley["valor"]; ?>
+			                  			<td><?php echo "$".number_format($Ley["valor"],2,",","."); ?></td>
+			                  			<td><?php echo "$".number_format($saldo,2,",","."); ?></td>
+			                  		</tr>
+			                  		<?php }?>
+			                  		<tr>
+			                  			<td colspan="6"></td>
+			                  		</tr>
+			                  		<tr>
+			                  			<td colspan="2" style="text-align: left;">FIRMA</td>
+			                  			<td>TOTALES:</td>
+			                  			<td><?php echo "$".number_format($devengados,2,",","."); ?></td>
+			                  			<td><?php echo "$".number_format($deducidos,2,",","."); ?></td>
+			                  			<td></td>
+			                  		</tr>
+			                  		<tr>
+			                  			<td colspan="6"></td>
+			                  		</tr>
+			                  		<tr>
+			                  			<td colspan="2">NETO A PAGAR:</td>
+			                  			<td colspan="3"><?php 
+
+			                  				echo convertirNumeroLetra(round($saldo,2));
+			                  				
+											
+			                  			 ?></td>
+			                  			
+			                  			<td><?php echo "$".number_format($saldo,2,",","."); ?></td>
+			                  		</tr>
+			                  	</tbody>
+			                  </table>
+			              </div>
+			          </div>
+			      </div>
+			  <!-- </div> -->
+			  </div><?php 
+			  	$numeroComp++;
+			} ?>
+			</div>
+		</section>
+	</form>
+
+
+
+
+
+
+<script>
+function imprimir(){
+    var mywindow = window.open('', 'PRINT');
+    mywindow.document.write('<html><head>');
+    mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style><link rel="stylesheet" href="<?php echo $URL ?>assets/css/app.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/style.css" media="all"> <link rel="stylesheet" href="<?php echo $URL ?>assets/css/estilo2.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/components.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/jqvmap/dist/jqvmap.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/custom.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/estilo.css?<?php echo uniqid(); ?>" media="all"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"><link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/datatables/datatables.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL; ?>assets/bundles/select2/dist/css/select2.min.css" media="all"><link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" media="all">');
+    mywindow.document.write('</head><body onload="window.print();window.close();">');
+    mywindow.document.write(document.getElementById('nominaEmpresa').innerHTML);
+    mywindow.document.write('</body></html>');
+     
+mywindow.document.close(); 
+    mywindow.focus();
+    // mywindow.print();
+    // mywindow.close(); 
+    
+    
+    return true;
+
+    }
+
+
+
+    $('[data-toggle="tooltip"]').tooltip();
+</script> 

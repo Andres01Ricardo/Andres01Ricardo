@@ -1,0 +1,199 @@
+<?php
+
+
+
+$oControl=new Control(); 
+
+$idRemision=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$id; 
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+// $decrip["cadena"]=$id; 
+
+// $id=$oControl->desencriptar($decrip);
+
+$oLista = new Lista('remision_item');
+
+$oLista->setFiltro("idRemision","=",$idRemision); 
+
+$aCotizacion=$oLista->getLista();
+
+unset($oLista);
+
+
+$oLista = new Data('remision','idRemision',$idRemision);
+
+$aCotizacionTotal=$oLista->getDatos();
+
+unset($oLista);
+
+$oLista = new Data('empresa','idEmpresa',$_SESSION['idEmpresa']);
+
+$aEmpresa=$oLista->getDatos();
+
+unset($oLista);
+
+
+$oLista = new Data('t_clientes','codigoCliente',$aCotizacionTotal['idCliente']);
+
+$aCliente=$oLista->getDatos();
+
+unset($oLista);
+
+
+?>
+
+		<!-- <div class="btn-group">
+			  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Action
+			  </button>
+			  <div class="dropdown-menu menucotizacion">
+			    <a class="dropdown-item lista-menucotizacion" id="getPDF" onclick="exportTableToExcel('tablamuestra')" >Exportar excel</a>
+			    <div class="dropdown-divider"></div>
+			  </div>
+			</div> -->
+
+	<a style="float: right;" data-toggle="tooltip" title="Facturar" data-placement="top" href="#"><i class="fas fa-file-invoice-dollar" style="color: blue; font-size: 30px;"></i></a>
+	<a style="float: right;" data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" href="../functions/crm/pdfremision.php?id=<?php echo $aCotizacionTotal['idRemision'];?>&url=<?php echo $URL ?>"><i class="fas fa-file-pdf" style="color: blue; font-size: 30px;"></i></a>
+	<a style="float: right;" data-toggle="tooltip" title="Imprimir" data-placement="top" type="button" onclick="javascript:imprim2();"><i class="fas fa-print" style="color: blue; font-size: 30px;"></i></a>
+	<br><br>
+
+<div class="card" id="muestra">
+	<table >
+	  <thead >
+	    <tr style="text-align: center; font-size: 25px;">
+	      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+	      <th scope="col"><span><?php echo $aEmpresa['razonSocial'] ?></span></th>
+	      
+	      <th scope="col" style="font-size: 20px;">Remision</th>
+	      <th scope="col"></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr style="text-align: center; font-size: 20px;">
+	      <!-- <th scope="row"></th>
+ -->	      <td><span>Telefono: <?php echo $aEmpresa['telefono'] ?></span></td>
+	   	  
+	   	  <td>Fecha: <?php echo $aCotizacionTotal['fecha'] ?></td>
+	   	  <td></td>
+	    </tr>
+	   <tr style="text-align: center; font-size: 20px;">
+	   	
+	   	  <td ><span>Direccion: <?php echo $aEmpresa['direccion'] ?></span></td>
+	   	  <td></td>
+	   	  <td></td>
+	   	  
+	   </tr>
+	  </tbody>
+</table>
+
+<br><br>
+<hr>
+<div class="row">
+	<div class="col-md-2 col-lg-2"></div>
+		<div class="col-md-10 col-lg-10"><span>Sr.(es):
+<?php echo $aCliente['nombre'].' '.$aCliente['apellidos'];?></span></div>
+	</div>
+	<br>
+<div class="row">
+	<div class="col-md-2 col-lg-2">
+		
+	</div>
+	<div class="col-md-5 col-lg-5">
+		<span>Direccion:
+		<?php echo $aCliente['direccion'];?>
+		</span>
+	</div>
+	<div class="col-md-5 col-lg-5">
+		<span>Telefono:
+		<?php echo $aCliente['telefono'];?></span>
+	</div>
+</div>
+<hr>
+<br>
+	<table class="table-striped" cellpadding="20" id="tablamuestra">
+	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
+	    <tr style="height: 50px;">
+	      <th scope="col">Detalle producto</th>
+	      <th scope="col">descripción</th>
+	      <th scope="col">Cantidad</th>
+	      
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<?php foreach($aCotizacion as $cotizacion){ ?>
+	    <tr style="text-align: center;">
+	      <th scope="row"><?php echo $cotizacion['detalleProducto'];?></th>
+	      <td ><?php echo $cotizacion['descripcion'];?></td>
+	      <td ><?php echo $cotizacion['cantidad'];?></td>
+	      
+	    </tr>
+	   <?php } ?>
+	   
+	  </tbody>
+</table>
+<span>Observaciones: <?php echo $aCotizacionTotal['observaciones'] ?></span>
+</div>
+
+<script>
+function imprim2(){
+    var mywindow = window.open('', 'PRINT');
+    mywindow.document.write('<html><head>');
+	mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
+    mywindow.document.write('</head><body >');
+
+    mywindow.document.write(document.getElementById('muestra').innerHTML);
+    mywindow.document.write('</body></html>');
+    mywindow.document.close(); 
+    mywindow.focus(); 
+    mywindow.print();
+    
+    
+    return true;}
+
+
+    $('[data-toggle="tooltip"]').tooltip();
+</script>  
+
+
+<!-- <script type="text/javascript">
+	function exportTableToExcel(tableID, filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
+</script>
+
+
+ -->

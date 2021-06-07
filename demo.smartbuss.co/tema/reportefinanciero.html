@@ -1,0 +1,461 @@
+<style type="text/css">
+
+	.subtitulo{
+
+		display: block;
+
+    	font-size: 20px;
+
+	}
+
+  .apexcharts-menu-icon{
+
+    display: none; 
+
+  }
+
+  g[aria-labelledby='id-47-title']{
+
+    display: none; 
+
+  }
+
+  .apexcharts-toolbar div{
+
+    display: none; 
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/morris/morris.css">
+
+<section class="section">
+
+	<ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Dashboard</li>
+
+      <li class="breadcrumb-item">Reporte Financiero</li>
+
+    </ul>
+
+	<div class="section-body">
+
+    <div class="row">
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="El indice liquidez es">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Indice Liquidez</h6>
+
+                <span class="font-weight-bold mb-0 font-20" id="indicadorLiquidez"></span>
+
+              </div>
+
+              <i class="fas fa-chart-area card-icon col-orange font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart1" height="80"></canvas>
+            <button class="btn btn-light" name="btnDetalleLiquidez" id="btnDetalleLiquidez">Detalles</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="La solidez es">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Solidez</h6>
+
+                <span class="font-weight-bold mb-0 font-20" id="indicadorSolidez"></span>
+
+              </div>
+
+              <i class="fas fa-chart-bar card-icon col-green font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart2" height="80"></canvas>
+            <button class="btn btn-light" name="btnDetalleSolidez" id="btnDetalleSolidez">Detalles</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="La razon cobertura intereses es">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Razón Cobertura Interes</h6>
+
+                <span class="font-weight-bold mb-0 font-20"></span>
+
+              </div>
+
+              <i class="fas fa-chart-line card-icon col-indigo font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart3" height="80"></canvas>
+            <!-- <button class="btn btn-light" name="btnDetalleCoberturaInteres" id="btnDetalleCoberturaInteres">Detalles</button> -->
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="La rentabilidad patrimonio es">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Rentabilidad Patrimonio</h6>
+
+                <span class="font-weight-bold mb-0 font-20" id="rentabilidadPatrimonio"></span>
+
+              </div>
+
+              <i class="fas fa-chart-pie card-icon col-cyan font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart4" height="80"></canvas>
+            <button class="btn btn-light" name="btnDetalleRentabilidadPatrimonio" id="btnDetalleRentabilidadPatrimonio">Detalles</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="La rentabilidad activo es">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Rentabilidad Activo</h6>
+
+                <span class="font-weight-bold mb-0 font-20" id="rentabilidadActivo"></span>
+
+              </div>
+
+              <i class="fas fa-money-check-alt card-icon col-blue font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart5" height="80"></canvas>
+            <button class="btn btn-light" name="btnDetalleRentabilidadActivo" id="btnDetalleRentabilidadActivo">Detalles</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="El capital trabajo es">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Capital Trabajo</h6>
+
+                <span class="font-weight-bold mb-0 font-20" id="capitalTrabajo"></span>
+
+              </div>
+
+              <i class="fas fa-hand-holding-usd card-icon col-red font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart6" height="80"></canvas>
+            <button class="btn btn-light" name="btnDetalleCapitalTrabajo" id="btnDetalleCapitalTrabajo">Detalles</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+	   <div class="row ">
+
+      <div class="col-xl-6 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Utilidad Neta Ultimos 12 Meses</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="utilidad" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+     <div class="col-xl-6 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Situación Financiera Ultimos 12 Meses</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="situacion" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+   </div>
+
+   <div class="row ">
+
+      <div class="col-md-6 col-sm-12">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Facturación Compra y Venta</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="facturacion" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+     <div class="col-md-6 col-sm-12">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Nivel Endeudamiento</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="gaugeChart" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+   </div>
+
+  </div>
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayIndiceLiquidez">
+    <div class="swal-modal popup" id="popupIndiceLiquidez">
+      <a  class="btn-cerrar" id="btnCerrarIndiceLiquidez" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">INDICE LIQUIDEZ =</h3><br>
+      <div class="swal-content">
+        <div>
+          <div><span class="font-weight-bold mb-0 font-20">Total activo corriente: </span><span class="font-weight-bold mb-0 font-20" id="totalActivoCorriente"></span><span class="font-weight-bold mb-0 font-20"> / </span><span class="font-weight-bold mb-0 font-20">Total pasivo corriente: </span><span class="font-weight-bold mb-0 font-20" id="totalPasivoCorriente"></span></div>
+        </div>
+     </div>          
+    </div>
+  </div>
+
+
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlaySolidez">
+    <div class="swal-modal popup" id="popupSolidez">
+      <a  class="btn-cerrar" id="btnCerrarSolidez" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">SOLIDEZ =</h3><br>
+      <div class="swal-content">
+        <div>
+          <div><span class="font-weight-bold mb-0 font-20">Activo: </span><span class="font-weight-bold mb-0 font-20" id="activo"></span><span class="font-weight-bold mb-0 font-20"> / </span><span class="font-weight-bold mb-0 font-20">Pasivo: </span><span class="font-weight-bold mb-0 font-20" id="pasivo"></span></div>
+        </div>
+     </div>          
+    </div>
+  </div>
+
+<!-- 
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayCoberturaInteres">
+    <div class="swal-modal popup" id="popupCoberturaInteres">
+      <a  class="btn-cerrar" id="btnCerrarCoberturaInteres" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">RAZÓN COBERTURA INTERES =</h3><br>
+      <div class="swal-content">
+        <div>
+          <div><span class="font-weight-bold mb-0 font-20">Total activo corriente: </span><span class="font-weight-bold mb-0 font-20" id="totalActivoCorriente"></span><span class="font-weight-bold mb-0 font-20"> / </span><span class="font-weight-bold mb-0 font-20">Total pasivo corriente: </span><span class="font-weight-bold mb-0 font-20" id="totalPasivoCorriente"></span></div>
+        </div>
+     </div>          
+    </div>
+  </div> -->
+
+
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayRentabilidadPatrimonio">
+    <div class="swal-modal popup" id="popupRentabilidadPatrimonio">
+      <a  class="btn-cerrar" id="btnCerrarRentabilidadPatrimonio" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">RENTABILIDAD PATROMONIO =</h3><br>
+      <div class="swal-content">
+        <div>
+          <div><span class="font-weight-bold mb-0 font-20">Utilidad operacional: </span><span class="font-weight-bold mb-0 font-20" id="utilidadOperacional"></span><span class="font-weight-bold mb-0 font-20"> / </span><span class="font-weight-bold mb-0 font-20">Total patrimonio: </span><span class="font-weight-bold mb-0 font-20" id="totalPatrimonio"></span></div>
+        </div>
+     </div>          
+    </div>
+  </div>
+
+
+
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayRentabilidadActivo">
+    <div class="swal-modal popup" id="popupRentabilidadActivo">
+      <a  class="btn-cerrar" id="btnCerrarRentabilidadActivo" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">RENTABILIDAD ACTIVO =</h3><br>
+      <div class="swal-content">
+        <div>
+          <div><span class="font-weight-bold mb-0 font-20">Total activo: </span><span class="font-weight-bold mb-0 font-20" id="totalActivo"></span><span class="font-weight-bold mb-0 font-20"> / </span><span class="font-weight-bold mb-0 font-20">Total patrimonio: </span><span class="font-weight-bold mb-0 font-20" id="totalPatrimonioA"></span></div>
+        </div>
+     </div>          
+    </div>
+  </div>
+
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayCapitalTrabajo">
+    <div class="swal-modal popup" id="popupCapitalTrabajo">
+      <a  class="btn-cerrar" id="btnCerrarCapitalTrabajo" ><i class="fas fa-times"></i></a>
+      <h3 class="swal-title">CAPITAL TRABAJO =</h3><br>
+      <div class="swal-content">
+        <div>
+          <div><span class="font-weight-bold mb-0 font-20">Total activo corriente: </span><span class="font-weight-bold mb-0 font-20" id="totalActivoCorrienteC"></span><span class="font-weight-bold mb-0 font-20">  -  </span><span class="font-weight-bold mb-0 font-20">Total patrimonio: </span><span class="font-weight-bold mb-0 font-20" id="totalPasivoCorrienteC"></span></div>
+        </div>
+     </div>          
+    </div>
+  </div>
+
+
+</section>
+
+
+
+<script src="<?php echo $URL; ?>assets/js/app.min.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/amcharts4/core.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/amcharts4/charts.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/amcharts4/animated.js"></script>
+
+<!-- Page Specific JS File -->
+
+<script src="<?php echo $URL; ?>assets/bundles/apexcharts/apexcharts.min.js"></script>
+
+<!-- Page Specific JS File -->
+
+<script src="<?php echo $URL; ?>assets/js/page/chart-apexcharts.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/chartjs/chart.min.js"></script>
+
+
+

@@ -1,0 +1,134 @@
+<?php 
+$oLista = new Lista('departamento');
+$aDepartamento=$oLista->getLista();
+unset($oLista);
+
+$oLista = new Lista('retencion');
+$aListas=$oLista->getLista();
+unset($oLista);
+
+?>
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Configuracion</li>
+          <li class="breadcrumb-item">Retenciones e ICA</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Crear Impuesto</h4>
+                </div>
+                <div class="card-body">
+                  <form enctype="multipart/form-data" id="frmGuardar">
+                  <input type="hidden" name="id" id="id" value="">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Tipo Deducción<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[tipo]" id="datos[tipo]" required>
+                          <option value="">Seleccione una opción</option>
+                          <option value="1">Retención</option>
+                          <option value="2">ICA</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Descripción<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" name="datos[descripcion]" id="datos[descripcion]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Valor (%)<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " max="100" name="datos[valor]" id="datos[valor]" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row ocultar ica">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" >
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aDepartamento as $item){ ?>
+                          <option value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Ciudad <span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" >
+                          <option value="">Seleccione una opción</option>
+                          
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+                <div class="card-footer text-right">
+                  <a class="btn btn-outline-secondary mr-1" id="limpiar">Limpiar</a>
+                  <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                </div>
+                <div class="card-header">
+                  <h4>Listado de Retenciones e ICA</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                      <table class="table table-striped mayusculas" id="tableImpuestos">
+                        <thead>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>Tipo</th>
+                            <th>Descipción</th>
+                            <th>Valor</th>
+                            <th>Ciudad</th>
+                            <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($aListas as $index => $iItem){ 
+                            $oItem=new Data("ciudad","idCiudad",$iItem["idCiudad"]); 
+                            $aCiudad=$oItem->getDatos(); 
+                            unset($oItem); 
+                            
+                            $oItem=new Data("departamento","idDepartamento",$iItem["idDepartamento"]); 
+                            $aDepartamento=$oItem->getDatos(); 
+                            unset($oItem); 
+                            ?>
+                            <tr>
+                              <td><?php echo $index+1; ?></td>
+                              <td><?php echo $iItem["tipo"]==1?"RETENCION":"ICA"; ?></td>
+                              <td><?php echo $iItem["descripcion"]; ?></td>
+                              <td><?php echo $iItem["valor"]."%"; ?></td>
+                              <td><?php if($iItem["tipo"]==2){ echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; } ?></td>
+                              <td class="centrar">
+                                <a href="javascript:void(0)" name="<?php echo $iItem['idRetencion']; ?>" class="btn btn-icon btn-sm btn-warning editar" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-edit"></i></a>
+                                <?php if($iItem["estado"]==1){ ?>
+                                  <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-danger inactivar" accion="1" name="<?php echo $iItem['idRetencion']; ?>" data-toggle="tooltip" data-placement="top" title="Desactivar"><i class="fas fa-times"></i></a>
+                                <?php }else{ ?>
+                                <a href="javascript:void(0)" class="btn btn-icon btn-sm btn-success activar" data-toggle="tooltip" data-placement="top" title="Activar" accion="2" name="<?php echo $iItem['idRetencion']; ?>"><i class="fas fa-check"></i></a>
+                                <?php } ?>
+                            </tr>
+                          <?php } ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

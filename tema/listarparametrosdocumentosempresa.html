@@ -1,0 +1,98 @@
+<?php 
+
+require_once("./class/parametrosdocumentos.php");
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+$oParametro=new ParametrosDocumentos(); 
+
+
+
+$aParametro=$oParametro->getParametrosDocumentos($id);
+
+
+?>
+
+  <div class="card">
+    <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      
+
+                      <table class="table table-striped mayusculas centrar" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Empresa</th>
+
+                            <th>Descripción</th>
+
+                            <th>Tipo</th>
+
+                            <th>Comprobante</th>
+
+                            <th>Numeración inicial</th>
+
+                            <th>Numeración actual</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+
+                  <?php foreach($aParametro as $index => $iParametro){ ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iParametro["razonSocial"]; ?></td>
+
+                              <td><?php echo $iParametro["descripcionParametro"]; ?></td>
+                              
+                              <td><?php echo $iParametro["letra"]; ?></td>
+
+                              <td><?php echo $iParametro["comprobante"]; ?></td>
+
+
+                                <td><?php echo $iParametro["numeracionInicial"]; ?></td>
+                              <td >
+                                <?php 
+                                  
+                                  echo $iParametro["numeracionActual"];
+
+                                   ?>
+                              </td>
+                            </tr>
+                            <?php } ?>
+        
+
+                        </tbody>
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+                </div>

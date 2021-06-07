@@ -1,0 +1,202 @@
+<?php 
+
+
+
+
+
+require_once("class/empleados.php"); 
+
+
+
+$oEmpleado=new Empleados(); 
+
+
+
+$oControl=new Control(); 
+
+
+
+$aFiltro["estado"]=1; 
+
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aFiltro);
+
+
+
+
+
+?>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Registrar descuento</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empleado<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idEmpleado]" id="datos[idEmpleado]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpleados as $item){ ?>
+
+                          <option cc="<?php echo $item["numeroDocumento"]; ?>" value='<?php echo $item["idEmpleado"]; ?>'><?php echo $item["nombre"]." ".$item["apellido"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">N° Documento<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" readonly id="numeroDocumento" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Gestión Descuento</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Descripción del descuento<span class="requerido">*</span>:</label>
+
+                        <textarea class="form-control" name="datos[descripcion]" id="datos[descripcion]"  required></textarea>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha Inicio Descuento<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control" name="datos[fechaInicio]" id="datos[fechaInicio]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">N° Cuotas<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[cuotas]" id="datos[cuotas]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Valor Descuento<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero moneda" name="datos[valorDescuento]" id="datos[valorDescuento]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Valor Cuota<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control moneda" name="datos[valorCuota]" id="datos[valorCuota]" required readonly>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

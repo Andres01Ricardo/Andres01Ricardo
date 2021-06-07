@@ -1,0 +1,4 @@
+[09-Oct-2020 18:47:10 UTC] PHP Parse error:  syntax error, unexpected '$cEmail' (T_VARIABLE) in /home/toa8o1mv7ibx/public_html/functions/facturacompra/guardarfactura.php on line 282
+[13-Oct-2020 00:34:33 UTC] PHP Parse error:  syntax error, unexpected '$correoContador' (T_VARIABLE) in /home/toa8o1mv7ibx/public_html/functions/facturacompra/guardarfactura.php on line 279
+[13-Oct-2020 01:03:06 UTC] PHP Parse error:  syntax error, unexpected '$correoContador' (T_VARIABLE) in /home/toa8o1mv7ibx/public_html/functions/facturacompra/guardarfactura.php on line 279
+[13-Oct-2020 01:08:55 UTC] PHP Parse error:  syntax error, unexpected '$correoContador' (T_VARIABLE) in /home/toa8o1mv7ibx/public_html/functions/facturacompra/guardarfactura.php on line 275

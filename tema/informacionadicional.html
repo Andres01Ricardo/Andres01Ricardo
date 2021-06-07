@@ -1,0 +1,247 @@
+<?php 
+
+
+require_once("class/timeline.php"); 
+
+require_once("class/estadisticas.php");
+
+$codigocliente=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$codigocliente; 
+if($codigocliente==""){
+echo '<script>window.history.back()</script>'; 
+}
+
+
+ 
+
+$oItem=new Data("t_clientes","codigoCliente",$codigocliente); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+// print_r($rows);
+$oActividad=new Actividades(); 
+$actividades=$oActividad->getActividades($codigocliente);
+unset($oActividad);   
+
+// print_r('---');
+// print_r($oActividad);
+
+$oLista = new Lista('t_etapas');
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+$aEtapa=$oLista->getLista();
+unset($oLista);
+// print_r('---');
+// print_r($aEtapa);
+
+$oEstadistica=new Estadistica(); 
+$aNegocio=$oEstadistica->getNegocios($codigocliente);
+unset($oEstadistica);
+// print_r('---');
+// print_r($aNegocio);
+
+$label="";
+$datos="";
+if (!empty($aNegocio)) {
+
+
+  foreach($aNegocio as $row){
+    $label= $label."'".$row['estado']."',";
+    $datos =$datos.$row['total'].",";
+  }
+  $label = rtrim($label,",");
+  $datos = rtrim($datos,",");
+}else{
+  $label='0';
+  $datos=0;
+}
+?>
+  
+  <div class=" scrollmenu fijarmenucliente" id="menuinformacioncliente">
+        
+          <a id="escogido" href="../informacionadicional/<?php echo $codigocliente;?>" >TIMELINE<i class="fas fa-grip-lines-vertical"></i></a>
+          <a href="../llamadas/<?php echo $codigocliente;?>">LLAMADAS<i class="fas fa-phone"></i></a>
+          <a href="../correos/<?php echo $codigocliente;?>">CORREOS<i class="fas fa-at"></i></a>
+          <a href="../notas/<?php echo $codigocliente;?>">NOTAS<i class="fas fa-paperclip"></i></a>
+          <a href="../tareas/<?php echo $codigocliente;?>">TAREAS <i class="far fa-calendar-alt"></i></a>
+          <a href="../negocios/<?php echo $codigocliente;?>">NEGOCIOS<i class="far fa-chart-bar"></i></a>
+          <a href="../pipeline">PIPELINE<i class="fas fa-table"></i></a>
+  </div>
+
+<div class="row">
+  <div class="col-6 " >
+        
+          <div class=" card l-bg-purple  topcard ">
+            
+            <?php $nombre = $rows['nombre'];
+            $apellidos =  $rows['apellidos'];
+            $rest1 = substr("$nombre", 0,1);    
+            $rest2 = substr("$apellidos", 0,1); ?>
+
+            <?php $codigoCliente= $rows['codigoCliente']; ?>
+            <div><a style="float: right;" onclick="return abrirpopup3(<?php echo $codigoCliente ?>);" class="btn btn-danger">Eliminar cliente</a></div>
+            <div class="card-body ">
+                <figure class="avatar mr-2 avatar-lg bg-danger text-white" data-initial="<?php echo $rest1,$rest2 ?>">        
+                </figure>
+                <h3><?php echo $rows['nombre'],' ', $rows['apellidos'];?>
+                  <button class="btn btn-cambiar" onclick="return abrirpopup2(<?php echo $codigoCliente ?>);" ><i class="fas fa-edit "></i></button></h3>
+                <h5>Correo electronico:  <?php echo $rows['email'];?></h5>
+                <h5>Telefono:  <?php echo $rows['telefono'];?></h5>
+                <h5> Creado:  <?php echo $rows['fechaCreacion'];?></h5>
+        
+                <button class="btn btn-cambiar" id="btn-cambiar-etapa" onclick="return abrirpopup1(<?php echo $codigoCliente ?>);">CAMBIAR ETAPA</button>
+              </div>
+          </div> 
+          <div class="card fijardatoscliente">
+                <center><h3>Negocios</h3></center>
+                <canvas id="grafica" ></canvas>
+          </div>   
+      </div>
+      <div class="col-6 ">
+        <div class="card bg-cyan aclarar topcard">
+          
+            <div class="card-statistic-3 p-4   ">
+              <div class="card-icon card-icon-large">
+                <i class="fas fa-grip-lines-vertical"></i>
+              </div>
+            <div class="mb-4">
+              <h2>TIMELINE</h2>        
+            </div>
+      </div>
+    </div>
+      <?php foreach($actividades as $index => $rowsa){ ?>
+
+      <div class="card bg-cyan aclarar">
+          <div class="card-body">
+              <div class="activities">
+                <ul>
+                  <li class="sinpunto">
+                    <div class="activity">
+                      <div class="activity-icon bg-primary text-white">  
+                      <i class="<?php echo $rowsa['icono'];?>" ></i></div>
+                      <ul>
+                        <li><h3><?php echo strtoupper($rowsa['tipo']);?></h3></li>
+                        <li><h5>Fecha: <?php echo $rowsa['fechaCreacion'];?> Hora: <?php echo $rowsa['horaCreacion'];?></h5></li>
+                        <?php if($rowsa['duracion'] != null){ ?>
+                          <li><h5>Duración: <?php echo $rowsa['duracion'];?> </h5></li>
+                        <?php } ?>
+                        <?php if($rowsa['motivo'] != null){ ?>
+                          <li><h5>Motivo: <?php echo $rowsa['motivo'];?> </h5></li>
+                        <?php } ?>
+                        <?php if($rowsa['encargado'] != null){ ?>
+                          <li><h5>Encargado: <?php echo $rowsa['encargado']; ?></h5></li>
+                        <?php } ?>
+                        <?php if($rowsa['vencimiento'] != null){ ?>
+                        
+                        <li><h5>Vencimiento:<?php echo $rowsa['vencimiento']; ?></h5></li>
+                        <?php } ?>
+                        <li><h5>Creador: <?php echo $rowsa['creador']; ?></h5></li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <?php } ?>
+    </div>
+</div>
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlay1">
+  <div class="swal-modal popup" id="popup1">
+    <a  class="btn-cerrar" id="btn-cerrar1" onclick="return cerrarpopup1();"><i class="fas fa-times"></i></a>
+        <h3 class="swal-title">Cambiar cliente de etapa</h3>
+            <form method="POST" action="../functions/crm/cambiaretapa.php">
+          <div class="swal-content">
+              <select class="form-control" name="idEtapa">
+                <?php foreach($aEtapa as $rowse){ ?>
+                <option value="<?php echo $rowse['codigo'] ?>"><?php echo $rowse['nombreEtapa'] ?></option>
+                <?php } ?>
+              </select>
+              <br>
+              <input type="text" name="codigoClienteCambiar" id="codigoClienteCambiar" class="ocultar">
+          
+            </div>
+            <div class="swal-footer">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-exchange-alt">CAMBIAR</i></button>
+            </div>
+        </form>
+  </div>
+</div>
+
+
+
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlay2">
+  <div class="swal-modal popup" id="popup2">
+    <a  class="btn-cerrar" id="btn-cerrar2" onclick="return cerrarpopup2();"><i class="fas fa-times"></i></a>
+        <h3 class="swal-title">Modificar datos del cliente</h3>
+          <form method="POST" action="../functions/crm/modificarcliente.php">
+            <div class="swal-content">
+              <label>Documento identidad</label>
+              <input type="text" name="idClienteModificar" id="idClienteModificar" class="form-control" placeholder="Documento identidad" value="<?php echo $rows['idCliente']; ?>" onkeypress="return numeros(event);">
+              <label>Nombre:</label>
+              <input type="text" name="nombreCliente" id="nombreCliente" class="form-control" placeholder="Nombre" value="<?php echo $rows['nombre']; ?>" onkeypress="return letras(event);" onkeyup="aMayusculas(this.value,this.id);">
+              <label>Apellido:</label>
+              <input type="text" name="apellidosCliente" id="apellidosCliente" class="form-control" placeholder="Apellidos" value="<?php echo $rows['apellidos']; ?>" onkeypress="return letras(event);" onkeyup="aMayusculas(this.value,this.id);">
+              <label>Email:</label>
+              <input type="text" name="emaiCliente" id="emailCliente" class="form-control" placeholder="ejemplo@ejemplo.com" value="<?php echo $rows['email']; ?>">
+              <label>Telefono:</label>
+              <input type="text" name="telefonoCliente" id="telefonoCliente" class="form-control" placeholder="telefono" value="<?php echo $rows['telefono']; ?>" onkeypress="return numeros(event);">
+              <label>Dirección:</label>
+              <input type="text" name="direccionCliente" id="direccionCliente" class="form-control" placeholder="direccion" value="<?php echo $rows['direccion']; ?>">
+
+              <br>
+              <input type="text" name="codigoClienteCambiar" id="codigoClienteCambiar2" class="ocultar">
+          
+            </div>
+            <div class="swal-footer">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-exchange-alt">MODIFICAR</i></button>
+            </div>
+      </form>
+  </div>
+</div>
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlay3">
+  <div class="swal-modal popup" id="popup3">
+    
+        <h3 class="swal-title">Eliminar el cliente</h3>
+          <form method="POST" action="../functions/crm/eliminarcliente.php?id=<?php echo $codigocliente;?>">
+            <div class="swal-content">
+              
+              <label>¿Seguro desea eliminar el cliente?</label>
+              <br>
+              <input type="text" name="codigoClienteEliminar" id="codigoClienteEliminar" class="ocultar">
+          
+            </div>
+            <div class="swal-footer">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-trash-alt">ELIMINAR</i></button>
+              <a  class="btn btn-light" id="btn-cerrar3" onclick="return cerrarpopup3();"><i class="fas fa-times">CANCELAR</i></a>
+            </div>
+      </form>
+  </div>
+</div>
+
+
+<script>
+   let miCanvas = document.getElementById("grafica").getContext("2d");
+   var label= [<?php echo $label ?>];
+   var datos= [<?php echo $datos ?>];
+   
+   var chart= new Chart(miCanvas,{
+      type:"pie",
+      data:{
+        labels:label,
+        datasets:[
+          {
+            label:"NEGOCIOS",
+            backgroundColor:[
+            "rgb(145,252,187)",
+            "rgb(118,211,255)",
+            
+            "rgb(255,140,140)",
+            ],
+            data:datos
+          }
+        ]
+      }
+   });
+ </script>

@@ -1,0 +1,263 @@
+<?php 
+
+require_once("class/cuentasbancarias.php"); 
+
+
+
+$oControl=new Control(); 
+
+$oCuentasBancarias=new CuentasBancarias();
+
+
+
+
+
+
+
+$aCuentas=$oCuentasBancarias->getCuentas(); 
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre"; 
+
+
+
+?>
+
+<section class="section">
+
+    <ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Cuentas Bancarias</li>
+
+      <li class="breadcrumb-item">Listar Cuentas Bancarias</li>
+
+    </ul>
+
+    <div class="section-body">
+
+      <div class="row">
+
+        <div class="col-md-12 col-lg-12">
+
+          <div class="card">
+
+            <div class="card-header">
+
+              <h4>Lista de cuentas bancarias</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableCuentas">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>N° Cuenta</th>
+
+                            <th>Nombre Cuenta</th>
+
+                            <th>Saldo Actual</th>
+
+                            <th>Banco</th>
+
+                            <th>Empresa</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aCuentas as $index => $iCuenta){ 
+
+                          $aEncript['cadena']=$iCuenta['idCuentaBancaria'];
+
+                          $id=$oControl->encriptar($aEncript); 
+
+                            ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iCuenta["numeroCuenta"]; ?></td>
+
+                              <td><?php echo $iCuenta["nombreCuenta"]; ?></td>
+
+                              <td><?php echo "$".number_format($iCuenta["saldoActual"],2,",","."); ?></td>
+
+                              <td><?php echo $iCuenta["banco"]; ?></td>
+
+                              <td><?php echo $iCuenta["razonSocial"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>vermovimientos/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Ver Movimientos" ><i class="fas fa-align-justify" style="color: #0B08FF;font-size: 22px;"></i></a>
+
+                                <a href="javascript:void(0)" id="<?php echo $id; ?>" data-toggle="modal" data-target="#modalExtracto" data-toggle="tooltip" data-placement="top" title="Cargar extracto" class="cargarExtracto"><i class="fas fa-file-upload" style="color: #FFAE30;font-size: 22px;"></i></a>
+
+                                <a href="<?php echo $URL; ?>ajustarsaldo/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Ajustar Saldo" ><i class="fas fa-donate" style="color: #A2D7FF;font-size: 22px;"></i></a>
+
+                              </td>
+
+                                
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalExtracto" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Cargar Extracto Bancario <span id="titulo" class="negrita"></span></h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body">
+
+          <form enctype="multipart/form-data" id="frmGuardar">
+
+            <input type="hidden" name="datos[idCuenta]" id="datos[idCuenta]" value="">
+
+            <div class="row">
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Mes Extracto<span class="requerido">*</span>:</label>
+
+                  <select class="form-control" name="datos[periodo]" id="datos[periodo]" required>
+
+                    <option value="">Seleccione una opción</option>
+                    <?php for($i=1; $i<=12; $i++){?>
+
+                    <option value="<?php echo $i.'-'.(date('Y')-1); ?>"><?php echo $meses[$i]." de ".(date('Y')-1); ?></option>
+
+                    <?php } ?>
+
+                    <?php for($i=1; $i<=date('n'); $i++){?>
+
+                    <option value="<?php echo $i.'-'.date('Y'); ?>"><?php echo $meses[$i]." de ".date('Y'); ?></option>
+
+                    <?php } ?>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Archivo<span class="requerido">*</span>:</label>
+
+                  <div class="custom-file">
+
+                    <input type="file" class="custom-file-input" id="file" name="file" >
+
+                    <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardar">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
+

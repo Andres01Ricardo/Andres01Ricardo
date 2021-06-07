@@ -1,0 +1,306 @@
+<?php 
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+$oLista = new Lista('rol');
+
+$aRoles=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Usuarios</li>
+
+          <li class="breadcrumb-item">Crear usuario</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Documento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[tipoDocumento]" id="datos[tipoDocumento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Cédula Ciudadanía</option>
+
+                          <option value="2">Pasaporte</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">N° Documento<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[numeroDocumento]" id="datos[numeroDocumento]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nombres<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[nombres]" id="datos[nombres]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[apellidos]" id="datos[apellidos]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Genero<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[genero]" id="datos[genero]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Masculino</option>
+
+                          <option value="2">Femenino</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Email<span class="requerido">*</span>:</label>
+
+                        <input type="email" class="form-control" name="datos[correo]" id="datos[correo]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[telefono]" id="datos[telefono]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento residencia<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamentoResidencia]" id="datos[idDepartamentoResidencia]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ ?>
+
+                          <option value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad residencia<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudadResidencia]" id="datos[idCiudadResidencia]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[direccion]" id="datos[direccion]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Acceso<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idRol]" id="datos[idRol]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aRoles as $item){ 
+
+                          if($item["idRol"] != 3 &&$item["idRol"] != 4 ){
+
+                          ?>
+
+                          <option value='<?php echo $item["idRol"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Foto:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" accept="image/*" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ingreso perfil de empresa<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[ingresoPerfilEmpresa]" id="datos[ingresoPerfilEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+                          <option value="1">SI</option>
+                          <option value="2">NO</option>
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

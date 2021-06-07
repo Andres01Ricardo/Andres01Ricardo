@@ -1,0 +1,407 @@
+table th {
+ text-align: center;
+
+}
+
+td{
+  font-size: 90%;
+  align-items: center;
+  color: #7b7b7b;
+}
+#menuinformacioncliente{
+
+  position: static;
+}
+.principal{
+  position: relative;
+  width: 100%;
+}
+  .primero{
+  	text-align: center;
+  	width: 100%;
+  }
+
+  .segundo{
+  	margin: 0px auto;
+  	float: right;
+  	width: 90%;
+    align-items: center;
+  }
+    .tercero {
+    	margin: 0px auto;
+      width: 15%;
+      height: 40px;
+      position: relative;      
+      float: left;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    
+    .tercero:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-left: 20px solid #F6F5CB;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+    }
+    .tercero:before {
+      content: "";
+      position: absolute;
+      right: -20px;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-left: 20px red;
+      border-top: 30px solid transparent;
+      border-bottom: 30px solid transparent;
+    }
+    .tercero:first-child:after{
+      border-left: 0px;
+    }
+        .tercero-nuevo {
+      margin: 0px auto;
+      width: 15%;
+      height: 40px;
+      position: relative;
+      
+      float: left;
+      display: flex;
+      align-items: center;
+      
+    }
+    #selector-color{
+      margin: 0px auto;
+      width: 15%;
+      height: 40px;
+      position: relative;
+      /*background: white;*/
+      float: left;
+      display: flex;
+      align-items: center;
+    }
+    .tercero-nuevo:after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      
+    }
+
+    .texto-div{
+    	width:100%;
+    	text-align: center;
+    	left: 50%;
+    	top: 50%;
+    }
+    .texto-divnuevo{
+      width:100%;
+      text-align: center;
+      top: 50%;
+    }
+    #inputnuevo{
+      width: 100%;
+    }
+
+    #pr{
+    	float: left;
+      width: 20px;
+    }
+    .borde{
+    	border: 0;
+    	text-align: center;   	
+    }
+
+    table{
+    	max-width: 100%;
+
+    }
+    .nombre-etapa{
+    	font-weight: bold;
+      font-size: 80%;
+      /*color: black;*/
+    }
+    .nombre-etapa-tabla{
+      font-weight: bold;
+      color: #7b7b7b;
+    }
+    #color{
+      visibility: collapse;
+    }
+
+
+    #nuevo{
+      visibility: collapse;
+
+    }
+    #eliminaretapa{
+      width: 5px;
+      height: 5px;
+    }
+
+    #tablainformacion{
+    
+    
+    padding-right:30px;
+    padding-top:114px;
+    width:100%;
+    position:relative
+
+    }
+
+    .menu{
+      list-style: none; 
+      align-items: center;
+    }
+    .lista{
+      display: block;
+      float: left;
+    }
+  
+    div.scrollmenu {
+  background-color: #8AB6FF;
+  overflow: auto;
+  white-space: nowrap;
+
+  
+}
+
+div.scrollmenu a {
+  display: inline-block;
+  color: black;
+  text-align: center;
+  padding: 18px;
+  text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+  background-color: #777;
+}
+
+div.scrollmenu a:hover> div {
+  display: block;
+}
+
+
+#btneliminaretapa{
+  width: 20%;
+  float: right;
+}
+#btneliminaretapa a{
+  float: right;
+  color: white;
+}
+#tituloetapa{
+  width: 80%;
+  margin-left: 35%;
+}
+#ultimocontacto{
+  display: inline-flex;
+  
+  align-items: center;
+}
+#celdacliente{
+  width:30%;
+}
+#ultimoContacto {
+  pointer-events: none;
+  display: none;
+}
+#creacion{
+  pointer-events: none;
+  display: none;
+}
+.rectanguloinformacion{
+  width: 100%;
+  
+  
+  border-color: black;
+  border-radius: 10px;
+  
+}
+.sinpunto{
+  list-style: none;
+}
+#escogido{
+  background-color: #777;
+  color: white;
+}
+
+
+.fijardatoscliente{
+  position: sticky;
+  top: 190px;
+  width: 100%;
+}
+
+/*------------------------------------*/
+.crono_wrapper {
+  
+  width:100%;
+  display: block;
+  float: left;
+
+}
+.size{
+  font-size: 130%;
+  color: white;
+}
+
+
+/* --------------------------------------------------*/
+
+
+/*#duracion{
+  visibility: hidden;
+}*/
+
+.topcard{
+  top: 30px;
+  margin-bottom: 50px;
+
+}
+.aclarar{
+  opacity: 0.8;
+}
+
+.ocultar{
+  visibility: hidden;
+}
+
+.btn-eliminar{
+  box-shadow:0 2px 6px #fd9b96;
+    background-color:#ff8c86;
+    border-color:#ff8c86;
+    color:#fff
+}
+.btn-eliminar:hover,.btn-eliminar:focus{
+  background-color:#ff8c86;
+}
+
+/*.overlay{
+  background: rgba(0,0,0,0.3);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}*/
+
+.swal-modal.popup{
+  background: #f8f8f8;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.3);
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  transition: 1s ease all;
+}
+.btn-cerrar{
+  font-size: 16px;
+  line-height: 16px;
+  display: block;
+  text-align: right;
+  color: #BBBBBB;
+  transition: 0.1s ease all;
+}
+.popup .btn-cerrar:hover{
+  color: #000
+}
+.swal-overlay{
+  visibility: hidden;
+
+  background: rgba(0,0,0,0.3);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  
+}
+.active{
+  visibility: visible;
+  
+}
+.swal-modal.popup.active{
+  opacity: 1;
+}
+
+
+.btn-cambiar{
+  background-color: #D8FFFA;
+}
+#color{
+  width: 50px;
+  height: 50px;
+}
+#coloretapacambiar{
+  width: 30px;
+  height: 30px;
+  position: relative;;
+}
+#nombreEtapaCambiar{
+  border-radius: 8px;
+  position: relative;
+  width: 80%;
+}
+#btnCambiarColorEtapa{
+  color: grey;
+}
+
+#gestionar{
+  display:none;
+}
+
+#gestionar:hover{
+    display:block;
+    position:fixed;
+    overflow:hidden;
+    background: #ffffcc;
+    border: 1px solid black;
+    padding: 5px;
+    z-index: 1000;
+    color: black;
+}
+
+.menucotizacion{
+  background-color: #EFF4F8;
+}
+
+.lista-menucotizacion:hover{
+  background-color: #8B8C8C;
+  
+}
+
+#tableFacturaVentaGestion{ 
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+
+#tableFacturaVentaGestion td{
+ padding: 5px;
+}
+
+div.avatar {
+    /* cambia estos dos valores para definir el tamaño de tu círculo */
+    height: 60px;
+    width: 60px;
+    /* los siguientes valores son independientes del tamaño del círculo */
+    background-repeat: no-repeat;
+    background-position: 50%;
+    border-radius: 50%;
+    background-size: 100% auto;
+}

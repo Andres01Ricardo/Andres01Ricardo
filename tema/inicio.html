@@ -1,0 +1,58 @@
+<?php 
+
+
+
+if($_SESSION["idRol"]==1){
+
+	require_once("tema/dashboardadministrador.html"); 
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/dashboardadministrador.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}elseif($_SESSION["idRol"]==2){
+
+	require_once("tema/dashboardcontador.html"); 
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/dashboardcontador.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}else if($_SESSION["idRol"]==3){ 
+
+	require_once("tema/dashboardempresa.html"); 
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/dashboardempresa.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}else if($_SESSION["idRol"]==4){ 
+
+require_once("tema/pipeline.html");
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/pipeline.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}
+else if($_SESSION["idRol"]==5){ 
+
+require_once("tema/dashboardcontadorexterno.html");
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/pipeline.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}
+
+?>

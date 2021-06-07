@@ -1,0 +1,386 @@
+<?php 
+
+require_once("class/facturacompra.php"); 
+
+require_once("class/empresa.php"); 
+
+
+
+$oFactura=new FacturaCompra(); 
+
+$oEmpresa=new Empresa(); 
+
+
+
+
+
+$aEmpresas=$oEmpresa->getEmpresas();
+
+
+
+$oLista = new Lista('unidad');
+
+$oLista->setOrden("nombre","ASC");
+
+$aUnidades=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+$aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idEmpresa"])); 
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
+
+<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+
+<?php } ?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Factura de compra</li>
+
+          <li class="breadcrumb-item">Enviar factura</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <?php if($_SESSION['idRol']!=3&&$_SESSION['idRol']!=4){ ?>
+
+                    <div class=" col-md-3 ">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iItem){ ?>
+
+                          <option value="<?php echo $iItem["idEmpresa"]; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <?php } ?>
+
+                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Tipo compra<span class="requerido">*</span>:</label>
+
+                          <div class="form-check-inline">
+
+                            <label class="form-check-label" for="datos[tipoCompra]">
+
+                            <input class="form-check-input" type="radio" id="datos[tipoCompra]" name="datos[tipoCompra]" checked value="1">
+
+                            Bienes</label>
+
+                          </div>
+
+                          <div class="form-check-inline">
+
+                            <label class="form-check-label" for="datos[tipoCompra]">
+
+                            <input class="form-check-input" type="radio" id="datos[tipoCompra]" name="datos[tipoCompra]" value="2">
+
+                            Servicio</label>
+
+                          </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha recibido<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control datepicker" name="datos[fechaRecibido]" id="datos[fechaRecibido]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Proveedor<span class="requerido">*</span>:</label>
+
+                        <select class="form-control select2 mayusculas" name="datos[idProveedor]" id="datos[idProveedor]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php if($_SESSION["idEmpresa"]!=""){ foreach($aProveedores as $iProveedor){ ?>
+
+                          <option value="<?php echo $iProveedor["idProveedor"]; ?>"><?php echo $iProveedor["razonSocial"]; ?></option>
+
+                        <?php } } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                          <label class="negrita">N° Factura<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control mayusculas" name="datos[nroFactura]" id="datos[nroFactura]" placeholder="N° Factura" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Factura<span class="requerido">*</span>:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" required>
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Detalles Factura</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Productos</th>
+
+                            <th>Descripción</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Unidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Subtotal</th>
+
+                            <th>Iva(%)</th>
+
+                            <th>Total</th>
+
+                            <th class="text-center">
+
+                              <a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+
+                            </th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                              <td>1</td>
+
+                              <td><input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="Detalle">
+
+                                <input type="hidden" name="item[0][idProducto]" id="item[0][idProducto]" class="form-control idProducto" ></td>
+
+                              <td><input type="text" class="form-control descripcion mayusculas" name="item[0][descripcion]" id="item[0][descripcion]" placeholder="Descripción" required></td>
+
+                              <td><input type="text" class="form-control numero cantidad" name="item[0][cantidad]" id="item[0][cantidad]" placeholder="Cantidad" required></td>
+
+                              <td><select class="form-control mayusculas idUnidad" name="item[0][idUnidad]" id="item[0][idUnidad]" required>
+
+                                  <option value="">Seleccione una opción</option>
+
+                                  <?php foreach($aUnidades as $iUnidades){ ?>
+
+                                  <option value="<?php echo $iUnidades['idUnidad']; ?>"><?php echo $iUnidades["nombre"]; ?></option>
+
+                                  <?php } ?>
+
+                                </select></td>
+
+                              <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="item[0][valorUnitario]" id="item[0][valorUnitario]" placeholder="Valor Unitario" required></td>
+
+                              <td><input type="text" class="form-control moneda subtotal mayusculas" name="item[0][subtotal]" id="item[0][subtotal]" placeholder="Subtotal" required readonly></td>
+
+                              <td><input type="text" class="form-control numero iva mayusculas" name="item[0][iva]" id="item[0][iva]" placeholder="IVA" required></td>
+
+                              <td><input type="text" class="form-control moneda total mayusculas" name="item[0][total]" id="item[0][total]" placeholder="TOTAL" required readonly></td>
+
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+
+                              </td>
+
+                            </tr>
+
+                        </tbody>
+
+                        <tfoot>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[subtotal]" id="datos[subtotal]" placeholder="SUBTOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td><input type="text" class="form-control moneda numero" name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value=0></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[iva]" id="datos[iva]" placeholder="IVA" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[total]" id="datos[total]" placeholder="TOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                        </tfoot>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+

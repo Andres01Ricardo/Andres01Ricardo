@@ -1,0 +1,150 @@
+<?php 
+
+$oControl=new Control(); 
+
+
+
+
+
+$oLista = new Lista('factura_compra');
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]); 
+
+$aFacturas=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Factura de compra</li>
+
+          <li class="breadcrumb-item">Listar facturas enviadas</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableFacturas">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Proveedor</th>
+
+                            <th>N° Factura</th>
+
+                            <th>Fecha Pago</th>
+
+                            <th>Valor</th>
+
+                            <th>Estado</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aFacturas as $index => $iFactura){ 
+
+
+
+                            $oItem=new Data("proveedor","idProveedor", $iFactura["idProveedor"]); 
+
+                            $aProveedor=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+                            $aEncript['cadena']=$iFactura['idFacturaCompra'];
+
+                            $id=$oControl->encriptar($aEncript);
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iFactura["fechaRegistro"]; ?></td>
+
+                              <td><?php echo $aProveedor["razonSocial"]; ?></td>
+
+                              <td><?php echo $iFactura["nroFactura"]; ?></td>
+
+                              <td><?php echo $iFactura["fechaPago"]; ?></td>
+
+                              <td><?php echo "$".number_format($iFactura["total"],0,",","."); ?></td>
+
+                              <td><?php if($iFactura["estado"]==1){ echo 'Enviada'; }elseif($iFactura["estado"]==2){ echo 'Procesada'; }else{ echo 'pagada';} ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>verfacturacompra/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>" class="btn btn-icon btn-sm btn-primary datatooltip" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-briefcase"></i></a>
+
+                                <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" class="btn btn-icon btn-sm btn-warning"><i class="fas fa-file"></i></a>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+

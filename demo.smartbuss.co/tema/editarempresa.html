@@ -1,0 +1,220 @@
+<?php 
+
+$oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+  echo '<script>window.history.back()</script>'; 
+}
+$decrip["cadena"]=$id; 
+$id=$oControl->desencriptar($decrip); 
+
+$oItem=new Data("empresa","idEmpresa",$id); 
+$aDatos=$oItem->getDatos(); 
+unset($oItem); 
+
+$oItem=new Data("representante_legal","idEmpresa",$id); 
+$aDatosRepresentante=$oItem->getDatos(); 
+unset($oItem);
+
+
+$oLista = new Lista('departamento');
+$aDepartamento=$oLista->getLista();
+unset($oLista);
+
+$oLista = new Lista('ciudad');
+$oLista->setFiltro("idDepartamento","=",$aDatos["idDepartamento"]);
+$aCiudad=$oLista->getLista();
+unset($oLista);
+
+
+$oLista = new Lista('rol');
+$aRoles=$oLista->getLista();
+unset($oLista);
+
+?>
+<form enctype="multipart/form-data" id="frmGuardar">
+<input type="hidden" name="idEmpresa" id="idEmpresa" value="<?php echo $id; ?>">
+<input type="hidden" name="idRepresentanteLegal" id="idRepresentanteLegal" value="<?php echo $aDatosRepresentante["idRepresentanteLegal"]; ?>">
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Empresas</li>
+          <li class="breadcrumb-item">Crear empresa</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">NIT<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" readonly name="datos[NIT]" id="datos[NIT]" value="<?php echo $aDatos['nit']; ?>" required>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Digito Verificador<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control numero" readonly maxlength="1" name="datos[digitoVerificador]" id="datos[digitoVerificador]" value='<?php echo $aDatos['digitoVerificador']; ?>'>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Razón Social<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" name="datos[razonSocial]" value="<?php echo $aDatos['razonSocial']; ?>" id="datos[razonSocial]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Email<span class="requerido">*</span>:</label>
+                        <input type="email" class="form-control" name="datos[correo]" id="datos[correo]" value="<?php echo $aDatos['email']; ?>" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control numero" name="datos[telefono]" id="datos[telefono]" value="<?php echo $aDatos['telefono']; ?>" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aDepartamento as $item){
+                            $select=""; 
+                            if($aDatos['idDepartamento']==$item["idDepartamento"]){
+                              $select="selected"; 
+                            }
+                           ?>
+                          <option <?php echo $select; ?> value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Ciudad <span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aCiudad as $item){ ?>
+                          <option <?php if($aDatos["idCiudad"]==$item["idCiudad"]){ echo 'selected'; } ?> value='<?php echo $item["idCiudad"]; ?>'><?php echo $item["nombre"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" name="datos[direccion]" id="datos[direccion]" required value="<?php echo $aDatos['direccion']; ?>">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Logo<span class="requerido">*</span>:</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="logo" name="logo" >
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Camara Comercio<span class="requerido">*</span>:</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="camaraComercio" name="camaraComercio" >
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">RUT<span class="requerido">*</span>:</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="rut" name="rut" >
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-header">
+                    <h4>Representante Legal</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Tipo Documento<span class="requerido">*</span>:</label>
+                          <select class="form-control" name="representante[tipoDocumento]" id="representante[tipoDocumento]" required>
+                            <option value="">Seleccione una opción</option>
+                            <option <?php if($aDatosRepresentante["tipoDocumento"]==1){ echo 'selected'; } ?> value="1">Cédula Ciudadanía</option>
+                            <option <?php if($aDatosRepresentante["tipoDocumento"]==2){ echo 'selected'; } ?> value="2">Pasaporte</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">N° Documento<span class="requerido">*</span>:</label>
+                          <input type="text" value="<?php echo $aDatosRepresentante["numeroDocumento"]; ?>" class="form-control numero" name="representante[numeroDocumento]" id="representante[numeroDocumento]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Nombres<span class="requerido">*</span>:</label>
+                          <input type="text"  value="<?php echo $aDatosRepresentante["nombres"]; ?>" class="form-control" name="representante[nombres]" id="representante[nombres]" required>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
+                          <input type="text" value="<?php echo $aDatosRepresentante["apellidos"]; ?>" class="form-control" name="representante[apellidos]" id="representante[apellidos]" required>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Email<span class="requerido">*</span>:</label>
+                        <input type="email" value="<?php echo $aDatosRepresentante["email"]; ?>" class="form-control" name="representante[correo]" id="representante[correo]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+                        <input type="text" value="<?php echo $aDatosRepresentante["telefono"]; ?>" class="form-control numero" name="representante[telefono]" id="representante[telefono]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Cedula Representante Legal<span class="requerido">*</span>:</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="cedula" name="cedula" >
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>

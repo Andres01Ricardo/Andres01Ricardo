@@ -1,0 +1,163 @@
+<?php
+date_default_timezone_set("America/Bogota"); 
+// $idLibranza=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+// if($id==""){
+
+//   echo '<script>window.history.back()</script>'; 
+
+// }
+// if(!isset($_SESSION)){ session_start(); }
+
+
+require_once("class/facturacompra.php");
+
+$desde=$_POST['periodoDesde'];
+$hasta=$_POST['periodoHasta'];
+$proveedor=$_POST['proveedor'];
+
+
+$oCuentasPagar=new FacturaCompra();
+if($proveedor ==0){
+   
+
+  $aFactura=$oCuentasPagar->getCuentasPagar($_SESSION["idEmpresa"],$desde,$hasta);
+  unset($oCuentasPagar);
+}else{ 
+
+  $aFactura=$oCuentasPagar->getCuentasPagarProveedor($_SESSION["idEmpresa"],$proveedor,$desde,$hasta);
+  unset($oCuentasPagar);
+
+  $oProveedor = new Data("proveedor","idProveedor",$proveedor);
+  $aProveedor=$oProveedor->getDatos();
+  unset($oProveedor);
+}
+
+?>
+
+      <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+                            
+                            
+
+                            <th>Proveedor</th>
+
+                            <th>Fecha recibido</th>
+
+                            <th>Fecha pago</th>
+
+                            <th>Total</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aFactura as $index => $iFactura){ 
+
+
+
+                          $oItem=new Data("proveedor","idProveedor", $iFactura["idProveedor"]); 
+
+                          $aProveedor=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                            
+
+                              <td><?php echo $aProveedor["razonSocial"]; ?></td>
+
+                              <td><?php echo $iFactura["fechaRecibido"]; ?></td>
+
+                              <td><?php echo $iFactura["fechaPago"]; ?></td>
+
+                              <td><?php 
+                                if($iFactura["saldo"]!=0){
+                                echo "$".number_format($iFactura["saldo"],2,",",".");
+                              }
+                              if($iFactura["saldo"]==0){
+                              echo "$".number_format($iFactura["total"],2,",",".");
+                            }
+
+                               ?></td>
+                              
+                          
+                              <td class="centrar">                  
+                                <a href="<?php echo $URL.$iFactura['archivo']; ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" class="btn btn-icon btn-sm btn-warning"><i class="fas fa-file"></i></a>
+                              </td>
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  <a href="filtrarcuentaspagar" type="button" class="btn btn-info">Nuevo filtro</a>
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+<script>
+function imprim2(){
+    var mywindow = window.open('', 'PRINT');
+    mywindow.document.write('<html><head>');
+  mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
+    mywindow.document.write('</head><body >');
+
+    mywindow.document.write(document.getElementById('muestra').innerHTML);
+    mywindow.document.write('</body></html>');
+    mywindow.document.close(); 
+    mywindow.focus(); 
+    mywindow.print();
+    
+    
+    return true;}
+
+    $('[data-toggle="tooltip"]').tooltip();
+</script> 

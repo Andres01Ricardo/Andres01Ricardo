@@ -1,0 +1,116 @@
+<?php 
+  $codigocliente=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$codigocliente; 
+if($codigocliente==""){
+echo '<script>window.history.back()</script>'; 
+}
+include("timeline.php");
+require_once("class/timeline.php"); 
+$oItem=new Data("t_clientes","codigoCliente",$codigocliente); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+
+$idEmpresa = $_SESSION["idEmpresa"];
+
+$oActividad=new Actividades(); 
+$aEncargado=$oActividad->getEmpleados($idEmpresa  );
+unset($oActividad);
+
+$oActividad=new Actividades(); 
+$aNotas=$oActividad->getNotas($codigocliente);
+unset($oActividad);  
+?>
+
+    <div class="scrollmenu ">
+          
+          <a href="../informacionadicional/<?php echo $codigocliente;?>">TIMELINE<i class="fas fa-grip-lines-vertical"></i></a>
+          <a href="../llamadas/<?php echo $codigocliente;?>">LLAMADAS<i class="fas fa-phone"></i></a>
+          <a  href="../correos/<?php echo $codigocliente;?>">CORREOS<i class="fas fa-at"></i></a>
+          <a id="escogido" href="../notas/<?php echo $codigocliente;?>">NOTAS<i class="fas fa-paperclip"></i></a>
+          <a href="../tareas/<?php echo $codigocliente;?>">TAREAS <i class="far fa-calendar-alt"></i></a>
+          <a href="../negocios/<?php echo $codigocliente;?>">NEGOCIOS<i class="far fa-chart-bar"></i></a>
+          <a href="../pipeline">PIPELINE<i class="fas fa-table"></i></a>
+        </div>
+      
+
+<?php
+  date_default_timezone_set('America/bogota');
+  $fechaActual = date('Y-m-d');
+  $horaActual = date('H:i:s');
+ ?>
+
+   
+      <div class="row">
+      
+       <div class="col-12 col-sm-12 col-lg-6">
+          <div class=" card card-body l-bg-purple aclarar topcard">
+            <?php
+            $nombre = $rows['nombre'];
+            $apellidos =  $rows['apellidos'];
+            $rest1 = substr("$nombre", 0,1);    
+            $rest2 = substr("$apellidos", 0,1);    
+            
+            ?>
+                <figure class="avatar mr-2 avatar-lg bg-danger text-white" data-initial="<?php echo $rest1,$rest2 ?>">
+                  
+                </figure>
+                <h3><?php echo $rows['nombre'],' ', $rows['apellidos'];?></h3>
+                <h5>Correo electronico:<?php echo $rows['email'];?></h5>
+                <h5>Telefono: <?php echo $rows['telefono'];?></h5>
+                <h5> Creado: <?php echo $rows['fechaCreacion'];?></h5>
+             
+            
+          </div>
+
+          <div class="card l-bg-purple aclarar">
+            <center><h4><strong>NOTA </strong><i class="fas fa-paperclip"></i></h4></center>
+            <form method="POST" action="../functions/crm/insertarnota.php">
+              <div class="card-body">
+                <div class="form-group">
+                  <input type="text" class="ocultar" name="idCliente" value="<?php echo $codigocliente ?>">
+                  <h5><?php echo 'Fecha: ',$fechaActual?></h5>
+                  <input type="text" class="ocultar" name="fechaActual" value="<?php echo $fechaActual ?>">
+                  <h5><?php echo 'Hora: ',$horaActual ?></h5>
+                  <input type="text" class="ocultar" name="horaActual" value="<?php echo $horaActual ?>">
+                </div>
+                  <div class="form-group">
+                    <div>
+                      <label class="size">Nota</label>
+                      <textarea class="form-control" name="nota" id="nota"></textarea>
+                    </div>
+                    <input type="text" class="ocultar" name="creador" value="<?php echo $_SESSION['idUsuario'] ?>">
+                  </div>
+                  <div class="form-group">
+                    <center><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>
+                    </button><span class="ocultar">------</span>
+                    <button type="reset" class="btn btn-danger"><i class="fas fa-times-circle"></i></button></center>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+    
+      <div class="col-12 col-sm-12 col-lg-6">
+          <div class="card bg-cyan aclarar topcard">
+            <div class="card-statistic-3 p-5   ">
+              <div class="card-icon card-icon-large">
+                <i class="fas fa-paperclip"></i>
+              </div>
+                <div class="mb-4">
+              <h2>HISTORIAL DE NOTAS</h2>
+            </div>
+          </div>
+          </div>
+          <?php foreach($aNotas as $index => $rowsn){ ?>
+        <div  class="card bg-cyan aclarar" >
+          <div class="card-body">
+            <h5>Fecha: <?php echo $rowsn['fechaCreacion'];?>   Hora: <?php echo $rowsn['horaCreacion'];?> </h5>
+            <h5>Nota:<?php echo strtoupper($rowsn['motivo']);?></h5>
+            <h5>Encargado: <?php echo $rowsn['creador'];?></h5>
+          </div>
+        </div> 
+        <?php } ?>    
+      </div>
+    </div>

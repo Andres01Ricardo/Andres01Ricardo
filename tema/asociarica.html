@@ -1,0 +1,178 @@
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$id; 
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip);
+
+
+
+$oItem=new Data("fecha_impuesto","idFechaImpuesto",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+
+$oLista=new Lista("fecha_impuesto_empresa"); 
+
+$oLista->setFiltro("idFechaImpuesto","=",$id); 
+
+$aLista=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$oLista = new Lista('empresa');
+
+$oLista->setFiltro("estado","=",1);
+
+$oLista->setOrden("razonSocial","ASC");
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+
+$oItem=new Data("ciudad","idCiudad",$aDatos["idCiudad"]);
+$ciudad=$oItem->getDatos();
+unset($oItem);
+
+
+$oItem=new Data("departamento","idDepartamento",$aDatos["idDepartamento"]);
+$departamento=$oItem->getDatos();
+unset($oItem);
+
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="id" id="id" value="<?php echo $aDatos["idFechaImpuesto"]; ?>">
+
+<input type="hidden" name="url" id="url" value="<?php echo $url; ?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Calendario impuestos</li>
+
+          <li class="breadcrumb-item">Asociar empresas</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                  <div class="card-header">
+
+                    <h4>Asociar Empresas a <span class="mayusculas negrita"><?php echo 'ICA '.$ciudad["nombre"].'-'.$departamento["nombre"]; ?></span></h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <?php foreach($aEmpresa as $index=> $iEmpresa){
+
+                        $seleccionado=""; 
+
+                        foreach($aLista as $iSeleccionado){
+
+                          if($iSeleccionado["idEmpresa"]==$iEmpresa["idEmpresa"]){
+
+                            $seleccionado="checked"; 
+
+                          }
+
+                        }
+
+                        $logo="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
+
+                        if($iEmpresa["logo"]!=""){
+
+                            $logo=$URL.$iEmpresa["logo"]; 
+
+                        }
+
+                       ?>
+
+                      <div class="col-md-12">
+
+                        <input type="hidden" value="0" name="item[<?php echo $index; ?>][estado]">
+
+                        <input type="hidden" value="<?php echo $iEmpresa["idEmpresa"]; ?>" id="item[<?php echo $index; ?>][idEmpresa]" name="item[<?php echo $index; ?>][idEmpresa]">
+
+                        <div class="form-group">
+
+                          <div class="form-check">
+
+                            <div class="custom-checkbox">
+
+                              <input class="form-check-input" type="checkbox" <?php echo $seleccionado; ?> value="1" id="item[<?php echo $index; ?>][estado]" name="item[<?php echo $index; ?>][estado]">
+
+                              <label class="form-check-label" for="item[<?php echo $index; ?>][estado]">
+
+                               <div class="tabla"><div class="columna foto-mini-empresa" style="background-image: url(<?php echo $logo; ?>)"></div><div class="columna" style="padding-left: 5px;"><?php echo $iEmpresa["razonSocial"]; ?></div></div>
+
+                              </label>
+
+                            </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  <?php } ?>
+
+                  </div>
+
+                </div>
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

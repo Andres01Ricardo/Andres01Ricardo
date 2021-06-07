@@ -1,0 +1,247 @@
+<?php
+
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+$validarIngreso=1; 
+$oEmpresa=new Empresa(); 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+}
+
+
+
+
+
+if($_SESSION["idRol"]==5){
+
+	$aEmpresa=$oEmpresa->getEmpresasExterno();
+}
+
+if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
+	$aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+	
+
+}
+// $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+
+?>
+
+
+<div class="card card-body">
+	
+	<form enctype="multipart/form-data" id="frmGuardar">
+		
+			<div class="col-md-6">
+				<label>Empresa</label>
+				<select class="form-control" name="item[0][idEmpresa]" id="item[0][idEmpresa]" required>
+					<option value="">Seleccione</option>
+					<?php foreach($aEmpresa as $index => $iEmpresa){?>
+						<option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
+					<?php } ?>
+				</select>
+			</div>
+		
+		<br> <br>
+	<table class="table" cellspacing="6" cellpadding="10">
+		<tbody>
+			<tr>
+				<th><label class="negrita">Grupo</label></th>
+				<input type="hidden" class="form-control idGrupo"  name="item[0][idGrupo]" id="idGrupo" placeholder="Grupo">
+				<td><input type="text" class="form-control grupo mayusculas"  name="item[0][grupo]" id="grupo" placeholder="Grupo" required></td>
+				
+				
+			</tr>
+			<tr>
+				<th><label class="negrita">Cuenta</label></th>
+				<input type="hidden" class="form-control idCuenta"  name="item[0][idCuenta]" id="idCuenta" placeholder="Cuenta">
+				<td ><input type="text" class="form-control cuenta mayusculas"  name="item[0][cuenta]" id="cuenta" placeholder="Cuenta" required></td>
+				
+			</tr>
+			<tr>
+				<th><input type="checkbox" name="item[0][checksubcuenta]" id="checksubcuenta" value="1" ><label class="negrita">Subcuenta</label></th>
+				<td style="display: none;" id="tdSubcuenta"><input type="text" class="form-control idSubcuenta mayusculas numero"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="Codigo subcuenta nuevo"></td>
+
+				<td ><input type="text" class="form-control subcuenta mayusculas"  name="item[0][subcuenta]" id="subcuenta" placeholder="Subcuenta" ></td>
+				<td ><input type="text" class="form-control mayusculas"  name="item[0][descripcionSubcuenta]" id="descripcionSubcuenta" placeholder="Descripción" readonly disabled></td>
+			</tr>
+			<tr >
+				<th><input type="checkbox" name="item[0][checkauxiliar]" id="checkauxiliar" value="1" ><label class="negrita">Auxiliares</label></th>
+				<td><input type="number" class="form-control"  name="item[0][idAuxiliar]" id="idAuxiliar" placeholder="Código" readonly disabled></td>
+				
+				<td ><input type="text" class="form-control mayusculas"  name="item[0][auxiliar]" id="auxiliar" placeholder="Descripción" readonly disabled></td>
+			</tr>
+			<tr >
+				<th><input type="checkbox" name="item[0][checksubauxiliar]" id="checksubauxiliar" value="2" disabled><label class="negrita">Subauxiliares</label></th>
+				<td><input type="number" class="form-control"  name="item[0][idSubauxiliar]" id="idSubauxiliar" placeholder="Código" readonly disabled></td>
+				
+				<td ><input type="text" class="form-control"  name="item[0][subauxiliar]" id="subauxiliar" placeholder="Descripción" readonly disabled></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<br>
+	<hr>
+	<div class="row">
+		<div class="col-md-3">
+			<label>Detalles</label>
+			<select class="form-control" name="item[0][detalle]" id="detalle">
+				<option value="1">No detalla</option>
+				<option value="2">Por cobrar</option>
+				<option value="3">Por pagar</option>
+			</select>
+		</div>
+		<div class="col-md-3">
+			<label>Tercero</label>
+			<select class="form-control" name="item[0][tercero]" id="tercero">
+				<option value="1">Si tercero</option>
+				<option value="2">No tercero</option>
+				<option value="3" >Retención</option>
+			</select>
+		</div>
+		<div class="col-md-2" id="divPorcentajeRetencion">
+			<label>% Retención</label>
+			<input type="text" class="form-control decimales" name="item[0][porcentajeRetencion]" id="porcentajeRetencion">
+				
+		</div>
+		<div class="col-md-4">
+			
+			<input type="checkbox" name="item[0][checkcentrocosto]" id="checkcentrocosto" value="1"><label>Centros de costo</label>
+			
+		</div>
+
+	</div>
+	<br>
+
+	<div class="row">
+		
+		<div class="col-md-4">
+			<label>Tipo cuenta</label>
+			<select class="form-control" name="item[0][tipoCuenta]">
+				<option value="1">Activo</option>
+				<option value="2">Pasivo</option>
+				<option value="3">Patrimonio</option>
+				<option value="4">Ingreso</option>
+				<option value="5">Gasto</option>
+				<option value="6">Costo</option>
+				<option value="7">Orden</option>
+			</select>
+		</div>
+		<div class="col-md-4">
+			<label>Naturaleza</label>
+			<select class="form-control" name="item[0][naturaleza]">
+				<option value="debito">Débito</option>
+				<option value="credito">Crédito</option>
+			</select>
+		</div>
+		<!-- <div class="col-md-4">
+			<label>Caracteristica</label>
+			<select class="form-control" name="item[0][caracteristica]">
+				<option value="1">Ninguna</option>
+				<option value="2">Gravada</option>
+				<option value="3">No gravada</option>
+				<option value="4">Exportación</option>
+				<option value="5">Importación gravada</option>
+				<option value="6">Excluida</option>
+			</select>
+		</div> -->
+			</form>
+		</div>
+			 <div class="card-footer text-right">
+
+        	<a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        	
+        </div>	
+		<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" >RETENCIÓN</button> -->
+	</div>
+
+
+	
+
+	
+
+
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">Cerrar negocio</button>-->
+	
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">RETENCIÓN</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmRetencion">
+
+          <!-- <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[cerrado]"  id="ganado" value="ganado" checked="true" >
+              <label class="form-check-label" for="ganado">GANADO</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[cerrado]"   id="perdido" value="perdido">
+              <label class="form-check-label"  for="perdido">PERDIDO</label>
+            </div> -->
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Porcentaje de la retención:</label>
+              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control" placeholder="% de la retencion" required>
+              
+              <!-- <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" >
+              
+              <input type="hidden" name="datos[codigocliente]" class="ocultar"  value="<?php echo $codigocliente ?>">
+              <input type="hidden" name="datos[fecha]" class="ocultar"  value="<?php echo $fechaActual ?>">
+              <input type="hidden" name="datos[hora]" class="ocultar"  value="<?php echo $horaActual ?>"> -->
+            </div>
+          </div>
+         <!--  <div class="form-group">
+            <label>Valor final:</label>
+            <input type="text" name="datos[valorfinal]" id="valorfinal" placeholder="el valor final del negocio $" onkeypress="return numeros(event);" class="form-control moneda" value="0" required>
+          </div>
+          <div class="form-group" id="divRenovacion">
+            <label>Renovación:</label><br>
+            
+            
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[renovacion]"  id="renovacionSi" value="si" checked="true" >
+              <label class="form-check-label"for="renovacionSi">SI</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[renovacion]"  id="renovacionNo" value="no">
+              <label class="form-check-label"  for="renovacionNo">NO</label>
+            </div> -->
+
+          <!--   <input type="date" name="datos[renovacion]" id="renovacion" placeholder="renovacion el dia"  class="form-control" required>
+          </div> -->
+
+         
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
+        <button type="button" class="btn btn-primary" id="btnCerrarNegocio">R</button>
+      </div>
+    </div>
+  </div>
+</div>

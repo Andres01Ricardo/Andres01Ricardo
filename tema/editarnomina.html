@@ -1,0 +1,541 @@
+<?php 
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+require_once("class/empresa.php"); 
+
+
+
+$oEmpresa=new Empresa(); 
+
+
+
+
+$oItem=new Data("nomina","idNomina",$id);
+$aNomina=$oItem->getDatos();
+unset($oItem);
+
+
+$oItem=new Data("empresa","idEmpresa",$aNomina["idEmpresa"]);
+$aEmpresa=$oItem->getDatos();
+
+
+require_once("class/empleados.php"); 
+
+$oEmpleado=new Empleados(); 
+
+$aFiltro["estado"]=1; 
+$aFiltro["idEmpresa"]=$aNomina["idEmpresa"]; 
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aFiltro);
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre"; 
+
+
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+  <!-- <input type="hidden" name="periodoPago" id="periodoPago"> -->
+  <input type="hidden" name="datos[idNominaEditar]" id="idNominaEditar" value="<?php echo $id;?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Crear Nomina</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodo Pago<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" name="datos[periodoN]" id="datos[periodoN]" value="<?php echo $meses[$aNomina["periodoMes"]]." de ".$aNomina['periodoAnio'] ?>" required readonly>
+                        <input type="hidden" class="form-control" name="datos[periodo]" id="datos[periodo]" value="<?php echo $aNomina["periodoMes"]."-".$aNomina['periodoAnio'] ?>" required readonly>
+
+                       <!--  <select class="form-control" name="datos[periodo]" id="datos[periodo]" required>
+
+                          <option value="">Seleccione una opción</option>
+                          <option value="1-2020"><?php echo $meses[$nuevafecha14  ]." de 2020"; ?></option>
+                          <option value="2-2020"><?php echo $meses[$nuevafecha13  ]." de 2020"; ?></option>
+                          <option value="3-2020"><?php echo $meses[$nuevafecha12  ]." de 2020"; ?></option>
+                          <option value="4-2020"><?php echo $meses[$nuevafecha11  ]." de 2020"; ?></option>
+                          <option value="5-2020"><?php echo $meses[$nuevafecha10  ]." de 2020"; ?></option>
+                          <option value="6-2020"><?php echo $meses[$nuevafecha9  ]." de 2020"; ?></option>
+                          <option value="7-2020"><?php echo $meses[$nuevafecha8]." de 2020"; ?></option>
+                          <option value="8-2020"><?php echo $meses[$nuevafecha7]." de 2020"; ?></option>
+                          <option value="9-2020"><?php echo $meses[$nuevafecha6]." de 2020"; ?></option>
+                          <option value="10-2020"><?php echo $meses[$nuevafecha5]." de 2020"; ?></option>
+                          <option value="11-2020"><?php echo $meses[$nuevafecha4]." de 2020"; ?></option>
+                          <option value="12-2020"><?php echo $meses[$nuevafecha3]." de 2020"; ?></option>
+                          <option value="1-2021"><?php echo $meses[$nuevafecha2]." de 2021"; ?></option>
+
+                          <option value="<?php echo $nuevafecha[1].'-'.$nuevafecha[0]; ?>"><?php echo $meses[$nuevafecha[1]]." de ".$nuevafecha[0]; ?></option>
+
+                          <option value="<?php echo date('n').'-'.date('Y'); ?>"><?php echo $meses[date('n')]." de ".date('Y'); ?></option>
+
+                        </select> -->
+
+                      </div>
+
+                    </div>
+
+                    <div class=" col-md-4">
+
+                      <div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control" name="datos[empresa]" id="datos[empresa]" value="<?php echo $aEmpresa['razonSocial']; ?>" required readonly>
+
+                          <input type="hidden" class="form-control" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $aEmpresa['idEmpresa']; ?>" required readonly>
+
+                          <!-- <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iItem){ ?>
+
+                          <option value="<?php echo $iItem['idEmpresa']; ?>" pago="<?php echo $iItem['periodoPago']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select> -->
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tiempo Pago<span class="requerido">*</span>:</label>
+
+                        <select class="form-control mayusculas" name="datos[tiempoPago]" id="datos[tiempoPago]" readonly>
+                          <?php if ($aNomina['tiempoPago']==1) { ?>
+                            <option value="1" selected >Primera Quincena</option>
+                          <?php }?>
+                          <?php if ($aNomina['tiempoPago']==2) { ?>
+                            <option value="2" selected >Segunda Quincena</option>
+                          <?php }?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empleado<span class="requerido">*</span>:</label>
+
+                        <select class="form-control select2 mayusculas" name="datos[idEmpleado]" id="datos[idEmpleado]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpleados as $iEmpleado){ ?>
+
+                          <option value="<?php echo $iEmpleado['idEmpleado']; ?>" ><?php echo $iEmpleado["nombre"].' '.$iEmpleado["apellido"]; ?></option>
+
+                        <?php } ?>
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                          <label class="negrita">Salario Base<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control mayusculas moneda" name="datos[salario]" id="datos[salario]" placeholder="Salario Base" readonly required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                          <label class="negrita">Nivel Riesgo<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control mayusculas" max="30" name="datos[riesgo]" id="datos[riesgo]" placeholder="Nivel Riesgo" readonly required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                          <label class="negrita">Dias Trabajados<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control mayusculas decimales" name="datos[diasTrabajados]" id="diasTrabajados" placeholder="Dias Trabajados" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Auxilio de transporte<span class="requerido">*</span>:</label>
+                        <input type="hidden" class="form-control mayusculas moneda" name="datos[auxilioTransporteInicial]" id="auxilioTransporteInicial" placeholder="Auxilio transporte" required>
+                        <input type="text" class="form-control mayusculas moneda" name="datos[auxilioTransporte]" id="auxilioTransporte" placeholder="Auxilio transporte" required readonly>
+                      </div>
+                    </div>
+                    <div>
+                      <input type="hidden" name="datos[vacacionesControl]" id="vacacionesControl">
+                    </div>
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Adiciones</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableAdiciones">
+
+                        <thead>
+
+                          <tr>
+
+                            <th style="width: 2%" class="text-center">#</th>
+
+                            <th>Concepto</th>
+
+                            <th style="width: 30%">Valor</th>
+
+                            <th style="width: 10%">Eliminar</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Deducciones de ley</h4>
+
+                  </div>
+
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label>Días seguridad social</label>
+                          <input type="text" name="datos[diasSeguridadSocial]" id="diasSeguridadSocial" class="form-control numero" placeholder="cantidad días">
+                        </div>
+                        
+                      </div>
+                    </div>
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableDeduccionesLey">
+
+                        <thead>
+
+                          <tr>
+
+                            <th style="width: 2%" class="text-center">#</th>
+
+                            <th>Concepto</th>
+
+                            <th style="width: 30%">Valor</th>
+
+                            <th style="width: 10%">Eliminar</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                           
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Otras Deducciones</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableDeducciones">
+
+                        <thead>
+
+                          <tr>
+
+                            <th style="width: 2%" class="text-center">#</th>
+
+                            <th>Concepto</th>
+
+                            <th style="width: 30%">Valor</th>
+
+                            <th style="width: 10%">Eliminar</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                           
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+
+
+                  <div class="card-header">
+
+                    <h4>Provisiones</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableProvisiones">
+
+                        <thead>
+
+                          <tr>
+
+                            <th style="width: 2%" class="text-center">#</th>
+
+                            <th>Concepto</th>
+
+                            <th style="width: 30%">Valor</th>
+
+                            <!-- <th style="width: 10%">Porcentaje</th> -->
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td class="text-center"><h5>CESANTIAS</h5></td>
+                            <td><input type="text" name="provisiones[cesantias]" id="cesantias" required="required" class="form-control moneda" readonly="readonly"></td>
+                            
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td class="text-center"><h5>INTERESES CESANTIAS</h5></td>
+                            <td><input type="text" name="provisiones[interesesCesantias]" id="interesesCesantias" required="required" class="form-control moneda" readonly="readonly"></td>
+                            
+                          </tr>
+                          <tr>
+                            <td>3</td>
+                            <td class="text-center"><h5>PRIMA</h5></td>
+                            <td><input type="text" name="provisiones[prima]" id="prima" required="required" class="form-control moneda" readonly="readonly"></td>
+                            
+                          </tr>
+                          <tr>
+                            <td>4</td>
+                            <td class="text-center"><h5>VACACIONES</h5></td>
+                            <td><input type="text" name="provisiones[vacaciones]" id="vacaciones" required="required" class="form-control moneda" readonly="readonly"></td>
+                            
+                          </tr>
+                           
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-body">
+
+                      <div class="row">
+
+                        <div class="col-md-3">
+
+                          <div class="form-group">
+
+                              <label class="negrita">Valor a Pagar<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control mayusculas moneda" name="datos[valorPagar]" id="datos[valorPagar]" placeholder="Valor a Pagar" readonly>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">EDITAR</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+

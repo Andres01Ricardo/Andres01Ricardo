@@ -1,0 +1,165 @@
+
+<?php 
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+
+
+
+
+$validarIngreso=1; 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+
+}
+
+$oEmpresa=new Empresa(); 
+
+
+
+$aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i data-feather="home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Empresas</li>
+
+          <li class="breadcrumb-item">Listar empresas</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Tipo Persona</th>
+
+                            <th>NIT</th>
+
+                            <th>Razón Social</th>
+
+                            <th>Ciudad</th>
+
+                            <th>Dirección</th>
+
+                            <th>Telefono</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aEmpresa as $index => $iEmpresa){ 
+
+
+
+                            $digito=$iEmpresa["tipoPersona"]==1?"":"-".$iEmpresa["digitoVerificador"]; 
+
+
+
+                            $aEncript['cadena']=$iEmpresa['idEmpresa'];
+
+                            $id=$oControl->encriptar($aEncript); 
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iEmpresa["tipoPersona"]==1?'Persona Natural':'Persona Juridica'; ?></td>
+
+                              <td><?php echo $iEmpresa["nit"].$digito; ?></td>
+
+                              <td><?php echo $iEmpresa["razonSocial"]; ?></td>
+
+                              <td><?php echo $iEmpresa["ciudad"]." - ".$iEmpresa["departamento"]; ?></td>
+
+                              <td><?php echo $iEmpresa["direccion"]; ?></td>
+
+                              <td><?php echo $iEmpresa["telefono"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php  echo $URL; ?>filtrarlegalizaciones/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Inventario insumos"><i class="fas fa-route" style="color: #FF8D0C;font-size: 20px;"></i></a>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+
+

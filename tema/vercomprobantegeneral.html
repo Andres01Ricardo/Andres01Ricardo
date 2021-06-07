@@ -1,0 +1,210 @@
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+
+
+
+$oLista= new Lista("comprobante");
+$oLista->setFiltro("idEmpresa","=",$id); 
+$aComprobante=$oLista->getLista(); 
+
+unset($oLista);
+
+
+
+
+
+?>
+
+<section class="section">
+<!--   <input type="hidden" name="idEmpresa" id="idEmpresa" value="<?php echo $aComprobante['idEmpresa'];?>">
+  <input type="hidden" name="numero" id="numero" value="<?php echo $aComprobante['numero'];?>">
+  <input type="hidden" name="fecha" id="fecha" value="<?php echo $aComprobante['fecha'];?>">
+  <input type="hidden" name="observaciones" id="observaciones" value="<?php echo $aComprobante['observaciones'];?>">
+
+  <input type="hidden" name="tipo" id="tipo" value="<?php echo $aTipo['letra'];?>">
+  <input type="hidden" name="comprobante" id="comprobante" value="<?php echo $aComprobante['comprobante'];?>">
+
+  <input type="hidden" name="nombreEmpresa" id="nombreEmpresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+  <input type="hidden" name="logoEmpresa" id="logoEmpresa" value="<?php echo $aEmpresa['logo'];?>">
+  <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+  <input type="hidden" name="emailEmpresa" id="emailEmpresa" value="<?php echo $aEmpresa['email'];?>">
+  <input type="hidden" name="telefonoEmpresa" id="telefonoEmpresa" value="<?php echo $aEmpresa['telefono'];?>"> -->
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Comprobantes</li>
+
+          <li class="breadcrumb-item">Listar comprobantes</li>
+
+          <li class="breadcrumb-item">Ver comprobantes general</li>
+
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Comprobante contable</h4>
+                  <input type="hidden" name="url" id="url" value="<?php echo $URL ?>">
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                      <table class="table table-striped table-bordered mayusculas" id="tableComprobante" >
+                        <thead>
+                          <tr>
+                            <th class="text-center">#</th>
+                            <th>CUENTA</th>
+                            <th>CENTRO COSTO</th>
+                            <th>TERCERO</th>
+                            <th>DESCRIPCION</th>
+                            <th>DÉBITO</th>
+                            <th>CRÉDITO</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php foreach($aComprobante as $key => $vComprobantes){ 
+                            $totalDebito=0;
+                            $totalCredito=0;
+                              $aEncript['cadena']=$vComprobantes['idComprobante'];
+
+                            // $id=$oControl->encriptar($aEncript); 
+                            $oItem=new Data("tipos_documento_contable","idTiposDocumento",$vComprobantes["idTipo"]); 
+
+                            $aDatosL=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+                            $oItem=new Data("parametros_documentos","idParametrosDocumentos",$vComprobantes["comprobante"]); 
+
+                            $aDatosP=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+                            $oItem=new Data("usuario","idUsuario",$vComprobantes["usuarioRegistra"]); 
+
+                            $aDatosU=$oItem->getDatos(); 
+
+                            unset($oItem);
+
+                            $oLista = new Lista('comprobante_items');
+
+                            $oLista->setFiltro("idComprobante","=",$vComprobantes["idComprobante"]);
+
+                            $aDatos=$oLista->getLista();
+
+                            unset($oLista);
+
+                            ?>
+                            <tr>
+                              <td class="negrita"><?php echo $aDatosL["letra"].'-'.$vComprobantes["comprobante"].'-'.$vComprobantes["numero"]; ?></td>
+                              <td><?php echo $vComprobantes["fecha"]; ?></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                            </tr>  
+                          
+                          <?php foreach($aDatos as $index => $iComprobante){ ?>
+                          <tr>
+                            <td><?php echo $index+1; ?></td>
+                            <td><?php echo $iComprobante["cuenta"]; ?></td>
+                            <td><?php echo $iComprobante["centroCosto"]; ?></td>
+                            <td><?php echo $iComprobante["tercero"]; ?></td>
+                            <td><?php echo $iComprobante["descripcion"]; ?></td>
+                            <td>
+                              <?php if ($iComprobante["dc"]=='debito') {
+                                
+                                
+                                $totalDebito+=floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"]))); 
+                                if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))<1000) {
+                                  echo strval("$".number_format(floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"]))),0,",","."));
+                                }
+                                if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))>=1000) {
+                                  echo strval($iComprobante["valor"]);
+                                }
+                              }else{echo '-';} 
+
+                              ?>
+                              
+                            </td>
+                            <td>
+                              <?php if ($iComprobante["dc"]=='credito') {
+                                if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))<1000) {
+                                  echo strval("$".number_format(floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"]))),0,",","."));
+                                }
+                                if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))>=1000) {
+                                  echo strval($iComprobante["valor"]);
+                                }
+                                $totalCredito+=floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"]))); 
+                              }else{echo '-';} ?>
+                            </td>
+                          </tr>
+                        <?php } ?>
+                              
+                        <tr>
+                          <td class="negrita">TOTAL:</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td>-</td>
+                          <td class="negrita"><?php 
+                          if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))<1000) {
+                                  echo strval("$".number_format($totalDebito,0,",","."));
+                                }
+                                if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))>=1000) {
+                                  echo "$".number_format($totalDebito,2,",",".");
+                                }
+                           ?></td>
+                          
+                          <td class="negrita"><?php 
+                          if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))<1000) {
+                                  echo "$".number_format($totalCredito,0,",",".");
+                                }
+                                if (floatval(str_replace("$", "", str_replace(".", "", $iComprobante["valor"])))>=1000) {
+                                  echo "$".number_format($totalCredito,2,",",".");
+                                }
+                           ?></td>
+                        </tr>
+                        <?php } ?> 
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+

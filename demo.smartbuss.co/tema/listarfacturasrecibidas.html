@@ -1,0 +1,306 @@
+<?php 
+
+
+
+require_once("class/facturacompra.php"); 
+
+
+
+$oFactura=new FacturaCompra(); 
+
+
+
+$oControl=new Control(); 
+
+
+
+$aFacturas=$oFactura->getFacturasRecibidas();
+
+
+
+$oLista = new Lista('cuenta_bancaria');
+
+$aCuentas=$oLista->getLista();
+
+unset($oLista);
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Factura de compra</li>
+
+          <li class="breadcrumb-item">Listar facturas recibidas</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableFacturas">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Empresa</th>
+
+                            <th>Proveedor</th>
+
+                            <th>N° Factura</th>
+
+                            <th>Fecha Pago</th>
+
+                            <th>Valor</th>
+
+                            <th>Estado</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aFacturas as $index => $iFactura){ 
+
+
+
+                            $aEncript['cadena']=$iFactura['idFacturaCompra'];
+
+                            $id=$oControl->encriptar($aEncript); 
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iFactura["fechaRegistro"]; ?></td>
+
+                              <td><?php echo $iFactura["empresa"]; ?></td>
+
+                              <td><?php echo $iFactura["razonSocial"]; ?></td>
+
+                              <td><?php echo $iFactura["nroFactura"]; ?></td>
+
+                              <td><?php echo $iFactura["fechaPago"]; ?></td>
+
+                              <td><?php echo "$".number_format($iFactura["total"],0,",","."); ?></td>
+
+                              <td><?php if($iFactura["estado"]==1){ echo 'Enviada'; }elseif($iFactura["estado"]==2){ echo 'Procesada'; }else{ echo 'Pagada';} ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php  echo $URL; ?>verfacturacompra/<?php echo $id; ?>" class="btn btn-icon btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Gestionar"><i class="fas fa-list-alt"></i></a>
+                                
+
+                                <?php if($iFactura["estado"]==1){ ?>
+
+                                <a href="<?php echo $URL; ?>gestionfacturacompra/<?php echo $id; ?>" class="btn btn-icon btn-sm btn-success" data-toggle="tooltip" title="Completar gestion" data-placement="top" ><i class="fas fa-money-bill-alt" ></i></a>
+
+                                <?php } ?>
+
+                                <?php if($iFactura["estado"]==2){ ?>
+
+                                <a href="javascript:void(0)" id="<?php echo $iFactura['idFacturaCompra']; ?>" class="btn btn-icon btn-sm btn-success comprobante" data-toggle="modal" data-target="#modal" ><i class="fas fa-donate" data-toggle="tooltip" title="Marcar pagada" data-placement="top" ></i></a>
+
+                                <?php } ?>
+
+                                <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" class="btn btn-icon btn-sm btn-warning"><i class="fas fa-file"></i></a>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="modal fade bd-example-modal-lg" id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Registrar comprobante de egreso</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body">
+
+          <form enctype="multipart/form-data" id="frmGuardar">
+
+            <input type="hidden" name="datos[idFacturaCompra]" id="datos[idFacturaCompra]" value="">
+
+            <div class="row">
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Nro Factura:</label>
+
+                  <input type="text" class="form-control" id="nroFactura" name="datos[numeroFactura]" required>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Proveedor:</label>
+
+                  <input type="text" class="form-control" id="proveedor" name="datos[proveedor]"  required>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Empresa:</label>
+
+                  <input type="text" class="form-control" id="empresa" required>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="row">
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Fecha Pago<span class="requerido">*</span>:</label>
+
+                  <input type="date" class="form-control" name="datos[fechaPago]" id="datos[fechaPago]" required>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Comprobante de egreso<span class="requerido">*</span>:</label>
+
+                  <input type="text" class="form-control" name="datos[comprobante]" id="datos[comprobante]" required>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Cuenta bancaria<span class="requerido">*</span>:</label>
+
+                  <select id="datos[cuentaBancaria]" name="datos[cuentaBancaria]" class="form-control">
+                    <?php foreach($aCuentas as $index => $iCuenta){ ?>
+                    <option value="<?php echo $iCuenta['idCuentaBancaria']; ?>"><?php echo $iCuenta['nombreCuenta'].' - '.$iCuenta['numeroCuenta']; ?></option>
+                    <?php } ?>
+                  </select>
+
+                </div>
+                
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">total factura<span class="requerido">*</span>:</label>
+
+                  <input type="text" class="form-control" name="datos[total]" id="total" required>
+
+                </div>
+                
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardar">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
+

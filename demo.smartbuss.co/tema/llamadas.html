@@ -1,0 +1,161 @@
+<?php 
+$codigocliente=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$codigocliente; 
+if($codigocliente==""){
+echo '<script>window.history.back()</script>'; 
+}
+
+include("timeline.php");
+require_once("class/timeline.php"); 
+
+$oItem=new Data("t_clientes","codigoCliente",$codigocliente); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+
+$idEmpresa = $_SESSION["idEmpresa"];
+
+$oActividad=new Actividades(); 
+$aEncargado=$oActividad->getEmpleados($idEmpresa  );
+unset($oActividad);
+
+$oActividad=new Actividades(); 
+$aLlamadas=$oActividad->getLlamadas($codigocliente);
+unset($oActividad); 
+?>
+
+      
+
+  
+  <div class="scrollmenu ">
+          
+          <a href="../informacionadicional/<?php echo $codigocliente;?>">TIMELINE<i class="fas fa-grip-lines-vertical"></i></a>
+          <a id="escogido" href="../llamadas/<?php echo $codigocliente;?>">LLAMADAS<i class="fas fa-phone"></i></a>
+          <a href="../correos/<?php echo $codigocliente;?>">CORREOS<i class="fas fa-at"></i></a>
+          <a href="../notas/<?php echo $codigocliente;?>">NOTAS<i class="fas fa-paperclip"></i></a>
+          <a href="../tareas/<?php echo $codigocliente;?>">TAREAS <i class="far fa-calendar-alt"></i></a>
+          <a href="../negocios/<?php echo $codigocliente;?>">NEGOCIOS<i class="far fa-chart-bar"></i></a>
+        </div>
+
+<?php
+  date_default_timezone_set('America/bogota');
+  $fechaActual = date('Y-m-d');
+  $horaActual = date('H:i:s');
+ 
+ ?>
+  
+      <div class="row">
+      
+         <div class="col-12 col-sm-12 col-lg-6 ">
+            <div class=" card card-body l-bg-purple aclarar topcard">
+              <?php
+              $nombre = $rows['nombre'];
+              $apellidos =  $rows['apellidos'];
+              $rest1 = substr("$nombre", 0,1);    
+              $rest2 = substr("$apellidos", 0,1);    
+              ?>
+                  <figure class="avatar mr-2 avatar-lg bg-danger text-white" data-initial="<?php echo $rest1,$rest2 ?>"> 
+                  </figure>
+                  <h3><?php echo $rows['nombre'],' ', $rows['apellidos'];?></h3>
+                  <h5>Correo electronico:<?php echo $rows['email'];?></h5>
+                  <h5>Telefono: <?php echo $rows['telefono'];?></h5>
+                  <h5> Creado: <?php echo $rows['fechaCreacion'];?></h5>            
+            </div>
+                <div class="card l-bg-purple aclarar " >
+                  <center><h4><strong>LLAMADA </strong><i class="fas fa-phone-volume"></i></h4></center>
+                  <form method="POST" action="../functions/crm/insertarllamada.php" > 
+                    <div class="card-body">
+                       <div class="form-group">
+                        <h5 ><?php echo 'Fecha: ',$fechaActual,' Hora: ',$horaActual ?></h5>
+                        <input type="text" name="codigocliente" class="ocultar" value="<?php echo $codigocliente ?>">
+                        <input type="text" name="fecha" class="ocultar" value="<?php echo $fechaActual ?>">
+                        <input type="text" name="hora" class="ocultar" value="<?php echo $horaActual ?>">
+                      </div>
+                      <div class="form-group">
+                        <div class="crono_wrapper">
+                        <label class="size">Duración: </label>
+                        <span id='crono' class="size" name='crono' >00:00:00</span>
+                          <button type="button" class="btn btn-light" id="btnCrono" onclick="empezarDetener(this);"><i id="iconoCrono" class="fas fa-play"></i></button>
+                        </div>
+                        <input type="text" name="duracion" id="duracion" class="ocultar" value="00:00:00" >
+                      </div>
+                      <br><br><br>
+                      <div class="form-group">
+                        
+
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radiollamada" id="inlineRadio1" value="recibida">
+                          <label class="form-check-label size"  for="inlineRadio1">Recibida</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radiollamada" id="inlineRadio2" value="realizada">
+                          <label class="form-check-label size" for="inlineRadio2">Realizada</label>
+                        </div>
+                       
+
+                        </div>
+                        <div class="form-group">
+                          <div>
+                            <label class="size">Motivo llamada</label>
+                            <textarea class="form-control" name="motivo" id="motivo"></textarea>
+                          </div>
+                        </div>
+                        <input type="text" name="creador" class="ocultar" value="<?php echo $_SESSION['idUsuario'] ?>">
+                        <div class="form-group">
+                          <div>
+                            <label class="size">Tarea</label>
+                            <input type="text" name="tarea" class="form-control" id="tarea">
+                            <br>
+                            <label class="size">Seleccione el encargado de la tarea</label>
+                            <select class="form-control" id="empleadoEncargado" name="empleadoEncargado" class="form-control"> 
+                              <option value="<?php echo $_SESSION['idUsuario'];?>"><?php             echo $_SESSION["nombreUsuario"].' '.$_SESSION["apellidoUsuario"];?>
+                              </option>
+                              <?php foreach($aEncargado as $rowse){ ?>
+                          <option value="<?php echo $rowse['idUsuario'] ?>"><?php echo $rowse['nombre'],' ',$rowse['apellido'] ?></option>
+                          <?php } ?>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div>
+                            <label class="size">Vencimiento de la tarea</label>
+                            <input type="date" name="vencimiento" id="vencimiento" class="form-control">
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <center><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>
+                          </button><span class="ocultar">----</span>
+                          <button type="reset" class="btn btn-danger"><i class="fas fa-times-circle"></i></button></center>
+                        </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+
+  
+
+        <div class="col-12 col-sm-12 col-lg-6">
+          <div class="card bg-cyan aclarar topcard">
+            <div class="card-statistic-3 p-5   ">
+              <div class="card-icon card-icon-large">
+                <i class="fas fa-phone-volume"></i>
+              </div>
+                <div class="mb-4">
+                  <h2>HISTORIAL DE LLAMADAS</h2>
+                </div>
+            </div>
+          </div>
+
+
+          <?php foreach($aLlamadas as $index => $rowsn){ ?>
+            <div  class="card bg-cyan aclarar " >
+              <div class="card-body">
+                <h5>Fecha: <?php echo $rowsn['fechaCreacion'];?>   Hora: <?php echo $rowsn['horaCreacion'];?> </h5>
+                <h5>Duración:  <?php echo $rowsn['duracion'];?></h5>
+                <h5>Motivo: <?php echo $rowsn['motivo'];?></h5>
+                <h5>Encargado: <?php echo $rowsn['creador'];?></h5>
+                <h5><?php echo $rowsn['estado'];?></h5>          
+              </div>
+            </div>
+            <?php } ?> 
+      </div>
+    </div>

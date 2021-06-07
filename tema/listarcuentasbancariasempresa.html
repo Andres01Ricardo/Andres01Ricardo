@@ -1,0 +1,55 @@
+<?php 
+require_once("class/cuentasbancarias.php"); 
+
+$oControl=new Control(); 
+$oCuentasBancarias=new CuentasBancarias();
+$aData["idEmpresa"]=$_SESSION["idEmpresa"];  
+
+$aCuentas=$oCuentasBancarias->getCuentas($aData); 
+?>
+<section class="section">
+    <ul class="breadcrumb breadcrumb-style ">
+      <li class="breadcrumb-item">
+        <a href="<?php echo $URL; ?>">
+          <i class="fas fa-home"></i></a>
+      </li>
+      <li class="breadcrumb-item">Cuentas Bancarias</li>
+      <li class="breadcrumb-item">Listar Cuentas Bancarias</li>
+    </ul>
+    <div class="section-body">
+      <div class="row">
+        <div class="col-md-12 col-lg-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Lista de cuentas bancarias</h4>
+                </div>
+                <div class="card-body">
+                 <?php $i=0; foreach($aCuentas as $index => $iCuenta){ 
+                    $aEncript['cadena']=$iCuenta['idCuentaBancaria'];
+                    $id=$oControl->encriptar($aEncript); 
+
+                    if($i==0){
+                    ?>
+                    <div class="row">
+                    <?php } ?>
+                    <div class="col-md-4 col-sm-12">
+                      <div class="div-cuenta">
+                        <div class="imagen-cuenta"></div>
+                        <div class="div-titulo">
+                          <?php echo $iCuenta["nombreCuenta"]; ?>
+                          <span class="div-saldo"><?php echo "$".number_format($iCuenta["saldoActual"],2,",","."); ?></span>
+                          <span class="div-banco"><?php echo $iCuenta["banco"]; ?></span>
+                        </div>
+                        <a href="<?php echo $URL; ?>vermovimientos/<?php echo $id; ?>">Ver Movimientos</a>
+                      </div>
+                    </div>
+                  <?php $i++; if($i==4){ $i=0; ?>  
+                  </div>
+                  <?php  } ?>
+                  <?php  } ?>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

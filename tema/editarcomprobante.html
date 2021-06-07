@@ -1,0 +1,547 @@
+
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oLista = new Lista('comprobante_items');
+
+$oLista->setFiltro("idComprobante","=",$id);
+
+$aComprobanteItems=$oLista->getLista();
+
+unset($oLista);
+
+$oData = new Data('comprobante',"idComprobante",$id);
+$aComprobante=$oData->getDatos();
+unset($oData);
+
+// $oData = new Data('empresa',"idEmpresa",$aComprobante[0]["idEmpresa"]);
+// $aEmpresa=$oData->getDatos();
+// unset($oData);
+
+
+$oItem=new Data("empresa","idEmpresa",$aComprobante['idEmpresa']); 
+$aEmpresa=$oItem->getDatos(); 
+
+$oItem=new Data("tipos_documento_contable","idTiposDocumento",$aComprobante['idTipo']); 
+$aTipo=$oItem->getDatos(); 
+
+
+
+
+$oLista = new Lista('tipos_documento_contable');
+$tiposDocumento=$oLista->getLista();
+
+unset($oLista);
+
+// $oLista = new Lista('comprobante_items');
+// $oLista->setFiltro("idComprobante","=",$id);
+// $aComprobanteItems=$oLista->getLista();
+// unset($oLista);
+
+
+
+
+
+
+
+
+
+
+// $oItem=new Data("comprobante","idComprobante",$aDatos[0]["idComprobante"]); 
+// $aComprobante=$oItem->getDatos(); 
+
+
+
+
+
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+
+
+
+
+
+$oLista = new Lista('parametros_documentos');
+$oLista->setFiltro('idEmpresa','=',$aComprobante["idEmpresa"]);
+$oLista->setFiltro('tipo','=',$aComprobante["idTipo"]);
+$parametrosDocumentos=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+  <input type="hidden" name="datos[idComprobante]" id="idComprobante" value="<?php echo $id; ?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Comprobantes</li>
+
+          <li class="breadcrumb-item">Crear comprobante</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+                <fieldset class="border p-4">
+                  <h4>Datos básicos</h4>
+                <!-- <div class="card card-body"> -->
+
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label>Empresa<span class="requerido">*</span>:</label>
+                        <!-- <select class="form-control" name="datos[idEmpresa]" id="idEmpresa" required>
+                          <option value="">Seleccione</option>
+                          <?php foreach($aEmpresa as $index => $iEmpresa){?>
+                            <option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
+                          <?php } ?>
+                        </select> -->
+                        <input type="text" class="form-control" name="datos[empresa]" id="empresa" required readonly value="<?php echo $aEmpresa['razonSocial'];?>">
+                        <input type="hidden" class="form-control" name="datos[idEmpresa]" id="idEmpresa" required readonly value="<?php echo $aEmpresa['idEmpresa'];?>">
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo<span class="requerido">*</span>:</label>
+
+                        <select class="custom-select" name="datos[tipoDocumento]" id="tipoDocumento"   required>
+					      <option value="">Seleccione una opción</option>
+
+			                <?php foreach($tiposDocumento as $item){ ?>
+			                	<option  value='<?php echo $item["idTiposDocumento"]; ?>' <?php if($item["idTiposDocumento"]==$aComprobante["idTipo"]){echo 'selected';} ?>  ><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
+					      	<?php } ?>
+					    </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Comprobante<span class="requerido">*</span>:</label>
+
+                        
+                        <select class="custom-select" name="datos[comprobante]" id="comprobante"   required>
+					               <option value="">Seleccione una opción</option>
+
+                      <?php foreach($parametrosDocumentos as $itemP){ ?>
+                        <option  value='<?php echo $itemP["idParametrosDocumentos"]; ?>' <?php if($itemP["comprobante"]==$aComprobante["comprobante"]){echo 'selected';} ?>  ><?php echo $itemP["comprobante"].' - '.$itemP["descripcion"]; ?></option>
+                      <?php } ?>
+					              </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha<span class="requerido">*</span>:</label>
+
+                        <input type="date"  class="form-control datepicker" name="datos[fecha]" id="datos[fecha]" value="<?php echo $aComprobante['fecha'];?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3" id="divNumeroComprobante">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Comprobante No.<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[numeroComprobante]" id="numeroComprobante" value="<?php echo $aComprobante['numero'];?>" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+              </fieldset>
+            <!-- </div> -->
+            <br>
+                  <div id="tabla">
+                  	<div class="col-md-12 col-lg-12" >
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th>Seq.</th>
+
+                            <th>Cuenta</th>
+
+                            <th>Centro de costo</th>
+
+                            <!-- <th>S.C</th> -->
+
+                            <th>Tercero</th>
+
+                            <!-- <th>Suc.</th> -->
+
+                            <th>Descripción</th>
+
+                            <th>Base</th>
+
+                            <th>Débito</th>
+
+                            <th>crédito</th>
+                            <th class="text-center">
+
+                              <a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+
+                            </th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <?php foreach($aComprobanteItems as $key=>$value){
+                          // $codigoCuenta=explode("-", $value["cuenta"]); 
+                          // $oItem=new Data("cuenta_contable","codigoCuenta",$codigoCuenta[0]);
+                          // $cuentaC=$oItem->getDatos();
+                          //  unset($oItem);
+
+                            // print_r($value);
+                            $oItem=new Data("cuenta_contable","idCuentaContable",$value["idCuentaContable"]); 
+                            $cuentaC=$oItem->getDatos(); 
+                            unset($oItem);
+
+
+                            // $oItem=new Data("centro_costo","idCentroCosto",$value["idCentroCosto"]); 
+                            // $centroC=$oItem->getDatos(); 
+                            // unset($oItem);
+
+                            // print_r($cuentaC);
+
+                          $nitT=explode("-", $value["tercero"]);
+                          if ($value["tipoTercero"]=='c') {
+                            $oItem=new Data("cliente","idCliente",$value["idTercero"]);
+                            $tercero=$oItem->getDatos();
+                            $idTerc=$tercero["idCliente"];
+                            $nombreT=$tercero["razonSocial"];
+                            $nitTercero=$tercero["nit"];
+                            $tipoT='c';
+                            unset($oItem);
+                          }
+                          if ($value["tipoTercero"]=='p') {
+                            $oItem=new Data("proveedor","idProveedor",$value["idTercero"]);
+                            $tercero=$oItem->getDatos();
+                            $idTerc=$tercero["idProveedor"];
+                            $nombreT=$tercero["razonSocial"];
+                            $nitTercero=$tercero["nit"];
+                            $tipoT='p';
+                            unset($oItem);
+                          }
+                          if ($value["tipoTercero"]=='e') {
+                            $oItem=new Data("empleado","idEmpleado",$value["idTercero"]);
+                            $tercero=$oItem->getDatos();
+                            $idTerc=$tercero["idEmpleado"];
+                            $nombreT=$tercero["nombre"].' '.$tercero["apellido"];
+                            $nitTercero=$tercero["numeroDocumento"];
+                            $tipoT='e';
+                            unset($oItem);
+                          }
+                          if ($value["tipoTercero"]=='o') {
+                            $oItem=new Data("otros","idOtro",$value["idTercero"]);
+                            $tercero=$oItem->getDatos();
+                            $idTerc=$tercero["idOtro"];
+                            $nombreT=$tercero["razonSocial"];
+                            $nitTercero=$tercero["nit"];
+                            $tipoT='o';
+                            unset($oItem);
+                          }
+
+                          $oItem=new Data("centro_costo","idCentroCosto",$value['idCentroCosto']);
+                          $centroCos=$oItem->getDatos();
+                          unset($oItem);
+                          // $idCentroCos=explode('-', $value['centroCosto']);  
+                          
+                          ?>
+                            <tr>
+                              <input type="hidden" class="form-control mayusculas naturaleza" name="item[<?php echo $key; ?>][naturaleza]" id="item[<?php echo $key; ?>][naturaleza]" value="<?php echo $cuentaC['naturaleza'];?>" required  >
+
+                              <td><?php echo $key+1; ?></td>
+
+                              <td><input type="text" name="item[<?php echo $key; ?>][cuentaContable]" id="item[<?php echo $key; ?>][cuentaContable]" class="form-control cuentaContable mayusculas" value="<?php echo $cuentaC['codigoCuenta'].' - '.$cuentaC['nombre'];?>" required placeholder="Cuenta">
+                                <span name="item[0][letreroCuentaContable]" id="item[0][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
+                                <input type="hidden" name="item[<?php echo $key; ?>][idCuentaContable]" id="item[<?php echo $key; ?>][idCuentaContable]" class="form-control idCuentaContable" value="<?php echo $cuentaC['idCuentaContable'];?>"></td>
+
+                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $key; ?>][centroCosto]" id="item[<?php echo $key; ?>][centroCosto]" placeholder="centro costo" value="<?php echo $centroCos["codigo"].' '.$centroCos["centroCosto"]; ?>">
+                                
+                                <input type="hidden" name="item[<?php echo $key; ?>][idCentroCosto]" id="item[<?php echo $key; ?>][idCentroCosto]" class="form-control idCentroCosto" value="<?php echo $centroCos["idCentroCosto"];?>"></td>
+
+                              <!-- <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]"  required></td> -->
+
+                              <td><input type="text" class="form-control  nit" name="item[<?php echo $key; ?>][nit]" id="item[<?php echo $key; ?>][nit]" placeholder="Tercero"  value="<?php echo $nitTercero.' - '.$nombreT;?>"><input type="hidden" name="item[<?php echo $key; ?>][idTercero]" id="item[<?php echo $key; ?>][idTercero]" class="form-control idTercero" value="<?php echo $idTerc; ?>">
+                                <input type="hidden" name="item[<?php echo $key; ?>][tipoTercero]" id="item[<?php echo $key; ?>][tipoTercero]" class="form-control tipoTercero" value="<?php echo $tipoT; ?>"><span name="item[0][letreroTercero]" id="item[0][letreroTercero]" class="ocultar letreroTercero" style="color: red;">Tercero no seleccionado correctamente</span></td>
+
+                              <!-- <td><input type="text" class="form-control sucursal mayusculas" name="item[<?php echo $key; ?>][sucursal]" id="item[<?php echo $key; ?>][sucursal]"  required></td> -->
+
+                              <td><input type="text" class="form-control  descripcion mayusculas" name="item[<?php echo $key; ?>][descripcion]" id="item[<?php echo $key; ?>][descripcion]" value="<?php echo $value['descripcion'];?>" placeholder="Descripción" required ></td>
+                              
+                              <td><input type="text" class="form-control  base moneda " name="item[<?php echo $key; ?>][base]" id="item[<?php echo $key;?>][base]"
+                              value="<?php 
+                              if($value['base']!=0){
+                                echo $value['base'];  
+                              }
+                              
+                            ?>" placeholder="Base/cruce" readonly></td>
+
+                              <?php if ($value["naturaleza"]=='debito') {
+                                $debitoV="$".number_format($value['saldoDebito'],2,",",".");
+                                $creditoV="";
+                                $controlC="disabled";
+                                $controlD="";
+                              }
+                              if ($value["naturaleza"]=='credito') {
+                                $creditoV="$".number_format($value['saldoCredito'],2,",",".");
+                                $debitoV="";
+                                $controlD="disabled";
+                                $controlC="";
+                              } ?>
+                              <td><input type="text" class="form-control moneda decimales debito mayusculas" name="item[<?php echo $key; ?>][debito]" id="item[<?php echo $key; ?>][debito]" value="<?php echo $debitoV;?>" placeholder="Débito"  <?php echo $controlD; ?> ></td>
+
+                              <td><input type="text" class="form-control moneda decimales  credito mayusculas" name="item[<?php echo $key; ?>][credito]" id="item[<?php echo $key; ?>][credito]" value="<?php echo $creditoV;?>" placeholder="Crédito" <?php echo $controlC; ?>></td>
+                          
+
+<!-- <input type="text" class="form-control moneda  valor mayusculas" name="item[<?php echo $key; ?>][valor]" id="item[<?php echo $key; ?>][valor]" placeholder="Valor" required> -->
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+
+                              </td>
+
+                            </tr>
+                            <?php } ?>
+
+                        </tbody>
+
+
+                      </table>
+
+                    </div>
+                    <br>
+                  <fieldset class="border p-2">
+                    <div class="form-group">
+                      <h4>Observaciones</h4>
+                          <textarea class="form-control" name="datos[obsevaciones]" id="datos[obsevaciones]"><?php echo $aComprobante["observaciones"]; ?></textarea>
+
+
+                    </div>
+                    <div class="form-group">
+
+                        <label class="negrita">Adjuntar archivo:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                  </fieldset>
+
+
+                <br>
+                  <fieldset class="border p-2">
+                      <div class="row">
+                        <div class="col-md-4">
+                          
+                         	<div class="form-group">
+                          		<label class="negrita">Débito:</label>
+							</div>
+                          
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control moneda" name="datos[totalDebito]" id="totalDebito" readonly placeholder="débido">
+                         
+                        </div>
+
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+
+                           
+                            <label class="negrita">Crédito:</label>
+
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" class="form-control moneda" name="datos[totalCredito]" id="totalCredito" readonly placeholder="crédito">
+
+                          </div>
+                        </div>
+                    </div>
+					<div class="row">
+	                    <div class="col-md-4">
+	                      <div class="form-group">
+
+	                       
+	                        <label class="negrita">Diferencia:</label>
+
+	                      </div>
+	                    </div>
+	                    <div class="col-md-4">
+	                      <div class="form-group">
+
+	                        <input type="text" class="form-control moneda" name="datos[totalDiferencia]" id="totalDiferencia" readonly placeholder="Diferencia">
+
+	                      </div>
+	                    </div>
+	                </div>
+
+
+                    
+
+                  </fieldset>
+
+             <br>
+                  </div> 
+
+                  </div>
+           
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-info mr-1" id="btnGuardar">EDITAR</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">RETENCIÓN</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmRetencion">
+          <input type="hidden" name="index" id="index">
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[dc]"  id="debito" value="debito" >
+              <label class="form-check-label" for="debito">DEBITO</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[dc]"   id="credito" value="credito">
+              <label class="form-check-label"  for="credito">CREDITO</label>
+            </div>
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Porcentaje de la retención:</label>
+              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control" placeholder="% de la retencion" required>
+              
+             
+            </div>
+          </div>
+
+           <div class="form-group">
+            <div class="form-group">
+              <label >Base:</label>
+              <input type="text" name="datos[baseModal]" id="baseModal" class="form-control  decimales" placeholder="base retencion" required>
+              
+             
+            </div>
+          </div>
+         
+         <div class="form-group">
+            <div class="form-group">
+              <label >Retención:</label>
+              <input type="text" name="datos[retencionModal]" id="retencionModal" class="form-control"  required disabled>
+              
+             
+            </div>
+          </div>
+
+         
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
+        <button type="button" class="btn btn-primary" id="btnGuardarRetencion">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>

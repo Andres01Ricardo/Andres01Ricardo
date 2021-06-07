@@ -1,0 +1,257 @@
+
+<?php 
+
+include("functions/inventario/listarinventario.php") ; 
+
+
+
+
+
+
+if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
+  
+  $oControl=new Control(); 
+
+  $idEmpresa=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+    if($idEmpresa==""){
+
+      echo '<script>window.history.back()</script>'; 
+
+    }else{
+    $decrip["cadena"]=$id; 
+
+    $idEmpresa=$oControl->desencriptar($decrip); 
+    
+    }
+  }else if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4){
+
+  $idEmpresa= $_SESSION["idEmpresa"];
+
+}
+  
+
+$oInventarios = new Inventario();
+$aInventario =$oInventarios->getInventarioProductos(array("idEmpresa"=>$idEmpresa));
+
+
+
+
+
+
+
+
+?>
+
+      <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Inventario de productos</h4>
+                  <a href="../historialinventario/<?php echo $idEmpresa ?>" class="btn btn-info" >Historial movimientos</a>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      
+
+                      <table class="table table-striped mayusculas centrar" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Producto</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Total</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+
+                          <?php foreach($aInventario as $index => $iInventario){   ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iInventario["producto"]; ?></td>
+
+                              <td><?php echo $iInventario["cantidad"]; ?></td>
+
+                              
+
+                              <td><?php echo "$".number_format($iInventario["valorUnitario"],0,".",",") ; ?></td>
+
+                              <td><?php 
+                                $cantidad=(int)$iInventario["cantidad"];
+                                $valorUnitario=(int)$iInventario["valorUnitario"];
+                                $total= $cantidad*$valorUnitario; 
+                                echo "$".number_format($total,0,".",","); ?></td>
+
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" id="<?php echo $iInventario['idProducto']; ?>" class="sumarInsumo"  data-toggle="modal" data-target="#modal" data-toggle="tooltip"  data-placement="top" title="Agregar unidades al inventario"><i class="fas fa-plus" style="color: #A2D7FF;font-size: 22px;"></i></a>
+
+                                <a href="javascript:void(0)" id="<?php echo $iInventario['idProducto']; ?>" class="restarInsumo" data-placement="top" data-toggle="modal" data-target="#modalR" data-toggle="tooltip" title="Descontar unidades del inventario"><i class="fas fa-minus-circle" style="color: #FFB2A3;font-size: 22px;"></i></a></i>
+
+                                <a href="../historialinventario/<?php echo $idEmpresa ?>&insumo=<?php echo $iInventario['idProducto']; ?>"  title="Ver historial movimientos"><i class="fas fa-book" style="color: #A8D173;font-size: 22px;"></i></a>
+                              </td>
+                            </tr>
+
+                            <?php } ?>
+
+                        </tbody>
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+              
+
+
+
+
+
+    <div class="modal fade bd-example-modal-lg" id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myLargeModalLabel">Sumar unidades al inventario de Productos</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form enctype="multipart/form-data" id="frmSumar">
+            <input type="hidden" name="datos[idProducto]" id="datos[idProducto]" value="">
+            <input type="hidden" name="datos[tipoOperacion]" id="datos[tipoOperacion]" value="1">
+
+            <?php if($_SESSION['idRol']==1||$_SESSION['idRol']==2){ ?>
+              <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+              <?php } ?>
+
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="negrita">Producto:</label>
+                  <input type="text" class="form-control mayusculas" id="insumoSumar" name="datos[insumoSumar]" required readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Cantidad a sumar para el inventario<span class="requerido">*</span>:</label>
+
+                  <input type="text" class="cantidadSumar form-control" name="datos[cantidadSumar]" id="cantidadSumar" onkeypress="return numeros(event);"  required>
+
+                </div>
+                
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Unidad que suma en el inventario:</label>
+
+                  <input type="text" class="mayusculas centrar form-control" name="datos[unidadSumar]" id="unidadSumar" readonly disabled>
+
+                </div>
+                
+              </div>
+
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer bg-whitesmoke br">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnSumar">SUMAR</a>
+          </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade bd-example-modal-lg" id="modalR" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myLargeModalLabel">Restar unidades al inventario de productos</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form enctype="multipart/form-data" id="frmRestar">
+            <input type="hidden" name="datos[idProductoRestar]" id="datos[idProductoRestar]" value="">
+            <input type="hidden" name="datos[tipoOperacion]" id="datos[tipoOperacion]" value="2">
+
+            <?php if($_SESSION['idRol']==1||$_SESSION['idRol']==2){ ?>
+              <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+              <?php } ?>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="negrita">Producto:</label>
+                  <input type="text" class="form-control mayusculas" id="insumoRestar" name="datos[insumoRestar]" required readonly>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Cantidad a restar para el inventario<span class="requerido">*</span>:</label>
+
+                  <input type="text" class="cantidadSumar form-control" name="datos[cantidadRestar]" id="cantidadRestar" onkeypress="return numeros(event);"  required>
+
+                </div>  
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Unidad que resta en el inventario:</label>
+
+                  <input type="text" class="mayusculas centrar form-control" name="datos[unidadRestar]" id="unidadRestar" readonly disabled>
+
+                </div>
+                
+              </div>
+
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer bg-whitesmoke br">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnRestar">RESTAR</a>
+          </div>
+      </div>
+    </div>
+  </div>

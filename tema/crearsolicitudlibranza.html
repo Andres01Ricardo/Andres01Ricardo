@@ -1,0 +1,121 @@
+<?php 
+
+require_once("class/empleados.php"); 
+
+
+
+$oEmpleado=new Empleados(); 
+
+
+
+$oControl=new Control(); 
+
+$aData["idEmpresa"]=$_SESSION["idEmpresa"]; 
+
+if($_SESSION["idRol"]==2){
+
+  $aData["idUsuario"]=$_SESSION["idUsuario"]; 
+
+}
+
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aData);
+
+
+
+?>
+
+
+<form method="POST" action="simularcuotas">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Crear solicitud libranza</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header" style="background-color: #01A3FF; color: white">
+
+                  <h3 style="background-color: #01A3FF; color: white">Información General</h3>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="form-group row">
+                    <h4  class="col-sm-3 ">Empleado libranza:</h4>
+                    <div class="col-sm-9">
+                      <select class="form-control select2" name="idEmpleado" id="idEmpleado" required>
+                        <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpleados as $iItem){ ?>
+
+                          <option value="<?php echo $iItem['idEmpleado']; ?>"><?php echo $iItem["nombre"].' '.$iItem["apellido"]; ?></option>
+
+                        <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <h4  class="col-sm-3 ">Valor solicitado ($):</h4>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" name="valorSolicitado" id="valorSolicitado" onkeypress="return numeros(event);" placeholder="Ingrese el valor solicitado" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <h4  class="col-sm-3 ">Plazo en meses:</h4>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" name="cuotas" id="cuotas" onkeypress="return numeros(event);" placeholder="Ingrese el plazo de pago en meses" required>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <h4  class="col-sm-3 ">Tasa de interes(%):</h4>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" name="tasaInteres" id="tasaInteres" placeholder="Ingrese el porcentaje de la tasa de interes" required>
+                    </div>
+                  </div>
+                  <!-- <div class="form-group row">
+                    <h4  class="col-sm-3 ">Total desembolso:</h4>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" name="totalDesembolso" id="totalDesembolso" placeholder="total del desembolso" readonly required>
+                    </div>
+                  </div> -->
+
+                </div>
+
+
+                <div class="card-footer text-right">
+
+                    <button class="btn btn-primary mr-1" type="submit" id="btnGuardar">Simular cuotas</button>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>

@@ -1,0 +1,814 @@
+<?php 
+
+require_once("class/facturacompra.php"); 
+
+
+
+$oFactura=new FacturaCompra(); 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+$oLista = new Lista('cuenta_bancaria');
+
+$aCuentas=$oLista->getLista();
+
+unset($oLista);
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("factura_compra","idFacturaCompra",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oLista = new Lista('unidad');
+
+$oLista->setOrden("nombre","ASC");
+
+$aUnidades=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+
+$aEmpresa=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("proveedor","idProveedor",$aDatos["idProveedor"]); 
+
+$aProveedor=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oLista = new Lista('factura_compra_item');
+
+$oLista->setFiltro("idFacturaCompra","=",$id);
+
+$aItems=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oLista = new Lista('grupo');
+
+$aGrupos=$oLista->getLista();
+
+unset($oLista);
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+  .no-producto{
+
+    width: calc(100% - 18px) !important;
+
+    display: inline-block;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="datos[tipoFactura]" id="datos[tipoFactura]" value="<?php echo $aDatos['tipoFactura']; ?>">
+
+<input type="hidden" name="datos[idFacturaCompra]" id="datos[idFacturaCompra]" value="<?php echo $id; ?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Factura de compra</li>
+
+          <li class="breadcrumb-item">Gestionar factura</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empresa:</label>
+
+                        <input type="text" class="form-control mayusculas" value="<?php echo $aEmpresa['razonSocial']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha registro:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaRegistro']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo compra:</label>
+
+                        <input type="text" class="form-control mayusculas" value="<?php echo $aDatos['tipoFactura']==1?'Bienes':'Servicios'?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha recibido:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaRecibido']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha Pago:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaPago']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                          <label class="negrita">N° Factura:</label>
+
+                          <input type="text" class="form-control mayusculas" value="<?php echo $aDatos['nroFactura']; ?>" placeholder="N° Factura" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                          <label class="negrita">Proveedor:</label>
+
+                          <input type="text" class="form-control mayusculas" value="<?php echo $aProveedor['razonSocial']; ?>" placeholder="N° Factura" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Factura<span class="requerido">*</span>:</label>
+
+                        <div class="d-block"><a href="<?php echo $URL.$aDatos['archivo']; ?>" target="_blank">Archivo</a></div>
+
+                        
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Detalles Factura</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Productos</th>
+
+                            <th>Descripción</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Unidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Subtotal</th>
+
+                            <th>Iva(%)</th>
+
+                            <th>Total</th>
+
+                            
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aItems as $index => $item){ ?>
+
+                            <tr class="filaItem">
+
+                              <td>
+
+                                <input type="hidden" name="item[<?php echo $index; ?>][idFacturaCompraItem]" id="item[<?php echo $index; ?>][idFacturaCompraItem]" class="form-control" value="<?php echo $item["idFacturaCompraItem"]; ?>" ><?php echo $index+1; ?></td>
+
+                              <td>
+
+                                <?php if($item["idProductoServicio"]==0){ ?>
+
+                                  <span style="margin-right: 2px;" data-toggle="modal" data-target="#modalProducto" class="registrar"><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe registrar este producto"></i></span>
+
+                                <?php } ?>
+
+                                <input type="text" name="item[<?php echo $index; ?>][producto]" id="item[<?php echo $index; ?>][producto]" class="form-control producto mayusculas <?php if($item["idProductoServicio"]==0){ ?>no-producto<?php } ?>" required placeholder="Detalle" value="<?php echo $item["detalleProducto"]; ?>" >
+
+                                <input type="hidden" name="item[<?php echo $index; ?>][idProducto]" id="item[<?php echo $index; ?>][idProducto]" class="form-control idProducto" required value='<?php echo $item["idProductoServicio"]; ?>' ></td>
+
+                              <td><input type="text" class="form-control descripcion mayusculas" name="item[<?php echo $index; ?>][descripcion]" id="item[<?php echo $index; ?>][descripcion]" placeholder="Descripción" value='<?php echo $item["descripcion"]; ?>'></td>
+
+                              <td><input type="text" class="form-control numero cantidad" name="item[<?php echo $index; ?>][cantidad]" id="item[<?php echo $index; ?>][cantidad]" placeholder="Cantidad" required value='<?php echo $item["cantidad"]; ?>'></td>
+
+                              <td><select class="form-control mayusculas idUnidad" name="item[<?php echo $index; ?>][idUnidad]" id="item[<?php echo $index; ?>][idUnidad]" required>
+
+                                  <option value="">Seleccione una opción</option>
+
+                                  <?php foreach($aUnidades as $iUnidades){ 
+
+                                    $selected=""; 
+
+                                    if($iUnidades['idUnidad']==$item["idUnidad"]){
+
+                                      $selected="selected"; 
+
+                                    }
+
+                                    ?>
+
+                                  <option <?php echo $selected; ?> value="<?php echo $iUnidades['idUnidad']; ?>"><?php echo $iUnidades["nombre"]; ?></option>
+
+                                  <?php } ?>
+
+                                </select></td>
+
+                              <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="item[<?php echo $index; ?>][valorUnitario]" id="item[<?php echo $index; ?>][valorUnitario]" value='<?php echo "$".number_format($item["valorUnitario"],0,".",","); ?>' placeholder="Valor Unitario" required></td>
+
+                              <td><input type="text" class="form-control moneda subtotal mayusculas" name="item[<?php echo $index; ?>][subtotal]" id="item[<?php echo $index; ?>][subtotal]" placeholder="Subtotal" required readonly value='<?php echo "$".number_format($item["subtotal"],0,".",","); ?>'></td>
+
+                              <td><input type="text" class="form-control numero iva mayusculas" name="item[<?php echo $index; ?>][iva]" id="item[<?php echo $index; ?>][iva]" placeholder="IVA" required value='<?php echo $item["iva"]; ?>'></td>
+
+                              <td><input type="text" class="form-control moneda total mayusculas" name="item[<?php echo $index; ?>][total]" id="item[<?php echo $index; ?>][total]" placeholder="TOTAL" required readonly value='<?php echo "$".number_format($item["total"],0,".",","); ?>'></td>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                        <tfoot>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[subtotal]" id="datos[subtotal]" value='<?php echo "$".number_format($aDatos["subtotal"],0,".",","); ?>' placeholder="SUBTOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value='<?php echo "$".number_format($aDatos["descuento"],0,".",","); ?>' readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[iva]" id="datos[iva]" placeholder="IVA" readonly value='<?php echo "$".number_format($aDatos["iva"],0,".",","); ?>'></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[total]" id="datos[total]" placeholder="TOTAL" readonly value='<?php echo "$".number_format($aDatos["total"],0,".",","); ?>'></td>
+
+                            <td></td>
+
+                          </tr>
+
+                        </tfoot>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Impuestos</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <div class=" col-md-3 ">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Tipo deducción<span class="requerido">*</span>:</label>
+
+                            <select class="form-control mayusculas" id="tipoDeduccion">
+
+                            <option value="">Seleccione una opción</option>
+
+                            <option value="3">ARL</option>
+
+                            <option value="4">Otros descuentos autorizados</option>
+
+                            <option value="2">RETE ICA</option>
+
+                            <option value="1">Retención en la fuente</option>
+
+                            <option value="5">Retención salarios</option>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3 ocultar concepto-select">
+
+                        <div class="form-group">
+
+                            <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+
+                            <select class="form-control" name="conceptoSelect" id="conceptoSelect">
+
+                            <option value="">Seleccione una opción</option>
+
+                            
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 concepto-texto">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Concepto<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="conceptoText" id="conceptoText" >
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-2 ocultar baseimpuestos">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Base Impuestos<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda numero" name="baseImpuestos" id="baseImpuestos">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 valor">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Valor<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda numero" name="valor" id="valor">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 boton-agregar">
+
+                        <div class="form-group text-right">
+
+                            <label class="negrita d-block">&nbsp;</label>
+
+                            <a class="btn btn-success mr-1" id="btnAgregar">Agregar</a>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-12 col-lg-12">
+
+                        <table class="table table-striped mayusculas" id="tableDeducciones">
+
+                          <thead>
+
+                            <tr>
+
+                              <th>Tipo Deducción</th>
+
+                              <th>Descripción</th>
+
+                              <th>Valor</th>
+
+                              <th class="text-center" style="width: 50px">-</th>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total Deducciones:</label>
+
+                            <input type="text" class="form-control mayusculas moneda" name="datos[totalDeduccion]" id="datos[totalDeduccion]" value="0" readonly>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Amortización:</label>
+
+                            <input type="text" class="form-control mayusculas moneda numero" name="datos[amortizacion]" id="datos[amortizacion]" value="0" required>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total a Pagar:</label>
+
+                            <input type="text" class="form-control mayusculas moneda" name="datos[totalPago]" id="datos[totalPago]" value='<?php echo "$".number_format($aDatos["total"],0,".",","); ?>' readonly required>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Fecha Pago Real:</label>
+
+                            <input type="date" class="form-control mayusculas egreso" name="datos[fechaPagoReal]" id="datos[fechaPagoReal]" >
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Comprobante de egreso:</label>
+
+                            <input type="text" class="form-control mayusculas egreso" name="datos[comprobante]" id="datos[comprobante]" >
+
+                        </div>
+
+                      </div>
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Cuenta bancaria:</label>
+
+                            <select id="datos[cuentaBancaria]" name="datos[cuentaBancaria]" class="form-control">
+                              <option value="">Seleccione la cuenta</option>
+                              <?php foreach($aCuentas as $index => $iCuenta){ ?>
+                              <option value="<?php echo $iCuenta['idCuentaBancaria']; ?>"><?php echo $iCuenta['nombreCuenta'].' - '.$iCuenta['numeroCuenta']; ?></option>
+                              <?php } ?>
+                            </select>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+<div class="modal fade bd-example-modal-lg" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Registrar bien/servicio</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body">
+
+          <form enctype="multipart/form-data" id="frmGuardarProducto">
+
+            <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $aDatos['idEmpresa']; ?>">
+
+            <div class="row">
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Grupo<span class="requerido">*</span>:</label>
+
+                  <input type="hidden" name="datos[tipo]" id="datos[tipo]">
+
+                  <select class="form-control" name="datos[grupo]" id="datos[grupo]" required>
+
+                    <option value="">Seleccione una opción</option>
+
+                    <?php foreach($aGrupos as $iGrupo){ ?>
+
+                      <option value="<?php echo $iGrupo["idGrupo"]; ?>" tipo="<?php echo $iGrupo["tipo"]; ?>" ><?php echo $iGrupo["nombre"]; ?></option>
+
+                    <?php } ?>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Segmento<span class="requerido">*</span>:</label>
+
+                  <select class="form-control" name="datos[segmento]" id="datos[segmento]" required>
+
+                    <option value="">Seleccione una opción</option>
+
+                    
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Familia<span class="requerido">*</span>:</label>
+
+                  <select class="form-control" name="datos[familia]" id="datos[familia]" required>
+
+                    <option value="">Seleccione una opción</option>
+
+                    
+
+                  </select>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="row">
+
+              
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Clase<span class="requerido">*</span>:</label>
+
+                  <select class="form-control" name="datos[clase]" id="datos[clase]" required>
+
+                    <option value="">Seleccione una opción</option>
+
+                    
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Bien/servicio<span class="requerido">*</span>:</label>
+
+                  <select class="form-control" name="datos[bien]" id="datos[bien]" required>
+
+                    <option value="">Seleccione una opción</option>
+
+                    
+
+                  </select>
+
+                </div>
+
+              </div>
+
+              <div class="col-md-4">
+
+                <div class="form-group">
+
+                  <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+
+                  <input type="text" class="form-control" name="datos[nombre]" id="datos[nombre]" required>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardarProducto">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+

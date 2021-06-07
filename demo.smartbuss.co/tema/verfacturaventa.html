@@ -1,0 +1,358 @@
+<?php 
+
+require_once("class/facturaventa.php"); 
+
+
+
+$oFactura=new FacturaVenta(); 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("factura_venta","idFacturaVenta",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+
+$aEmpresa=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("cliente","idCliente",$aDatos["idCliente"]); 
+
+$aCliente=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oLista = new Lista('factura_venta_item');
+
+$oLista->setFiltro("idFacturaVenta","=",$id);
+
+$aItems=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+  .no-producto{
+
+    width: calc(100% - 18px) !important;
+
+    display: inline-block;
+
+  }
+
+</style>
+
+
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Factura de venta</li>
+
+          <li class="breadcrumb-item">Ver factura</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empresa:</label>
+
+                        <input type="text" class="form-control mayusculas" value="<?php echo $aEmpresa['razonSocial']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <?php } ?>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha registro:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaRegistro']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha factura:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaFactura']; ?>" required readonly>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                          <label class="negrita">N° Factura:</label>
+
+                          <input type="text" class="form-control mayusculas" value="<?php echo $aDatos['nroFactura']; ?>" placeholder="N° Factura" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                          <label class="negrita">Cliente:</label>
+
+                          <input type="text" class="form-control mayusculas" value="<?php echo $aCliente['razonSocial']; ?>" placeholder="N° Factura" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Factura<span class="requerido">*</span>:</label>
+
+                        <div class="d-block"><a href="<?php echo $URL.$aDatos['archivo']; ?>">Archivo</a></div>
+
+                        
+
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Fecha vencimiento:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos['fechaVencimiento']; ?>" required readonly>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Detalles Factura</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Productos</th>
+
+                            <th>Descripción</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Unidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Subtotal</th>
+
+                            <th>Iva(%)</th>
+
+                            <th>Total</th>
+
+                            
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aItems as $index => $item){
+
+                            $oItem=new Data("unidad","idUnidad",$item["idUnidad"]); 
+
+                            $aUnidad=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+                           ?>
+
+                            <tr class="filaItem">
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $item["detalleProducto"]; ?></td>
+
+                              <td><?php echo $item["descripcion"]; ?></td>
+
+                              <td><?php echo $item["cantidad"]; ?></td>
+
+                              <td><?php echo $aUnidad["nombre"]; ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["valorUnitario"],0,".",","); ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["subtotal"],0,".",","); ?></td>
+
+                              <td style="text-align: right;"><?php echo $item["iva"]."%"; ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["total"],0,".",","); ?></td>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                        <tfoot>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["subtotal"],0,".",","); ?>" readonly ></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["descuento"],0,".",","); ?>" readonly ></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["iva"],0,".",","); ?>" readonly ></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["total"],0,".",","); ?>" readonly ></td>
+
+                          </tr>
+
+                        </tfoot>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+
+

@@ -1,0 +1,275 @@
+<?php 
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+$oLista = new Lista('rol');
+
+$aRoles=$oLista->getLista();
+
+unset($oLista);
+
+
+require_once("./class/cuentascontables.php");
+
+$oLista = new Lista('tipos_documento_contable');
+$tiposDocumento=$oLista->getLista();
+
+unset($oLista);
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+
+
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+$validarIngreso=1; 
+$oEmpresa=new Empresa();
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+}
+
+ 
+
+
+
+if($_SESSION["idRol"]==5){
+
+  $aEmpresa=$oEmpresa->getEmpresasExterno();
+}
+
+if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
+  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  
+
+}
+
+// $oEmpresa=new Empresa(); 
+
+
+
+// $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+
+
+
+$oCuentaContable=new CuentasContables(); 
+$aCuentaContable=$oCuentaContable->getCuentasContables();
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Centro de costo</li>
+
+          <li class="breadcrumb-item">Crear centro de costo</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label>Empresa</label>
+                        <select class="form-control" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+                          <option value="">Seleccione</option>
+                          <?php foreach($aEmpresa as $index => $iEmpresa){?>
+                            <option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Centro de costo<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[centroCosto]" id="datos[centroCosto]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Responsable<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[responsable]" id="datos[responsable]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección:</label>
+
+                        <input type="text" class="form-control " name="datos[direccion]" id="datos[direccion]" >
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono 1<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[primerTelefono]" id="datos[primerTelefono]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono 2:</label>
+
+                        <input type="text" class="form-control numero" name="datos[segundoTelefono]" id="datos[segundoTelefono]" >
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        
+                        <label class="negrita">Email:</label>
+
+                        <input type="email" class="form-control" name="datos[email]" id="datos[email]" >
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+                      	<label class="negrita">Fax:</label>
+
+                        <input type="text" class="form-control numero" name="datos[fax]" id="datos[fax]" >
+                        
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                  	<div class="col-md-4">
+                  		<div class="custom-control custom-checkbox">
+                  			<input type="checkbox" name="subcentroCheck" id="subcentroCheck">
+					        
+					        <label  for="check1">Subcentro</label>
+					    </div>
+                  	</div>
+                  </div>
+                  <br>
+                  <div class="row" id="divCrearSubcentros">
+                  	<div class="col-md-1">
+                  		<a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+                  		<a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+                  	</div>
+                  	<div class="col-md-4" id="divSubcentros">
+                  		<div id="divNombreSubcentros">
+                  			<label>Subcentro1</label>
+                  			<input type="text" name="subcentros[0][nombre]" id="subcentros[0][nombre]" class="form-control"><br>
+                  		</div>
+                  	</div>
+                  </div>
+                 </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

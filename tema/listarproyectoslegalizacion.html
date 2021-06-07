@@ -1,0 +1,210 @@
+<?php 
+
+
+include_once("./class/legalizaciones.php");
+
+
+$oControl=new Control(); 
+
+if ($_SESSION['idRol']==1 || $_SESSION['idRol']==2 || $_SESSION['idRol']==3) {
+	$idEmpleado=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+	$url=$idEmpleado; 
+
+	if($idEmpleado==""){
+
+	  echo '<script>window.history.back()</script>'; 
+
+	}
+}elseif ($_SESSION['idRol']==4) {
+	$idEmpleado=$_SESSION['idUsuario'];
+}
+
+
+$oLegalizacion=new Legalizaciones();
+   
+
+$aLegalizacion=$oLegalizacion->getProyectosLegalizaciones($idEmpleado);
+unset($oLegalizacion);
+
+
+
+?>
+
+        <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Historial legalizaciones</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas centrar" style="font-size: 80%" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Viaje a</th>
+
+                            <th>Contrato</th>
+
+                            <th>Motivo del viaje</th>
+
+                            <th>Empleado</th>
+
+                            <th>Fecha legalizacion</th>
+
+                            <th>Inicio viaje</th>
+
+                            <th>Fin viaje</th>
+
+                            <th>Primer viaje</th>
+
+                            <th>Estado</th>
+                          
+
+                            <th>Accion</th>
+                      
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+
+                          <?php foreach($aLegalizacion as $index => $iLegalizacion){   ?> 
+
+                            <?php
+                           
+                            $oLista=new Lista("legalizaciones"); 
+                            $idProyecto=$iLegalizacion["idProyectoLegalizacion"];
+                            $oLista->setFiltro("idProyectoLegalizacion","=",$idProyecto); 
+
+                            $oLista->setFiltro("estado","=",1); 
+
+                            $aLista=$oLista->getLista(); 
+
+                            
+                            if (empty($aLista)) {
+                              $oListaS=new Lista("legalizaciones"); 
+
+                              $oListaS->setFiltro("idProyectoLegalizacion","=",$idProyecto); 
+
+                              $oListaS->setFiltro("estado","=",2); 
+
+                              $aListaS=$oListaS->getLista(); 
+
+                              $oListaT=new Lista("legalizaciones"); 
+
+                              $oListaT->setFiltro("idProyectoLegalizacion","=",$idProyecto); 
+
+                              $oListaT->setFiltro("estado","=",3); 
+
+                              $aListaT=$oListaT->getLista();
+
+                              if (empty($aListaT) and !empty($aListaS)) {
+                                $estado='2';
+                              }elseif (!empty($aListaT) and empty($aListaS)) {
+                                $estado='3';
+                              }elseif (empty($aListaT) and empty($aListaS)) {
+                                $estado='4';
+                              }
+                            }else{
+                              $estado='1';
+                            }
+                             
+                            ?>
+                            
+
+                            <tr>
+
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td>
+
+                              	<?php 
+                                  echo $iLegalizacion["ciudadDesde"].'('.$iLegalizacion["departamentoDesde"].')->'.$iLegalizacion["ciudadHasta"].'('.$iLegalizacion["departamentoHasta"].')';
+                                ?> 
+                        
+                              </td>
+
+                              <td><?php echo $iLegalizacion["contrato"]; ?></td>
+
+                              <td><?php echo  $iLegalizacion["motivo"]; ?></td>
+                              <td><?php 
+                                echo  $iLegalizacion["nombre"].' '.$iLegalizacion["apellido"];
+                                ?> </td>
+                               <td><?php echo  $iLegalizacion["fechaLegalizacion"]; ?></td>
+                              <td><?php echo  $iLegalizacion["inicioViaje"]; ?></td>
+                              <td><?php 
+                                echo  $iLegalizacion["finViaje"];
+                             
+                              ?></td>
+
+                              <td><?php echo  $iLegalizacion["primerViaje"]; ?></td>
+
+                              <td><?php
+                              if ($estado==1) {
+                                 echo 'PENDIENTE';
+                               }
+                               if ($estado==2) {
+                                echo 'APROBADO';
+                               }
+                               if ($estado==3) {
+                                 echo 'RECHAZADO';
+                               }
+                               if ($estado==4) {
+                                 echo 'REVISAR ITEM RECHAZADOS';
+                                 
+                               }
+                                ?></td>
+                              <td >
+                                <?php if ($_SESSION['idRol']==3 || $_SESSION['idRol']==4) {?>
+                                  <?php if ($estado==2) { ?>
+                                    
+                                  
+                                <a  data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" href="../functions/legalizaciones/pdflegalizacion.php?id=<?php echo $idProyecto;?>&url=<?php echo $URL ?>"><i class="fas fa-file-pdf" style="color: blue; font-size: 18px;"></i></a>
+                              <?php } ?>
+                              <?php if ($estado!=2) { ?>
+                                <a href="../legalizarproyecto/<?php echo $iLegalizacion['idProyectoLegalizacion'];?>"  data-toggle="tooltip" title="AGREGAR LEGALIZACIONES"><i class="fas fa-folder-plus" style="color: #41B4FF;font-size: 18px;"></i></a>
+                                <a id="aprobarlegalizacion" href="javascript:void(0)"  data-toggle="tooltip" title="APROBAR"><i class="far fa-check-circle" style="color: #41B4FF;font-size: 14px;"></i></a>
+
+                              <!-- <a id="rechazarlegalizacion" href="./../functions/legalizaciones/rechazarlegalizacion.php?idLegalizacion=<?php echo $iLegalizacion['idLegalizacion'] ?>&idUsuario=<?php echo $idEmpleado ?>"  data-toggle="tooltip" title="RECHAZAR"><i class="far fa-window-close" style="color: #FF6141;font-size: 14px;"></i></a> -->
+                              <?php } ?>
+                                <!-- <a href="legalizacionitems/<?php echo $iLegalizacion['idProyectoLegalizacion'];?>"  data-toggle="tooltip" title="VER ITEMS PROYECTO"><i class="far fa-eye" style="color: #30FF8B;font-size: 18px;"></i></a> -->
+                              <?php }
+                              ?>
+
+                               <input type="hidden" name="datos[idProyectoLegalizacion]" id="idProyecto" value="<?php echo $idProyecto?>">
+                                	
+                                	<a href="../legalizacionitems/<?php echo $iLegalizacion['idProyectoLegalizacion'];?>"  data-toggle="tooltip" title="VER ITEMS PROYECTO"><i class="far fa-eye" style="color: #30FF8B;font-size: 18px;"></i></a>
+
+							    
+                              
+                          
+                              </td>
+                            </tr>
+
+                            <?php } ?>
+
+                        </tbody>
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>

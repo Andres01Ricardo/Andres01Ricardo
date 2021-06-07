@@ -1,0 +1,458 @@
+
+<style type="text/css">
+
+	.subtitulo{
+
+		display: block;
+
+    	font-size: 20px;
+
+	}
+
+  .apexcharts-menu-icon{
+
+    display: none; 
+
+  }
+
+  g[aria-labelledby='id-47-title']{
+
+    display: none; 
+
+  }
+
+  .apexcharts-toolbar div{
+
+    display: none; 
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/morris/morris.css">
+
+<section class="section">
+
+	<ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Dashboard</li>
+
+      <li class="breadcrumb-item">Reporte Financiero</li>
+
+    </ul>
+
+
+	<div class="section-body">
+    <h4>Indicadores financieros</h4>
+
+    <div class="row">
+
+      <div class="col-md-2 d-flex">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="Nos permite determinar la base financiera con la cual contamos para asumir de manera oportuna el pago de las deudas.">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Indice Liquidez</h6><!-- <i class="fas fa-arrow-up" style="color: #3CFF33;font-size: 20px;"></i> -->
+
+                <span class="font-weight-bold mb-0 font-20" id="indicadorLiquidez"></span>
+
+              </div>
+
+              <i class="fas fa-chart-area card-icon col-orange font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart1" height="80"></canvas>
+            <!-- <button class="btn btn-light" name="btnDetalleLiquidez" id="btnDetalleLiquidez">Detalles</button> -->
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-2 d-flex">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="Establece la capacidad de pago a corto y largo plazo.">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Indice Solidez</h6><!-- <i class="fas fa-arrow-up" style="color: #3CFF33;font-size: 20px;"></i> -->
+
+                <span class="font-weight-bold mb-0 font-20" id="indicadorSolidez"></span>
+
+              </div>
+
+              <i class="fas fa-chart-bar card-icon col-green font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart2" height="80"></canvas>
+            <!-- <button class="btn btn-light" name="btnDetalleSolidez" id="btnDetalleSolidez">Detalles</button> -->
+          </div>
+
+        </div>
+
+      </div>
+
+      
+      <div class="col-md-2 d-flex">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="Evalúa la capacidad que tiene la empresa de generar beneficios a partir de la inversión realizada por los accionistas.">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Rentabilidad Patrimonio</h6><!-- <i class="fas fa-arrow-up" style="color: #3CFF33;font-size: 20px;"></i> -->
+
+                <span class="font-weight-bold mb-0 font-20" id="rentabilidadPatrimonio"></span>
+
+              </div>
+
+              <i class="fas fa-chart-pie card-icon col-cyan font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart3" height="80"></canvas>
+            <!-- <button class="btn btn-light" name="btnDetalleRentabilidadPatrimonio" id="btnDetalleRentabilidadPatrimonio">Detalles</button> -->
+          </div>
+
+        </div>
+
+      </div>
+      <div class="col-md-2 d-flex">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="Permite determinar si los activos con los que cuenta la empresa están aportando o no a las utilidades, y por ende si se les da un uso eficiente.">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Rentabilidad Activo</h6><!-- <i class="fas fa-arrow-down" style="color: red;font-size: 20px;"></i> -->
+
+                <span class="font-weight-bold mb-0 font-20" id="rentabilidadActivo"></span>
+
+              </div>
+
+              <i class="fas fa-money-check-alt card-icon col-blue font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart4" height="80"></canvas>
+            <!-- <button class="btn btn-light" name="btnDetalleRentabilidadActivo" id="btnDetalleRentabilidadActivo">Detalles</button> -->
+          </div>
+
+        </div>
+
+      </div>
+      <div class="col-md-2 d-flex">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="Corresponde a los recursos disponibles de forma inmediata o a corto plazo que requiere la empresa para poder operar.">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Capital Trabajo</h6><!-- <i class="fas fa-arrow-down" style="color: red;font-size: 20px;"></i> -->
+
+                <span class="font-weight-bold mb-0 font-20" id="capitalTrabajo"></span>
+
+              </div>
+
+              <i class="fas fa-hand-holding-usd card-icon col-red font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart5" height="80"></canvas>
+            <!-- <button class="btn btn-light" name="btnDetalleCapitalTrabajo" id="btnDetalleCapitalTrabajo">Detalles</button> -->
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-2 d-flex">
+
+        <div class="card">
+
+          <div class="card-bg" data-toggle="tooltip"
+          title="Indica la proporción de deuda que soporta una empresa frente a sus recursos propios.">
+
+            <div class="p-t-20 d-flex justify-content-between">
+
+              <div class="col">
+
+                <h6 class="mb-0">Nivel de endeudamiento</h6><!-- <i class="fas fa-arrow-up" style="color: #3CFF33;font-size: 20px;"></i> -->
+
+                <span class="font-weight-bold mb-0 font-20" id="nivelEndeudamiento"></span>
+
+              </div>
+
+              <i class="fas fa-chart-line card-icon col-indigo font-30 p-r-30"></i>
+
+            </div>
+
+            <canvas id="cardChart6" height="80"></canvas>
+             <!-- <button class="btn btn-light" name="btnDetalleCoberturaInteres" id="btnDetalleCoberturaInteres">Detalles</button>  -->
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      
+
+      
+
+      
+
+    </div>
+    <h4>Información estadística y financiera</h4>
+	   <div class="row ">
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Ingresos ultimos meses</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <canvas id="ingresos" style="width: 100%;height: 400px;">
+
+                
+
+              </canvas>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+     <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Gastos Ultimos meses</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <canvas id="gastos" style="width: 100%;height: 400px;">
+
+                
+
+              </canvas>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+     <div class="col-xl-4 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Utilidad Neta Ultimos Meses</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <canvas id="utilidad" style="width: 100%;height: 400px;">
+
+                
+
+              </canvas>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+     
+
+   </div>
+
+   <div class="row ">
+
+      <div class="col-md-6 col-sm-12">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Facturación Compra y Venta</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="facturacion" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+     <div class="col-xl-6 col-lg-6">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Situación Financiera Ultimos 12 Meses</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="situacion" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div>
+
+   <!--   <div class="col-md-6 col-sm-12">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h4>Nivel Endeudamiento</h4>
+
+          </div>
+
+          <div class="card-body" >
+
+            <div class="recent-report__chart">
+
+              <div id="gaugeChart" style="width: 100%;height: 400px;">
+
+                
+
+              </div>
+
+            </div>
+
+          </div>
+
+      </div>
+
+     </div> -->
+
+   </div>
+
+  </div>
+
+
+
+
+  
+
+
+  
+
+
+
+
+ 
+
+
+</section>
+
+
+
+<script src="<?php echo $URL; ?>assets/js/app.min.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/amcharts4/core.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/amcharts4/charts.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/amcharts4/animated.js"></script>
+
+<!-- Page Specific JS File -->
+
+<script src="<?php echo $URL; ?>assets/bundles/apexcharts/apexcharts.min.js"></script>
+
+<!-- Page Specific JS File -->
+
+<script src="<?php echo $URL; ?>assets/js/page/chart-apexcharts.js"></script>
+
+<script src="<?php echo $URL; ?>assets/bundles/chartjs/chart.min.js"></script>
+
+
+

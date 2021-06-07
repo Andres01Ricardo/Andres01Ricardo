@@ -1,0 +1,116 @@
+<?php 
+
+require_once("class/terceros.php");
+require_once("class/comprobantes.php");
+
+$oControl=new Control();
+
+$cuentaC=$_POST["cuenta"];
+$desde=$_POST["desde"];
+$hasta=$_POST["hasta"];
+$oCuenta=new CuentasContables(); 
+$aCuenta=$oCuenta->getCuentaContableFiltrada($cuentaC);
+
+
+
+$cuentaComprobante=$aCuenta[0]["cuenta"];
+
+$oComprobante=new Comprobantes(); 
+$aComprobante=$oComprobante->getComprobantesCuentas($cuentaComprobante,$desde,$hasta);
+
+?>
+
+  <div class="card">
+    <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+                      
+
+                      <table class="table  mayusculas" id="tableTerceroNumeroDetallado" style="font-size: 100%">
+
+                      <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>COMPROBANTE</th>
+
+                            <th>FECHA</th>
+
+                            <th>DETALLE</th>
+
+                            <th>DEBITOS</th>
+
+                            <th>CREDITOS</th>
+
+                            <th>SALDO</th>
+                          </tr>
+                        </thead>
+                      
+                        <tbody>
+                  <?php for($i=0;$i<5;$i++){ ?>
+                        <tr>
+                          <th>52964789</th>
+                          <th>BESTLIFE TECNOLOGY LTDA</th>
+                          <th>CUENTA: 25050500</th>
+                          <th>-</th>
+                          <th >SALARIOS POR PAGAR</th>
+                          <th>-</th>
+                          <th>-</th>
+                          
+                        </tr>
+                        <?php for($j=0;$j<4;$j++){ ?>
+                            <tr>
+
+                              <td><?php echo $j+1; ?></td>
+
+                              <td><?php echo 'X-000-0000000'.$i.$j ?></td>
+
+                              <td><?php echo date('Y-m-d'); ?></td>
+
+                              <td><?php echo 'SALARIOS POR PAGAR'; ?></td>
+
+                              <td>-</td>
+
+                              <td>
+                                <?php echo '1,750.000'; ?>
+                              </td>
+
+                              <td>
+                                  <?php 
+                                  $saldo=$saldo+1750000;
+                                  echo $saldo;
+
+                                   ?>
+                                </td>
+                                
+                                
+                            </tr>
+                            <?php } ?>
+                            
+                            <tr>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td>-</td>
+                              <td >TOTAL:</td>
+                              <td><?php echo $saldo; ?></td>
+                              <td><?php echo $saldo; ?></td>
+                            </tr>
+                          <?php } ?>
+                       </tbody>
+        
+
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+                </div>

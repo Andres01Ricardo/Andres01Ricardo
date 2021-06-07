@@ -1,0 +1,302 @@
+
+
+<?php 
+
+ include("clientespipeline.php");
+require_once("class/clientespipeline.php"); 
+
+include("timeline.php");
+require_once("class/timeline.php");
+
+
+
+
+date_default_timezone_set('America/bogota');
+$fechaActual = date('Y-m-d');
+$oLista=new Lista("t_etapas"); 
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+$etapas=$oLista->getLista(); 
+unset($oLista);
+
+
+$oLista = new Lista('empresa');
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+
+
+$oItem=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+
+?> 
+
+
+<ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">CRM</li>
+          <li class="breadcrumb-item">Pipeline</li>
+        
+        </ul>
+
+  <?php $rol= $_SESSION["idRol"];
+  if($rol==1 || $rol==2): ?>
+  <div class="card card-body">
+      <form method="POST" action="./functions/crm/cargarCrm.php">
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <select class="custom-select mr-sm-2" id="selectIdEmpresa" name="selectIdEmpresa">
+            <option value="0">Seleccione la empresa</option>
+            <?php foreach($aEmpresa as $index => $iEmpresa){ ?>
+              <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+            <?php } ?>
+          </select>
+        </div>
+        <div class="col-auto my-1">
+          <button type="submit" class="btn btn-primary">CARGAR CRM</button>
+          
+        </div>
+      </div>
+    </form>
+  </div>
+<?php endif;  ?>
+
+<div>
+  <div class="card-body">
+    <center><h2><?php echo $rows['razonSocial']; ?></h2></center>
+  </div>
+</div>  
+
+
+<div class="card" >
+  <div class="card-body">
+    
+    <div class="primero" >
+      <form action="functions/crm/insertaretapa.php" enctype="multipart/form-data" method="POST">
+        <div class="segundo"> 
+          <?php
+            foreach($etapas as $index => $rows){                   
+          ?>
+            <div class="tercero" id="prueba" style="background-color: <?php echo $rows['color'];?>  ;">
+              <div class="texto-div" style="background-color: <?php echo $rows['color'];?>;">
+                <label id='nombre-etapa' class="nombre-etapa" ><?php echo $rows['nombreEtapa']; ?></label>
+
+              </div>
+            </div>
+      
+            <?php }?>
+            <div class="tercero-nuevo" id="nuevo">
+              <div class="texto-divnuevo" id="nuevo"><input type="text" name="etapa" id="inputnuevo" onkeyup="aMayusculas(this.value,this.id);" placeholder="NOMBRE ETAPA" class="borde" autofocus="true">
+              </div>
+            </div>
+            <div id="pr"><span class="ocultar">------</span></div>
+      
+            <div id="selector-color" >
+              <input type="color" value="#FFFED5" name="color" id="color" >
+      
+            </div>
+      
+          </div >
+        </form>
+      </div>
+
+      <button class="btn btn-info" id="agregaretapa" title="AGREGAR ETAPA" onclick="agregaretapa('visible','agregar'),colornuevo();"><i class="fas fa-plus"></i></button>
+      <button class="btn btn-danger" id="cancelaretapa" title="CANCELAR" onclick="agregaretapa('collapse','cancelar');" style="visibility: collapse;"><i class="fas fa-minus-circle"></i></button>
+    </div>
+  </div>
+     
+
+<div class="card">
+<div class="card-body">
+ <div class="table-responsive">
+      <?php
+          foreach($etapas as $index => $rowse){                        
+        ?>
+      <table class="table table-hover">
+        <div class="navbar-expand-lg navbar-nav" style="background-color: <?php echo $rowse['color'];?>">   
+          <?php $codigoEtapa= $rowse['codigo'];
+            $colorEtapa= $rowse['color'];
+            $nombreEtapa=$rowse['nombreEtapa'];
+           ?>
+          <div>
+            <button class="btn" id="btnCambiarColorEtapa" onclick="return abrirpopupetapa(<?php echo $codigoEtapa ?>,'<?php echo $colorEtapa ?>','<?php echo $nombreEtapa ?>'),coloretapacambiar();"><i class="fas fa-palette"></i>
+            </button>
+          </div>
+              <div id="tituloetapa" >
+                <h2 class="nombre-etapa-tabla"><?php echo $rowse['nombreEtapa']; ?></h2>  
+              </div>
+              <div id="btneliminaretapa">  
+                <a  onclick="return abrirpopupeliminaretapa(<?php echo $codigoEtapa ?>,'<?php echo $nombreEtapa ?>')" class="btn btn-danger" >X</a>
+              </div>  
+                    
+        </div>
+        <thead>
+          <tr bgcolor="#E6EEF0">
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Fecha ultimo contacto</th>
+                    <th scope="col">Procedencia</th>
+                    <th scope="col">Encargado</th>
+                    <th scope="col">Creación</th>
+                    <th scope="col" colspan="2">Información</th>
+                  </tr>
+        </thead>
+        <tbody>
+          <?php
+          $cont=0;
+          
+
+          $codigoEtapa =$rowse['codigo'];
+          $oCliente=new Clientes(); 
+          $clientes=$oCliente->getClientes($codigoEtapa,$_SESSION["idEmpresa"]);
+          unset($oCliente);
+          foreach($clientes as $index => $rowsc){ 
+
+                             
+          ?>
+          <tr role="row" align="center" >
+            <td align="left">
+              <strong>
+              <div><?php echo  $rowsc['nombre'] ,' ' ,$rowsc['apellidos']?></div>
+              </strong>
+              <div><?php echo  $rowsc['telefono'] ?></div>
+              <div><?php echo  $rowsc['email'] ?></div>
+            </td>
+            <?php
+                $dteStart = new DateTime($rowsc['fechaUltimoContacto']);
+                $dteEnd   = new DateTime($fechaActual);
+                $dteDiff  = $dteStart->diff($dteEnd);
+                 
+           
+             if($dteDiff->format("%a")>15 && $dteDiff->format("%a")<30){?>
+            <td style="color:#FA9800;">
+              <div id="ultimocontacto">
+                <?php echo $rowsc['fechaUltimoContacto']; ?>
+                <span class="feather feather-mail mailAnim"><i class="fa fa-bell" title="+ 15 días" style="color: #FA9800"></i></span>
+              </div>
+            </td>
+          <?php }else if($dteDiff->format("%a")>=30){?>
+            <td style="color:red;">
+              <div id="ultimocontacto">
+                <?php echo $rowsc['fechaUltimoContacto']; ?>
+                <span class="feather feather-mail mailAnim"><i class="fa fa-bell" title="+30 días" style="color: red"></i></span>
+              </div>
+            </td>
+          <?php }
+          else{ ?>
+            <td style="color:blue;">
+              <div id="ultimocontacto">
+                <?php echo $rowsc['fechaUltimoContacto']; ?>
+              </div>
+            </td>
+          <?php }?>
+            <td><?php 
+              if ($rowsc['codigoProcedencia']=='0'){
+              echo 'no hay información';
+            }else if ($rowsc['codigoProcedencia']!='0'){
+              echo  $rowsc['procedencia'];
+            }
+                ?>
+              </td>
+            <td><?php echo  $rowsc['encargado']?></td>
+            <td><?php echo  $rowsc['fechaCreacion']?></td>
+            <td><a href="informacionadicional/<?php echo $rowsc['codigoCliente'];?>" class="btn btn-primary"><i class="fas fa-info-circle"></i>  </a>
+            
+            </td>
+            <td>
+
+              <?php
+              $codigocliente= $rowsc['codigoCliente'];
+              $oActividad=new Actividades(); 
+              $aTareasP=$oActividad->getTareasPendientes($codigocliente);
+              unset($oActividad); 
+              
+              if(!empty($aTareasP)){ ?>
+
+        
+            <div class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+              class="nav-link nav-link-lg message-toggle"><i class="mailAnim fas fa-bell" style="color: red"></i>
+              <span class="badge headerBadge1">
+              </span> </a>
+              <div class="dropdown-menu dropdown-list dropdown-menu-right pullDown">
+                <div class="dropdown-header">
+                  Notificaciones
+                </div>
+                <div class="dropdown-list-content dropdown-list-message">
+                <?php foreach($aTareasP as $index => $rowsn){ ?>
+                  
+                      <a href="tareas/<?php echo $rowsc['codigoCliente'];?>" class="dropdown-item dropdown-item-unread"><span class="dropdown-item-desc">Tarea: <?php echo $rowsn['motivo'];?><br>
+                          Encargado: <?php echo $rowsn['encargado'];?>
+                          <span class="time">Vencimiento: <?php echo $rowsn['vencimiento'];?></span>
+                        </span>
+                    </a>
+                  <?php } ?>
+                </div>
+                
+              </div>
+            </div>
+
+
+        <?php  } ?>
+       
+              
+        </td>
+          </tr>
+          <?php $cont+=1;} ?>
+          <tr role="row" >
+              <td colspan="10"><strong><h3>TOTAL:   <label class="ocultar">-----</label>    <?php echo  $cont;?></h3></strong>
+               
+          </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <?php } ?>
+    </div>
+  </div>
+</div>
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlayetapa">
+  <div class="swal-modal popup" id="popupetapa">
+    <a  class="btn-cerrar" id="btn-cerraretapa" onclick="return cerrarpopupetapa();"><i class="fas fa-times"></i></a>
+        <h3 class="swal-title">Cambiar color y nombre de etapa</h3>
+            <form method="POST" action="functions/crm/modificaretapa.php">
+          <div class="swal-content">
+            <div><input type="text" name="nombreEtapaCambiar" id="nombreEtapaCambiar" onkeyup="aMayusculas(this.value,this.id);" placeholder="Nombre etapa" >
+            <input type="color" name="coloretapacambiar" id="coloretapacambiar" ></div>
+            <input type="text" name="codigoEtapaCambiar" id="codigoEtapaCambiar" class="form-control ocultar">
+            </div>
+
+            <div class="swal-footer">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-exchange-alt">CAMBIAR</i></button>
+            </div>
+        </form>
+  </div>
+</div>
+
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlayeliminaretapa">
+  <div class="swal-modal popup" id="popupeliminaretapa">
+    
+        <h3 class="swal-title">Eliminar etapa</h3>
+          <form method="POST" action="functions/crm/eliminaretapa.php">
+            <div class="swal-content">
+              
+              <label>¿Seguro desea eliminar la etapa </label><?php echo '  ';?><label id="nombreEtapaEliminar"></label><label>?</label>
+              <br>
+              <input type="text" name="idEtapaEliminar" id="idEtapaEliminar" class="ocultar">
+              <input type="text" name="codigoEtapaEliminar" id="codigoEtapaEliminar" class="form-control ocultar">
+            </div>
+            <div class="swal-footer">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-trash-alt">ELIMINAR</i></button>
+              <a  class="btn btn-light" id="btn-cerraretapaEliminar" onclick="return cerrarpopupeliminaretapa();"><i class="fas fa-times">CANCELAR</i></a>
+            </div>
+      </form>
+  </div>
+</div>
+
+
+  

@@ -1,0 +1,252 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+
+
+$oItem=new Data("tercero","idTercero",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oLista = new Lista('ciudad');
+
+$oLista->setFiltro("idDepartamento","=",$aDatos["idDepartamento"]);
+
+$aCiudad=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+  <input type="hidden" name="id" id="id" value="<?php echo $aDatos["idTercero"]; ?>">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Terceros</li>
+
+          <li class="breadcrumb-item">Editar proveedor</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Persona<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[tipoPersona]" id="datos[tipoPersona]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option <?php if($aDatos["tipoPersona"]==1){ echo 'selected'; } ?> value="1">Persona Natural</option>
+
+                          <option <?php if($aDatos["tipoPersona"]==2){ echo 'selected'; } ?> value="2">Persona Juridica</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nit<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" readonly value="<?php echo $aDatos["nit"]; ?>" name="datos[nit]" id="datos[nit]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito Verificador<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" readonly value="<?php echo $aDatos["digitoVerificador"]; ?>" maxlength="1" name="datos[digitoVerificador]" id="datos[digitoVerificador]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Razon Social<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["razonSocial"]; ?>" name="datos[razonSocial]" id="datos[razonSocial]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Email<span class="requerido">*</span>:</label>
+
+                        <input type="email" class="form-control" value="<?php echo $aDatos["email"]; ?>" name="datos[email]" id="datos[email]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" value="<?php echo $aDatos["telefono"]; ?>" name="datos[telefono]" id="datos[telefono]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ 
+
+
+
+                            ?>
+
+                          <option <?php if($item["idDepartamento"]==$aDatos["idDepartamento"]){ echo 'selected'; } ?> value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aCiudad as $item){ ?>
+
+                          <option <?php if($item["idCiudad"]==$aDatos["idCiudad"]){ echo 'selected'; } ?> value='<?php echo $item["idCiudad"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["direccion"]; ?>" name="datos[direccion]" id="datos[direccion]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

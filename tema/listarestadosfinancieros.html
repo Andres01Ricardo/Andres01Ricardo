@@ -1,0 +1,187 @@
+<?php 
+
+$oControl=new Control(); 
+
+
+
+
+if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4 || $_SESSION["idEmpresa"]!=""){
+  $oLista = new Lista('estado_financiero');
+  $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+
+  $aListado=$oLista->getLista();
+
+  unset($oLista);  
+}
+
+else{
+  $oLista = new Lista('estado_financiero');
+
+  $aListado=$oLista->getLista();
+
+  unset($oLista);  
+}
+
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre";
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Dashboard</li>
+
+          <li class="breadcrumb-item">Listar Estados Financieros</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableEstados">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Usuario Registra</th>
+
+                            <th>Periodo</th>
+
+                            <th>Empresa</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aListado as $index => $iEstado){ 
+
+
+
+                            $oItem=new Data("usuario","idUsuario", $iEstado["idUsuarioRegistra"]); 
+
+                            $aUsuario=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+
+
+                            $oItem=new Data("empresa","idEmpresa", $iEstado["idEmpresa"]); 
+
+                            $aEmpresa=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+
+
+                            $aEncript['cadena']=$iEstado['idEstadoFinanciero'];
+
+                            $id=$oControl->encriptar($aEncript);
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iEstado["fechaRegistro"]; ?></td>
+
+                              <td><?php echo $aUsuario["nombreUsuario"]." ".$aUsuario["apellidoUsuario"]; ?></td>
+
+                              <td><?php echo $meses[$iEstado["periodoMes"]]." de ".$iEstado["periodoAnio"]; ?></td>
+
+                              <td><?php echo $aEmpresa["razonSocial"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>verestadofinanciero/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
+
+                                <a href="javascript:void(0)" delete="<?php echo $iEstado['idEstadoFinanciero']; ?>" data-toggle="tooltip" data-placement="top" title="Ver factura" class="eliminar"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Eliminar"></i></a>
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+

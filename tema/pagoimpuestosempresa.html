@@ -1,0 +1,860 @@
+<?php
+
+require_once("class/empresa.php"); 
+
+
+
+$oEmpresa=new Empresa(); 
+
+
+
+$oControl=new Control(); 
+
+if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
+  
+  $oControl=new Control(); 
+
+  $idEmpresa=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+    if($idEmpresa==""){
+
+      echo '<script>window.history.back()</script>'; 
+
+    }else{
+    $decrip["cadena"]=$id; 
+
+    $idEmpresa=$oControl->desencriptar($decrip); 
+    
+    }
+  }else if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4){
+
+  $idEmpresa= $_SESSION["idEmpresa"];
+
+}
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre";
+
+
+
+$nuevafecha = strtotime ( '-1 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha = date ( 'Y-n' , $nuevafecha );
+
+
+
+$aFecha=explode("-",$nuevafecha); 
+
+
+
+$aFiltroR["idEmpresa"]=$_SESSION["idEmpresa"]; 
+
+$aFiltroR["anio"]=$aFecha[0]; 
+
+$aFiltroR["mes"]=$aFecha[1]; 
+
+
+
+
+require_once("class/dashboard.php");
+
+
+
+$oProveedores=new Dashboard(); 
+$dProveedores=$oProveedores->getSaldoProveedores($idEmpresa);
+unset($oProveedores);
+
+
+$oClientes=new Dashboard(); 
+$dClientes=$oClientes->getSaldoClientes($idEmpresa);
+unset($oClientes);
+
+
+
+$oRetencion=new Dashboard(); 
+$fRetencion=$oRetencion->getRetencion($idEmpresa);
+unset($oRetencion);
+
+
+$oLista = new Lista('impuesto_pagado');
+
+$oLista->setFiltro("tipoImpuesto","=","RETENCION");
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+
+$aRetencion=$oLista->getLista();
+
+unset($oLista);
+$retencionPagados=0;
+foreach ($aRetencion as $keyR => $valueR) {
+  $retencionPagados+=$valueR["valor"];
+
+}
+
+$oListaExtra = new Lista('ajuste_impuestos');
+
+$oListaExtra->setFiltro("tipoImpuesto","=","2");
+$oListaExtra->setFiltro("idEmpresa","=",$idEmpresa);
+
+$aRetencionExtra=$oListaExtra->getLista();
+
+
+$dRetencion = $fRetencion[0]["retencion"]-$retencionPagados+$aRetencionExtra[0]["valor"];
+
+
+$oIVA=new Dashboard(); 
+$fIVA=$oIVA->getIVA($idEmpresa);
+unset($oIVA);
+
+
+
+$oLista = new Lista('impuesto_pagado');
+
+$oLista->setFiltro("tipoImpuesto","=","IVA");
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+
+$aIVA=$oLista->getLista();
+
+unset($oLista);
+$IVAPagados=0;
+foreach ($aIVA as $key => $value) {
+  $IVAPagados+=$value["valor"];
+
+}
+$oListaExtraIVA = new Lista('ajuste_impuestos');
+
+$oListaExtraIVA->setFiltro("tipoImpuesto","=","3");
+$oListaExtraIVA->setFiltro("idEmpresa","=",$idEmpresa);
+
+$aRetencionExtraIVA=$oListaExtraIVA->getLista();
+
+$dIVA = $fIVA[0]["iva"]-$IVAPagados+$aRetencionExtraIVA[0]["valor"];
+
+
+$oICA=new Dashboard(); 
+$fICA=$oICA->getICA($idEmpresa);
+unset($oICA);
+
+
+$oLista = new Lista('impuesto_pagado');
+
+$oLista->setFiltro("tipoImpuesto","=","ICA");
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+
+$aICA=$oLista->getLista();
+
+unset($oLista);
+$ICAPagados=0;
+foreach ($aICA as $keyC => $valueC) {
+  $ICAPagados+=$valueC["valor"];
+
+}
+$oListaExtraICA = new Lista('ajuste_impuestos');
+
+$oListaExtraICA->setFiltro("tipoImpuesto","=","1");
+$oListaExtraICA->setFiltro("idEmpresa","=",$idEmpresa);
+$aRetencionExtraICA=$oListaExtraICA->getLista();
+
+$dICA = $fICA[0]["ica"]-$ICAPagados+$aRetencionExtraICA[0]["valor"];
+
+
+
+$oLista = new Lista('empresa');
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oLista = new Lista('impuesto_pagado');
+
+$oLista->setFiltro("tipoImpuesto","=","SEGURIDADSOCIAL");
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+
+$aSeguridadSocial=$oLista->getLista();
+$seguridadSocialPagados=0;
+foreach ($aSeguridadSocial as $keys => $values) {
+  $seguridadSocialPagados+=$values["valor"];
+
+}
+
+unset($oLista);
+//print_r($seguridadSocialPagados);
+
+$oSeguridadSocial=new Dashboard();
+$fSeguridadSocial=$oSeguridadSocial->getSeguridadSocialPagar($idEmpresa);
+unset($oSeguridadSocial);
+
+$oListaExtraSeguridadSocial = new Lista('ajuste_impuestos');
+
+$oListaExtraSeguridadSocial->setFiltro("tipoImpuesto","=","4");
+$oListaExtraSeguridadSocial->setFiltro("idEmpresa","=",$idEmpresa);
+$aRetencionExtraSeguridadSocial=$oListaExtraSeguridadSocial->getLista();
+
+
+$dSeguridadSocial = $fSeguridadSocial[0]["totalSeguridadSocial"]-$seguridadSocialPagados+$aRetencionExtraSeguridadSocial[0]["valor"];
+
+
+$oLista = new Lista('cuenta_bancaria');
+
+$aCuentas=$oLista->getLista();
+
+unset($oLista);
+
+
+$oItem=new Data("empresa","idEmpresa",$idEmpresa); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+
+
+
+?>
+
+<style type="text/css">
+
+  .subtitulo{
+
+    display: block;
+
+      font-size: 20px;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/morris/morris.css">
+
+<section class="section">
+
+  <ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Inicio</li>
+
+    </ul>
+
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="card col-md-4">
+    <div class="card-body">
+      <!-- <div class="col-md-4"> -->
+        <center><h2><?php echo $rows['razonSocial']; ?></h2></center>
+        
+      <!-- </div> -->
+    </div>
+  </div> 
+</div>
+
+<?php if ($idEmpresa!="") { ?>
+  
+    <div class="section-body">
+    <div class="row ">
+
+      <div class="col-xl-6 col-lg-6">
+
+        <div class="card grey-pastel retenciones" data-toggle="tooltip" title="el ICA es el Impuesto de Industria y Comercio el cual se genera por la realización de actividades industriales de forma directa o indirecta, comerciales o de servicios, que se desarrollan de manera permanente u ocasional, en un inmueble determinado, sea que exista establecimiento de comercio o no.">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #8fbbf4 !important;opacity: 0.5 !important"><i class="fas fa-archway"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proximo ICA a Pagar</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-7">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dICA,0,".",","); ?>
+
+                </h2>
+
+
+                <br>
+                
+                  <div class="col-md-2">
+                    <?php if ($dICA==0) {?>
+                  <h4>PAGADO</h4>
+                  <?php } ?>
+                  
+                  <?php if ($dICA!=0) {      ?>
+                  <span class="subtitulo"><button id="btnPagarICA" class="btn btn-success">PAGAR</button></span>
+                <?php }else{ ?>
+                  <span class="subtitulo ocultar"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
+                <?php } ?>
+
+                
+                  </div>
+                  
+
+              </div>
+
+              <div class="col-1 text-left">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                  </div>
+                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-6 col-lg-6">
+
+        <div class="card amarillo-pastel horasextras" data-toggle="tooltip" title="la retencion es ">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #e6c937 !important;opacity: 0.5 !important"><i class="fas fa-handshake"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proxima Retención a Pagar</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dRetencion,0,".",","); ?>
+
+                </h2>
+                <br>
+                
+                  <?php if ($dRetencion==0) {?>
+                  <h4>PAGADO</h4>
+                  <?php } ?>
+                  
+                  <?php if ($dRetencion!=0) {?>
+                  <span class="subtitulo"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
+                <?php }else{ ?>
+                  <span class="subtitulo ocultar"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
+                <?php } ?>
+              </div>
+
+              <div class="col-1 text-left">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalR" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                  </div>
+                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xl-6 col-lg-6">
+
+        <div class="card naranja-pastel parafiscales" data-toggle="tooltip" title="El Impuesto sobre el Valor Añadido (IVA) es un tributo de naturaleza indirecta aplicable al consumo doméstico de bienes y servicios producidos tanto en el territorio nacional como en el exterior.">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #f9a039 !important;opacity: 0.5 !important"><i class="fas fa-hand-holding-usd"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proximo IVA a Pagar</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis">
+
+                  <?php echo "$".number_format($dIVA,0,".",","); ?>
+
+                </h2>
+                <br>
+                <?php if ($dIVA==0) {?>
+                <h4>PAGADO: <?php echo $aIVA[0]['fechaRegistro']; ?></h4>
+                <?php } ?>
+                
+                <?php if ($dIVA!=0) { ?>
+                <span class="subtitulo"><button id="btnPagarIVA" class="btn btn-success">PAGAR</button></span>
+
+                <?php }else{ ?>
+                  <span class="subtitulo ocultar"><button id="btnPagarIVA" class="btn btn-success">PAGAR</button></span>
+                <?php }?>
+              </div>
+
+              <div class="col-1 text-left">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalIVA" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                  </div>
+                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+
+ <div class="col-xl-6 col-lg-6">
+
+        <div class="card morado-pastel retenciones" data-toggle="tooltip" title="el pago de seguridad social es ">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #4d50a9 !important;opacity: 0.5 !important"><i class="fas fa-notes-medical"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Pago Seguridad Social</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-7">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dSeguridadSocial,0,".",","); ?>
+
+                </h2>
+                <br>
+                <?php if ($dSeguridadSocial==0) {?>
+                <h4>PAGADO: <?php echo $aSeguridadSocial[0]['fechaRegistro']; ?></h4>
+                <?php } ?>
+                
+                <?php if ($dSeguridadSocial!=0) { ?>
+                
+                <span class="subtitulo"><button class="btn btn-success" id="btnPagarSeguridadSocial">PAGAR</button></span>
+                <?php }else{ ?>
+                  
+                  <span class="subtitulo ocultar"><button class="btn btn-success" id="btnPagarSeguridadSocial">PAGAR</button></span>
+                <?php }?>
+                
+              </div>
+
+              <div class="col-1 text-left">
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalSS" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                  </div>
+                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    
+  </div>
+</div>
+<?php } ?>
+
+
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayICA">
+    <div class="swal-modal popup" id="popupICA">
+      <a  class="btn-cerrar" id="btnCerrarICA" ><i class="fas fa-times"></i></a>
+          <h3 class="swal-title">PAGAR ICA</h3><br>
+            <!-- <form method="POST" action="functions/impuestos/pagarICA.php"> -->
+              <form enctype="multipart/form-data" id="frmGuardarICA">
+              <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+                <div class="swal-content">
+                  <label class="negrita">Valor ICA:</label>
+                  <div><input type="text" name="datos[valorICA]" id="valorICA" value="<?php echo $dICA ?>" class="form-control" ></div>
+                  <br>
+                  <label class="negrita">Valor adicional ICA:</label>
+                  <div><input type="text" name="datos[ICA]" id="ICA" onkeypress="return numeros(event);" class="form-control"  placeholder="Valor adicional de ICA" >
+                  </div>
+                  <br>
+                  <label class="negrita">Sanciones:</label>
+                  <div><input type="text" name="datos[sancionesICA]" id="sancionesICA" onkeypress="return numeros(event);" class="form-control" placeholder="Sanciones" >
+                  </div>
+                  
+                  <label class="negrita">Intereses:</label>
+                  <div><input type="text" name="datos[interesesICA]" id="interesesICA" onkeypress="return numeros(event);" class="form-control" placeholder="intereses" >
+                  </div>
+                  
+                  <label class="negrita">Cuenta bancaria<span class="requerido">*</span>:</label>
+
+                  <select id="cuentaBancaria" name="datos[cuentaBancaria]" class="form-control">
+                    <?php foreach($aCuentas as $index => $iCuenta){ ?>
+                    <option value="<?php echo $iCuenta['idCuentaBancaria']; ?>"><?php echo $iCuenta['nombreCuenta'].' - '.$iCuenta['numeroCuenta']; ?></option>
+                    <?php } ?>
+                  </select>
+                  </div>
+                  <br>
+
+                <div class="swal-footer">
+                  <!-- <button type="submit" class="btn btn-success">PAGAR</button> -->
+                  <a class="btn btn-success mr-1" id="btnGuardarICA">PAGAR</a>
+                </div>
+            </form>
+          </div>
+        </div>
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayRetencion">
+    <div class="swal-modal popup" id="popupRetencion">
+      <a  class="btn-cerrar" id="btnCerrarRetencion" ><i class="fas fa-times"></i></a>
+          <h3 class="swal-title">PAGAR RETENCION</h3><br>
+            <!-- <form method="POST" action="functions/impuestos/pagarRetencion.php"> -->
+              <form enctype="multipart/form-data" id="frmGuardarRetencion">
+              <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+              <div class="swal-content">
+                <label class="negrita">Valor retención:</label>
+                  <div><input type="text" name="datos[valorRetencion]" id="valorRetencion" class="form-control" value="<?php echo $dRetencion ?>"></div>
+                  <br>
+                  <label class="negrita">Valor adicional retención:</label>
+                  <div><input type="text" name="datos[retencion]" id="retencion" onkeypress="return numeros(event);" class="form-control" placeholder="Valor adicional de retencion" >
+                  </div>
+                  
+                  <label class="negrita">Sanciones:</label>
+                  <div><input type="text" name="datos[sancionesRetencion]" id="sancionesRetencion" onkeypress="return numeros(event);" class="form-control" placeholder="Sanciones" >
+                  </div>
+                  
+                  <label class="negrita">Intereses:</label>
+                  <div><input type="text" name="datos[interesesRetencion]" id="interesesRetencion" onkeypress="return numeros(event);" class="form-control" placeholder="intereses" >
+                  </div>
+                  <br>
+                  <label class="negrita">Cuenta bancaria<span class="requerido">*</span>:</label>
+
+                  <select id="cuentaBancaria" name="datos[cuentaBancaria]" class="form-control">
+                    <?php foreach($aCuentas as $index => $iCuenta){ ?>
+                    <option value="<?php echo $iCuenta['idCuentaBancaria']; ?>"><?php echo $iCuenta['nombreCuenta'].' - '.$iCuenta['numeroCuenta']; ?></option>
+                    <?php } ?>
+                  </select>
+                  <br>
+
+                  </div>
+                  
+
+              <div class="swal-footer">
+                <!-- <button type="submit" class="btn btn-success">PAGAR</button> -->
+                <a class="btn btn-success mr-1" id="btnGuardarRetencion">PAGAR</a>
+              </div>
+          </form>
+    </div>
+  </div>
+
+
+
+  <div class="swal-overlay swal-overlay--show-modal" id="overlayIVA">
+    <div class="swal-modal popup" id="popupIVA">
+      <a  class="btn-cerrar" id="btnCerrarIVA" ><i class="fas fa-times"></i></a>
+          <h3 class="swal-title">PAGAR IVA</h3><br>
+            <!-- <form method="POST" action="functions/impuestos/pagarIVA.php"> -->
+              <form enctype="multipart/form-data" id="frmGuardar">
+              <div class="swal-content">
+                <label class="negrita">Valor IVA:</label>
+                <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+                  <div><input type="text" name="datos[valorIVA]" id="valorIVA" value="<?php echo $dIVA; ?>" class="form-control" ></div>
+                  <br>
+                  <label class="negrita">Valor adicional IVA:</label>
+                  <div><input type="text" name="datos[iva]" id="iva" onkeypress="return numeros(event);" class="form-control"  placeholder="Valor adicional de iva" >
+                  </div>
+                  <br>
+                  <label class="negrita">Sanciones:</label>
+                  <div><input type="text" name="datos[sancionesIVA]" id="sancionesIVA" onkeypress="return numeros(event);" class="form-control" placeholder="Sanciones" >
+                  </div>
+                  
+                  <label class="negrita">Intereses:</label>
+                  <div><input type="text" name="datos[interesesIVA]" id="interesesIVA" onkeypress="return numeros(event);" class="form-control" placeholder="intereses" >
+                  </div>
+                  
+                  <label class="negrita">Cuenta bancaria<span class="requerido">*</span>:</label>
+
+                  <select id="cuentaBancaria" name="datos[cuentaBancaria]" class="form-control">
+                    <?php foreach($aCuentas as $index => $iCuenta){ ?>
+                    <option value="<?php echo $iCuenta['idCuentaBancaria']; ?>"><?php echo $iCuenta['nombreCuenta'].' - '.$iCuenta['numeroCuenta']; ?></option>
+                    <?php } ?>
+                  </select>
+                  <br>
+
+                  </div>
+              <div class="swal-footer">
+                <!-- <button type="submit" class="btn btn-success">PAGAR</button> -->
+                <a class="btn btn-success mr-1" id="btnGuardarIVA">PAGAR</a>
+              </div>
+          </form>
+    </div>
+  </div>
+
+
+   <div class="swal-overlay swal-overlay--show-modal" id="overlaySeguridadSocial">
+    <div class="swal-modal popup" id="popupSeguridadSocial">
+      <a  class="btn-cerrar" id="btnCerrarSeguridadSocial" ><i class="fas fa-times"></i></a>
+          <h3 class="swal-title">PAGAR Seguridad Social</h3><br>
+            <!-- <form method="POST" action="functions/impuestos/pagarIVA.php"> -->
+              <form enctype="multipart/form-data" id="frmGuardarSeguridadSocial">
+              <div class="swal-content">
+                <label class="negrita">Valor Seguridad Social:</label>
+                <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+                  <div><input type="text" name="datos[valorSeguridadSocial]" id="valorSeguridadSocial" value="<?php echo $dSeguridadSocial; ?>" class="form-control" ></div>
+                  <br>
+                  <label class="negrita">Valor adicional Seguridad Social:</label>
+                  <div><input type="text" name="datos[seguridadSocial]" id="seguridadSocial" onkeypress="return numeros(event);" class="form-control"  placeholder="Valor adicional de seguridad social" >
+                  </div>
+                  <br>
+                  <label class="negrita">Sanciones:</label>
+                  <div><input type="text" name="datos[sancionesSeguridadSocial]" id="sancionesSeguridadSocial" onkeypress="return numeros(event);" class="form-control" placeholder="Sanciones" >
+                  </div>
+                  
+                  <label class="negrita">Intereses:</label>
+                  <div><input type="text" name="datos[interesesSeguridadSocial]" id="interesesSeguridadSocial" onkeypress="return numeros(event);" class="form-control" placeholder="intereses" >
+                  </div>
+                  
+                  <label class="negrita">Cuenta bancaria<span class="requerido">*</span>:</label>
+
+                  <select id="cuentaBancaria" name="datos[cuentaBancaria]" class="form-control">
+                    <?php foreach($aCuentas as $index => $iCuenta){ ?>
+                    <option value="<?php echo $iCuenta['idCuentaBancaria']; ?>"><?php echo $iCuenta['nombreCuenta'].' - '.$iCuenta['numeroCuenta']; ?></option>
+                    <?php } ?>
+                  </select>
+                  <br>
+
+                  </div>
+              <div class="swal-footer">
+                <!-- <button type="submit" class="btn btn-success">PAGAR</button> -->
+                <a class="btn btn-success mr-1" id="btnGuardarSeguridadSocial">PAGAR</a>
+              </div>
+          </form>
+    </div>
+  </div>
+
+
+</section>
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">MODIFICAR ICA</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmModificarICA">
+      
+
+          <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Valor anterior:</label>
+              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior"value="<?php echo $dICA ?>" readonly required>
+              
+              <input type="hidden" name="datos[tipoImpuesto]" id="tipoImpuesto" value="1" required>
+              <!-- <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" >
+              
+              <input type="hidden" name="datos[codigocliente]" class="ocultar"  value="<?php echo $codigocliente ?>">
+              <input type="hidden" name="datos[fecha]" class="ocultar"  value="<?php echo $fechaActual ?>">
+              <input type="hidden" name="datos[hora]" class="ocultar"  value="<?php echo $horaActual ?>"> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nuevo valor ICA:</label>
+            <input type="text" name="datos[valorfinal]" id="valorfinal" placeholder="Nuevo valor ICA " onkeypress="return numeros(event);" class="form-control moneda" value="0" required>
+          </div>
+         
+
+        
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+        <button type="button" class="btn btn-primary" id="btnModificarICA">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="exampleModalR" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">MODIFICAR RETENCION</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmModificarRetencion">
+      
+
+          <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Valor anterior:</label>
+              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dRetencion ?>" readonly required>
+              
+              <input type="hidden" name="datos[tipoImpuesto]" id="tipoImpuesto" value="2" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nuevo valor retencion:</label>
+            <input type="text" name="datos[valorfinal]" id="valorfinal" placeholder="Nuevo valor retencion " onkeypress="return numeros(event);" class="form-control moneda" value="0" required>
+          </div>
+         
+
+        
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+        <button type="button" class="btn btn-primary" id="btnModificarRetencion">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="exampleModalIVA" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">MODIFICAR IVA</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmModificarIVA">
+      
+
+          <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Valor anterior:</label>
+              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dIVA; ?>" required>
+              
+              <!-- <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" > -->
+              
+              <input type="hidden" name="datos[tipoImpuesto]" id="tipoImpuesto" value="3" required>
+
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nuevo valor IVA:</label>
+            <input type="text" name="datos[valorfinal]" id="valorfinal" placeholder="Nuevo valor IVA " onkeypress="return numeros(event);" class="form-control moneda" value="0" required>
+          </div>
+         
+
+        
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+        <button type="button" class="btn btn-primary" id="btnModificarIVA">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="exampleModalSS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">MODIFICAR SEGURIDAD SOCIAL</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmModificarSeguridadSocial">
+      
+          <input type="hidden" name="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Valor anterior:</label>
+              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dSeguridadSocial; ?>" required>
+              
+              <!-- <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" > -->
+              
+             <input type="hidden" name="datos[tipoImpuesto]" id="tipoImpuesto" value="4" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nuevo valor seguridad social:</label>
+            <input type="text" name="datos[valorfinal]" id="valorfinal" placeholder="Nuevo valor seguridad social " onkeypress="return numeros(event);" class="form-control moneda" value="0" required>
+          </div>
+         
+
+        
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+        <button type="button" class="btn btn-primary" id="btnModificarSeguridadSocial">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script src="<?php echo $URL ?>assets/bundles/apexcharts/apexcharts.min.js"></script>
+

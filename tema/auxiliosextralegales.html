@@ -1,0 +1,92 @@
+<?php 
+require_once("class/empleados.php"); 
+
+$oEmpleado=new Empleados(); 
+
+$oControl=new Control(); 
+
+$aFiltro["estado"]=1; 
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aFiltro);
+
+$oLista = new Lista('auxilio_extralegal');
+$oLista->setOrden("editable","ASC");
+$aAuxilios=$oLista->getLista();
+unset($oLista);
+?>
+<form enctype="multipart/form-data" id="frmGuardar">
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Nomina</li>
+          <li class="breadcrumb-item">Traslado Seguridad Social</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">Empleado<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idEmpleado]" id="datos[idEmpleado]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aEmpleados as $item){ ?>
+                          <option cc="<?php echo $item["numeroDocumento"]; ?>" value='<?php echo $item["idEmpleado"]; ?>'><?php echo $item["nombre"]." ".$item["apellido"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label class="negrita">N° Documento<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control" readonly id="numeroDocumento" required>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-header">
+                  <h4>Gestión Auxilios</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6 deducible">
+                      <div class="form-group">
+                        <label class="negrita">Tipo Auxilio<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idAuxilio]" id="datos[idAuxilio]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aAuxilios as $item){ ?>
+                          <option editable="<?php echo $item["editable"]; ?>" value='<?php echo $item["idAuxilioExtralegal"]; ?>'><?php echo $item["nombre"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-4 otro ocultar">
+                      <div class="form-group">
+                        <label class="negrita">Cual?<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[otroAuxilio]" id="datos[otroAuxilio]" >
+                      </div>
+                    </div>
+                    <div class="col-md-6 deducible">
+                      <div class="form-group">
+                        <label class="negrita">Valor Auxilio<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control numero moneda" name="datos[valorAuxilio]" id="datos[valorAuxilio]" required>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>

@@ -1,0 +1,174 @@
+<?php 
+
+
+include_once("class/legalizaciones.php");
+
+
+$oControl=new Control(); 
+
+
+	$idProyecto=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+	$url=$idProyecto; 
+
+	if($idProyecto==""){
+
+	  echo '<script>window.history.back()</script>'; 
+
+}
+
+
+
+$oLegalizacion=new Legalizaciones();
+   
+
+$aLegalizacion=$oLegalizacion->getItemsLegalizaciones($idProyecto);
+unset($oLegalizacion);
+
+?>
+
+
+<div class="card">
+
+                <div class="card-header">
+
+                  <h4>Historial legalizaciones</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+                      
+
+                      <table class="table table-striped mayusculas centrar" id="tableEnterprise" style="font-size: 83%">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Tipo legalizacion</th>
+
+                            <th>Concepto</th>
+
+                            <th>Valor</th>
+
+                            <th>Tipo Factura</th>
+
+                            <th>Emite factura</th>
+
+                            <th>Fecha factura</th>
+
+                            <th>Empleado</th>
+
+                            <th>Estado</th>
+
+                            <th>Accion</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+
+                          <?php foreach($aLegalizacion as $index => $iLegalizacion){   ?> 
+
+                            <tr>
+
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td>
+                                <?php 
+                                if($iLegalizacion["tipoLegalizacion"]==1){
+
+                                echo 'ALIMENTACION'; 
+                              }
+                              else if($iLegalizacion["tipoLegalizacion"]==2){
+
+                                echo 'HOSPEDAJE'; 
+                              }else if($iLegalizacion["tipoLegalizacion"]==3){
+
+                                echo 'TRANSPORTE'; 
+                              }else if($iLegalizacion["tipoLegalizacion"]==4){
+
+                                echo 'OTROS'; 
+                              }
+                                ?>
+                              </td>
+
+                              <td><?php echo $iLegalizacion["concepto"]; ?></td>
+
+                              <td><?php echo  "$".number_format($iLegalizacion["valor"],0,".",","); ?></td>
+                              <td><?php 
+                                if($iLegalizacion["tipoFactura"]==1){
+
+                                echo 'Factura'; 
+                              }
+                              else if($iLegalizacion["tipoFactura"]==2){
+
+                                echo 'Documento equivalente'; 
+                              }
+                                ?></td>
+                               <td><?php echo  $iLegalizacion["emiteFactura"]; ?></td>
+                              <td><?php echo  $iLegalizacion["fechaFactura"]; ?></td>
+                              <td><?php 
+                                echo  $iLegalizacion["nombre"].' '.$iLegalizacion["apellido"]
+                             
+                              ?></td>
+
+                              
+
+                              
+
+                              <td><?php 
+                                if($iLegalizacion["estado"]==1){
+
+                                echo '<p style="color:#FFE44B">PENDIENTE</p>'; 
+                              }
+                              else if($iLegalizacion["estado"]==2){
+
+                                echo '<p style="color:#4BB962">APROBADA</p>'; 
+                              }else if($iLegalizacion["estado"]==3){
+
+                                echo '<p style="color:#FF7259">RECHAZADA</p>'; 
+                              }
+                                ?> </td>
+
+                              <td>
+                              <?php if ($_SESSION['idRol']==1 || $_SESSION['idRol']==2) {?>
+                                <?php if($iLegalizacion["estado"]==1) {?>
+                                  
+                                  
+                  <a href="./../functions/legalizaciones/aprobarlegalizacion.php?idLegalizacion=<?php echo $iLegalizacion['idLegalizacion'] ?>&idUsuario=<?php echo $idEmpleado ?>"  data-toggle="tooltip" title="APROBAR"><i class="far fa-check-circle" style="color: #41B4FF;font-size: 14px;"></i></a>
+
+                  <a href="./../functions/legalizaciones/rechazarlegalizacion.php?idLegalizacion=<?php echo $iLegalizacion['idLegalizacion'] ?>&idUsuario=<?php echo $idEmpleado ?>"  data-toggle="tooltip" title="RECHAZAR"><i class="far fa-window-close" style="color: #FF6141;font-size: 14px;"></i></a>
+                  
+                  <?php } } ?>
+                  <a href="<?php echo $URL.$iLegalizacion['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 14px;"></i></a>
+                  <?php if ($_SESSION['idRol']==3 || $_SESSION['idRol']==4) {?>
+                  <a href="../editaritemproyecto/<?php echo $iLegalizacion['idLegalizacion'] ?>"  data-toggle="tooltip" data-placement="top" title="Editar item" ><i class="fas fa-edit" style="color: #30E3FF;font-size: 14px;"></i></a>
+                  <?php } ?>
+
+                              </td>
+                              
+                          
+                            </tr>
+
+                            <?php } ?>
+
+                        </tbody>
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>

@@ -1,0 +1,389 @@
+<?php 
+    
+require_once("class/timeline.php"); 
+
+require_once("class/estadisticas.php");
+
+$codigocliente=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$codigocliente; 
+if($codigocliente==""){
+echo '<script>window.history.back()</script>'; 
+}
+
+# include("class/timeline.php");
+
+
+$oItem=new Data("t_clientes","codigoCliente",$codigocliente); 
+$rows=$oItem->getDatos(); 
+unset($oItem);
+$idEmpresa = $_SESSION["idEmpresa"];
+
+
+$oActividad=new Actividades(); 
+$aEncargado=$oActividad->getEmpleados($idEmpresa);
+unset($oActividad);
+
+
+$oActividadn=new Actividades(); 
+$aNegociacion=$oActividadn->getNegociosNegociacion($codigocliente);
+unset($oActividadn); 
+
+$oActividadp=new Actividades(); 
+$aGanado=$oActividadp->getNegociosGanado($codigocliente);
+unset($oActividadp); 
+
+$oActividadg=new Actividades(); 
+$aPerdido=$oActividadg->getNegociosPerdido($codigocliente);
+unset($oActividadg); 
+
+
+$oEstadistica=new Estadistica(); 
+$aNegocio=$oEstadistica->getNegocios($codigocliente);
+unset($oEstadistica);
+// print_r($aNegocio);
+$label="";
+$datos="";
+
+foreach($aNegocio as $row){
+  $label= $label."'".$row['estado']."',";
+  $datos =$datos.$row['total'].",";
+}
+$label = rtrim($label,",");
+$datos = rtrim($datos,",");
+?>
+
+
+
+
+  <div class="scrollmenu ">
+          
+          <a href="../informacionadicional/<?php echo $codigocliente;?>">TIMELINE<i class="fas fa-grip-lines-vertical"></i></a>
+          <a href="../llamadas/<?php echo $codigocliente;?>">LLAMADAS<i class="fas fa-phone"></i></a>
+          <a  href="../correos/<?php echo $codigocliente;?>">CORREOS<i class="fas fa-at"></i></a>
+          <a  href="../notas/<?php echo $codigocliente;?>">NOTAS<i class="fas fa-paperclip"></i></a>
+          <a href="../tareas/<?php echo $codigocliente;?>">TAREAS <i class="far fa-calendar-alt"></i></a>
+          <a id="escogido" href="../negocios/<?php echo $codigocliente;?>">NEGOCIOS<i class="far fa-chart-bar"></i></a>
+          <a href="../pipeline">PIPELINE<i class="fas fa-table"></i></a>
+        </div>
+      
+<?php
+  date_default_timezone_set('America/bogota');
+  $fechaActual = date('Y-m-d');
+  $horaActual = date('H:i:s');
+ ?>
+
+      <div class="row">
+      
+        <div class="col-12 col-sm-12 col-lg-6">
+          <div class=" card card-body l-bg-purple aclarar topcard">
+            <?php
+            $nombre = $rows['nombre'];
+            $apellidos =  $rows['apellidos'];
+            $rest1 = substr("$nombre", 0,1);    
+            $rest2 = substr("$apellidos", 0,1);    
+            
+            ?>
+                <figure class="avatar mr-2 avatar-lg bg-danger text-white" data-initial="<?php echo $rest1,$rest2 ?>">
+                  
+                </figure>
+                <h3><?php echo $rows['nombre'],' ', $rows['apellidos'];?></h3>
+                <h5>Correo electronico:<?php echo $rows['email'];?></h5>
+                <h5>Telefono: <?php echo $rows['telefono'];?></h5>
+                <h5> Creado: <?php echo $rows['fechaCreacion'];?></h5>
+               
+               
+          </div>
+          <div class="card l-bg-purple aclarar ">
+            <center><h4><i class="fas fa-chart-bar"></i><strong>NEGOCIO </strong></h4></center>
+            <!-- <form action="../functions/crm/insertarnegocio.php" method="POST"> -->
+              <form enctype="multipart/form-data" id="frmGuardar">
+              <div class="card-body">
+                <div class="form-group">
+                  <h5 >
+                    <input type="text" name="datos[codigocliente]" class="ocultar" hidden="true" value="<?php echo $codigocliente ?>">
+                    <input type="text" name="datos[fecha]" class="ocultar" hidden="true" value="<?php echo $fechaActual ?>">
+                    <?php echo 'Fecha: ',$fechaActual ?>
+                  </h5>
+                  <h5 >
+                    <input type="text" name="datos[hora]" class="ocultar" hidden="true" value="<?php echo $horaActual ?>">
+                    <?php echo ' Hora: ',$horaActual ?>
+                  </h5>
+                </div>
+                  <div class="form-group">
+                    <div>
+                      <label class="size">Descripción inicial del negocio</label>
+                      <textarea class="form-control" name="datos[negocio]"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div>
+                      <label class="size">Asignado</label>
+                      <select class="form-control" id="empleadoEncargado" name="datos[empleadoEncargado]" class="form-control"> 
+                          <option value="<?php echo $_SESSION['idUsuario'];?>"><?php             echo $_SESSION["nombreUsuario"].' '.$_SESSION["apellidoUsuario"];?>
+                              </option>
+                          <?php foreach($aEncargado as $rowse){ ?>
+                          <option value="<?php echo $rowse['idUsuario'] ?>"><?php echo $rowse['nombre'],' ',$rowse['apellido'] ?></option>
+                          <?php } ?>
+                        </select>
+                    </div>
+                  </div>
+                  <input type="text" name="datos[creador]" class="ocultar" value="<?php echo $_SESSION['idUsuario'] ?>">
+                  <div class="form-group">
+                    <div>
+                      <label class="size">Fecha esperada de cierre del negocio</label>
+                      <input type="date" name="datos[vencimiento]" id="vencimiento" class="form-control"><br>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div>
+                      <label class="size">Valor tentativo del negocio:</label>
+                      <input type="text" name="datos[valor]" id="valor" onkeypress="return numeros(event);" class="form-control moneda"><br>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <center>
+                      <!-- <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> -->
+                        <a class="btn btn-primary mr-1" id="btnGuardar">GUARDAR</a>
+                    </button><span class="ocultar">----</span>
+                    <button type="reset" class="btn btn-danger"><i class="fas fa-times-circle"></i></button></center>
+                </div>
+              </div>
+            </form>
+          </div>
+
+
+          <div class="card fijardatoscliente">
+                <center><h3>Negocios</h3></center>
+                <canvas id="grafica" ></canvas>
+          </div>  
+        </div>
+
+
+    
+      <div class="col-12 col-sm-12 col-lg-6">
+        <div class="card l-bg-cyan topcard">
+          
+          <div class="card-statistic-3 p-4   ">
+              <div class="card-icon card-icon-large">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+                <div class="mb-5">
+            <h3>NEGOCIACION</h3>
+         
+          </div>
+        </div>
+          </div>
+          <?php foreach($aNegociacion as $index => $rowsn){ ?>
+          <div class="card l-bg-cyan">
+              <div class="card-body">
+                <h5>Descripcion: <?php echo $rowsn['motivo'];?></h5>
+
+                <h5>Fecha: <?php echo $rowsn['fechaCreacion'];?>   Hora: <?php echo $rowsn['horaCreacion'];?> </h5>
+                <h5> Encargado:<?php echo $rowsn['nombreUsuario'].' '.$rowsn['apellidoUsuario'];?></h5>
+                <h5>Valor:  <?php echo "$".number_format($rowsn['valor'],2,",",".");?></h5>
+
+                <h5>Fecha esperada de cierre:  <?php echo $rowsn['vencimiento'];?></h5>
+                
+                <?php $idActividad= $rowsn['idActividad'];?>
+                <?php $descrip= $rowsn['motivo'];?>
+                <?php $val= number_format($rowsn['valor'],0,",","");?>
+              
+              <!-- <button class="btn btn-primary" id="btn-cerrar-negocio" onclick="return abrirpopup(<?php echo $idActividad; ?>,'<?php echo $descrip; ?>',<?php echo $val; ?>);">CERRAR NEGOCIO</button> -->
+
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">Cerrar negocio</button>
+            </div>
+          </div>
+        <?php } ?>
+         
+        
+
+        <div class="card l-bg-green">
+        <div class="card-statistic-3 p-4   ">
+              <div class="card-icon card-icon-large">
+                <i class="fas fa-chart-bar"></i>
+              </div>  
+          <div class="mb-5">
+            <h3>GANADO</h3>
+          </div>
+        </div>
+      </div>
+
+        <?php foreach($aGanado as $index => $rowsa){ ?>
+          <div class="card l-bg-green">
+              <div class="card-body">
+                <h5>Descripcion: <?php echo $rowsa['motivo'];?></h5> 
+                <h5>Fecha: <?php echo $rowsa['fechaCreacion'];?>   Hora: <?php echo $rowsa['horaCreacion'];?> </h5>
+                <h5>Motivo: <?php echo $rowsa['motivo'];?></h5>
+                <h5> Encargado:<?php echo $rowsn['nombreUsuario'].' '.$rowsn['apellidoUsuario'];?></h5>
+                
+                <h5>Valor:  <?php echo "$".number_format($rowsa['valor'],2,",",".");?></h5>
+              </div>
+          </div>
+        <?php } ?>
+
+        <div class="card l-bg-red">
+        <div class="card-statistic-3 p-4   ">
+              <div class="card-icon card-icon-large">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+                <div class="mb-5">
+            <h3>PERDIDO</h3>
+          </div>
+        </div>
+      </div>
+
+        <?php foreach($aPerdido as $index => $rowsp){ ?>
+          <div class="card l-bg-red">
+              <div class="card-body">
+                <h5>Descripcion: <?php echo $rowsp['descripcion'];?></h5> 
+                <h5>Fecha: <?php echo $rowsp['fechaCreacion'];?>   Hora: <?php echo $rowsp['horaCreacion'];?> </h5>
+                <h5>Motivo: <?php echo $rowsp['motivo'];?></h5>
+                <h5> Encargado:<?php echo $rowsn['nombreUsuario'].' '.$rowsn['apellidoUsuario'];?></h5>
+                
+                <h5>Valor:  $<?php echo "$".number_format($rowsp['valor'],2,",",".");?></h5>
+              </div>
+          </div>
+        <?php } ?>
+
+      </div>
+    </div>
+
+
+
+
+
+
+
+
+<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal for @fat</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">Open modal for @getbootstrap</button> -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">NEGOCIO CERRADO</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmCerrarNegocio">
+          <!-- <div class="form-group">
+            <label for=""><input type="radio" name="datos[cerrado]"   checked="true" ></label>
+        
+          <label for=""><input type="radio" name="datos[cerrado]" ></label>
+          </div>
+ -->
+
+
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[cerrado]"  id="ganado" value="ganado" checked="true" >
+              <label class="form-check-label" for="ganado">GANADO</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[cerrado]"   id="perdido" value="perdido">
+              <label class="form-check-label"  for="perdido">PERDIDO</label>
+            </div>
+
+
+
+
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Descripcion final del negocio:</label>
+              <input type="text" name="datos[motivo]" id="motivo" class="form-control" placeholder="Negociacion final o motivo de perdida" required>
+              
+              <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" >
+              
+              <input type="hidden" name="datos[codigocliente]" class="ocultar"  value="<?php echo $codigocliente ?>">
+              <input type="hidden" name="datos[fecha]" class="ocultar"  value="<?php echo $fechaActual ?>">
+              <input type="hidden" name="datos[hora]" class="ocultar"  value="<?php echo $horaActual ?>">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Valor final:</label>
+            <input type="text" name="datos[valorfinal]" id="valorfinal" placeholder="el valor final del negocio $" onkeypress="return numeros(event);" class="form-control moneda" value="0" required>
+          </div>
+          <div class="form-group" id="divRenovacion">
+            <label>Renovación:</label><br>
+            
+            
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[renovacion]"  id="renovacionSi" value="si" checked="true" >
+              <label class="form-check-label"for="renovacionSi">SI</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[renovacion]"  id="renovacionNo" value="no">
+              <label class="form-check-label"  for="renovacionNo">NO</label>
+            </div>
+
+            <input type="date" name="datos[renovacion]" id="renovacion" placeholder="renovacion el dia"  class="form-control" required>
+          </div>
+
+          <div class="form-group" id="divAlarma">
+            <label>Fecha alarma renovación:</label><br>
+            <!-- <label for="renovacionSi"><input type="radio" name="datos[renovacion]"  id="renovacionSi" value="si" checked="true" >SI</label>
+            <label for="renovacionNo"><input type="radio" name="datos[renovacion]"  id="renovacionNo" value="no"  >NO</label> -->
+            <input type="date" name="datos[alarmaRenovacion]" id="alarmaRenovacion" placeholder="renovacion el dia"  class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button>
+        <button type="button" class="btn btn-primary" id="btnCerrarNegocio">CERRAR NEGOCIO</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+   let miCanvas = document.getElementById("grafica").getContext("2d");
+   var label= [<?php echo $label ?>];
+   var datos= [<?php echo $datos ?>];
+   
+   var chart= new Chart(miCanvas,{
+      type:"pie",
+      data:{
+        labels:label,
+        datasets:[
+          {
+            label:"NEGOCIOS",
+            backgroundColor:[
+            "rgb(145,252,187)",
+            "rgb(118,211,255)",
+            "rgb(255,140,140)",
+            ],
+            data:datos
+          }
+        ]
+      }
+   });
+ </script>

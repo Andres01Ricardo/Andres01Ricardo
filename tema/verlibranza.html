@@ -1,0 +1,143 @@
+<?php
+date_default_timezone_set("America/Bogota"); 
+// $idLibranza=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+// if($id==""){
+
+//   echo '<script>window.history.back()</script>'; 
+
+// }
+// if(!isset($_SESSION)){ session_start(); }
+
+$oLista = new Lista('libranza');
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION['idEmpresa']);
+
+$aLibranza=$oLista->getLista();
+
+unset($oLista);
+?>
+
+      <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Empleado</th>
+
+                            <th>Valor solicitado</th>
+
+                            <th>Cuota</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Plazo</th>
+
+                            <th>Estado</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aLibranza as $index => $iLibranza){ 
+
+
+
+                          $oItem=new Data("empleado","idEmpleado", $iLibranza["idEmpleado"]); 
+
+                          $aEmpleado=$oItem->getDatos(); 
+
+                          unset($oItem); 
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $aEmpleado["nombre"].' '.$aEmpleado["apellido"]; ?></td>
+
+                              <td><?php echo "$".number_format($iLibranza["valorSolicitado"],0,".",","); ?></td>
+
+                              <td><?php echo "$".number_format($iLibranza["cuota"],0,".",","); ?></td>
+
+                              <td><?php echo $iLibranza["fechaRegistro"]; ?></td>
+
+                              <td><?php echo $iLibranza["plazo"]; ?></td>
+
+                              <td><?php echo $iLibranza["estadoSolicitud"]; ?></td>
+
+                              <td class="centrar">
+
+                                <a href="creditolibranza/<?php echo $iLibranza["idLibranza"]; ?>" name="" class="btn btn-icon btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Ver detalles"><i class="fas fa-info-circle"></i></a>
+                              </td>
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+
+<script>
+function imprim2(){
+    var mywindow = window.open('', 'PRINT');
+    mywindow.document.write('<html><head>');
+  mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
+    mywindow.document.write('</head><body >');
+
+    mywindow.document.write(document.getElementById('muestra').innerHTML);
+    mywindow.document.write('</body></html>');
+    mywindow.document.close(); 
+    mywindow.focus(); 
+    mywindow.print();
+    
+    
+    return true;}
+
+    $('[data-toggle="tooltip"]').tooltip();
+</script> 

@@ -1,0 +1,706 @@
+<?php
+
+require_once("class/empresa.php"); 
+
+
+
+$oEmpresa=new Empresa(); 
+
+
+
+$oControl=new Control(); 
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre";
+
+
+
+$nuevafecha = strtotime ( '-1 Months' , strtotime ( date('Y-m') ) ) ;
+
+$nuevafecha = date ( 'Y-n' , $nuevafecha );
+
+
+
+$aFecha=explode("-",$nuevafecha); 
+
+
+
+$aFiltroR["idEmpresa"]=$_SESSION["idEmpresa"]; 
+
+//$aFiltroR["anio"]=$aFecha[0]; 
+
+//$aFiltroR["mes"]=$aFecha[1]; 
+
+
+
+$aRentabilidad=$oEmpresa->getRentabilidad($aFiltroR);
+$pos=count($aRentabilidad)-1; 
+
+
+$aFinanciera=$oEmpresa->getSituacionFinanciera($aFiltroR);
+
+
+
+$activo=0; 
+
+$pasivo=0; 
+
+$patrimonio=0; 
+
+
+foreach($aFinanciera as $iFinanciera){
+  $idFinanciera=$iFinanciera["idBalanceGeneral"]; 
+  if($iFinanciera["tipo"]==1){
+
+    $activo=$iFinanciera["total"]; 
+
+  }
+
+  if($iFinanciera["tipo"]==2){
+
+    $pasivo=$iFinanciera["total"];
+
+  }
+
+  if($iFinanciera["tipo"]==3){
+
+    $patrimonio=$iFinanciera["total"];
+
+  }
+
+}
+
+
+
+$oLista=new Lista("factura_compra"); 
+
+$oLista->setFiltro("fechaPago","LIKE",date('Y-m')); 
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]); 
+
+$oLista->setFiltro("estado","!=",3); 
+
+$aLista=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$valorC=0;
+
+foreach ($aLista as $key => $value) {
+
+  $valorC+=$value["subtotal"]; 
+
+}
+
+
+
+$oLista=new Lista("factura_venta"); 
+
+$oLista->setFiltro("fechaFactura","LIKE",date('Y-m')); 
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]); 
+
+$aLista2=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$valorV=0;
+
+foreach ($aLista2 as $key => $value) {
+
+  $valorV+=$value["subtotal"]; 
+
+}
+
+$aFiltroR["anio"]=$aRentabilidad[$pos]['periodoAnio']; 
+
+$aFiltroR["mes"]=$aRentabilidad[$pos]['PeriodoMes']; 
+
+$aFiltroC=$aFiltroR; 
+
+$aFiltroC["cuenta"]="1305"; 
+
+$dClientes=$oEmpresa->getCuentaFinanciera($aFiltroC)[0];
+
+
+
+$aFiltroC["cuenta"]="22"; 
+
+$dProveedores=$oEmpresa->getCuentaFinanciera($aFiltroC)[0];
+
+
+
+$aFiltroC["cuenta"]="2335"; 
+
+$dCostos=$oEmpresa->getCuentaFinanciera($aFiltroC)[0];
+
+
+
+$aFiltroC["cuenta"]="2408"; 
+
+$dIVA=$oEmpresa->getCuentaFinanciera($aFiltroC)[0];
+
+
+
+$aFiltroC["cuenta"]="2365"; 
+
+$dRetencion=$oEmpresa->getCuentaFinanciera($aFiltroC)[0];
+
+
+$oLista=new Lista("cuenta_bancaria"); 
+
+$oLista->setFiltro("cuentaPrincipal","=",1); 
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]); 
+
+$aCuentas=$oLista->getLista(); 
+
+unset($oItem);
+?>
+
+<style type="text/css">
+
+  .subtitulo{
+
+    display: block;
+
+      font-size: 20px;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/morris/morris.css">
+
+<section class="section">
+
+  <ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Inicio</li>
+
+    </ul>
+
+  <div class="section-body">
+
+  <div class="row ">
+
+      <div class="col-xl-4 col-lg-4">
+
+        <div class="card rosado-pastel retenciones" data-toggle="tooltip" title="estado de resultados integral es ">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #fe768f !important;opacity: 0.5 !important"><i class="fas fa-chart-line"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis"><span data-toggle="modal" data-target="#estadoResultados" id="verEFinanciero" value="<?php echo $aRentabilidad[$pos]['idEstadoFinanciero']; ?>" ><i class="fas fa-align-justify" data-toggle="tooltip" title="Expandir Información" ></i></span> Estado Resultados Integral <?php echo $meses[$aRentabilidad[$pos]['periodoMes']]; ?></h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-12">
+
+                <h3 class="d-flex align-items-center mb-0">Utilidad Neta: <?php echo "$".number_format($aRentabilidad[$pos]["valor"],0,".",","); ?>
+
+                </h3>
+
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span><i class="fa fa-arrow-right"></i></span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-4">
+
+        <div class="card azul-pastel horasextras" data-toggle="tooltip" title="estado de situacion financiera es">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #8dc8f3 !important;opacity: 0.5 !important"><i class="far fa-chart-bar"></i></div>
+
+            <div class="">
+
+              <h5 class="card-title mb-0 elipsis"><span data-toggle="modal" data-target="#estadoSituacion" id="verSFinanciera" value="<?php echo $idFinanciera; ?>" ><i class="fas fa-align-justify" data-toggle="tooltip" title="Expandir Información"></i></span> Estado Situacion Financiera <?php echo $meses[$aRentabilidad[$pos]['periodoMes']]; ?></h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h6 class="d-flex align-items-center mb-0"> Activo: <?php echo "$".number_format($activo,0,".",","); ?>
+
+                  <br>Pasivo: <?php echo "$".number_format($pasivo,0,".",","); ?>
+
+                  <br>Patrimonio: <?php echo "$".number_format($patrimonio,0,".",","); ?>
+
+                </h6>
+
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span><i class="fa fa-arrow-right"></i></span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-4">
+
+        <div class="card morado-pastel retenciones">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #de9bd0 !important;opacity: 0.5 !important"><i class="fas fa-piggy-bank"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Cuentas Bancarias</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-12">
+                <?php if(count($aCuentas)>0){  ?>
+                <?php if(count($aCuentas)==1){  ?>
+                <h3 class="d-flex align-items-center mb-0"><?php echo $aCuentas[0]["nombreCuenta"].": $".number_format($aCuentas[0]["saldoActual"],0,".",","); ?>
+
+                </h3>
+                 <?php }else{ ?>
+                 <h6 class="d-flex align-items-center mb-0"> 
+                  <?php echo $aCuentas[0]["nombreCuenta"].": $".number_format($aCuentas[0]["saldoActual"],0,".",","); ?>
+
+                  <br><?php echo $aCuentas[1]["nombreCuenta"].": $".number_format($aCuentas[1]["saldoActual"],0,".",","); ?>
+
+                </h6>
+                 <?php } ?>
+                <?php }else{ ?>
+                <h3 class="d-flex align-items-center mb-0">Sin Información</h3>
+                <?php } ?>
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span><i class="fa fa-arrow-right"></i></span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row ">
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card grey-pastel retenciones" data-toggle="tooltip" title="el ICA es el Impuesto de Industria y Comercio el cual se genera por la realización de actividades industriales de forma directa o indirecta, comerciales o de servicios, que se desarrollan de manera permanente u ocasional, en un inmueble determinado, sea que exista establecimiento de comercio o no.">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #8fbbf4 !important;opacity: 0.5 !important"><i class="fas fa-archway"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proximo ICA a Pagar</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-7">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format(0,0,".",","); ?>
+
+                </h2>
+
+                <!-- <span class="subtitulo">----/--/--</span> -->
+
+              </div>
+
+              <div class="col-5 text-right">
+
+                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card amarillo-pastel horasextras" data-toggle="tooltip" title="la retencion es ">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #e6c937 !important;opacity: 0.5 !important"><i class="fas fa-handshake"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proxima Retención a Pagar</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dRetencion['valor'],0,".",","); ?>
+
+                </h2>
+
+                <!-- <span class="subtitulo">----/--/--</span> -->
+
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span>2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card naranja-pastel parafiscales" data-toggle="tooltip" title="El Impuesto sobre el Valor Añadido (IVA) es un tributo de naturaleza indirecta aplicable al consumo doméstico de bienes y servicios producidos tanto en el territorio nacional como en el exterior.">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #f9a039 !important;opacity: 0.5 !important"><i class="fas fa-hand-holding-usd"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proximo IVA a Pagar</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis">
+
+                  <?php echo "$".number_format($dIVA['valor'],0,".",","); ?>
+
+                </h2>
+
+                <!-- <span class="subtitulo">----/--/--</span> -->
+
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span>2020-09-09</span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="row ">
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card morado-pastel retenciones" data-toggle="tooltip" title="el pago de seguridad social es ">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #4d50a9 !important;opacity: 0.5 !important"><i class="fas fa-notes-medical"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Pago Seguridad Social</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-7">
+
+                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format(0,0,".",","); ?>
+
+                </h2>
+
+              </div>
+
+              <div class="col-5 text-right">
+
+                <span><!-- <i class="fa fa-arrow-right"></i> --></span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card bg-dark-gray parafiscales">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="opacity: 0.5 !important"><i class="fas fa-truck"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis">Proveedores</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h2 class="d-flex align-items-center mb-0">
+
+                  <?php echo "$".number_format($dProveedores["valor"]+$dCostos["valor"]+$valorC,0,".",","); ?>
+
+                </h2>
+
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span><i class="fa fa-arrow-right"></i></span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-xl-4 col-lg-6">
+
+        <div class="card verde-pastel salariominimo">
+
+          <div class="card-statistic-3 p-4">
+
+            <div class="card-icon card-icon-large" style="color: #3fd094 !important;opacity: 0.5 !important"><i class="fas fa-store"></i></div>
+
+            <div class="mb-4">
+
+              <h5 class="card-title mb-0 elipsis" >Clientes</h5>
+
+            </div>
+
+            <div class="row align-items-center mb-2 d-flex">
+
+              <div class="col-8">
+
+                <h2 class="d-flex align-items-center mb-0">
+
+                  <?php echo "$".number_format($dClientes["valor"]+$valorV,0,".",","); ?>
+
+                </h2>
+
+              </div>
+
+              <div class="col-4 text-right">
+
+                <!-- <span><i class="fa fa-arrow-right"></i></span> -->
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<div class="modal fade bd-example-modal-lg" id="estadoResultados" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myLargeModalLabel">Estado Resultados</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ondragstart="return false" onselectstart="return false">
+        <form enctype="multipart/form-data" >
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="negrita">Periodo:</label>
+                <select class="form-control" name="periodo" id="periodo" required>
+                  <option value="">Seleccione una opción</option>
+                  <?php foreach($aRentabilidad as $iRentabilidad){ ?>
+                    <option value="<?php echo $iRentabilidad["idEstadoFinanciero"]; ?>"><?php echo $meses[$iRentabilidad['periodoMes']]." de ".$iRentabilidad['periodoAnio']; ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-striped mayusculas" id="tableBalances">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>Concepto</th>
+                    <th>Valor</th>
+                    <th>Porcentaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-whitesmoke br">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="estadoSituacion" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myLargeModalLabel">Estado Situacion Financiera</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ondragstart="return false" onselectstart="return false">
+        <form enctype="multipart/form-data" >
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="negrita">Periodo:</label>
+                <select class="form-control" name="periodoSF" id="periodoSF" required>
+                  <option value="">Seleccione una opción</option>
+                  <?php $idFinanciera=""; foreach($aFinanciera as $iFinanciera){ 
+                  if($idFinanciera!=$iFinanciera["idBalanceGeneral"]){
+
+                  $idFinanciera=$iFinanciera["idBalanceGeneral"];  
+                  ?>
+                    <option value="<?php echo $iFinanciera["idBalanceGeneral"]; ?>"><?php echo $meses[$iFinanciera['periodoMes']]." de ".$iFinanciera['periodoAnio']; ?></option>
+                  <?php } } ?>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-striped mayusculas" id="tableSituacion">
+                <thead>
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>Titulo</th>
+                    <th>Valor</th>
+                    <th>Porcentaje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-whitesmoke br">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script src="<?php echo $URL ?>assets/bundles/apexcharts/apexcharts.min.js"></script>

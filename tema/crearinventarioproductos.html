@@ -1,0 +1,222 @@
+
+
+<?php 
+
+require_once("class/empresa.php"); 
+
+ include("class/clientes.php") ; 
+
+
+$oEmpresa=new Empresa(); 
+
+
+
+$aEmpresas=$oEmpresa->getEmpresas();
+
+
+
+$oLista = new Lista('unidad');
+
+$oLista->setOrden("nombre","ASC");
+
+$aUnidades=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+?>
+
+
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<form enctype="multipart/form-data"  id="frmGuardar" >
+	<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
+	<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+	<?php } ?>
+		<div class="card">
+			<div class="card-body">
+				<?php if($_SESSION['idRol']==1){ ?>
+					<div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iItem){ ?>
+
+                          <option value="<?php echo $iItem['idEmpresa']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select>
+
+                      </div>
+      				<?php }?>
+      				</div>
+
+
+              <div class="card-header">
+
+                    <h4>INSUMOS DEL PRODUCTO EN PROCESO</h4>
+                   
+
+                </div>
+                <div class="card-header">
+                   <h6>Se van a descargar del inventario de insumos</h6>
+                </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableInsumos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Insumo</th>
+
+                            <th>Unidad</th>
+
+                            <th>Cantidad</th>
+                            
+                            <th>Valor Unitario</th>
+
+                            <th>Total</th>
+
+                            <th class="text-center">
+
+                              <a href="javascript:void(0)" data-toggle="tooltip" id="agregarInsumos" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+
+                            </th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                              <td>1</td>
+
+                              <td><input type="text" name="itemR[0][productoInsumo]" id="itemR[0][productoInsumo]" class="form-control productoInsumo mayusculas" required placeholder="nombre producto">
+
+                                <input type="hidden" name="itemR[0][idProductoInsumo]" id="itemR[0][idProductoInsumo]" class="form-control idProductoInsumo" ></td>
+
+                                <td><input type="text" class="form-control unidadInsumo mayusculas" name="itemR[0][unidadInsumo]" id="itemR[0][unidadInsumo]" required readonly></td>
+
+                                <td><input type="text" class="form-control numero cantidadInsumo" name="itemR[0][cantidadInsumo]" id="itemR[0][cantidadInsumo]" placeholder="Cantidad" required></td>
+
+                              <td><input type="text" class="form-control moneda numero valorUnitarioInsumo mayusculas" name="itemR[0][valorUnitarioInsumo]" id="itemR[0][valorUnitarioInsumo]" placeholder="Valor Unitario" required readonly></td>
+
+                              <td><input type="text" class="form-control moneda totalInsumo mayusculas" name="itemR[0][totalInsumo]" id="itemR[0][totalInsumo]" placeholder="TOTAL" required readonly></td>
+
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminarInsumos"><i class="fas fa-trash"></i></a>
+
+                              </td>
+
+                            </tr>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+
+      				
+
+                  <!-- <div class="card-footer">
+
+                    
+                    <div class="form-group">
+
+                          <label class="negrita d-block">¿Desea descargar insumos del inventario de insumos?<span class="requerido">*</span>:</label>
+
+
+                          <div class="form-check-inline">
+
+                            <label class="form-check-label" for="datos[tipoCompra]">
+
+                            <input class="form-check-input" type="radio" id="datos[descargarInsumo]" name="datos[descargarInsumo]" checked value="1">
+
+                            Si</label>
+
+                          </div>
+
+                          <div class="form-check-inline">
+
+                            <label class="form-check-label" for="datos[tipoCompra]">
+
+                            <input class="form-check-input" type="radio" id="datos[descargarInsumo]" name="datos[descargarInsumo]" value="2">
+
+                            No</label>
+
+                          </div>
+
+                      </div>
+                  </div> -->
+
+                  <div class="card-header">
+
+                    <h4>Producto en proceso</h4>
+
+                </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <div class="col-md-6">
+
+                        <div class="form-group">
+                         <label class="negrita">Producto<span class="requerido">*</span>:</label>
+                         
+                         <input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="nombre producto">
+                         <input type="hidden" name="item[0][idProducto]" id="item[0][idProducto]" class="form-control idProducto" >
+                       </div>
+                     </div>
+                     <div class="col-md-6">
+
+                        <div class="form-group">
+                           <label class="negrita">Cantidad<span class="requerido">*</span>:</label>
+                           <input type="text" class="form-control numero cantidad" name="item[0][cantidad]" id="item[0][cantidad]" placeholder="Cantidad" required>
+                         </div>
+                       </div> 
+
+                    </div>
+
+                  </div>
+
+                  <!-- aca -->
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1"  id="btnGuardar">Guardar</a>
+
+                  </div>
+
+
+
+                </div>
+              </form>

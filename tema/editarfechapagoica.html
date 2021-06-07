@@ -1,0 +1,349 @@
+<?php 
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+  echo '<script>window.history.back()</script>'; 
+}
+$decrip["cadena"]=$id; 
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+$oLista = new Lista('periodo_pago');
+
+$aPeriodos=$oLista->getLista();
+
+unset($oLista);
+
+$oItem = new Data('fecha_impuesto','idFechaImpuesto',$id);
+$ICA=$oItem->getDatos();
+unset($oItem);
+
+
+
+$oLista = new Lista('fecha_impuesto_digito');
+$oLista->setFiltro('idFechaImpuesto','=',$id);
+
+$ICADigito=$oLista->getLista();
+
+unset($oLista);
+
+
+$oLista = new Lista('ciudad');
+$oLista->setFiltro('idDepartamento','=',$ICA["idDepartamento"]);
+
+$ciudades=$oLista->getLista();
+
+unset($oLista);
+
+?>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Calendario Impuestos</li>
+
+          <li class="breadcrumb-item">Fecha Impuesto ICA</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ ?>
+
+                          <option  <?php if ($item["idDepartamento"]==$ICA["idDepartamento"]) {
+                            echo 'selected';
+                          } ?> value='<?php echo $item["idDepartamento"]; ?>' ><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad <span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+                          <?php foreach($ciudades as $iCiudad){ ?>
+                          <option value="<?php echo $iCiudad["idCiudad"]; ?>"  <?php if ($iCiudad["idCiudad"]==$ICA["idCiudad"]) {
+                            echo 'selected';
+                          } ?> ><?php echo $iCiudad["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodicidad <span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[periodicidad]" id="datos[periodicidad]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aPeriodos as $iPeriodo){ ?>
+
+                            <option value="<?php echo $iPeriodo['idPeriodoPago'] ?>" valor="<?php echo $iPeriodo['periodoMes'] ?>"  <?php if ($iPeriodo["idPeriodoPago"]==$ICA["periodicidad"]) {
+                            echo 'selected';
+                          } ?>  ><?php echo $iPeriodo['nombre'] ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Configuración <span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[tipoConfiguracion]" id="datos[tipoConfiguracion]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option  <?php if ($ICA["tipoConfiguracion"]==1) {
+                            echo 'selected';
+                          } ?>  value="1">Fecha Unica</option>
+
+                          <option <?php if ($ICA["tipoConfiguracion"]==2) {
+                            echo 'selected';
+                          } ?> value="2">Por Digito de NIT</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row ocultar" id="fechaUnica">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dia de pago<span class="requerido">*</span>:</label>
+
+                        <input type="number" class="form-control" min="1" max="28" name="datos[fechaPago]" id="datos[fechaPago]" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row  ultimoDigito">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 0<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" name="item[0][digito]" id="item[0][digito]" value="<?php echo $ICADigito[0]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 1<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[1][digito]" id="item[1][digito]" value="<?php echo $ICADigito[1]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 2<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[2][digito]" id="item[2][digito]" value="<?php echo $ICADigito[2]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row  ultimoDigito">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 3<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[3][digito]" id="item[3][digito]" value="<?php echo $ICADigito[3]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 4<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[4][digito]" id="item[4][digito]" value="<?php echo $ICADigito[4]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 5<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[5][digito]" id="item[5][digito]" value="<?php echo $ICADigito[5]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    </div>
+
+                    <div class="row  ultimoDigito">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 6<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[6][digito]" id="item[6][digito]" value="<?php echo $ICADigito[6]["diaPago"]?>">
+
+                      </div>
+
+                    </div>                  
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 7<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[7][digito]" id="item[7][digito]" value="<?php echo $ICADigito[7]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 8<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[8][digito]" id="item[8][digito]" value="<?php echo $ICADigito[8]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito 9<span class="requerido">*</span>:</label>
+
+                        <input type="date" class="form-control digito" min="1" max="28" name="item[9][digito]" id="item[9][digito]" value="<?php echo $ICADigito[9]["diaPago"]?>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

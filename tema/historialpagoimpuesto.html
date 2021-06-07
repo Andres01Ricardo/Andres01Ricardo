@@ -1,0 +1,86 @@
+<?php
+$oLista = new Lista('empresa');
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+?>
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">FILTRAR</h3><br>
+            <form method="POST" action="reporteimpuestos">
+              <div class="swal-content">
+              	<?php $rol= $_SESSION["idRol"];
+			  if($rol==1 || $rol==2){ ?>
+
+			      <div class="form-row align-items-center">
+			        <div class="col-auto my-1">
+			          <select class="custom-select mr-sm-2" id="selectIdEmpresa" name="selectIdEmpresa" required>
+			            <?php foreach($aEmpresa as $index => $iEmpresa){ ?>
+			              <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+			            <?php } ?>
+			          </select>
+			        </div>
+			      </div>
+			      <?php } ?>
+					<label class="negrita">IMPUESTO</label>
+					
+					<div >
+						<select class=" form-control" name="impuesto" id="impuesto">
+							<option value="2412">ICA</option>
+							<option value="2365">RETENCION EN LA FUENTE</option>
+							<option value="2408">IVA</option>
+						</select>
+					</div>
+         
+                  <br>
+
+       	<div class="form-row align-items-center">
+			<div class="col-auto my-1">
+				<label class="negrita">Desde: </label>
+			</div>
+
+			<div class="col-auto my-1">
+				<select class="custom-select mr-sm-2" name="periodoDesde" id="periodoDesde">
+					<option value="1">Enero</option>
+					<option value="2">Febrero</option>
+					<option value="3">Marzo</option>
+					<option value="4">Abril</option>
+					<option value="5">Mayo</option>
+					<option value="6">Junio</option>
+					<option value="7">Julio</option>
+					<option value="8">Agosto</option>
+					<option value="9">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+				</select>
+			</div>
+			<div class="col-auto my-1">
+				<label class="negrita">Hasta: </label>
+			</div>
+			<div class="col-auto my-1">
+				<select class="custom-select mr-sm-2" name="periodoHasta" id="periodoHasta">
+					<option value="1">Enero</option>
+					<option value="2">Febrero</option>
+					<option value="3">Marzo</option>
+					<option value="4">Abril</option>
+					<option value="5">Mayo</option>
+					<option value="6">Junio</option>
+					<option value="7">Julio</option>
+					<option value="8">Agosto</option>
+					<option value="9">Septiembre</option>
+					<option value="10">Octubre</option>
+					<option value="11">Noviembre</option>
+					<option value="12">Diciembre</option>
+				</select>
+			</div>
+		</div>
+	      </div>
+	      <div class="swal-footer">
+	        <button type="submit" class="btn btn-light" id="btnFiltrar">FILTRAR</button>
+	      </div>
+	  	</form>
+	</div>
+</div>

@@ -1,0 +1,261 @@
+<?php 
+
+require_once("class/terceros.php"); 
+require_once("class/proveedores.php"); 
+require_once("class/clientes.php"); 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+$oProveedor=new Terceros();
+$aProveedores=$oProveedor->getProveedoresEmpresa(array("idEmpresa"=>$id));
+
+// if($_SESSION["idRol"]==2){
+
+//   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+//   $valUser=$oItem->getDatos(); 
+
+//   unset($oItem);  
+
+
+
+//   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  
+//   $aProveedores=$oProveedor->getProveedoresEmpresa(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+// }else{
+  
+// }
+// $aLista=$oProveedor->getProveedoresEmpresa();
+
+
+
+
+
+$oClientes=new Clientes(); 
+$aLista=$oClientes->getClientesE(array("idEmpresa"=>$id));
+
+
+// $oClientes=new Clientes(); 
+// $aClientes=$oClientes->getClientesE(array("idEmpresa"=>$id));
+
+// print_r($aClientes);
+
+//$oProveedor=new Terceros(); 
+
+//$aProveedor=$oProveedor->getProveedoresEmpresa();
+
+//$oCliente=new Terceros(); 
+
+//$aClientes=$oCliente->getClientesEmpresa();
+
+
+
+//$oOtro=new Terceros(); 
+
+//$aOtros=$oOtro->getOtrosEmpresa();
+
+
+//$oTercero=new Terceros(); 
+
+//$aTerceros=$oTercero->getTercerosEmpresa();
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Terceros</li>
+
+          <li class="breadcrumb-item">Listar terceros</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+               <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Lista de terceros</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableMovimientoGeneral" style="font-size: 84%">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Tipo Persona</th>
+
+                            <th>Tipo tercero</th>
+
+                            <th>NIT</th>
+
+                            <th>Razón Social</th>
+
+                            <th>Ciudad</th>
+
+                            <th>Dirección</th>
+
+                            <th>Telefono</th>
+                            
+                            <th>Celular</th>
+
+
+                            <!-- <th>Acciones</th> -->
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <?php $numero=1;
+                          foreach($aProveedores as $index => $iProveedor){ 
+                            $digito=$iProveedor["tipoPersona"]==1?"":"-".$iProveedor["digitoVerificador"];
+
+                            $id=$iProveedor['idProveedor'];
+
+                            
+                            $oItem=new Data("ciudad","idCiudad",$iProveedor['idCiudad']);
+                            $aCiudad=$oItem->getDatos();
+                            unset($oItem);
+
+                            $oItem=new Data("departamento","idDepartamento",$iProveedor['idDepartamento']);
+                            $aDepartamento=$oItem->getDatos();
+                            unset($oItem);
+
+                            ?>
+                          <tr>
+                            <td><?php echo $index+1; ?></td>
+                            <td><?php echo $iProveedor["tipoPersona"]==1?'Persona Natural':'Persona Juridica'; ?></td>
+                            <td><?php echo 'PROVEEDOR'; ?></td>
+
+                              <td><?php echo $iProveedor["nit"].$digito; ?></td>
+
+                              <td><?php echo $iProveedor["razonSocial"]; ?></td>
+                               <td><?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?></td>
+
+                              <td><?php echo $iProveedor["direccion"]; ?></td>
+
+                              <td><?php echo $iProveedor["telefono"]; ?></td>
+                              <td><?php echo $iProveedor["celular"]; ?></td>
+
+                              <!-- <td class="centrar"> -->
+
+                                <!-- <a  href="<?php echo $URL; ?>vertercero/<?php echo $id ?>" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="far fa-eye" style="color: #5098FF;font-size: 20px;"></i></a> -->
+
+                                <!-- <a href="<?php echo $URL; ?>editartercero/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FF9B31;font-size: 22px;"></i></a> -->
+
+                                <?php if($_SESSION["idRol"]!=3){ ?>
+
+                                <!-- <a href="" data-toggle="tooltip" data-placement="top" title="Asociar empresas"><i class="fas fa-sitemap" style="color: #A2D7FF;font-size: 22px;"></i></a> -->
+
+                                <?php } ?>
+
+                              <!-- </td> -->
+                          </tr>
+                        <?php $numero=$index+1;
+                      } ?>
+
+                      <?php 
+                          foreach($aLista as $indexC => $iCliente){ 
+                            $digito=$iCliente["tipoPersona"]==1?"":"-".$iCliente["digitoVerificador"];
+
+                            $id=$iCliente['idCliente'];
+
+                            
+                            $oItem=new Data("ciudad","idCiudad",$iCliente['idCiudad']);
+                            $aCiudad=$oItem->getDatos();
+                            unset($oItem);
+
+                            $oItem=new Data("departamento","idDepartamento",$iCliente['idDepartamento']);
+                            $aDepartamento=$oItem->getDatos();
+                            unset($oItem);
+
+                            ?>
+                          <tr>
+                            <td><?php echo $index+1; ?></td>
+                            <td><?php echo $iCliente["tipoPersona"]==1?'Persona Natural':'Persona Juridica'; ?></td>
+                            <td><?php echo 'CLIENTE'; ?></td>
+
+                              <td><?php echo $iCliente["nit"].$digito; ?></td>
+
+                              <td><?php echo $iCliente["razonSocial"]; ?></td>
+                               <td><?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?></td>
+
+                              <td><?php echo $iCliente["direccion"]; ?></td>
+
+                              <td><?php echo $iCliente["telefono"]; ?></td>
+<!-- 
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>editartercero/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FF9B31;font-size: 22px;"></i></a>
+
+                                
+
+                              </td> -->
+                          </tr>
+                        <?php $numero=$indexC+1;
+                      } ?>
+                                              
+                        
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+

@@ -1,0 +1,242 @@
+<?php
+
+
+
+$oControl=new Control(); 
+
+$idCotizacion=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$id; 
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+// $decrip["cadena"]=$id; 
+
+// $id=$oControl->desencriptar($decrip);
+
+$oLista = new Lista('cotizacion_item');
+
+$oLista->setFiltro("idCotizacion","=",$idCotizacion); 
+
+$aCotizacion=$oLista->getLista();
+
+unset($oLista);
+
+
+$oLista = new Data('cotizacion','idCotizacion',$idCotizacion);
+
+$aCotizacionTotal=$oLista->getDatos();
+
+unset($oLista);
+
+$oLista = new Data('empresa','idEmpresa',$_SESSION['idEmpresa']);
+
+$aEmpresa=$oLista->getDatos();
+
+unset($oLista);
+
+
+
+
+$oLista = new Data('t_clientes','codigoCliente',$aCotizacionTotal['idCliente']);
+
+$aCliente=$oLista->getDatos();
+
+unset($oLista);
+
+
+$oLista = new Lista('unidad');
+
+$oLista->setOrden("nombre","ASC");
+
+$aUnidades=$oLista->getLista();
+
+unset($oLista);
+
+?>
+			   
+
+			    
+<form enctype="multipart/form-data"  id="frmGuardar" >
+	<input type="hidden" name="datos[idCotizacion]" id="idCotizacion" value="<?php echo $idCotizacion;?>">
+	<div class="card table-responsive" id="muestra">
+		<div class="card-body">
+			<div class="row">
+	        <div class="col-md-12 col-lg-12">
+		<table class="table">
+		  <thead >
+		    <tr style="text-align: center; font-size: 25px;">
+		      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+		      <th scope="col"><span> </span></th>
+		      <th scope="col"><?php echo $aEmpresa['razonSocial'] ?></th>
+		      <th scope="col" style="font-size: 20px;"><input type="text" class="form-control centrar" name="datos[numeroCotizacion]" id="numeroCotizacion" value="<?php echo $aCotizacionTotal['numeroCotizacion']; ?>"></th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr style="text-align: center; font-size: 25px;">
+		      <th scope="row"></th>
+		      <td><span>Telefono: </span></td>
+		   	  <td><?php echo $aEmpresa['telefono'] ?></td>
+		   	  <td>Fecha: <input type="date" class="form-control centrar" name="datos[fechaCotizacion]" id="fechaCotizacion" value="<?php echo $aCotizacionTotal['fechaRegistro'] ?>"></td>
+		    </tr>
+		   <tr style="text-align: center; font-size: 25px;">
+		   	<th></th>
+		   	  <td><span>Direccion: </span></td>
+		   	  <td><?php echo $aEmpresa['direccion'] ?></td>
+		   	  <td>Fecha venc.: <input type="date" class="form-control centrar" name="datos[fechaVencimientoCotizacion]" id="fechaVencimientoCotizacion" value="<?php echo $aCotizacionTotal['fechaVencimientoCotizacion'] ?>"></td>
+		   </tr>
+		  </tbody>
+	</table>
+	</div>
+	</div>
+	<br><br>
+	<hr>
+	<div class="row">
+		<div class="col-md-2 col-lg-2"></div>
+			<div class="col-md-10 col-lg-10"><span>Sr.(es):
+	<?php echo $aCliente['nombre'].' '.$aCliente['apellidos'];?></span></div>
+		</div>
+		<br>
+	<div class="row">
+		<div class="col-md-2 col-lg-2">
+			
+		</div>
+		<div class="col-md-5 col-lg-5">
+			<span>Direccion:
+			<?php echo $aCliente['direccion'];?>
+			</span>
+		</div>
+		<div class="col-md-5 col-lg-5">
+			<span>Telefono:
+			<?php echo $aCliente['telefono'];?></span>
+		</div>
+	</div>
+	<hr>
+	<br>
+
+		<div class="row">
+	        <div class="col-md-12 col-lg-12">
+				<table class="table table-striped mayusculas"  id="tableProductos">
+				  <thead style="background-color: #87BFFE; color: white; font-size: 100%;">
+				    <tr >
+				      <th>#</th>
+				      <th >Detalle producto</th>
+				      <th >descripción</th>
+				      <th >Cantidad</th>
+				      <th >Unidad</th>
+				      <th >Valor unitario</th>
+				      <th >Subtotal</th>
+				      <th >IVA</th>
+				      <th >Total</th>
+				      <th class="text-center">
+			          	<a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+			          </th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	<?php foreach($aCotizacion as $key=>$cotizacion){ ?>
+				    <tr>
+				      <td><?php echo $key+1;?></td>
+				      <td><input type="text" name="item[<?php echo $key?>][producto]" id="item[<?php echo $key?>][producto]" class="form-control producto mayusculas" value="<?php echo $cotizacion['detalleProducto'];?>" required placeholder="Detalle">
+			          <input type="hidden" name="item[<?php echo $key?>][idProducto]" id="item[<?php echo $key?>][idProducto]" class="form-control idProducto" value="<?php echo $cotizacion['idProductoServicio'];?>"></td>
+
+			          <td><input type="text" class="form-control descripcion mayusculas" name="item[<?php echo $key?>][descripcion]" id="item[<?php echo $key?>][descripcion]" placeholder="Descripción" value="<?php echo $cotizacion['descripcion'];?>" required></td>
+
+			          <td><input type="text" class="form-control decimales cantidad" name="item[<?php echo $key?>][cantidad]" id="item[<?php echo $key?>][cantidad]" placeholder="Cantidad" value="<?php echo $cotizacion['cantidad'];?>" required></td>
+			
+			          <td><select class="form-control mayusculas idUnidad" name="item[<?php echo $key?>][idUnidad]" id="item[<?php echo $key?>][idUnidad]" required>
+
+			              <option value="">Seleccione una opción</option>
+
+			              <?php foreach($aUnidades as $iUnidades){ ?>
+
+			              <option value="<?php echo $iUnidades['idUnidad']; ?>" <?php if($cotizacion["idUnidad"]== $iUnidades['idUnidad']){echo 'selected';} ?> ><?php echo $iUnidades["nombre"]; ?></option>
+
+			              <?php } ?>
+
+			            </select></td>
+
+			          <td><input type="text" class="form-control moneda decimales valorUnitario mayusculas" name="item[<?php echo $key?>][valorUnitario]" id="item[<?php echo $key?>][valorUnitario]" placeholder="Valor Unitario" value='<?php echo "$".number_format($cotizacion["valorUnitario"],2,",","."); ?>' required></td>
+
+			          <td><input type="text" class="form-control moneda subtotal mayusculas" name="item[<?php echo $key?>][subtotal]" id="item[<?php echo $key?>][subtotal]" placeholder="Subtotal" value='<?php echo "$".number_format($cotizacion["subtotal"],2,",","."); ?>' required readonly></td>
+
+			          <td><input type="text" class="form-control decimales iva mayusculas" name="item[<?php echo $key?>][iva]" id="item[<?php echo $key?>][iva]" placeholder="IVA" value="<?php echo $cotizacion['iva'];?>" required></td>
+
+			          <td><input type="text" class="form-control moneda total mayusculas" name="item[<?php echo $key?>][total]" id="item[<?php echo $key?>][total]" placeholder="TOTAL" value='<?php echo "$".number_format($cotizacion["total"],2,",",".");?>' required readonly></td>
+
+			          <td class="centrar">
+
+			            <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+
+			          </td>
+				    </tr>
+				   <?php } ?>
+
+				   
+				  </tbody>
+				  <tfoot>
+				  	
+				   <tr>
+				   			
+
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[subtotal]" id="datos[subtotal]" placeholder="SUBTOTAL" value='<?php echo "$".number_format($aCotizacionTotal["subtotal"],2,",","."); ?>' readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td><input type="text" class="form-control moneda decimales" name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value='<?php echo "$".number_format($aCotizacionTotal["descuento"],2,",","."); ?>'></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[iva]" id="datos[iva]" placeholder="IVA" value='<?php echo "$".number_format($aCotizacionTotal["iva"],2,",","."); ?>' readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td><input type="text" class="form-control moneda" name="datos[total]" id="datos[total]" placeholder="TOTAL" value='<?php echo "$".number_format($aCotizacionTotal["total"],2,",","."); ?>' readonly></td>
+
+                            <td></td>
+
+                          </tr>
+				  </tfoot>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<label>Observaciones:</label>
+	 			<textarea name="datos[observaciones]" id="observaciones" class="form-control"><?php echo $aCotizacionTotal['observaciones'] ?></textarea>
+			</div>
+		</div>
+	</div>
+		<div class="card-footer text-right">
+
+		    <a class="btn btn-primary mr-1"  id="btnGuardar">EDITAR</a>
+
+		</div>
+	</div>
+</form>
+
+

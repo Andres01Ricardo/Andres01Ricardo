@@ -1,0 +1,140 @@
+
+<?php 
+
+require_once("./class/cuentascontables.php");
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+$oCuentaContable=new CuentasContables(); 
+$aCuentaContable=$oCuentaContable->getCuentasContablesEmpresa($id);
+
+
+?>
+
+  <div class="card">
+    <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      
+
+                      <table class="table table-striped mayusculas " id="tablecuentas" style="font-size: 85%">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Cuenta</th>
+
+                            <th>Descripción</th>
+
+
+                            <th>Centro costo</th>
+
+
+                            <th>Tipo cuenta</th>
+
+                            <th>Naturaleza</th>
+
+                            <!-- <th>Saldo</th> -->
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+                        <tbody>
+
+                          <?php foreach($aCuentaContable as $index => $iCuentaContable){ 
+                          
+                          
+                          ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iCuentaContable["codigoCuentaContable"]?></td>
+
+                              <td><?php echo  $iCuentaContable["nombre"]?></td>
+
+
+                              <td>
+                                  <?php
+                                if($iCuentaContable["centroCosto"]==0){
+                                  $centroCosto='No';
+                                }
+                                if($iCuentaContable["centroCosto"]==1){
+                                  $centroCosto='Si';
+                                }
+                                
+
+                               echo  $centroCosto; ?>
+                                </td>
+                           
+                                <td>
+                                  <?php
+                                if($iCuentaContable["tipoCuenta"]==1){
+                                  $tipoCuenta='Activo';
+                                }
+                                if($iCuentaContable["tipoCuenta"]==2){
+                                  $tipoCuenta='Pasivo';
+                                }
+                                if($iCuentaContable["tipoCuenta"]==3){
+                                  $tipoCuenta='Patrimonio';
+                                }
+                                if($iCuentaContable["tipoCuenta"]==4){
+                                  $tipoCuenta='Ingreso';
+                                }
+                                if($iCuentaContable["tipoCuenta"]==5){
+                                  $tipoCuenta='Gasto';
+                                }
+                                if($iCuentaContable["tipoCuenta"]==6){
+                                  $tipoCuenta='Costo';
+                                }
+                                if($iCuentaContable["tipoCuenta"]==7){
+                                  $tipoCuenta='Orden';
+                                }                            
+                               echo  $tipoCuenta; ?>
+                                </td>
+                              <td >
+                                <?php echo  $iCuentaContable["naturaleza"]?>
+                              </td>
+                             
+                              <!-- <td >
+                                <?php 
+                                
+                                echo "$".number_format($iCuentaContable["saldo"],0,".",",");
+                                ?>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" value="<?php echo $iCuentaContable['idCuentaContable'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
+                              </td>
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+                        
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+                </div>

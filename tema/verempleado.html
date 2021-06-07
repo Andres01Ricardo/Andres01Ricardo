@@ -1,0 +1,616 @@
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("empleado","idEmpleado",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("departamento","idDepartamento",$aDatos["idDepartamentoResidencia"]); 
+
+$aDatosDepar=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("ciudad","idCiudad",$aDatos["idCiudadResidencia"]); 
+
+$aDatosCiudad=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empleado_contacto_emergencia","idEmpleado",$id); 
+
+$aContacto=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oLista = new Lista('empleado_informacion_laboral');
+
+$oLista->setFiltro("idEmpleado","=",$id);
+
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+
+$aInfoLaboral=$oLista->getLista();
+
+unset($oLista);
+
+?>
+
+<style type="text/css">
+
+  input[readonly], textarea[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Nomina</li>
+
+          <li class="breadcrumb-item">Ver empleado</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <ul class="nav nav-tabs" id="myTab2" role="tablist">
+
+                    <li class="nav-item">
+
+                      <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#home2" role="tab"
+
+                        aria-controls="home" aria-selected="true">Información Personal</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#profile2" role="tab"
+
+                        aria-controls="profile" aria-selected="false">Información Laboral</a>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#contact2" role="tab"
+
+                        aria-controls="contact" aria-selected="false">Colillas de Pago</a>
+
+                    </li>
+
+                  </ul>
+
+                  <div class="tab-content tab-bordered" id="myTab3Content">
+
+                    <div class="tab-pane fade show active" id="home2" role="tabpanel" aria-labelledby="home-tab2">
+
+                      <div class="card-header">
+
+                        <h4>Información Personal</h4>
+
+                      </div>
+
+                      <div class="card-body">
+
+                      <div class="row">
+
+                        <div class="col-md-3">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Tipo Documento<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="datos[numeroDocumento]" id="datos[numeroDocumento]" readonly value="<?php  echo $aDatos["tipoDocumento"]==1?'Cedula Ciudadania':'Pasaporte'?>" >
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                          <div class="form-group">
+
+                            <label class="negrita">N° Documento<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " value="<?php  echo $aDatos["numeroDocumento"]?>"  readonly>
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Nombres<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php  echo $aDatos["nombre"]?>" readonly >
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php  echo $aDatos["apellido"]?>" readonly>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Genero<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="datos[numeroDocumento]" id="datos[numeroDocumento]" readonly value="<?php  echo $aDatos["genero"]==1?'Masculino':'Femenino'?>" >
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Email<span class="requerido">*</span>:</label>
+
+                            <input type="email" class="form-control" value="<?php  echo $aDatos["email"]; ?>" readonly>
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php  echo $aDatos["telefono"]; ?>" readonly >
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row">
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Departamento residencia<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php  echo $aDatosDepar["nombre"]; ?>" readonly >
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Ciudad residencia<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php  echo $aDatosCiudad["nombre"]; ?>" readonly >
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php  echo $aDatos["direccion"]; ?>" readonly>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      </div>
+
+                      <div class="card-header">
+
+                        <h4>Información Contacto Emergencia</h4>
+
+                      </div>
+
+                      <div class="card-body">
+
+                        <div class="row">
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Nombre contacto emergencia<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" name="contacto[nombre]" id="contacto[nombre]" value="<?php echo $aContacto['nombre']; ?>" readonly>
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Telefono contacto emergencia<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control numero" name="contacto[telefono]" id="contacto[telefono]" readonly value="<?php echo $aContacto['telefono']; ?>">
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Parentezco<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control" value="<?php echo $aContacto['parentezco']; ?>" name="contacto[parentezco]" id="contacto[parentezco]" readonly>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="profile-tab2">
+
+                      <?php foreach($aInfoLaboral as $iLaboral){ 
+
+                        $tipoSalario="";
+
+
+
+                        if($iLaboral["tipoSalario"]==1){
+
+                          $tipoSalario="Salario Integral";
+
+                        }else{
+
+                          $tipoSalario="Salario Ordinario";
+
+                        }
+
+
+
+                        $oItem=new Data("tipo_contrato","idTipoContrato",$iLaboral["tipoContrato"]); 
+
+                        $aTipoContacto=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+
+
+                        $oItem=new Data("seguridad_social","idSeguridadSocial",$iLaboral["idFondoCesantias"]); 
+
+                        $aCesantias=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+
+
+                        $oItem=new Data("seguridad_social","idSeguridadSocial",$iLaboral["idFondoPensiones"]); 
+
+                        $aPensiones=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+
+
+                        $oItem=new Data("seguridad_social","idSeguridadSocial",$iLaboral["idEps"]); 
+
+                        $aEps=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+                        $oItem=new Data("seguridad_social","idSeguridadSocial",$iLaboral["idArl"]); 
+
+                        $aARL=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+                        $oItem=new Data("riesgo_laboral","idRiesgoLaboral",$iLaboral["riesgoLaboral"]); 
+
+                        $aRiesgo=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+                        ?>
+
+                      <div class="card-header">
+
+                        <h4>Información Laboral</h4>
+
+                      </div>
+
+                      <div class="card-body">
+
+                        <div class="row">
+
+                          <div class="col-md-3">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Fecha de ingreso<span class="requerido">*</span>:</label>
+
+                              <input type="date" class="form-control" value="<?php  echo $iLaboral["fechaIngreso"]; ?>" readonly >
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-3">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Tipo contrato<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control" name="contacto[parentezco]" id="contacto[parentezco]" readonly value="<?php  echo $aTipoContacto["nombre"]; ?>">
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-3">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Cargo<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control" value="<?php  echo $iLaboral["cargo"]; ?>" name="contrato[cargo]" id="contrato[cargo]" readonly>
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-3">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Tipo salario<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control" name="contacto[parentezco]" id="contacto[parentezco]" readonly value="<?php  echo $tipoSalario; ?>">
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="row">
+
+                          <div class="col-md-12">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Funciones<span class="requerido">*</span>:</label>
+
+                              <textarea class="form-control" name="contrato[funciones]" id="contrato[funciones]" readonly ><?php  echo $iLaboral["funciones"]; ?></textarea>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="row">
+
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Valor Salario<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control moneda numero" name="contrato[valorSalario]" id="contrato[valorSalario]" readonly value="<?php  echo "$".number_format($iLaboral["valorSalario"],0,".",","); ?>">
+
+                            </div>
+
+                          </div>
+
+                          <!-- <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Dias descanso<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control numero" name="contrato[diasDescanso]" id="contrato[diasDescanso]" required>
+
+                            </div>
+
+                          </div> -->
+
+                          <div class="col-md-4">
+
+                          <div class="form-group">
+
+                            <label class="negrita">Anexo Contrato:</label>
+
+                            <div class="d-block"><a href="<?php echo $URL.$aData["anexoContrato"]; ?>">Archivo</a></div>
+
+                          </div>
+
+                        </div>
+
+                        </div>
+
+                        <div class="row">
+
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Fondo Cesantias<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control " name="contrato[diasDescanso]" id="contrato[diasDescanso]" readonly value="<?php  echo $aCesantias["nombre"]; ?>">
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Fondo Pensiones<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control " name="contrato[diasDescanso]" id="contrato[diasDescanso]" readonly value="<?php  echo $aPensiones["nombre"]; ?>">
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">EPS<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control " name="contrato[diasDescanso]" id="contrato[diasDescanso]" readonly value="<?php  echo $aEps["nombre"]; ?>">
+
+                            </div>
+
+                          </div>
+
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">ARL<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control " name="contrato[arl]" id="contrato[arl]" readonly value="<?php  echo $aARL['nombre']; ?>">
+
+                            </div>
+
+                          </div>
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Riesgo<span class="requerido">*</span>:</label>
+
+                              <input type="text" class="form-control " name="contrato[arl]" id="contrato[arl]" readonly value="<?php  echo 'Riesgo '.$aRiesgo['clase']; ?>">
+
+                            </div>
+
+                          </div>
+                          
+
+                        </div>
+
+                      </div>
+
+                      <?php } ?>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="contact2" role="tabpanel" aria-labelledby="contact-tab2">
+
+                      Vestibulum imperdiet odio sed neque ultricies, ut dapibus mi maximus. Proin ligula massa,
+
+                      gravida in lacinia efficitur, hendrerit eget mauris. Pellentesque fermentum, sem interdum
+
+                      molestie finibus, nulla diam varius leo, nec varius lectus elit id dolor. Nam malesuada orci non
+
+                      ornare vulputate. Ut ut sollicitudin magna. Vestibulum eget ligula ut ipsum venenatis ultrices.
+
+                      Proin bibendum bibendum augue ut luctus.
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+

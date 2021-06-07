@@ -1,0 +1,128 @@
+<?php
+
+require_once("class/empresa.php"); 
+require_once("class/clientes.php"); 
+require_once("class/facturacompra.php"); 
+require_once("class/facturaventa.php"); 
+
+
+
+
+$oFactura=new FacturaCompra(); 
+$oEmpresa=new Empresa(); 
+$oClientes=new Clientes(); 
+$oFacturaVenta=new FacturaVenta(); 
+
+$aEmpresas=$oEmpresa->getEmpresas(); 
+$aClientes=$oClientes->getClientesEmpresa();
+$aFacturas=$oFactura->getFacturasRecibidas(array("fecha"=>date("Y-m-d"))); 
+
+$fraCompra=0; 
+foreach($aFacturas as $iFra){
+  $fraCompra+=$iFra["subtotal"]; 
+}
+
+$fraVenta=0; 
+$aFacturasV=$oFacturaVenta->getFacturasVenta(array("fecha"=>date("Y-m-d")));
+foreach($aFacturasV as $iFra){
+  $fraVenta+=$iFra["subtotal"]; 
+}
+?>
+<link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/morris/morris.css">
+<section class="section">
+	<ul class="breadcrumb breadcrumb-style ">
+      <li class="breadcrumb-item">
+        <a href="<?php echo $URL; ?>">
+          <i class="fas fa-home"></i></a>
+      </li>
+      <li class="breadcrumb-item">Inicio</li>
+    </ul>
+	<div class="section-body">
+		<div class="row">
+              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                  <div class="card-icon l-bg-purple">
+                    <i class="fas fa-building"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="padding-20">
+                      <div class="text-right">
+                        <h3 class="font-light mb-0">
+                          <i class="ti-arrow-up text-success"></i> <?php echo count($aEmpresas); ?>
+                        </h3>
+                        <span class="text-muted">Empresas</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                  <div class="card-icon l-bg-green">
+                    <i class="fas fa-store"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="padding-20">
+                      <div class="text-right">
+                        <h3 class="font-light mb-0">
+                          <i class="ti-arrow-up text-success"></i> <?php echo count($aClientes); ?>
+                        </h3>
+                        <span class="text-muted">Nuevos Clientes</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                  <div class="card-icon l-bg-cyan">
+                    <i class="fas fa-money-bill"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="padding-20">
+                      <div class="text-right">
+                        <h3 class="font-light mb-0">
+                          <i class="ti-arrow-up text-success"></i>  <?php echo "$".number_format($fraCompra,0,".",","); ?>
+                        </h3>
+                        <span class="text-muted">Facturas Compra Hoy</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                  <div class="card-icon l-bg-orange">
+                    <i class="far fa-money-bill-alt"></i>
+                  </div>
+                  <div class="card-wrap">
+                    <div class="padding-20">
+                      <div class="text-right">
+                        <h3 class="font-light mb-0">
+                          <i class="ti-arrow-up text-success"></i> <?php echo "$".number_format($fraVenta,0,".",","); ?>
+                        </h3>
+                        <span class="text-muted">Facturas Venta Hoy</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+	    <div class="row">
+	      <div class="col-12 col-md-12 col-lg-12">
+	        <div class="card">
+	          <div class="card-header">
+	            <h4>Facturación general</h4>
+	          </div>
+	          <div class="card-body">
+	            <div id="line_chart" class="graph"></div>
+	          </div>
+	        </div>
+	      </div>
+	    </div>
+	</div>
+</section>
+<script src="<?php echo $URL ?>assets/bundles/morris/morris.min.js"></script>
+<script src="<?php echo $URL ?>assets/bundles/morris/raphael-min.js"></script>
+<!-- Page Specific JS File -->
+<!-- <script src="<?php echo $URL ?>assets/js/page/chart-morris.js"></script> -->

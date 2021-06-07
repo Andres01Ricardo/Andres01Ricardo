@@ -1,0 +1,240 @@
+<?php 
+
+
+require_once("class/empleados.php"); 
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+$oLista = new Lista('empresa');
+
+$oLista->setFiltro("estado","=",1);
+
+$oLista->setOrden("razonSocial","ASC");
+
+$aEmpresa=$oLista->getLista();
+
+unset($oLista);
+
+$oEmpleado=new Empleados();  
+$aFiltro["estado"]=1; 
+
+$aFiltro["idEmpresa"]=$_SESSION["idEmpresa"]; 
+
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aFiltro);
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Legalizar viaticos</li>
+
+          <li class="breadcrumb-item">Crear proyecto</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empleado<span class="requerido">*</span>:</label>
+
+                        <select class="form-control select2 mayusculas" name="datos[idEmpleado]" id="datos[idEmpleado]" required>
+
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aEmpleados as $itemE){ ?>
+
+                          <option value="<?php echo $itemE['idEmpleado']; ?>"><?php echo $itemE["nombre"].' '.$itemE["apellido"];?></option>
+                        
+                        <?php } ?>
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+                      <label class="negrita">Viaje desde:<span class="requerido">*</span>:</label>
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ ?>
+
+                          <option value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+                        <label class="negrita">Ciudad<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+
+                          <option value="">Seleccione una opción</option>
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+                      <label class="negrita">Viaje hacia:<span class="requerido">*</span>:</label>
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamentoHacia]" id="datos[idDepartamentoHacia]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ ?>
+
+                          <option value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+                        <label class="negrita">Ciudad<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudadHacia]" id="datos[idCiudadHacia]" required>
+
+                          <option value="">Seleccione una opción</option>
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Contrato<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[contrato]" id="datos[contrato]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Motivo del viaje<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control mayusculas" name="datos[motivoViaje]" id="datos[motivoViaje]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+                        <label class="negrita">¿PRIMER VIAJE?<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[primerViaje]" id="datos[primerViaje]">
+                          <option value="si">SI</option>
+                          <option value="no">NO</option>
+                        </select>  
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Inicio del viaje<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control datepicker" name="datos[inicioViaje]" id="datos[inicioViaje]" required>   
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Fin del viaje<span class="requerido">*</span>:</label>
+
+                          <input type="text" class="form-control datepicker" name="datos[finViaje]" id="datos[finViaje]" required> 
+
+                        </div>
+
+                      </div>                    
+
+                    </div>
+
+                  </div>
+
+                  
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

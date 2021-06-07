@@ -1,0 +1,46 @@
+<?php 
+
+require_once("class/funciones.php"); 
+
+
+
+$cLista = new Lista('notificacion');
+
+$cLista->setFiltro("idUsuarioNotificado","=",$_SESSION["idUsuario"]);
+
+$cLista->setOrden("idNotificacion","desc");
+
+
+$colista=$cLista->getLista();
+
+?>
+
+<h2>NOTIFICACIONES</h2><br>
+
+
+<div class="list-group">
+
+	<?php
+	$hoy= new DateTime("now"); 
+	foreach($colista as $index => $iNotificacion){      
+	    $oItem=new Data("usuario","idUsuario",$iNotificacion['idUsuarioRegistra']); 
+	    $aDatos=$oItem->getDatos(); 
+	    unset($oItem);
+
+	    $date1 =new DateTime ($iNotificacion['fechaNotificacion']);
+	   $diff = $date1->diff($hoy);
+
+	    ?>
+   <label  class="list-group-item list-group-item-action flex-column align-items-start ">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1"><?php echo $iNotificacion['notificacion']; ?></h5>
+      <small>Hace <?php echo $diff->format("%a"); ?> días</small>
+    </div>
+    <p class="mb-1">Por el usuario: <?php echo $aDatos['nombreUsuario'].' '.$aDatos['apellidoUsuario']; ?></p>
+    <small><?php echo $iNotificacion['fechaNotificacion']; ?></small>
+  </label>
+
+  <?php } ?>
+  
+ 
+</div>

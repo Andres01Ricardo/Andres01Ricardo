@@ -1,0 +1,266 @@
+<?php
+
+
+
+$oControl=new Control(); 
+
+$idCotizacion=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+$url=$id; 
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+// $decrip["cadena"]=$id; 
+
+// $id=$oControl->desencriptar($decrip);
+
+$oLista = new Lista('cotizacion_item');
+
+$oLista->setFiltro("idCotizacion","=",$idCotizacion); 
+
+$aCotizacion=$oLista->getLista();
+
+unset($oLista);
+
+
+$oLista = new Data('cotizacion','idCotizacion',$idCotizacion);
+
+$aCotizacionTotal=$oLista->getDatos();
+
+unset($oLista);
+
+$oLista = new Data('empresa','idEmpresa',$_SESSION['idEmpresa']);
+
+$aEmpresa=$oLista->getDatos();
+
+unset($oLista);
+
+
+
+
+$oLista = new Data('t_clientes','codigoCliente',$aCotizacionTotal['idCliente']);
+
+$aCliente=$oLista->getDatos();
+
+unset($oLista);
+
+
+?>
+			   
+
+			    
+
+<?php if($aCotizacionTotal['estado']==1) {?>
+    <a style="float: right;" data-toggle="tooltip" title="Aprobar" data-placement="top" href="../functions/crm/aprobarcotizacion.php?id=<?php echo $idCotizacion;?>"><i class="fas fa-check" style="color: blue; font-size: 30px;"></i></a>
+<?php } ?>
+<?php if($aCotizacionTotal['estado']==2) {?>
+    <a style="float: right;" data-toggle="tooltip" title="Facturar" data-placement="top" id="facturarCotizacion"><i class="fas fa-file-invoice-dollar" style="color: blue; font-size: 30px;"></i></a>
+<?php } ?>
+
+
+	<a style="float: right;" data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" href="../functions/crm/pdfcotizacion.php?id=<?php echo $aCotizacionTotal['idCotizacion'];?>&url=<?php echo $URL ?>"><i class="fas fa-file-pdf" style="color: blue; font-size: 30px;"></i></a>
+	<a style="float: right;" data-toggle="tooltip" title="Imprimir" data-placement="top" type="button" onclick="javascript:imprim2();"><i class="fas fa-print" style="color: blue; font-size: 30px;"></i></a>
+
+
+
+	<br><br>
+
+<div class="card table-responsive" id="muestra">
+	<table class="table">
+	  <thead >
+	    <tr style="text-align: center; font-size: 25px;">
+	      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+	      <th scope="col"><span> </span></th>
+	      <th scope="col"><?php echo $aEmpresa['razonSocial'] ?></th>
+	      <th scope="col" style="font-size: 20px;" class="mayusculas"><?php echo $aCotizacionTotal['numeroCotizacion']; ?></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr style="text-align: center; font-size: 25px;">
+	      <th scope="row"></th>
+	      <td><span>Telefono: </span></td>
+	   	  <td><?php echo $aEmpresa['telefono'] ?></td>
+	   	  <td>Fecha: <?php echo $aCotizacionTotal['fechaRegistro'] ?></td>
+	    </tr>
+	   <tr style="text-align: center; font-size: 25px;">
+	   	<th></th>
+	   	  <td><span>Direccion: </span></td>
+	   	  <td><?php echo $aEmpresa['direccion'] ?></td>
+	   	  <td>Fecha venc.: <?php echo $aCotizacionTotal['fechaVencimientoCotizacion'] ?></td>
+	   </tr>
+	  </tbody>
+</table>
+
+<br><br>
+<hr>
+<div class="row">
+	<div class="col-md-2 col-lg-2"></div>
+		<div class="col-md-10 col-lg-10"><span>Sr.(es):
+<?php echo $aCliente['nombre'].' '.$aCliente['apellidos'];?></span></div>
+	</div>
+	<br>
+<div class="row">
+	<div class="col-md-2 col-lg-2">
+		
+	</div>
+	<div class="col-md-5 col-lg-5">
+		<span>Direccion:
+		<?php echo $aCliente['direccion'];?>
+		</span>
+	</div>
+	<div class="col-md-5 col-lg-5">
+		<span>Telefono:
+		<?php echo $aCliente['telefono'];?></span>
+	</div>
+</div>
+<hr>
+<br>
+	<table class="table-striped" cellpadding="20" id="tablamuestra">
+	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
+	    <tr style="height: 50px;">
+	      <th scope="col">Detalle producto</th>
+	      <th scope="col">descripción</th>
+	      <th scope="col">Cantidad</th>
+	      <th scope="col">Valor unitario</th>
+	      <th scope="col">Subtotal</th>
+	      <th scope="col">IVA</th>
+	      <th scope="col">Total</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  	<?php foreach($aCotizacion as $cotizacion){ ?>
+	    <tr style="text-align: center;">
+	      <th scope="row"><?php echo $cotizacion['detalleProducto'];?></th>
+	      <td ><?php echo $cotizacion['descripcion'];?></td>
+	      <td ><?php echo $cotizacion['cantidad'];?></td>
+	      <td><?php echo "$".number_format($cotizacion['valorUnitario'],2,",","."); ?></td>
+	      <td><?php echo "$".number_format($cotizacion['subtotal'],2,",","."); ?></td>
+	      <td><?php echo $cotizacion['iva'];?>%</td>
+	      <td><?php echo "$".number_format($cotizacion['total'],2,",",".");?></td>
+	    </tr>
+	   <?php } ?>
+	   <tr style="text-align: center; font-size: 25px;">
+	   	<th>Total cotización</th>
+	   	<td>-</td>
+	   	<td>-</td>
+	   	<td>-</td>
+	   	<td><?php echo "$".number_format($aCotizacionTotal['subtotal'],2,",","."); ?></td>
+	   	<td><?php echo "$".number_format($aCotizacionTotal['iva'],2,",","."); ?></td>
+	   	<td><?php echo "$".number_format($aCotizacionTotal['total'],2,",","."); ?></td>
+	   </tr>
+	  </tbody>
+</table>
+<span>Observaciones: <?php echo $aCotizacionTotal['observaciones'] ?></span>
+</div>
+
+
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      	<a  class="btn-cerrar" id="btn-cerrar" ><i class="fas fa-times"></i></a>
+          <h3 class="swal-title">FACTURAR COTIZACION</h3><br>
+            <form enctype="multipart/form-data" id="frmGuardar">
+              <div class="swal-content">
+              <input type="text" name="datos[idCotizacion]" class="ocultar" value="<?php echo $idCotizacion; ?>">   
+		          <div class="form-group">
+		            <label class="negrita">Fecha factura<span class="requerido">*</span>:</label>
+		            <input type="date"  class="form-control" name="datos[fechaFactura]" id="datos[fechaFactura]" required>
+
+		          </div>
+		          <div class="form-group">
+
+                    <label class="negrita">Fecha vencimiento factura<span class="requerido">*</span>:</label>
+
+                    <input type="date"  class="form-control" name="datos[fechaVencimientoFactura]" id="datos[fechaVencimientoFactura]" required>
+
+                  </div>
+                  <div class="form-group">
+
+                      <label class="negrita">N° Factura<span class="requerido">*</span>:</label>
+
+                      <input type="text" class="form-control mayusculas" name="datos[nroFactura]" id="datos[nroFactura]" placeholder="N° Factura" required>
+
+                  </div>
+                  <div class="form-group">
+
+                    <label class="negrita">Factura<span class="requerido">*</span>:</label>
+
+                    <div class="custom-file">
+
+                      <input type="file" class="custom-file-input" id="file" name="file" >
+
+                      <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                    </div>
+
+                  </div>
+         
+                  <br>
+       		</div>
+        <div class="swal-footer">
+          <button type="button" class="btn btn-info" id="btnGuardar">ENVIAR FACTURA</button>
+        </div>
+      </form>
+  </div>
+</div>
+
+<script>
+function imprim2(){
+    var mywindow = window.open('', 'PRINT');
+    mywindow.document.write('<html><head>');
+	mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
+    mywindow.document.write('</head><body >');
+
+    mywindow.document.write(document.getElementById('muestra').innerHTML);
+    mywindow.document.write('</body></html>');
+    mywindow.document.close(); 
+    mywindow.focus(); 
+    mywindow.print();
+    mywindow.close(); 
+    
+    
+    return true;
+	}
+
+    $('[data-toggle="tooltip"]').tooltip();
+</script>  
+
+<!-- 
+<script type="text/javascript">
+	function exportTableToExcel(tableID, filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
+</script>
+
+
+ -->

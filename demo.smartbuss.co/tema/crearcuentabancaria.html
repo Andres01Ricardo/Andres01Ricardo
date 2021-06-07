@@ -1,0 +1,139 @@
+<?php 
+require_once("class/empresa.php"); 
+
+$oEmpresa=new Empresa(); 
+
+$aEmpresas=$oEmpresa->getEmpresas();
+
+$oLista = new Lista('bancos');
+$oLista->setOrden("nombre","ASC");
+$aBancos=$oLista->getLista();
+unset($oLista);
+
+?>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<form enctype="multipart/form-data" id="frmGuardar">
+<?php if($_SESSION['idRol']==3){ ?>
+<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+<?php } ?>
+<section class="section" >
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Cuenta Bancaria</li>
+          <li class="breadcrumb-item">Crear Cuenta Bancaria</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <?php if($_SESSION['idRol']!=3&&$_SESSION['idRol']!=4){ ?>
+                    <div class=" col-md-3 ">
+                      <div class="form-group">
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aEmpresas as $iItem){ ?>
+                          <option value="<?php echo $iItem["idEmpresa"]; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <?php } ?>
+                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                          <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
+                          <div class="form-check-inline">
+                            <label class="form-check-label" for="datos[tipoCuenta]">
+                            <input class="form-check-input" type="radio" id="datos[tipoCuenta]" name="datos[tipoCuenta]" checked value="1">
+                            Ahorros</label>
+                          </div>
+                          <div class="form-check-inline">
+                            <label class="form-check-label" for="datos[tipoCuenta]">
+                            <input class="form-check-input" type="radio" id="datos[tipoCuenta]" name="datos[tipoCuenta]" value="2">
+                            Corriente</label>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Banco<span class="requerido">*</span>:</label>
+                        <select class="form-control select2 mayusculas" name="datos[idBanco]" id="datos[idBanco]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aBancos as $iBancos){ ?>
+                          <option value="<?php echo $iBancos["idBancos"]; ?>"><?php echo $iBancos["nombre"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                          <label class="negrita">Nombre Cuenta<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control mayusculas" name="datos[nombreCuenta]" id="datos[nombreCuenta]" placeholder="Nombre Cuenta" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="negrita">Numero Cuenta<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control mayusculas" name="datos[numeroCuenta]" id="datos[numeroCuenta]" placeholder="Numero Cuenta" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                          <label class="negrita">Saldo Actual<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control mayusculas moneda numero" name="datos[saldoActual]" id="datos[saldoActual]" placeholder="Saldo Actual" required>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                          <label class="negrita d-block">Aplica 4x1.000<span class="requerido">*</span>:</label>
+                          <div class="form-check-inline">
+                            <label class="form-check-label" for="datos[tipoCuenta]">
+                            <input class="form-check-input" type="radio" id="datos[aplicaCuatroMil]" name="datos[aplicaCuatroMil]" checked value="1">
+                            Si</label>
+                          </div>
+                          <div class="form-check-inline">
+                            <label class="form-check-label" for="datos[tipoCuenta]">
+                            <input class="form-check-input" type="radio" id="datos[aplicaCuatroMil]" name="datos[aplicaCuatroMil]" value="2">
+                            No</label>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="form-group">
+                          <label class="negrita d-block">Cuenta Principal<span class="requerido">*</span>:</label>
+                          <div class="form-check-inline">
+                            <label class="form-check-label" for="datos[tipoCuenta]">
+                            <input class="form-check-input" type="radio" id="datos[cuentaPrincipal]" name="datos[cuentaPrincipal]"  value="1">
+                            Si</label>
+                          </div>
+                          <div class="form-check-inline">
+                            <label class="form-check-label" for="datos[tipoCuenta]">
+                            <input class="form-check-input" type="radio" id="datos[cuentaPrincipal]" name="datos[cuentaPrincipal]" checked value="2">
+                            No</label>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>

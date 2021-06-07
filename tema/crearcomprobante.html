@@ -1,0 +1,451 @@
+<?php 
+
+
+
+// require_once("class/cuentascontables.php");
+
+
+$oLista = new Lista('departamento');
+
+$aDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+
+
+$validarIngreso=1; 
+$oEmpresa=new Empresa(); 
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+}
+
+
+
+
+
+if($_SESSION["idRol"]==5){
+
+  $aEmpresa=$oEmpresa->getEmpresasExterno();
+}
+
+if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
+  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  
+
+}
+// $oLista = new Lista('empresa');
+
+// $oLista->setFiltro("estado","=",1);
+
+// $oLista->setOrden("razonSocial","ASC");
+
+// $aEmpresa=$oLista->getLista();
+
+// unset($oLista);
+
+
+
+$oLista = new Lista('tipos_documento_contable');
+$tiposDocumento=$oLista->getLista();
+
+unset($oLista);
+
+// $oCuentasContables=new CuentasContables(); 
+// $aCuentasContables=$oCuentasContables->getCuentasContables(array("idEmpresa"=>'6'));
+
+// $ultimaCuenta=[];
+// // $ultimaCuenta = array('' => , );
+// foreach ($aCuentasContables as $key => $value) {
+//   $oCuentaContable=new CuentasContables(); 
+//   $aCuentaContable=$oCuentaContable->getCuentaContable(array("idEmpresa"=>'6',"cuenta"=>$value["codigoCuentaContable"]));
+  
+//   // print_r($aCuentaContable[-1]);
+//   // print_r($value["codigoCuentaContable"]);
+//   // print_r(end($aCuentaContable));
+//   $ultimaCuenta[$key]=end($aCuentaContable);
+// }
+// print_r($ultimaCuenta);
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Comprobantes</li>
+
+          <li class="breadcrumb-item">Crear comprobante</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+                <fieldset class="border p-4">
+                  <h4>Datos básicos</h4>
+                <!-- <div class="card card-body"> -->
+
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label>Empresa<span class="requerido">*</span>:</label>
+                        <select class="form-control" name="datos[idEmpresa]" id="idEmpresa" required>
+                          <option value="">Seleccione</option>
+                          <?php foreach($aEmpresa as $index => $iEmpresa){?>
+                            <option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo<span class="requerido">*</span>:</label>
+
+                        <select class="custom-select" name="datos[tipoDocumento]" id="tipoDocumento"   required>
+					      <option value="">Seleccione una opción</option>
+
+			                <?php foreach($tiposDocumento as $item){ ?>
+			                	<option value='<?php echo $item["idTiposDocumento"]; ?>'><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
+					      	<?php } ?>
+					    </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Comprobante<span class="requerido">*</span>:</label>
+
+                        
+                        <select class="custom-select" name="datos[comprobante]" id="comprobante"   required>
+					               <option value="">Seleccione una opción</option>
+					              </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha<span class="requerido">*</span>:</label>
+
+                        <input type="date"  class="form-control datepicker" name="datos[fecha]" id="datos[fecha]" required readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3" id="divNumeroComprobante">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Comprobante No.<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[numeroComprobante]" id="numeroComprobante" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+              </fieldset>
+            <!-- </div> -->
+            <br>
+                  <div id="tabla">
+                  	<div class="col-md-12 col-lg-12" >
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th>Seq.</th>
+
+                            <th>Cuenta</th>
+
+                            <th>Centro de costo</th>
+
+                            <!-- <th>S.C</th> -->
+
+                            <th>Tercero</th>
+
+                            <!-- <th>Suc.</th> -->
+
+                            <th>Descripción</th>
+
+                            <th>Base</th>
+
+                            <th>Débito</th>
+
+                            <th>crédito</th>
+                            <th class="text-center">
+
+                              <a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+
+                            </th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                              <input type="hidden" class="form-control mayusculas naturaleza" name="item[0][naturaleza]" id="item[0][naturaleza]" required  >
+
+                              <td>1</td>
+
+                              <td><input type="text" name="item[0][cuentaContable]" id="item[0][cuentaContable]" class="form-control cuentaContable mayusculas" required placeholder="Cuenta">
+                                <span name="item[0][letreroCuentaContable]" id="item[0][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
+                                <input type="hidden" name="item[0][idCuentaContable]" id="item[0][idCuentaContable]" class="form-control idCuentaContable"  required></td>
+
+                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[0][centroCosto]" id="item[0][centroCosto]" placeholder="centro costo" ><input type="hidden" name="item[0][idCentroCosto]" id="item[0][idCentroCosto]" class="form-control idCentroCosto" ></td>
+
+                              <!-- <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[0][subcentroCosto]" id="item[0][subcentroCosto]"  required></td> -->
+
+                              <td><input type="text" class="form-control  nit" name="item[0][nit]" id="item[0][nit]" placeholder="NIT" ><input type="hidden" name="item[0][idTercero]" id="item[0][idTercero]" class="form-control idTercero" required>
+                                <span name="item[0][letreroTercero]" id="item[0][letreroTercero]" class="ocultar letreroTercero" style="color: red;">Tercero no seleccionado correctamente</span>
+                              <input type="hidden" name="item[0][tipoTercero]" id="item[0][tipoTercero]" class="form-control tipoTercero" ></td>
+
+                              <!-- <td><input type="text" class="form-control sucursal mayusculas" name="item[0][sucursal]" id="item[0][sucursal]"  required></td> -->
+
+                              <td><input type="text" class="form-control  descripcion mayusculas" name="item[0][descripcion]" id="item[0][descripcion]" placeholder="Descripción" required ></td>
+
+                              <td><input type="text" class="form-control  base moneda mayusculas" name="item[0][base]" id="item[0][base]" placeholder="Base/cruce" readonly></td>
+
+                              <td><input type="text" class="form-control decimales moneda debito mayusculas" name="item[0][debito]" id="item[0][debito]" placeholder="Débito"   ></td>
+
+                              <td><input type="text" class="form-control decimales moneda  credito mayusculas" name="item[0][credito]" id="item[0][credito]" placeholder="Crédito" ></td>
+
+<!-- <input type="text" class="form-control moneda  valor mayusculas" name="item[0][valor]" id="item[0][valor]" placeholder="Valor" required> -->
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+
+                              </td>
+
+                            </tr>
+
+                        </tbody>
+
+
+                      </table>
+
+                    </div>
+                    <br>
+                  <fieldset class="border p-2">
+                    <div class="form-group">
+                      <h4>Observaciones</h4>
+                          <textarea class="form-control" name="datos[obsevaciones]" id="datos[obsevaciones]" ></textarea>
+
+
+                    </div>
+                    <div class="form-group">
+
+                        <label class="negrita">Adjuntar archivo:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                  </fieldset>
+
+
+                <br>
+                  <fieldset class="border p-2">
+                      <div class="row">
+                        <div class="col-md-4">
+                          
+                         	<div class="form-group">
+                          		<label class="negrita">Débito:</label>
+							</div>
+                          
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control moneda" name="datos[totalDebito]" id="totalDebito" readonly placeholder="débido">
+                         
+                        </div>
+
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+
+                           
+                            <label class="negrita">Crédito:</label>
+
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+
+                            <input type="text" class="form-control moneda" name="datos[totalCredito]" id="totalCredito" readonly placeholder="crédito">
+
+                          </div>
+                        </div>
+                    </div>
+					<div class="row">
+	                    <div class="col-md-4">
+	                      <div class="form-group">
+
+	                       
+	                        <label class="negrita">Diferencia:</label>
+
+	                      </div>
+	                    </div>
+	                    <div class="col-md-4">
+	                      <div class="form-group">
+
+	                        <input type="text" class="form-control moneda" name="datos[totalDiferencia]" id="totalDiferencia" readonly placeholder="Diferencia">
+
+	                      </div>
+	                    </div>
+	                </div>
+
+
+                    
+
+                  </fieldset>
+
+             <br>
+                  </div> 
+
+                  </div>
+           
+
+                <div class="card-footer text-right">
+
+                    <a class="btn btn-success mr-1" id="btnGuardar">CONTABILIZAR</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">RETENCIÓN</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmRetencion">
+          <input type="hidden" name="index" id="index">
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[dc]"  id="debito" value="debito" >
+              <label class="form-check-label" for="debito">DEBITO</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[dc]"   id="credito" value="credito">
+              <label class="form-check-label"  for="credito">CREDITO</label>
+            </div>
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Porcentaje de la retención:</label>
+              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control" placeholder="% de la retencion" required>
+              
+             
+            </div>
+          </div>
+
+           <div class="form-group">
+            <div class="form-group">
+              <label >Base:</label>
+              <input type="text" name="datos[baseModal]" id="baseModal" class="form-control  decimales" placeholder="base retencion" required>
+              
+             
+            </div>
+          </div>
+         
+         <div class="form-group">
+            <div class="form-group">
+              <label >Retención:</label>
+              <input type="text" name="datos[retencionModal]" id="retencionModal" class="form-control"  required disabled>
+              
+             
+            </div>
+          </div>
+
+         
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
+        <button type="button" class="btn btn-primary" id="btnGuardarRetencion">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>

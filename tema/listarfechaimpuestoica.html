@@ -1,0 +1,158 @@
+<?php 
+
+$oControl=new Control(); 
+
+
+
+
+
+$oLista = new Lista('fecha_impuesto');
+
+$aListado=$oLista->getLista();
+
+unset($oLista);
+
+
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Calendario Impuestos</li>
+
+          <li class="breadcrumb-item">Listar Fecha Pago ICA</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableEstados">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Fecha registro</th>
+
+                            <th>Municipio</th>
+
+                            <th>Periodicidad</th>
+
+                            <th>Fecha Pago</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aListado as $index => $iItem){ 
+
+
+
+                            $oItem=new Data("departamento","idDepartamento", $iItem["idDepartamento"]); 
+
+                            $aDepartamento=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+
+
+                            $oItem=new Data("ciudad","idCiudad", $iItem["idCiudad"]); 
+
+                            $aCiudad=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+
+
+                            $oItem=new Data("periodo_pago","idPeriodoPago", $iItem["periodicidad"]); 
+
+                            $aPeriodoPago=$oItem->getDatos(); 
+
+                            unset($oItem); 
+
+
+
+                            $aEncript['cadena']=$iItem['idFechaImpuesto'];
+
+                            $id=$oControl->encriptar($aEncript);
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $iItem["fechaRegistro"]; ?></td>
+
+                              <td><?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?></td>
+
+                              <td><?php echo $aPeriodoPago["nombre"]; ?></td>
+
+                              <td><?php echo $iItem["tipoConfiguracion"]==1?$iItem["fechaPago"]:'Por Ultimo Digito NIT'; ?></td>
+
+                              <td class="centrar">
+                                <a href="<?php echo $URL; ?>verfechapagoica/<?php echo $id; ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Ver"><i class="fas fa-eye"  style="color: #8B92FF;font-size: 20px;"></i></a>
+                                <!-- <a href="<?php echo $URL; ?>editarfechapagoica/<?php echo $id; ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pen"  style="color: #FFAE30;font-size: 20px;"></i></a> -->
+
+                                <a href="<?php echo $URL; ?>asociarica/<?php echo $id; ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Asociar empresas"><i class="fas fa-sitemap" style="color: #A2D7FF;font-size: 22px;"></i></a>
+                                
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
