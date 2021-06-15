@@ -21,7 +21,7 @@
 
 
 <form enctype="multipart/form-data" id="frmGuardar">
-	<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
+	<?php if(!empty($_SESSION['idEmpresa'])) { ?>
 
 <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>" required>
 

@@ -161,13 +161,13 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
                                   ?>
                                 <a href="javascript:void(0)"  accion="2" name="<?php echo $iEmpresa['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Desbloquear"><i class="fas fa-lock-open" style="color: #65E572;font-size: 20px;"></i></a>
 
-                                <?php } ?>
-
-                                 <?php if($validarIngreso==1){ ?>
+                                <?php }} ?>
+                                
+                                 <?php if($_SESSION['idRol']==1 || $_SESSION['idRol']==2){ ?>
 
                                 <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a empresa" ><i class="fas fa-arrow-circle-right" style="color: #A2D7FF;font-size: 20px;"></i></a>
 
-                                <?php }} ?>
+                                <?php } ?>
 
                             </tr>
 

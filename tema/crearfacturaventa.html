@@ -69,7 +69,7 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 
 <form enctype="multipart/form-data" id="frmGuardar">
 
-<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
+<?php if(!empty($_SESSION['idEmpresa'])){ ?>
 
 <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
 
@@ -120,7 +120,7 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 
                   <div class="row">
 
-                    <?php if($_SESSION['idRol']!=3){ ?>
+                    <?php if(empty($_SESSION['idEmpresa'])){ ?>
 
                     <div class=" col-md-4 ">
 
@@ -146,7 +146,7 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 
                     <?php } ?>
 
-                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
 
                       <div class="form-group">
 
@@ -160,7 +160,7 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 
                     
 
-                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
 
                       <div class="form-group">
 

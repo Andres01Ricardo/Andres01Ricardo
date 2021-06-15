@@ -12,6 +12,7 @@ $oControl=new Control();
 
 
 
+
 $meses[1]="Enero"; 
 
 $meses[2]="Febrero"; 
@@ -394,14 +395,14 @@ unset($oItem);
 
   <div class="row ">
 
-      <div class="col-xl-4 col-lg-4">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card " style="border-color: #fe768f;"  data-toggle="tooltip" title="estado de resultados integral muestra el resumen de las operaciones del negocio, enfrenta los ingresos contra los costos y gastos para determinar el resultado del periodoMes ">
+        <div class="card flex-fill" style="border-color: #fe768f;"  data-toggle="tooltip" title="estado de resultados integral muestra el resumen de las operaciones del negocio, enfrenta los ingresos contra los costos y gastos para determinar el resultado del periodoMes ">
 
           <div class="card-statistic-3 p-4" style="border-color: #fe768f;">
 
 
-            <div class="mb-4">
+            <div class="row">
 
               <h5 class="card-title mb-0 elipsis " style="color: #A7A7A7"><span value="<?php echo $aRentabilidad[$pos]['idEstadoFinanciero']; ?>" ><i class="fas fa-align-justify" data-toggle="tooltip"  ></i> Estado Resultados Integral</span></h5>
 
@@ -431,9 +432,9 @@ unset($oItem);
 
       </div>
 
-      <div class="col-xl-4 col-lg-4">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card  horasextras" data-toggle="tooltip" title="Estado de situacion financiera refleja la situación financiera de un ente económico a una fecha determinada. Su estructura la conforman cuentas de activo, pasivo y patrimonio o capital contable. ">
+        <div class="card flex-fill horasextras" data-toggle="tooltip" title="Estado de situacion financiera refleja la situación financiera de un ente económico a una fecha determinada. Su estructura la conforman cuentas de activo, pasivo y patrimonio o capital contable. ">
 
           <div class="card-statistic-3 p-4">
 
@@ -474,9 +475,9 @@ unset($oItem);
 
       </div>
 
-      <div class="col-xl-4 col-lg-4">
+      <div class="col-xl-4 col-lg-6 d-flex  ">
 
-        <div class="card retenciones">
+        <div class="card flex-fill retenciones">
 
           <div class="card-statistic-3 p-4">
 
@@ -494,9 +495,9 @@ unset($oItem);
               <div class="col-8">
                 <?php if(count($aCuentas)>0){  ?>
                 <?php if(count($aCuentas)==1){  ?>
-                <h3 class="d-flex align-items-center mb-0" style="color: #868686"><?php echo $aCuentas[0]["nombreCuenta"].": $".number_format($aCuentas[0]["saldoActual"],2,",","."); ?>
+                <h5 class="d-flex align-items-center mb-0" style="color: #868686"><?php echo $aCuentas[0]["nombreCuenta"].": $".number_format($aCuentas[0]["saldoActual"],2,",","."); ?>
 
-                </h3>
+                </h5>
                  <?php }else{ ?>
                  <h6 class="d-flex align-items-center mb-0" style="color: #868686"> 
                   <?php echo $aCuentas[0]["nombreCuenta"].": $".number_format($aCuentas[0]["saldoActual"],2,",","."); ?>
@@ -506,7 +507,7 @@ unset($oItem);
                 </h6>
                  <?php } ?>
                 <?php }else{ ?>
-                <h3 class="d-flex align-items-center mb-0" style="color: #868686">Sin Información</h3>
+                <h5 class="d-flex align-items-center mb-0" style="color: #868686">Sin Información</h5>
                 <?php } ?>
               </div>
 
@@ -524,13 +525,13 @@ unset($oItem);
 
       </div>
 
-    </div>
+    <!-- </div>
 
-    <div class="row ">
+    <div class="row "> -->
 
-      <div class="col-xl-4 col-lg-6">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card retenciones" data-toggle="tooltip" title="el ICA es el Impuesto de Industria y Comercio el cual se genera por la realización de actividades industriales de forma directa o indirecta, comerciales o de servicios, que se desarrollan de manera permanente u ocasional, en un inmueble determinado, sea que exista establecimiento de comercio o no.">
+        <div class="card flex-fill retenciones" data-toggle="tooltip" title="el ICA es el Impuesto de Industria y Comercio el cual se genera por la realización de actividades industriales de forma directa o indirecta, comerciales o de servicios, que se desarrollan de manera permanente u ocasional, en un inmueble determinado, sea que exista establecimiento de comercio o no.">
 
           <div class="card-statistic-3 p-4">
 
@@ -546,9 +547,9 @@ unset($oItem);
 
               <div class="col-7">
 
-                <h2 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format($dICA,0,",","."); ?>
+                <h3 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format($dICA,0,",","."); ?>
 
-                </h2>
+                </h3>
 
                 <!-- <span class="subtitulo">----/--/--</span> -->
 
@@ -568,9 +569,9 @@ unset($oItem);
 
       </div>
 
-      <div class="col-xl-4 col-lg-6">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card horasextras" data-toggle="tooltip" title="Muestra el saldo de retención sin pagar" >
+        <div class="card flex-fill horasextras" data-toggle="tooltip" title="Muestra el saldo de retención sin pagar" >
 
           <div class="card-statistic-3 p-4">
 
@@ -586,10 +587,10 @@ unset($oItem);
 
               <div class="col-8">
 
-                <h2 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format($dRetencion,2,",","."); ?>
-                <!-- <h2 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format(449437,0,",","."); ?> -->
+                <h3 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format($dRetencion,2,",","."); ?>
+                <!-- <h5 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format(449437,0,",","."); ?> -->
 
-                </h2>
+                </h3>
 
                 <!-- <span class="subtitulo">----/--/--</span> -->
 
@@ -609,9 +610,9 @@ unset($oItem);
 
       </div>
 
-      <div class="col-xl-4 col-lg-6">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card parafiscales" data-toggle="tooltip" title="El Impuesto sobre el Valor Añadido (IVA) es un tributo de naturaleza indirecta aplicable al consumo doméstico de bienes y servicios producidos tanto en el territorio nacional como en el exterior.">
+        <div class="card flex-fill parafiscales" data-toggle="tooltip" title="El Impuesto sobre el Valor Añadido (IVA) es un tributo de naturaleza indirecta aplicable al consumo doméstico de bienes y servicios producidos tanto en el territorio nacional como en el exterior.">
 
           <div class="card-statistic-3 p-4">
 
@@ -627,11 +628,11 @@ unset($oItem);
 
               <div class="col-8">
 
-                <h2 class="d-flex align-items-center mb-0 elipsis" style="color: #868686">
+                <h3 class="d-flex align-items-center mb-0 elipsis" style="color: #868686">
 
                   <?php echo "$".number_format($dIVA,0,".",","); ?>
 
-                </h2>
+                </h3>
 
                 <!-- <span class="subtitulo">----/--/--</span> -->
 
@@ -651,13 +652,13 @@ unset($oItem);
 
       </div>
 
-    </div>
+    <!-- </div>
 
-    <div class="row ">
+    <div class="row "> -->
 
-      <div class="col-xl-4 col-lg-6">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card retenciones" data-toggle="tooltip" title="Valor seguridad social a pagar incluyendo empleado y empleador">
+        <div class="card flex-fill retenciones" data-toggle="tooltip" title="Valor seguridad social a pagar incluyendo empleado y empleador">
 
           <div class="card-statistic-3 p-4">
 
@@ -673,9 +674,9 @@ unset($oItem);
 
               <div class="col-8">
 
-                <h2 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format($dSeguridadSocial,2,",","."); ?>
+                <h3 class="d-flex align-items-center mb-0 elipsis" style="color: #868686"><?php echo "$".number_format($dSeguridadSocial,2,",","."); ?>
 
-                </h2>
+                </h3>
 
               </div>
 
@@ -693,9 +694,9 @@ unset($oItem);
 
       </div>
 
-      <div class="col-xl-4 col-lg-6">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card parafiscales " data-toggle="tooltip" title="Muestra el saldo de facturas no pagas a proveedores">
+        <div class="card flex-fill parafiscales " data-toggle="tooltip" title="Muestra el saldo de facturas no pagas a proveedores">
 
           <div class="card-statistic-3 p-4">
 
@@ -711,11 +712,11 @@ unset($oItem);
 
               <div class="col-8">
 
-                <h2 class="d-flex align-items-center mb-0" style="color: #868686">
+                <h3 class="d-flex align-items-center mb-0" style="color: #868686">
 
                   <?php echo "$".number_format($saldoProveedores,2,",","."); ?>
 
-                </h2>
+                </h3>
 
               </div>
 
@@ -733,9 +734,9 @@ unset($oItem);
 
       </div>
 
-      <div class="col-xl-4 col-lg-6">
+      <div class="col-xl-4 col-lg-6 d-flex ">
 
-        <div class="card salariominimo" data-toggle="tooltip" title="Muestra el saldo de facturas no pagas de los cliente">
+        <div class="card flex-fill salariominimo" data-toggle="tooltip" title="Muestra el saldo de facturas no pagas de los cliente">
 
           <div class="card-statistic-3 p-4">
 
@@ -749,11 +750,11 @@ unset($oItem);
 
               <div class="col-8">
 
-                <h2 class="d-flex align-items-center mb-0" style="color: #868686">
+                <h3 class="d-flex align-items-center mb-0" style="color: #868686">
 
                   <?php echo "$".number_format($dClientes[0]["totalVentas"],2,",","."); ?>
 
-                </h2>
+                </h3>
 
               </div>
 

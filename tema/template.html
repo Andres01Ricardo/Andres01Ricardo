@@ -219,15 +219,16 @@ $colista=$cLista->getLista();
 
               <!-- <a href="timeline.html" class="dropdown-item has-icon"> <i class="fas fa-bolt"></i> Activities </a>  -->
 
-              <?php if($_SESSION[idRol]==1||$_SESSION[idRol]==2){ ?>
+              <?php if($_SESSION['idRol']==1||$_SESSION['idRol']==2){ ?>
 
               <a href="<?php echo $URL ?>configuracion" class="dropdown-item has-icon"> <i class="fas fa-cog"></i> Configuración </a>
 
               <?php } ?>
 
-              <?php if($_SESSION[idRolPrincipal]!=""){ ?>
+              <?php if(!empty($_SESSION['idRolPrincipal'])){ ?>
 
               <a href="<?php echo $URL ?>functions/sesion/retornarsesion.php" class="dropdown-item has-icon"> <i class="fas fa-sign-out-alt"></i> Salir de perfil empresa </a>
+
 
               <?php } ?>
 
@@ -411,7 +412,7 @@ $colista=$cLista->getLista();
 
       <div class="main-content">
 
-        <?php if($_SESSION[idRolPrincipal]!=""){ 
+        <?php if(!empty($_SESSION[idRolPrincipal])){ 
 
         $oItem = new Data('empresa',"idEmpresa", $_SESSION["idEmpresa"]);
 

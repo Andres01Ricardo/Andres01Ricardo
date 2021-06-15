@@ -51,6 +51,8 @@ unset($oLista);
 	<head>
 		<meta charset="utf-8">
 		 <meta charset="UTF-8">
+		 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
 
 	</head>
 	<body>
@@ -139,7 +141,7 @@ unset($oLista);
 			   </tr>
 			  </tbody>
 		</table>
-		<span>Observaciones: <?php echo $aCotizacionTotal['observaciones'] ?></span>
+		<p style="text-align:justify;">Observaciones: <?php echo $aCotizacionTotal['observaciones'] ?></p>
 		</div>
 	</body>
 </html>
@@ -150,7 +152,7 @@ use Dompdf\Dompdf;
 
 $pdf = new Dompdf(array('enable_remote' => true));
 
-$pdf->load_html(utf8_decode(ob_get_clean()));
+$pdf->load_html(utf8_decode((utf8_encode(ob_get_clean()))));
 $pdf->render();
 $filename = "ejemplo.pdf";
 

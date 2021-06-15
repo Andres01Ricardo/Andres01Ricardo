@@ -3,6 +3,7 @@
 require_once("./class/cuentascontables.php");
 
 $oControl=new Control(); 
+if (empty($_SESSION["idEmpresa"])) {
 
 $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
 if($id==""){
@@ -14,8 +15,10 @@ if($id==""){
 $decrip["cadena"]=$id; 
 
 $id=$oControl->desencriptar($decrip); 
-
-
+}
+if (!empty($_SESSION["idEmpresa"])) {
+  $id=$_SESSION["idEmpresa"];
+}
 $oControl=new Control(); 
 
 $oLista = new Lista('comprobante');

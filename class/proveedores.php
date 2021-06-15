@@ -16,13 +16,13 @@ class Proveedores extends Sql{
 
 		if(!isset($_SESSION)){ session_start(); }
 
-		if($_SESSION["idRol"]==2){
+		if(empty($_SESSION["idEmpresa"])){
 			if ($aDatos["ingresoPerfilEmpresa"]==0) {
 				$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
 			}
 		}
 
-		if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
+		if(!empty($_SESSION["idEmpresa"])){
 
 			$condicion.=" AND pe.idEmpresa=".$_SESSION["idEmpresa"]; 
 

@@ -3,19 +3,13 @@
 require_once("class/empresa.php"); 
  $oControl=new Control(); 
 $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
-
 $url=$id; 
-
 if($id==""){
-
   echo '<script>window.history.back()</script>'; 
-
 }
 
- $decrip["cadena"]=$id; 
-
- $idEmpresa=$oControl->desencriptar($decrip); 
-
+$decrip["cadena"]=$id; 
+$idEmpresa=$oControl->desencriptar($decrip); 
 
 
 $oItem=new Lista("cuenta_bancaria");
@@ -23,12 +17,15 @@ $oItem->setFiltro("idEmpresa","=",$idEmpresa);
 $aBancos=$oItem->getLista();
 unset($oItem);
 
-
-
-
 $oItem=new Lista("parametros_documentos");
 $oItem->setFiltro("idEmpresa","=",$idEmpresa);
 $aParametros=$oItem->getLista();
+unset($oItem);
+
+
+$oItem=new Lista("retencion");
+// $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aRetenciones=$oItem->getLista();
 unset($oItem);
 
 ?>
@@ -39,1128 +36,285 @@ unset($oItem);
 		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
 		<div class="card">
 			<div class="card-body">
-				
-		
 				<div class="card-header">IMPUESTOS FACTURA VENTA</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">IVA factura venta<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+					<div class="row">
+						<div class=" col-md-3 ">
+							<div class="form-group">
+	            	<label class="negrita d-block">IVA factura venta<span class="requerido">*</span>:</label>                
+	          	</div>
+						</div>
+						<div class=" col-md-3 ">
+							<div class="form-group">
+	              <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableivaFacturaVenta]" >
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableivaFacturaVenta]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaVenta]" id="cuentaContableIvaVenta">	                          
-	                          
-	                      </div>
+								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaVenta]" id="cuentaContableIvaVenta">                
+	          	</div>
+						</div>
+						<div class=" col-md-3 ">
+	          	<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
+							<div class="form-inline">
+		            <div class="form-group mb-1">
+									<select class="form-control" name="datos[tipoDocumentoIvaVenta]" id="tipoDocumentoIvaVenta" >
+										<?php foreach ($aParametros as $key => $value) {
+										$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
+										$aTipo=$oItem->getDatos();
+									 ?>
+											<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
+											<?php } ?> 
+									</select>
+								</div>
+		        	</div>
+						</div>
+						<div class=" col-md-3 ">
+							<div class="form-group">
+		             <label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
+									<select class="form-control" name="datos[naturalezaNuevaIvaVenta]" id="naturalezaIvaVenta" >
+										<option value="1">CREDITO</option>
+										<option value="2">DEBITO</option>
+									</select>              
+		            </div>
+						</div>
 					</div>
-					<div class=" col-md-3 ">
-	                          <label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoIvaVenta]" id="tipoDocumentoIvaVenta" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?> 
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
-								<select class="form-control" name="datos[naturalezaNuevaIvaVenta]" id="naturalezaIvaVenta" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
 				<div class="row">
+					<?php foreach ($aRetenciones as $keyRV => $valueRV) {
+						
+					 ?>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Retención ventas<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
+	            <label class="negrita d-block"><?php echo $valueRV['descripcion']; ?><span class="requerido">*</span>:</label>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableRetencionVentas]" >
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableRetencionVentas]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaRetencionVentas]" id="">	                          
-	                          
-	                      </div>
+								<input type="text" class="form-control cuentaContable" name="item[<?php echo $keyRV ?>][cuentaContableRetencionVentas]" >
+								<input type="hidden" class="form-control idCuentaContable" name="item[<?php echo $keyRV ?>][idCuentaContableRetencionVentas]">
+								<input type="hidden" class="form-control naturaleza" name="item[<?php echo $keyRV ?>][naturalezaRetencionVentas]" id="">	                          
+	            </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoRetencionVentas]" >
+							<div class="form-group mb-1">
+								<select class="form-control" name="item[<?php echo $keyRV ?>][tipoDocumentoRetencionVentas]" >
 									<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
+									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 		
 								<?php } ?>
 								</select>
-							
 							</div>
-	                          
-	                      </div>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          
 								<select class="form-control" name="datos[naturalezaNuevaRetencionVenta]"  >
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
-								</select>
-
-	                          
-	                      </div>
+								</select>     
+	            </div>
 					</div>
+				<?php } ?>
+				
 				</div>
 				<!-- <div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Retención servicios<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
+							<label class="negrita d-block">Reteica <span class="requerido">*</span>:</label>
+            </div>
 					</div>
 					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableRetencionServiciosVenta]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableRetencionServiciosVenta]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaRetencionServiciosVenta]">	                          
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoRetencionServiciosVenta]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?> 
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaRetencionServiciosVenta]" id="naturalezRetencionServiciosVenta" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-
-	                          
-	                      </div>
-					</div>
-				</div> -->
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Reteica <span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
+						<div class="form-group">               
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableReteicaBucaramangaVenta]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableReteicaBucaramangaVenta]">	
 								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaReteicaBucaramangaVenta]">
-	                          
-	                      </div>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
+	            <div class="form-group mb-1">
 								<select class="form-control" name="datos[tipoDocumentoReteicaBucaramangaVenta]" >
 									<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
 									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
 								<?php } ?> 
 								</select>
-								
 							</div>
-	                          
-	                      </div>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
+						<div class="form-group">          
 								<select class="form-control" name="datos[naturalezaNuevaReteicaBucaramangaVenta]" id="" >
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
-								</select>
-
-	                          
-	                      </div>
+								</select>   
+	          </div>
 					</div>
-				</div>
-				<!-- <div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Reteica Bogota<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableReteicaBogotaVenta]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableReteicaBogotaVenta]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaReteicaBogotaVenta]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoReteicaBogotaVenta]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?> 
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaReteicaBogotaVenta]" id="" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-
-	                          
-	                      </div>
-					</div>
-				</div> -->
-			
+				</div> -->			
 				<div class="card-header">IMPUESTOS FACTURA COMPRA</div>
 				<div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">IVA factura compra<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
+	            <label class="negrita d-block">IVA factura compra<span class="requerido">*</span>:</label>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+							<label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableIvaCompra]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableIvaCompra]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaCompra]">
-	                          
-	                      </div>
+								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaCompra]">              
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
+							<div class="form-group mb-1">
 								<select class="form-control" name="datos[tipoDocumentoIvaCompra]" >
 									<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
 									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
 								<?php } ?> 
 								</select>
-								
 							</div>
-	                          
-	                      </div>
-
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
+	            <label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
 								<select class="form-control" name="datos[naturalezaNuevaIvaCompra]" id="" >
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
-								</select>
-
-	                          
-	                      </div>
+								</select>     
+	          </div>
 					</div>
 				</div>
 				<div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Retención compras<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
+	            <label class="negrita d-block">Retención compras<span class="requerido">*</span>:</label>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableRetencionCompra]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableRetencionCompra]">
 								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaRetencionCompra]">
-	                          
-	                      </div>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
+	            <div class="form-group mb-1">
 								<select class="form-control" name="datos[tipoDocumentoRetencionCompra]" >
 									<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
+									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 		
 								<?php } ?>
 								</select>
-								
 							</div>
-	                          
-	                      </div>
-						
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          
 								<select class="form-control" name="datos[naturalezaNuevaRetencionCompra]" id="naturalezaRetencionCompra" >
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
 								</select>
-	                          
-	                      </div>
+	          </div>
 					</div>
 				</div>
-				<!-- <div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Retención servicios<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableRetencionServiciosCompra]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableRetencionServiciosCompra]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaRetencionServiciosCompra]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoRetencionServiciosCompra]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaRetencionServiciosCompra]" id="naturalezaRetencionServiciosCompra" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div> -->
+				
 				<div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Reteica <span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
+	            <label class="negrita d-block">Reteica <span class="requerido">*</span>:</label>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableReteicaBucaramangaCompra]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableReteicaBucaramangaCompra]">	
 								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaReteicaBucaramangaCompra]">
-	                          
-	                      </div>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
+	            <div class="form-group mb-1">
 								<select class="form-control" name="datos[tipoDocumentoReteicaBucaramangaCompra]" >
 									<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
 									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
 								<?php } ?> 
 								</select>
-								
 							</div>
-	                          
-	                      </div>
-						
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
+						<div class="form-group">     
 								<select class="form-control" name="datos[naturalezaNuevaReteicaBucaramangaCompra]" id="" >
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
 								</select>
-	                          
-	                      </div>
+						</div>
 					</div>
 				</div>
-
 				<div class="card-header">CUENTAS</div>
 				<?php foreach($aBancos as $key=> $value){ ?>
 				<div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
-	                         <input type="text" class="form-control" name="banco[<?php echo $key ?>][cuenta]" value="<?php echo $value['nombreCuenta'].'-'.$value['numeroCuenta'];?>" readonly disabled >
-	                         <input type="hidden" class="form-control" name="banco[<?php echo $key ?>][idCuenta]" value="<?php echo $value['idCuentaBancaria'];?>">
-	                      </div>
+	            <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
+                <input type="text" class="form-control" name="banco[<?php echo $key ?>][cuenta]" value="<?php echo $value['nombreCuenta'].'-'.$value['numeroCuenta'];?>" readonly disabled >
+               	<input type="hidden" class="form-control" name="banco[<?php echo $key ?>][idCuenta]" value="<?php echo $value['idCuentaBancaria'];?>">
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+	            <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
 								<input type="text" class="form-control cuentaContable" name="banco[<?php echo $key ?>][cuentaContable]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="banco[<?php echo $key ?>][idCuentaContable]">	
 								<input type="hidden" class="form-control naturaleza" name="banco[<?php echo $key ?>][naturaleza]">
-	                          
-	                      </div>
+	          </div>
 					</div>
 				</div>
-					
 				<?php } ?>
-
-				<!-- <div class="card-header">NOMINA</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Salario:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Cuenta contable:</label>
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableSalario]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableSalario]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaSalario]">              
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<label class="negrita d-block">Tipo documento:</label>
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoSalario]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-	
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Naturaleza:</label>
-								<select class="form-control" name="datos[naturalezaNuevaSalario]" id="" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Auxilio transporte:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableAuxilio]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableAuxilio]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaAuxilio]">	                          
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoAuxilio]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?> 
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaAuxilio]" id="" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Total a pagar:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableTotalPagar]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableTotalPagar]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaTotalPagar]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoTotalPagar]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?> 
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-						
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaTotalPagar]"  >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Salud:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableSalud]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableSalud]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaSalud]">	                          
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoSalud]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-							
-							</div>
-	                          
-	                      </div>
-						
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaSalud]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Pensión:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContablePension]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContablePension]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaPension]">    
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoPension]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-							
-							</div>
-	                          
-	                      </div>
-
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaPension]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Pensión empleador:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContablePensionEmpleador]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContablePensionEmpleador]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaPensionEmpleador]">    
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoPensionEmpleador]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-							
-							</div>
-	                          
-	                      </div>
-
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaPensionEmpleador]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">ARL:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableARL]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableARL]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaARL]">    
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoARL]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-							
-							</div>
-	                          
-	                      </div>
-
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaARL]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Caja compensación:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableCajaCompensacion]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContablCajaCompensasion]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaCajaCompensacion]">    
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoCajaCompensacion]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-							
-							</div>
-	                          
-	                      </div>
-
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaCajaCompensacion]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Cesantias :</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableCesantias]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableCesantias]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaCesantias]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoCesantias]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-						
-							</div>
-	                          
-	                      </div>
-						
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaCesantias]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Intereses cesantias:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableInteresesCesantias]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableInteresesCesantias]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaInteresesCesantias]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoInteresesCesantias]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-							
-							</div>
-	                          
-	                      </div>
-						
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaInteresesCesantias]">
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Vacaciones:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableVacaciones]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableVacaciones]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaVacaciones]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoVacaciones]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-								
-							</div>
-	                          
-	                      </div>
-						
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<select class="form-control" name="datos[naturalezaNuevaVacaciones]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                          
-	                      </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Prima:</label>
-
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContablePrima]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContablePrima]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaPrima]">
-	                          
-	                      </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoPrima]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
-								<?php } ?>
-								</select>
-						
-							</div>
-	                          
-	                      </div>
-						
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<select class="form-control" name="datos[naturalezaNuevaPrima]" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	                      </div>
-					</div>
-				</div> -->
 				<div class="card-header">GESTION FACTURA VENTA</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Total a pagar:</label>
-
-	                          
-	                      </div>
+					<div class="row">
+						<div class=" col-md-3 ">
+							<div class="form-group">
+	              <label class="negrita d-block">Total a pagar:</label>
+	            </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
-
-	                          	<label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+	            <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableTotalPagarVenta]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableTotalPagarVenta]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaTotalPagarVenta]">
-	                          
-	                      </div>
+								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaTotalPagarVenta]">              
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
+	            <div class="form-group mb-1">
 								<select class="form-control" name="datos[tipoDocumentoTotalPagarVenta]" >
 								<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
 									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
 								<?php } ?>
 								</select>
-							
-							</div>
-	                          
-	                      </div>
-						
+							</div>   
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
@@ -1169,50 +323,38 @@ unset($oItem);
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
 								</select>
-	                      </div>
+	          </div>
 					</div>
 				</div>
-				<!--  -->
-				
 				<div class="card-header">GESTION FACTURA COMPRA</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-
-	                          <label class="negrita d-block">Total a pagar<span class="requerido">*</span>:</label>
-
-	                          
-	                      </div>
+					<div class="row">
+						<div class=" col-md-3 ">
+							<div class="form-group">
+	              <label class="negrita d-block">Total a pagar<span class="requerido">*</span>:</label>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
 								<label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
-	                          
 								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableTotalPagarCompra]" >	
 								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableTotalPagarCompra]">	
 								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaTotalPagarCompra]">
-	                          
-	                      </div>
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
 						<div class="form-inline">
-
-	                          <div class="form-group mb-1">
+	            <div class="form-group mb-1">
 								<select class="form-control" name="datos[tipoDocumentoTotalPagarCompra]" >
 									<?php foreach ($aParametros as $key => $value) {
 									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 									$aTipo=$oItem->getDatos();
 								 ?>
 									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-									
 								<?php } ?>
 								</select>
-								
 							</div>
-	                          
-	                      </div>
-
+	          </div>
 					</div>
 					<div class=" col-md-3 ">
 						<div class="form-group">
@@ -1221,15 +363,12 @@ unset($oItem);
 									<option value="1">CREDITO</option>
 									<option value="2">DEBITO</option>
 								</select>
-	                      </div>
+	          </div>
 					</div>
 				</div>
-				
 				<div class="card-footer text-right">
-
-                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
-
-                </div>
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
 			</div>
 		</div>
 	</form>

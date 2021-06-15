@@ -141,7 +141,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                   <div class="row">
 
-                    <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+                    <?php if(empty($_SESSION['idEmpresa'])){ ?>
 
                     <div class="col-md-4">
 
@@ -157,7 +157,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                     <?php } ?>
 
-                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
 
                       <div class="form-group">
 
@@ -169,7 +169,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                     </div>
 
-                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
 
                       <div class="form-group">
 
@@ -404,7 +404,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                   </div>
 
-                  <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+                  <?php if(empty($_SESSION['idEmpresa'])){ ?>
                   <div class="row">
 
                       <div class=" col-md-3 ">

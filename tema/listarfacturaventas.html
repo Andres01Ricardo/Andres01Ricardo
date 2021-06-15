@@ -101,7 +101,7 @@ unset($oLista);
 
                             <th>Estado</th>
 
-                            <?php if($_SESSION["idRol"]==1||$_SESSION["idRol"]==2){  ?>
+                            <?php if(empty($_SESSION["idEmpresa"])){  ?>
 
                               <th>Empresa</th>
 
@@ -156,7 +156,7 @@ unset($oLista);
                                    <?php } ?>
                                   <a href="<?php echo $URL.$iFactura['archivo']; ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 19px;"></i></a>
                                 
-                                <?php if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){  ?>
+                                <?php if(empty($_SESSION["idEmpresa"])){  ?>
 
                                 <?php if($iFactura["estado"]==1){ ?>
                                   <a href="<?php echo $URL; ?>gestionfacturaventa/<?php echo $id; ?>" data-toggle="tooltip" title="Completar gestion" data-placement="top" ><i class="fas fa-money-bill-alt" style="color: #65E572;font-size: 19px;"></i></a>

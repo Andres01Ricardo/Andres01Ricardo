@@ -4,17 +4,18 @@
 require_once("./class/cuentascontables.php");
 
 $oControl=new Control(); 
-
+if (empty($_SESSION["idEmpresa"])) {
 $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
-if($id==""){
 
-  echo '<script>window.history.back()</script>'; 
-
-}
 
 $decrip["cadena"]=$id; 
 
 $id=$oControl->desencriptar($decrip); 
+
+}
+if (!empty($_SESSION["idEmpresa"])) {
+  $id=$_SESSION['idEmpresa'];
+}
 
 $oCuentaContable=new CuentasContables(); 
 $aCuentaContable=$oCuentaContable->getCuentasContablesEmpresa($id);

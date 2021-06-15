@@ -145,7 +145,7 @@ unset($oItem);
 
                   <div class="row">
 
-                    <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+                    <?php if(empty($_SESSION['idEmpresa'])){ ?>
 
                     <div class="col-md-3">
 
@@ -161,7 +161,7 @@ unset($oItem);
 
                     <?php } ?>
 
-                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 
@@ -173,7 +173,7 @@ unset($oItem);
 
                     </div>
 
-                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 
@@ -185,7 +185,7 @@ unset($oItem);
 
                     </div>
 
-                    <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 

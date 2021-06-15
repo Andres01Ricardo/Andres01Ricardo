@@ -14,7 +14,7 @@ class Empleados extends Sql{
 
 		$condicion=""; 
 
-		if($_SESSION["idRol"]==3){
+		if(!empty($_SESSION["idEmpresa"])){
 
 			$condicion.=" AND ee.idEmpresa=".$_SESSION["idEmpresa"]; 
 

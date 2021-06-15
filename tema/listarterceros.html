@@ -1,35 +1,14 @@
-
 <?php 
 
-// require_once("class/empresa.php");
-
-// $oControl=new Control(); 
-
-
-
-// $validarIngreso=1; 
-
-// if($_SESSION["idRol"]==2){
-
-//   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
-
-//   $valUser=$oItem->getDatos(); 
-
-//   unset($oItem);  
-
-
-
-//   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
-
-// }
-
-// $oEmpresa=new Empresa(); 
-
-
-
-// $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
-
-
+if (!empty($_SESSION['idEmpresa'])) {
+  ?>
+  <script type="text/javascript">
+    window.location.replace("listartercerosempresa");
+  </script>
+<?php  
+  
+  }
+else{
 
 require_once("class/empresa.php");
 
@@ -40,30 +19,33 @@ $oControl=new Control();
 $validarIngreso=1; 
 $oEmpresa=new Empresa(); 
 
-if($_SESSION["idRol"]==2){
-
-  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
-
-  $valUser=$oItem->getDatos(); 
-
-  unset($oItem);  
+if (empty($_SESSION["idEmpresa"])) {
 
 
+    if($_SESSION["idRol"]==2){
 
-  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
-  $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+      $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
 
+      $valUser=$oItem->getDatos(); 
+
+      unset($oItem);  
+
+
+
+      $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+      $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+    }
+
+
+
+
+    if($_SESSION["idRol"]==5){
+
+      $aEmpresa=$oEmpresa->getEmpresasExterno();
+    }
 }
-
-
-
-
-if($_SESSION["idRol"]==5){
-
-  $aEmpresa=$oEmpresa->getEmpresasExterno();
-}
-
-if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
+if(!empty($_SESSION["idEmpresa"])){
   $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
   
 
@@ -200,5 +182,5 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 
 
 
-
+<?php } ?>
 

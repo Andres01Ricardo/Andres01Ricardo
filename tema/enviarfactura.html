@@ -62,7 +62,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
 <form enctype="multipart/form-data" id="frmGuardar">
 
-<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
+<?php if(!empty($_SESSION['idEmpresa'])){ ?>
 
 <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
 
@@ -113,7 +113,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                   <div class="row">
 
-                    <?php if($_SESSION['idRol']!=3&&$_SESSION['idRol']!=4){ ?>
+                    <?php if(empty($_SESSION['idEmpresa'])){ ?>
 
                     <div class=" col-md-3 ">
 
@@ -139,7 +139,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                     <?php } ?>
 
-                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">                  
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">                  
                   
                       <div class="form-group">
 
@@ -173,7 +173,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                     </div>
 
-                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 
@@ -185,7 +185,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                     </div>
 
-                    <div class="<?php if($_SESSION['idRol']!=3){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 

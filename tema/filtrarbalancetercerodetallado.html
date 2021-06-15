@@ -45,6 +45,7 @@ if($_SESSION["idRol"]!=5 ){
           <h3 class="swal-title">ESCOJA LOS FILTROS</h3><br>
             <form method="POST" action="balancetercerodetallado">
               <div class="swal-content">
+                <?php if(empty($_SESSION['idEmpresa'])){ ?>
                 <label>EMPRESA</label>
                 <select class=" form-control" name="empresa" id="empresa" required>
                   <option value="">Seleccione la empresa</option>
@@ -52,7 +53,9 @@ if($_SESSION["idRol"]!=5 ){
                   <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
                   <?php } ?>
                 </select>
-                
+                <?php }else{ ?>
+                <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                <?php } ?>
      
      
            <div class="form-group">

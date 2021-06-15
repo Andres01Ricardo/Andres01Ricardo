@@ -1,281 +1,544 @@
-<?php
-$oItem=new Data("usuario","idUsuario",$_SESSION["idUsuario"]); 
-$aDatos=$oItem->getDatos(); 
-unset($oItem);
-
-
-$oItem=new Data("ciudad","idCiudad",$aDatos["idCiudadResidencia"]); 
-$aCiudad=$oItem->getDatos(); 
-unset($oItem);
-
-$oItem=new Data("departamento","idDepartamento",$aDatos["idDepartamentoResidencia"]); 
-$aDepartamento=$oItem->getDatos(); 
-unset($oItem);
-
-$foto="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
-if($aDatos["foto"]!=""){
-    $foto=$URL.$aDatos["foto"]; 
-}
-
-if($aDatos["idRol"]==1){
-  $rol='Super Administrador'; 
-}else if($aDatos["idRol"]==2){
-  $rol='Contador'; 
-}else if($aDatos["idRol"]==3){
-  $rol='Empresa'; 
-}else{
-  $rol='Empleado'; 
-}
-
-$oLista = new Lista('departamento');
-$lDepartamento=$oLista->getLista();
-unset($oLista);
-
-
-$oLista = new Lista('ciudad');
-$oLista->setFiltro("idDepartamento","=",$aDatos["idDepartamentoResidencia"]);
-$aCiudades=$oLista->getLista();
-unset($oLista);
-?>
-<style type="text/css">
-  input[readonly]{
-    background-color: #FFFF !important;
-    text-transform: uppercase;
-  }
-</style>
-<section class="section">
-        <ul class="breadcrumb breadcrumb-style ">
-          <li class="breadcrumb-item">
-            <a href="<?php echo $URL; ?>">
-              <i class="fas fa-home"></i></a>
-          </li>
-          <li class="breadcrumb-item">Perfil</li>
-        </ul>
-        <div class="section-body">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h4>Datos de Usuario</h4>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-3">
-                    <ul class="nav nav-pills flex-column" id="myTab4" role="tablist">
-                      <li class="nav-item">
-                        <a class="nav-link active" id="home-tab4" data-toggle="tab" href="#home4" role="tab"
-                          aria-controls="home" aria-selected="true">Perfil</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" id="profile-tab4" data-toggle="tab" href="#profile4" role="tab"
-                          aria-controls="profile" aria-selected="false">Cambiar clave</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" id="contact-tab4" data-toggle="tab" href="#contact4" role="tab"
-                          aria-controls="contact" aria-selected="false">Actualizar Datos</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="col-md-9">
-                    <div class="tab-content no-padding" id="myTab2Content">
-                      <div class="tab-pane fade show active" id="home4" role="tabpanel" aria-labelledby="home-tab4">
-                        <div class="row">
-                          <div class="col-md-3 centrar">
-                            <div class="foto-datos" style="background-image: url(<?php echo $foto; ?>)">
-                              
-                            </div>
-                          </div>
-                          <div class="col-md-9">
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">N° Documento:</label>
-                                   <input type="text" class="form-control numero" value="<?php echo $aDatos["numeroDocumento"]; ?>" readonly>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Nombre:</label>
-                                  <input type="text" class="form-control" readonly value="<?php echo $aDatos["nombreUsuario"]; ?>">
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Apellido:</label>
-                                  <input type="text" class="form-control" readonly value="<?php echo $aDatos["apellidoUsuario"]; ?>">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Email:</label>
-                                  <input type="email" class="form-control" readonly value="<?php echo $aDatos["correo"]; ?>">
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Telefono:</label>
-                                  <input type="text" class="form-control " readonly value="<?php echo $aDatos["telefono"]; ?>">
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Ciudad:</label>
-                                  <input type="text" class="form-control " readonly value="<?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?>">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Direccion:</label>
-                                  <input type="email" class="form-control" readonly value="<?php echo $aDatos["direccion"]; ?>">
-                                </div>
-                              </div>
-                              <?php if($aDatos["idRol"]!=3){ ?>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Genero:</label>
-                                  <input type="text" class="form-control " readonly value="<?php echo $aDatos['genero']==1?'Masculino':'Femenino'; ?>">
-                                </div>
-                              </div>
-                              <?php } ?>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Rol:</label>
-                                  <input type="text" class="form-control " readonly value="<?php echo $rol; ?>">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="tab-pane fade" id="profile4" role="tabpanel" aria-labelledby="profile-tab4">
-                        <form enctype="multipart/form-data" id="frmCambiarClave">
-                            <input type="hidden" name="datos[idUsuario]" id="datos[idUsuario]" value="<?php echo $_SESSION['idUsuario']; ?>">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="negrita">Nueva clave<span class="requerido">*</span>:</label>
-                                    <input type="password" class="form-control mayusculas" name="datos[clave]" id="datos[clave]" placeholder="Nueva clave" required>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="negrita">Repetir clave<span class="requerido">*</span>:</label>
-                                    <input type="password" class="form-control mayusculas" name="datos[nuevaClave]" id="datos[nuevaClave]" placeholder="Repetir clave" required>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="card-footer text-right">
-                              <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
-                            </div>
-                          </form>
-                      </div>
-                      <div class="tab-pane fade" id="contact4" role="tabpanel" aria-labelledby="contact-tab4">
-                        <form enctype="multipart/form-data" id="frmNuevo">
-                            <input type="hidden" name="datos[idUsuario]" id="datos[idUsuario]" value="<?php echo $_SESSION['idUsuario']; ?>">
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Tipo Documento<span class="requerido">*</span>:</label>
-                                  <select class="form-control" name="datos[tipoDocumento]" id="datos[tipoDocumento]" required>
-                                    <option value="">Seleccione una opción</option>
-                                    <option <?php if($aDatos['tipoDocumento']==1){ echo 'selected'; } ?> value="1">Cédula Ciudadanía</option>
-                                    <option <?php if($aDatos['tipoDocumento']==2){ echo 'selected'; } ?>value="2">Pasaporte</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Nombres<span class="requerido">*</span>:</label>
-                                  <input type="text" class="form-control" name="datos[nombres]" id="datos[nombres]" required value="<?php echo $aDatos["nombreUsuario"]; ?>">
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
-                                  <input type="text" class="form-control" name="datos[apellidos]" id="datos[apellidos]" required value="<?php echo $aDatos["apellidoUsuario"]; ?>">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Genero<span class="requerido">*</span>:</label>
-                                  <select class="form-control" name="datos[genero]" id="datos[genero]" required>
-                                    <option value="">Seleccione una opción</option>
-                                    <option <?php if($aDatos['genero']==1){ echo 'selected'; } ?> value="1">Masculino</option>
-                                    <option <?php if($aDatos['genero']==2){ echo 'selected'; } ?> value="2">Femenino</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Email<span class="requerido">*</span>:</label>
-                                  <input type="email" class="form-control" name="datos[correo]" id="datos[correo]" required value="<?php echo $aDatos["correo"]; ?>">
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Telefono<span class="requerido">*</span>:</label>
-                                  <input type="text" class="form-control numero" name="datos[telefono]" id="datos[telefono]" required value="<?php echo $aDatos["telefono"]; ?>">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Departamento residencia<span class="requerido">*</span>:</label>
-                                  <select class="form-control" name="datos[idDepartamentoResidencia]" id="datos[idDepartamentoResidencia]" required>
-                                    <option value="">Seleccione una opción</option>
-                                    <?php foreach($lDepartamento as $item){ ?>
-                                    <option <?php if($aDatos['idDepartamentoResidencia']==$item["idDepartamento"]){ echo 'selected'; } ?> value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
-                                    <?php } ?>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Ciudad residencia<span class="requerido">*</span>:</label>
-                                  <select class="form-control" name="datos[idCiudadResidencia]" id="datos[idCiudadResidencia]" required>
-                                    <option value="">Seleccione una opción</option>
-                                    <?php foreach($aCiudades as $item){ ?>
-                                    <option <?php if($aDatos['idCiudadResidencia']==$item["idCiudad"]){ echo 'selected'; } ?> value='<?php echo $item["idCiudad"]; ?>'><?php echo $item["nombre"]; ?></option>
-                                    <?php } ?>
-                                  </select>
-                                </div>
-                              </div>
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Dirección<span class="requerido">*</span>:</label>
-                                  <input type="text" class="form-control" name="datos[direccion]" id="datos[direccion]" required value="<?php echo $aDatos["direccion"]; ?>">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-md-4">
-                                <div class="form-group">
-                                  <label class="negrita">Foto:</label>
-                                  <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="file" name="file" accept="image/*">
-                                    <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="card-footer text-right">
-                              <a class="btn btn-primary mr-1" id="btnActualizar">Guardar</a>
-                            </div>
-                          </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-</section>
+<?php
+
+$oItem=new Data("usuario","idUsuario",$_SESSION["idUsuario"]); 
+$aDatos=$oItem->getDatos(); 
+unset($oItem);
+
+
+$oItem=new Data("ciudad","idCiudad",$aDatos["idCiudadResidencia"]); 
+$aCiudad=$oItem->getDatos(); 
+unset($oItem);
+
+
+
+$oItem=new Data("departamento","idDepartamento",$aDatos["idDepartamentoResidencia"]); 
+$aDepartamento=$oItem->getDatos(); 
+unset($oItem);
+
+
+
+$foto="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
+if($aDatos["foto"]!=""){
+    $foto=$URL.$aDatos["foto"]; 
+}
+
+
+
+if($aDatos["idRol"]==1){
+  $rol='Super Administrador'; 
+}else if($aDatos["idRol"]==2){
+  $rol='Contador'; 
+}else if($aDatos["idRol"]==3){
+  $rol='Empresa'; 
+}else if($aDatos["idRol"]==4){
+$rol='Contador'; 
+}else{
+  $rol='Empleado'; 
+}
+
+
+
+$oLista = new Lista('departamento');
+
+$lDepartamento=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+$oLista = new Lista('ciudad');
+
+$oLista->setFiltro("idDepartamento","=",$aDatos["idDepartamentoResidencia"]);
+
+$aCiudades=$oLista->getLista();
+
+unset($oLista);
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Perfil</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="col-md-12">
+
+            <div class="card">
+
+              <div class="card-header">
+
+                <h4>Datos de Usuario</h4>
+
+              </div>
+
+              <div class="card-body">
+
+                <div class="row">
+
+                  <div class="col-md-3">
+
+                    <ul class="nav nav-pills flex-column" id="myTab4" role="tablist">
+
+                      <li class="nav-item">
+
+                        <a class="nav-link active" id="home-tab4" data-toggle="tab" href="#home4" role="tab"
+
+                          aria-controls="home" aria-selected="true">Perfil</a>
+
+                      </li>
+
+                      <li class="nav-item">
+
+                        <a class="nav-link" id="profile-tab4" data-toggle="tab" href="#profile4" role="tab"
+
+                          aria-controls="profile" aria-selected="false">Cambiar clave</a>
+
+                      </li>
+
+                      <li class="nav-item">
+
+                        <a class="nav-link" id="contact-tab4" data-toggle="tab" href="#contact4" role="tab"
+
+                          aria-controls="contact" aria-selected="false">Actualizar Datos</a>
+
+                      </li>
+
+                    </ul>
+
+                  </div>
+
+                  <div class="col-md-9">
+
+                    <div class="tab-content no-padding" id="myTab2Content">
+
+                      <div class="tab-pane fade show active" id="home4" role="tabpanel" aria-labelledby="home-tab4">
+
+                        <div class="row">
+
+                          <div class="col-md-3 centrar">
+
+                            <div class="foto-datos" style="background-image: url(<?php echo $foto; ?>)">
+
+                              
+
+                            </div>
+
+                          </div>
+
+                          <div class="col-md-9">
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">N° Documento:</label>
+
+                                   <input type="text" class="form-control numero" value="<?php echo $aDatos["numeroDocumento"]; ?>" readonly>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Nombre:</label>
+
+                                  <input type="text" class="form-control" readonly value="<?php echo $aDatos["nombreUsuario"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Apellido:</label>
+
+                                  <input type="text" class="form-control" readonly value="<?php echo $aDatos["apellidoUsuario"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Email:</label>
+
+                                  <input type="email" class="form-control" readonly value="<?php echo $aDatos["correo"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Telefono:</label>
+
+                                  <input type="text" class="form-control " readonly value="<?php echo $aDatos["telefono"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Ciudad:</label>
+
+                                  <input type="text" class="form-control " readonly value="<?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Direccion:</label>
+
+                                  <input type="email" class="form-control" readonly value="<?php echo $aDatos["direccion"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <?php if($aDatos["idRol"]!=3){ ?>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Genero:</label>
+
+                                  <input type="text" class="form-control " readonly value="<?php echo $aDatos['genero']==1?'Masculino':'Femenino'; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <?php } ?>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Rol:</label>
+
+                                  <input type="text" class="form-control " readonly value="<?php echo $rol; ?>">
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <div class="tab-pane fade" id="profile4" role="tabpanel" aria-labelledby="profile-tab4">
+
+                        <form enctype="multipart/form-data" id="frmCambiarClave">
+
+                            <input type="hidden" name="datos[idUsuario]" id="datos[idUsuario]" value="<?php echo $_SESSION['idUsuario']; ?>">
+
+                            <div class="row">
+
+                              <div class="col-md-12">
+
+                                <div class="form-group">
+
+                                    <label class="negrita">Nueva clave<span class="requerido">*</span>:</label>
+
+                                    <input type="password" class="form-control mayusculas" name="datos[clave]" id="datos[clave]" placeholder="Nueva clave" required>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-12">
+
+                                <div class="form-group">
+
+                                    <label class="negrita">Repetir clave<span class="requerido">*</span>:</label>
+
+                                    <input type="password" class="form-control mayusculas" name="datos[nuevaClave]" id="datos[nuevaClave]" placeholder="Repetir clave" required>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="card-footer text-right">
+
+                              <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                            </div>
+
+                          </form>
+
+                      </div>
+
+                      <div class="tab-pane fade" id="contact4" role="tabpanel" aria-labelledby="contact-tab4">
+
+                        <form enctype="multipart/form-data" id="frmNuevo">
+
+                            <input type="hidden" name="datos[idUsuario]" id="datos[idUsuario]" value="<?php echo $_SESSION['idUsuario']; ?>">
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Tipo Documento<span class="requerido">*</span>:</label>
+
+                                  <select class="form-control" name="datos[tipoDocumento]" id="datos[tipoDocumento]" required>
+
+                                    <option value="">Seleccione una opción</option>
+
+                                    <option <?php if($aDatos['tipoDocumento']==1){ echo 'selected'; } ?> value="1">Cédula Ciudadanía</option>
+
+                                    <option <?php if($aDatos['tipoDocumento']==2){ echo 'selected'; } ?>value="2">Pasaporte</option>
+
+                                  </select>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Nombres<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control" name="datos[nombres]" id="datos[nombres]" required value="<?php echo $aDatos["nombreUsuario"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control" name="datos[apellidos]" id="datos[apellidos]" required value="<?php echo $aDatos["apellidoUsuario"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Genero<span class="requerido">*</span>:</label>
+
+                                  <select class="form-control" name="datos[genero]" id="datos[genero]" required>
+
+                                    <option value="">Seleccione una opción</option>
+
+                                    <option <?php if($aDatos['genero']==1){ echo 'selected'; } ?> value="1">Masculino</option>
+
+                                    <option <?php if($aDatos['genero']==2){ echo 'selected'; } ?> value="2">Femenino</option>
+
+                                  </select>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Email<span class="requerido">*</span>:</label>
+
+                                  <input type="email" class="form-control" name="datos[correo]" id="datos[correo]" required value="<?php echo $aDatos["correo"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control numero" name="datos[telefono]" id="datos[telefono]" required value="<?php echo $aDatos["telefono"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Departamento residencia<span class="requerido">*</span>:</label>
+
+                                  <select class="form-control" name="datos[idDepartamentoResidencia]" id="datos[idDepartamentoResidencia]" required>
+
+                                    <option value="">Seleccione una opción</option>
+
+                                    <?php foreach($lDepartamento as $item){ ?>
+
+                                    <option <?php if($aDatos['idDepartamentoResidencia']==$item["idDepartamento"]){ echo 'selected'; } ?> value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                                    <?php } ?>
+
+                                  </select>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Ciudad residencia<span class="requerido">*</span>:</label>
+
+                                  <select class="form-control" name="datos[idCiudadResidencia]" id="datos[idCiudadResidencia]" required>
+
+                                    <option value="">Seleccione una opción</option>
+
+                                    <?php foreach($aCiudades as $item){ ?>
+
+                                    <option <?php if($aDatos['idCiudadResidencia']==$item["idCiudad"]){ echo 'selected'; } ?> value='<?php echo $item["idCiudad"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                                    <?php } ?>
+
+                                  </select>
+
+                                </div>
+
+                              </div>
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+
+                                  <input type="text" class="form-control" name="datos[direccion]" id="datos[direccion]" required value="<?php echo $aDatos["direccion"]; ?>">
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="row">
+
+                              <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                  <label class="negrita">Foto:</label>
+
+                                  <div class="custom-file">
+
+                                    <input type="file" class="custom-file-input" id="file" name="file" accept="image/*">
+
+                                    <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                                  </div>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                            <div class="card-footer text-right">
+
+                              <a class="btn btn-primary mr-1" id="btnActualizar">Guardar</a>
+
+                            </div>
+
+                          </form>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+</section>
+

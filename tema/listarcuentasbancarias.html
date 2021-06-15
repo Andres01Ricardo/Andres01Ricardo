@@ -1,5 +1,5 @@
 <?php 
-if($_SESSION["idRol"]==1||$_SESSION["idRol"]==2){
+if(empty($_SESSION["idEmpresa"])){
 	require_once("tema/listarcuentasbancariasgral.html"); 
 ?>
 <script src="<?php echo $URL; ?>assets/scripts/listarcuentasbancariasgral.js?<?php echo uniqid(); ?>"></script>

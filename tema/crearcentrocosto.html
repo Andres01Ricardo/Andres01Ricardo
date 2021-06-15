@@ -123,6 +123,7 @@ $aCuentaContable=$oCuentaContable->getCuentasContables();
                 </div>
 
                 <div class="card-body">
+                  <?php if(empty($_SESSION['idEmpresa'])){ ?>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
@@ -136,6 +137,9 @@ $aCuentaContable=$oCuentaContable->getCuentasContables();
                       </div>
                     </div>
                   </div>
+                  <?php }else{ ?>
+                    <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                  <?php } ?>
 
                   <div class="row">
 

@@ -64,6 +64,7 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
           <h3 class="swal-title">ESCOJA LOS FILTROS</h3><br>
             <form method="POST" action="verbalancecomprobacion">
               <div class="swal-content">
+                <?php if(empty($_SESSION['idEmpresa'])){ ?>
                 <label>EMPRESA</label>
                 <select class=" form-control" name="empresa" id="empresa" required>
                   
@@ -71,6 +72,9 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
                   <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
                   <?php } ?>
                 </select>
+                <?php }else{ ?>
+                <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                <?php } ?>
                 
           <br>
           <br>

@@ -49,17 +49,21 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 <div class="card card-body">
 	
 	<form enctype="multipart/form-data" id="frmGuardar">
-		
+			<?php if (empty($_SESSION['idEmpresa'])) {
+				// code...
+			 ?>
 			<div class="col-md-6">
 				<label>Empresa</label>
 				<select class="form-control" name="item[0][idEmpresa]" id="item[0][idEmpresa]" required>
 					<option value="">Seleccione</option>
-					<?php foreach($aEmpresa as $index => $iEmpresa){?>
+					<?php foreach($aEmpresa as $index => $iEmpresa){ ?>
 						<option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
 					<?php } ?>
 				</select>
 			</div>
-		
+			<?php }else{ ?>
+          <input type="hidden" name="item[0][idEmpresa]" id="item[0][idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+      <?php } ?>
 		<br> <br>
 	<table class="table" cellspacing="6" cellpadding="10">
 		<tbody>

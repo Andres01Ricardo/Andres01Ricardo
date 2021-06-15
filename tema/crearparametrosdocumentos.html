@@ -58,6 +58,9 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 	<form enctype="multipart/form-data" id="frmGuardar">
 	<br>
 	<div class="row">
+		<?php if (empty($_SESSION['idEmpresa'])) { ?>
+	
+	
 		<div class="col-md-3">
 			<label>Empresa</label>
 			<select class="form-control" name="datos[idEmpresa]" id="idEmpresa" required>
@@ -67,7 +70,9 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 				<?php } ?>
 			</select>
 		</div>
-		
+		<?php }else { ?>
+      <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+    <?php } ?>
 		<div class="col-md-4">
 	
 			<label>Tipo</label>

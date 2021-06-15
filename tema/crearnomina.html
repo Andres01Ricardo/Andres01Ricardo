@@ -222,7 +222,9 @@ $nuevafecha17 = date ( 'n' , $nuevafecha17 );
                       </div>
 
                     </div>
-
+                    <?php if (empty($_SESSION['idEmpresa'])) {
+                      // code...
+                    ?>
                     <div class=" col-md-4">
 
                       <div class="form-group">
@@ -244,6 +246,9 @@ $nuevafecha17 = date ( 'n' , $nuevafecha17 );
                       </div>
 
                     </div>
+                  <?php }else { ?>
+                    <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                  <?php } ?>
 
                     <div class="col-md-4">
 

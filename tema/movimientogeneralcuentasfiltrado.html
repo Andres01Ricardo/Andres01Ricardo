@@ -3,8 +3,12 @@
 require_once("class/informes.php");
 
 $oControl=new Control();
-
-$idEmpresa=$_POST["empresa"];
+if (empty($_SESSION['idEmpresa'])) {
+  $idEmpresa=$_POST["empresa"];
+}
+if (!empty($_SESSION['idEmpresa'])) {
+  $idEmpresa=$_SESSION['idEmpresa'];
+}
 
 $desde=$_POST["desde"];
 $hasta=$_POST["hasta"];

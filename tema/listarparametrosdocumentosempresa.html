@@ -4,15 +4,15 @@ require_once("./class/parametrosdocumentos.php");
 
 
 $oControl=new Control(); 
-
+if (empty($_SESSION["idEmpresa"])) {
 $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
-if($id==""){
 
-  echo '<script>window.history.back()</script>'; 
-
-}
 
 $decrip["cadena"]=$id; 
+}
+if (!empty($_SESSION["idEmpresa"])) {
+  $id=$_SESSION["idEmpresa"];
+}
 
 $id=$oControl->desencriptar($decrip); 
 

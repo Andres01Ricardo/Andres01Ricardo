@@ -16,7 +16,7 @@ class Empresa extends Sql{
 
 		if(!isset($_SESSION)){ session_start(); }
 
-		if($_SESSION["idRol"]==2){
+		if(empty($_SESSION["idEmpresa"])){
 			if ($aDatos["ingresoPerfilEmpresa"]==0) {
 			
 
@@ -24,7 +24,7 @@ class Empresa extends Sql{
 			}
 
 		}
-		if($_SESSION["idRol"]==3){
+		if(!empty($_SESSION["idEmpresa"])){
 			
 			
 

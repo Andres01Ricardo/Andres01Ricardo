@@ -7,7 +7,7 @@ require_once("class/clientes.php");
 
 
 $oControl=new Control(); 
-
+if (empty($_SESSION["idEmpresa"])) {
 $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
 if($id==""){
 
@@ -18,61 +18,18 @@ if($id==""){
 $decrip["cadena"]=$id; 
 
 $id=$oControl->desencriptar($decrip); 
+}
+if (!empty($_SESSION["idEmpresa"])) {
+  $id=$_SESSION['idEmpresa'];
+}
+  $oProveedor=new Terceros();
+  $aProveedores=$oProveedor->getProveedoresEmpresa(array("idEmpresa"=>$id));
 
-
-$oProveedor=new Terceros();
-$aProveedores=$oProveedor->getProveedoresEmpresa(array("idEmpresa"=>$id));
-
-// if($_SESSION["idRol"]==2){
-
-//   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
-
-//   $valUser=$oItem->getDatos(); 
-
-//   unset($oItem);  
+  $oClientes=new Clientes(); 
+  $aLista=$oClientes->getClientesE(array("idEmpresa"=>$id));
 
 
 
-//   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
-  
-//   $aProveedores=$oProveedor->getProveedoresEmpresa(array("ingresoPerfilEmpresa"=>$validarIngreso));
-
-// }else{
-  
-// }
-// $aLista=$oProveedor->getProveedoresEmpresa();
-
-
-
-
-
-$oClientes=new Clientes(); 
-$aLista=$oClientes->getClientesE(array("idEmpresa"=>$id));
-
-
-// $oClientes=new Clientes(); 
-// $aClientes=$oClientes->getClientesE(array("idEmpresa"=>$id));
-
-// print_r($aClientes);
-
-//$oProveedor=new Terceros(); 
-
-//$aProveedor=$oProveedor->getProveedoresEmpresa();
-
-//$oCliente=new Terceros(); 
-
-//$aClientes=$oCliente->getClientesEmpresa();
-
-
-
-//$oOtro=new Terceros(); 
-
-//$aOtros=$oOtro->getOtrosEmpresa();
-
-
-//$oTercero=new Terceros(); 
-
-//$aTerceros=$oTercero->getTercerosEmpresa();
 
 ?>
 

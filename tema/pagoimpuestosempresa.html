@@ -10,7 +10,7 @@ $oEmpresa=new Empresa();
 
 $oControl=new Control(); 
 
-if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
+if(empty($_SESSION['idEmpresa'])){
   
   $oControl=new Control(); 
 
@@ -25,7 +25,7 @@ if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
     $idEmpresa=$oControl->desencriptar($decrip); 
     
     }
-  }else if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4){
+  }else if(!empty($_SESSION['idEmpresa'])){
 
   $idEmpresa= $_SESSION["idEmpresa"];
 

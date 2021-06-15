@@ -1,11 +1,22 @@
-
 <?php 
+
+if (!empty($_SESSION['idEmpresa'])) {
+  
+
+  ?>
+  <script type="text/javascript">
+    window.location.replace("listarparametrosdocumentosempresa");
+  </script>
+  <?php  
+  
+
+}
+else{
+
 
 require_once("class/empresa.php");
 
 $oControl=new Control(); 
-
-
 
 $validarIngreso=1; 
 $oEmpresa=new Empresa(); 
@@ -168,6 +179,6 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 </section>
 
 
-
+<?php } ?>
 
 

@@ -7,19 +7,21 @@ require_once("class/clientes.php");
 
 
 $oControl=new Control(); 
+if (empty($_SESSION["idEmpresa"])) {
+  $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+  if($id==""){
 
-$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
-if($id==""){
+    echo '<script>window.history.back()</script>'; 
 
-  echo '<script>window.history.back()</script>'; 
+  }
 
+  $decrip["cadena"]=$id; 
+
+  $id=$oControl->desencriptar($decrip); 
 }
-
-$decrip["cadena"]=$id; 
-
-$id=$oControl->desencriptar($decrip); 
-
-
+if (!empty($_SESSION["idEmpresa"])) {
+  $id=$_SESSION['idEmpresa'];
+}
 $oLista=new Lista("centro_costo");
 $oLista->setFiltro("idEmpresa","=",$id);
 $aCentroCosto=$oLista->getLista();

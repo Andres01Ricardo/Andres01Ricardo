@@ -5,7 +5,7 @@ $oControl=new Control();
 
 
 
-if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4 || $_SESSION["idEmpresa"]!=""){
+if(!empty($_SESSION["idEmpresa"])){
   $oLista = new Lista('estado_financiero');
   $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
 

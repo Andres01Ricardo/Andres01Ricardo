@@ -9,29 +9,31 @@ $oControl=new Control();
 $oNomina=new Nomina();
 
 
-if($_SESSION["idRol"]==3){
+if(!empty($_SESSION["idEmpresa"])){
 
 $aNovedades=$oNomina->getNovedades(array("idEmpresa"=>$_SESSION["idEmpresa"])); 
 }
+if (empty($_SESSION["idEmpresa"])) {
+  // code...
 
-if($_SESSION["idRol"]==2){
+  if($_SESSION["idRol"]==2){
 
-  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+    $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
 
-  $valUser=$oItem->getDatos(); 
+    $valUser=$oItem->getDatos(); 
 
-  unset($oItem);  
+    unset($oItem);  
 
 
 
-  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
-  $aNovedades=$oNomina->getNovedades(array("ingresoPerfilEmpresa"=>$validarIngreso)); 
+    $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+    $aNovedades=$oNomina->getNovedades(array("ingresoPerfilEmpresa"=>$validarIngreso)); 
 
+  }
+  if($_SESSION["idRol"]==1){
+  	$aNovedades=$oNomina->getNovedades(); 
+  }
 }
-if($_SESSION["idRol"]==1){
-	$aNovedades=$oNomina->getNovedades(); 
-}
-
 
 
 
