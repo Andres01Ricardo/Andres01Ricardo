@@ -1,3 +1,7 @@
+var aDatos=[]; 
+// var aDatosC=[]; 
+// var aDatosT=[]; 
+ var debito=0;
 $(document).ready(function(e){
 
     var overlay = document.getElementById("overlayImpuestos");
@@ -7,15 +11,56 @@ $(document).ready(function(e){
     overlay.classList.add('active');
     popup.classList.add('active');
 
-    // document.getElementById('divTercero').style.visibility= "hidden";
-    // document.getElementById('divCuenta').style.visibility= "hidden";
-    // document.getElementById('divTipoTercero').style.visibility= "hidden";
+    
+
+
+    if ($("#empresa").val()!=""){
+  aDatos=[]; 
+  var idEmpresa=$("#empresa").val();
+  // alert(idEmpresa);
+  $.ajax({
+
+      url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+
+      type:"POST", 
+
+      data: {"idEmpresa":idEmpresa}, 
+
+      dataType: "json",
+
+      }).done(function(msg){  
+
+        msg.forEach(function(element,index){
+
+          aDatos.push({
+
+              value: element.idCuentaContable,
+
+              label: element.codigoCuentaContable+" - "+element.nombre,
+
+              naturaleza: element.naturaleza,
+
+              // tercero:element.tercero,
+
+              centroCosto:element.centroCosto,
+
+            })
+
+        })
+        console.log(aDatos);
+        autocomplete(); 
+
+
+    }); 
+
+  }
+
+
+
+
 });
 
-var aDatos=[]; 
-// var aDatosC=[]; 
-// var aDatosT=[]; 
- var debito=0;
+
  // var tabla = document.getElementById('tabla');
  // tabla.style.display="none";
 

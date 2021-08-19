@@ -2,7 +2,34 @@ $(document).ready(function(e){
 	$('.select2').select2(); 
 	$('.datatooltip').tooltip(); 
 	$( ".datepicker" ).datepicker({ dateFormat:'yy-mm-dd' });
+	
+
+
+
+	function changeNumber() {
+        // value = $('#value').text();
+        $.ajax({
+            type: "POST",
+            url:"functions/sesion/verificarsesion.php", 
+            success: function(data) {
+                // $('#value').text(data);
+                if (data==false) {
+                	location.reload();
+                }
+                console.log(data);
+                // alert('funciona');
+            }
+        });
+        
+    }
+	setInterval(changeNumber, 120000);
+	// setInterval(changeNumber, 5000);
 })
+
+
+    
+    
+
 function dataTable($elemento){
 	$($elemento).dataTable({
 	  "columnDefs": [

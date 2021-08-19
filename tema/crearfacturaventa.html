@@ -12,7 +12,8 @@ $oEmpresa=new Empresa();
 if($_SESSION["idRol"]==1){
 $validarIngreso=1;
 }
-if($_SESSION["idRol"]==2){
+// if($_SESSION["idRol"]==2){
+if(empty($_SESSION["idEmpresa"])){
 
   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
 
@@ -25,7 +26,7 @@ if($_SESSION["idRol"]==2){
   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
 
 $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
-}else{
+}if(!empty($_SESSION["idEmpresa"])){
   $aEmpresas=$oEmpresa->getEmpresas();
 }
 
@@ -43,9 +44,10 @@ unset($oLista);
 
 
 
-if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
+// if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
+if(!empty($_SESSION["idEmpresa"])){
 
-  $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1)); 
+  $aClientes=$oClientes->getClientesEmpresa(); 
 
 }
 
@@ -172,7 +174,7 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 
                           <?php foreach($aClientes as $iCliente){ ?>
 
-                          <option value="<?php echo $iCliente["idCliente"]; ?>"><?php echo $iCliente["razonSocial"]; ?></option>
+                          <option value="<?php echo $iCliente["idTercero"]; ?>"><?php echo $iCliente["nit"].' - '.$iCliente["razonSocial"]; ?></option>
 
                         <?php } ?>
 
@@ -281,9 +283,9 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 
                         <tbody>
 
-                            <tr>
+                            <tr  class="filaItem">
 
-                              <td>1</td>
+                              <td>1<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item[0][registrar]" numero='0'><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span></td>
 
                               <td><input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="Detalle">
 
@@ -368,6 +370,174 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
                         </tfoot>
 
                       </table>
+                      <div class="card-header">
+
+                    <h4>Impuestos</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <div class=" col-md-3 ">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Tipo deducción<span class="requerido">*</span>:</label>
+
+                            <select class="form-control mayusculas" id="tipoDeduccion">
+
+                            <option value="">Seleccione una opción</option>
+
+                            <option value="3">ARL</option>
+
+                            <option value="4">Otros descuentos autorizados</option>
+
+                            <option value="2">RETE ICA</option>
+
+                            <option value="1">Retención</option>
+
+                            <option value="5">Retención salarios</option>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3 ocultar concepto-select">
+
+                        <div class="form-group">
+
+                            <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+
+                            <select class="form-control" name="conceptoSelect" id="conceptoSelect">
+
+                            <option value="">Seleccione una opción</option>
+
+                            
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 concepto-texto">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Concepto<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="conceptoText" id="conceptoText" >
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-2 ocultar baseimpuestos">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Base Impuestos<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control monedaD decimales " name="baseImpuestos" id="baseImpuestos">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 valor">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Valor<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda " name="valor" id="valor">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 boton-agregar">
+
+                        <div class="form-group text-right">
+
+                            <label class="negrita d-block">&nbsp;</label>
+
+                            <a class="btn btn-success mr-1" id="btnAgregar">Agregar</a>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-12 col-lg-12">
+
+                        <table class="table table-striped mayusculas" id="tableDeducciones">
+
+                          <thead>
+
+                            <tr>
+
+                              <th>Tipo Deducción</th>
+
+                              <th>Descripción</th>
+
+                              <th>Valor</th>
+
+                              <th class="text-center" style="width: 50px">-</th>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total Deducciones:</label>
+
+                            <input type="text" class="form-control moneda decimales totalDeduccion" name="datos[totalDeduccion]" id="datos[totalDeduccion]" value="0" readonly>
+
+                        </div>
+
+                      </div>
+                  </div>
+              </div>
+
+                      <div class="col-md-4 ocultar" id="divCuentaContableTotal">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Cuenta contable total a Pagar:</label>
+
+                          <select class="form-control" name="datos[cuentaContableTotal]" id="cuentaContableTotal">
+
+                            
+                        
+                          </select>
+
+                        </div>
+
+                      </div>
+
 
                     </div>
 
@@ -392,6 +562,102 @@ if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
 </section>
 
 </form>
+<?php if(!empty($_SESSION['idEmpresa'])){ 
 
+  $idEmpresa=$_SESSION["idEmpresa"];
+
+  $oItem=new Lista("parametros_documentos");
+  $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+  $aParametros=$oItem->getLista();
+  unset($oItem);
+}
+?>
+<div class="modal fade bd-example-modal-lg" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Parametrizar producto</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body ui-front">
+
+          <form enctype="multipart/form-data" id="frmGuardarProducto">
+
+            <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+            <div class="row">
+          <div class=" col-md-3 ">
+            <div class="form-group">
+              <label class="negrita d-block">Producto:</label>
+
+              <input type="text" class="form-control producto" name="item[0][productoCompra]"  required>
+              <input type="hidden" class="form-control idProducto"  name="item[0][idProductoCompra]" required>
+
+            </div>
+          </div>
+          
+          <div class=" col-md-3 ">
+            <div class="form-group">
+              <label class="negrita d-block">Cuenta contable:</label>
+              <input type="text" class="form-control cuentaContable" name="item[0][cuentaContableProductoCompra]"   required>
+              <input type="hidden" class="form-control idCuentaContable" name="item[0][idCuentaContableProductoCompra]"  required>
+              <input type="hidden" class="form-control naturaleza" name="item[0][naturalezaProductoCompra]"   required>
+            </div>
+          </div>
+          <div class=" col-md-3 ">
+             <label class="negrita d-block">Tipo documento:</label>
+            <!-- <div class="form-inline"> -->
+                <div class="form-group">
+                <select class="form-control" name="item[0][tipoDocumentoProductoCompra]" id="tipoDocumento" >
+                  <?php foreach ($aParametros as $keyT => $valueT) {
+                  $oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueT["tipo"]);
+                  $aTipo=$oItem->getDatos();?>
+                  <option value="<?php echo $valueT["idParametrosDocumentos"]; ?>"><?php echo $aTipo['letra'].'-'.$valueT["comprobante"].'-'.$valueT['descripcion'];?></option> 
+                <?php } ?>
+                </select>
+              </div>
+            <!-- </div> -->
+          </div>
+           <div class=" col-md-3  ocultar">
+            <div class="form-group">
+              
+                <input type="hidden" name="item[0][naturalezaNuevaProducto]" value="compra">
+            </div>
+          </div>
+          <?php 
+        // } 
+          ?>
+
+        </div>
+        
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardarProducto">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 

@@ -44,7 +44,7 @@ unset($oItem);
 
 
 
-$oItem=new Data("cliente","idCliente",$aDatos["idCliente"]); 
+$oItem=new Data("tercero","idTercero",$aDatos["idCliente"]); 
 
 $aCliente=$oItem->getDatos(); 
 
@@ -212,7 +212,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                           <?php foreach($aClientes as $iCliente){ ?>
 
-                          <option <?php if($aCliente['idCliente']==$iCliente['idCliente']){echo 'selected';} ?> value="<?php echo $iCliente["idCliente"]; ?>"><?php echo $iCliente["razonSocial"]; ?></option>
+                          <option <?php if($aCliente['idTercero']==$iCliente['idTercero']){echo 'selected';} ?> value="<?php echo $iCliente["idTercero"]; ?>"><?php echo $iCliente["razonSocial"]; ?></option>
 
                         <?php } ?>
 
@@ -404,7 +404,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                   </div>
 
-                  <?php if(empty($_SESSION['idEmpresa'])){ ?>
+                  <?php if($_SESSION['idRol']==1 || $_SESSION['idRol']==2){ ?>
                   <div class="row">
 
                       <div class=" col-md-3 ">

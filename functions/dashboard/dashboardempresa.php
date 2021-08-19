@@ -131,8 +131,16 @@ $nivelEndeudamiento=round(($pasivo*100)/$activo);
 
  $utilidadOperacional=$oEmpresa->getRentabilidadCuenta(array("idEmpresa"=>$idEmpresa,"anio"=>$fechaIndicador[0],"mes"=>$fechaIndicador[1],"cuenta"=>'UTILIDAD OPERACIONAL'))[0];
 
+// if ($totalPasivoCorriente["total"]!="" || $totalPasivoCorriente["total"]!="0") {
+	
+// }
+if ($totalPasivoCorriente["total"]=="" || $totalPasivoCorriente["total"]=="0") {
+	$totalPasivoCorriente["total"]=$pasivo;	
+}
 
-$indiceLiquidez=$totalActivoCorriente["total"]/$totalPasivoCorriente["total"]; 
+$indiceLiquidez=$totalActivoCorriente["total"]/$totalPasivoCorriente["total"];
+
+
 $capitalTrabajo=$totalActivoCorriente["total"]-$totalPasivoCorriente["total"]; 
 
 $rentabilidadPatrimonio=$utilidadOperacional["valor"]/$totalPatrimonio["total"]; 
@@ -146,6 +154,12 @@ $listIndicador["rentabilidadPatrimonio"]=$rentabilidadPatrimonio;
 $listIndicador["rentabilidadActivo"]=$rentabilidadActivo;
 $listIndicador["capitalTrabajo"]="$".number_format($capitalTrabajo,0,",","."); 
 
+
+
+
+
 echo json_encode(array("rentabilidad"=>$aItem,"situacion"=>$listaSituacion,"facturacion"=>$aFacturacion,"indicador"=>$listIndicador,"ingresos"=>$ingresos,"gastos"=>$gastos));
+
+// print_r('-----');
 
 ?>

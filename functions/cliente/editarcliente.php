@@ -26,15 +26,15 @@ $id  = (isset($_REQUEST['id'] ) ? $_REQUEST['id'] : "" );
 
 
 
-$oItem=new Data("proveedor","nit",$datos["nitAnterior"]); 
-$aproveedor=$oItem->getDatos();
+$oItem=new Data("tercero","nit",$datos["nitAnterior"]); 
+$aTercero=$oItem->getDatos();
 unset($oItem);
 
-if (empty($aproveedor)) {
-	$oItem=new Data("proveedor","razonSocial",$datos["razonSocialAnterior"]); 
-	$aproveedorR=$oItem->getDatos();
+if (empty($aTercero)) {
+	$oItem=new Data("tercero","razonSocial",$datos["razonSocialAnterior"]); 
+	$aTerceroR=$oItem->getDatos();
 	unset($oItem);
-	if (!empty($aproveedorR)) {
+	if (!empty($aTerceroR)) {
 		$aDatosC["tipoPersona"]=$datos["tipoPersona"]; 
 
 		$aDatosC["nit"]=$datos["nit"]; 
@@ -53,8 +53,13 @@ if (empty($aproveedor)) {
 
 		$aDatosC["direccion"]=$datos["direccion"]; 
 
-
-		$oItem=new Data("proveedor","idProveedor",$aproveedorR["idProveedor"]); 
+		if ($datos["checkProveedor"]==1) {
+			$aDatosC["tipoTercero"]=4; 
+		}
+		if ($datos["checkProveedor"]!=1) {
+			$aDatosC["tipoTercero"]=1; 
+		}
+		$oItem=new Data("tercero","idTercero",$aTerceroR["idTercero"]); 
 
 		foreach($aDatosC  as $keyC => $valueC){
 
@@ -67,7 +72,7 @@ if (empty($aproveedor)) {
 		unset($oItem);
 	}
 }
-if (!empty($aproveedor)) {
+if (!empty($aTercero)) {
 		$aDatosC["tipoPersona"]=$datos["tipoPersona"]; 
 
 		$aDatosC["nit"]=$datos["nit"]; 
@@ -85,9 +90,15 @@ if (!empty($aproveedor)) {
 		$aDatosC["idCiudad"]=$datos["idCiudad"]; 
 
 		$aDatosC["direccion"]=$datos["direccion"]; 
+		if ($datos["checkProveedor"]==1) {
+			$aDatosC["tipoTercero"]=4; 
+		}
+		if ($datos["checkProveedor"]=='') {
+			$aDatosC["tipoTercero"]=1; 
+		}
 
 
-		$oItem=new Data("proveedor","idProveedor",$aproveedor["idProveedor"]); 
+		$oItem=new Data("tercero","idTercero",$aTercero["idTercero"]); 
 
 		foreach($aDatosC  as $keyC => $valueC){
 
@@ -99,7 +110,6 @@ if (!empty($aproveedor)) {
 
 		unset($oItem);
 }
-
 $oItem=new Data("empresa","nit",$datos["nitAnterior"]); 
 $aEmpresa=$oItem->getDatos();
 unset($oItem);
@@ -190,37 +200,37 @@ if (!empty($aEmpresa)) {
 
 
 
-$aDatos["tipoPersona"]=$datos["tipoPersona"]; 
+// $aDatos["tipoPersona"]=$datos["tipoPersona"]; 
 
-$aDatos["nit"]=$datos["nit"]; 
+// $aDatos["nit"]=$datos["nit"]; 
 
-$aDatos["digitoVerificador"]=$datos["digitoVerificador"]; 
+// $aDatos["digitoVerificador"]=$datos["digitoVerificador"]; 
 
-$aDatos["razonSocial"]=$datos["razonSocial"]; 
+// $aDatos["razonSocial"]=$datos["razonSocial"]; 
 
-$aDatos["email"]=$datos["email"]; 
+// $aDatos["email"]=$datos["email"]; 
 
-$aDatos["telefono"]=$datos["telefono"]; 
+// $aDatos["telefono"]=$datos["telefono"]; 
 
-$aDatos["idDepartamento"]=$datos["idDepartamento"]; 
+// $aDatos["idDepartamento"]=$datos["idDepartamento"]; 
 
-$aDatos["idCiudad"]=$datos["idCiudad"]; 
+// $aDatos["idCiudad"]=$datos["idCiudad"]; 
 
-$aDatos["direccion"]=$datos["direccion"]; 
+// $aDatos["direccion"]=$datos["direccion"]; 
 
 
 
-$oItem=new Data("cliente","idCliente",$id); 
+// $oItem=new Data("cliente","idCliente",$id); 
 
-foreach($aDatos  as $key => $value){
+// foreach($aDatos  as $key => $value){
 
-$oItem->$key=$value; 
+// $oItem->$key=$value; 
 
-}
+// }
 
-$oItem->guardar(); 
+// $oItem->guardar(); 
 
-unset($oItem);
+// unset($oItem);
 
 
 

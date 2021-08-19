@@ -425,31 +425,39 @@
 
 }
 
-.div-cuenta a{
+/*.div-cuenta a{*/
 
-    position: absolute;
+    /*position: absolute;*/
 
-    bottom: 0;
+    /*bottom: 0;*/
 
-    margin: auto;
+    /*margin: auto;*/
 
-    left: 0;
 
-    right: 0;
+    
 
-    border-top: 1px solid #CCC;
+    
 
-    background-color: #FFF;
+    
 
-    width: 100%;
-
-    text-align: center;
-
-}
+    /*text-align: center;*/
+/*}*/
 
 
 
-.div-cuenta a:hover{
+./*div-cuenta a:hover{
+
+    color: #0056b3;
+
+    text-decoration: none;
+
+    background-color: #fff5f5;
+
+}*/
+
+
+
+.div-contenido:hover{
 
     color: #0056b3;
 
@@ -458,6 +466,46 @@
     background-color: #fff5f5;
 
 }
+
+
+.div-contenido{
+
+    text-align: center;
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    top: 80%;
+
+    font-size: 16px;
+
+    width: 100%;
+
+    background-color: #FFF;
+
+    border-top: 1px solid #CCC;
+
+    /*text-transform: capitalize;*/
+
+}
+
+
+.movimientos{
+    display: inline-block;
+}
+.extractos{
+    display: inline-block;
+}
+.cargarextracto{
+    display: inline-block;
+}
+.cargarExtracto{
+    display: inline-block;
+}
+
 
 .image-login{
 

@@ -68,13 +68,14 @@ unset($oActividad);
                </div>
                <div class="col-md-4">
                  <div class="form-group">
-                   <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+                   <label class="negrita" id="labelNombre">Nombre<span class="requerido">*</span>:</label>
+                   <label class="negrita ocultar" id="labelRazon">Razón social<span class="requerido">*</span>:</label>
                    <input type="text" name="datos[nombre]" id="nombre" class="form-control" onkeypress="return letras(event);" onkeyup="aMayusculas(this.value,this.id);"   placeholder="Ingrese el nombre" required="true">
                  </div>
                </div>
               </div>
               <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4" id="divApellidos">
                  <div class="form-group">
                    <label class="negrita">Apellidos<span class="requerido">*</span>:</label>
                    <input type="text" name="datos[apellidos]" id="apellidos" class="form-control" onkeypress="return letras(event);" onkeyup="aMayusculas(this.value,this.id);"   placeholder="Ingrese los apellidos" required="true">
@@ -127,7 +128,7 @@ unset($oActividad);
             <div class="rows">
               <div class="col-md-4">
                  <div class="form-group">
-                  <label class="negrita">Encargado<span class="requerido">*</span>:</label>
+                  <label class="negrita">Encargado</label>
                     <select class="form-control" id="empleadoEncargado" name="datos[empleadoEncargado]" class="form-control"> 
                           <option value="0">Seleccione</option>
                           <?php foreach($aEncargado as $rowse){ ?>

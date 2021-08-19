@@ -1,5 +1,10 @@
 <?php 
 
+  ini_set("session.cookie_lifetime","6");
+  ini_set("session.gc_maxlifetime","6");
+  session_start();
+
+
 
 
 if($_SESSION["idRol"]==1){
@@ -50,6 +55,28 @@ require_once("tema/dashboardcontadorexterno.html");
 ?>
 
 <script src="<?php echo $URL; ?>assets/scripts/pipeline.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}
+else if($_SESSION["idRol"]==6){ 
+
+require_once("tema/estadisticas.html");
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/pipeline.js?<?php echo uniqid(); ?>"></script>
+
+<?php 
+
+}
+else if($_SESSION["idRol"]==7){ 
+
+require_once("tema/crearinventarioproductoterminados.html");
+
+?>
+
+<script src="<?php echo $URL; ?>assets/scripts/crearinventarioproductoterminados.js?<?php echo uniqid(); ?>"></script>
 
 <?php 
 

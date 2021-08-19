@@ -1,0 +1,251 @@
+<?php
+
+
+
+// require_once("class/empresa.php");
+
+$oControl=new Control(); 
+
+$idCuenta=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+$oLista=new Data('cuenta_contable',"idCuentaContable",$idCuenta);
+$aCuentaC=$oLista->getDatos();
+unset($oLista);
+
+
+$oLista=new Data('empresa',"idEmpresa",$aCuentaC["idEmpresa"]);
+$aEmpresa=$oLista->getDatos();
+unset($oLista);
+
+
+
+$codigoG=substr($aCuentaC["codigoCuenta"], 0,2);
+$codigoC=substr($aCuentaC["codigoCuenta"], 2,2);
+$codigoSC=substr($aCuentaC["codigoCuenta"], 4,2);
+$codigoA=substr($aCuentaC["codigoCuenta"], 6,2);
+$codigoSA=substr($aCuentaC["codigoCuenta"], 8,2);
+
+$oLista=new Lista("grupo_contable");
+$oLista->setFiltro("codigo","=",$codigoG);
+$aGrupoC=$oLista->getLista();
+unset($oLista);
+
+
+
+$oLista=new Lista("cuenta");
+$oLista->setFiltro("idGrupo","=",$aGrupoC[0]["idGrupo"]);
+$oLista->setFiltro("codigo","=",$codigoC);
+$cuenta=$oLista->getLista();
+unset($oLista);
+
+
+$oLista=new Lista("subcuenta");
+$oLista->setFiltro("idCuenta","=",$cuenta[0]["idCuenta"]);
+$oLista->setFiltro("codigo","=",$codigoSC);
+$subcuenta=$oLista->getLista();
+unset($oLista);
+
+// print_r($subcuenta);
+
+$oLista=new Lista("auxiliar");
+$oLista->setFiltro("idSubcuenta","=",$subcuenta[0]["idSubcuenta"]);
+$oLista->setFiltro("codigo","=",$codigoA);
+$auxiliar=$oLista->getLista();
+unset($oLista);
+// print_r($auxiliar);
+
+$oLista=new Lista("subauxiliar");
+$oLista->setFiltro("idAuxiliar","=",$auxiliar[0]["idAuxiliar"]);
+$oLista->setFiltro("codigo","=",$codigoSA);
+$subauxiliar=$oLista->getLista();
+unset($oLista);
+
+
+
+?>
+
+
+<div class="card card-body">
+	
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idCuentaContable]" id="idCuentaContable" value="<?php echo $idCuenta; ?>">
+			<?php if (empty($_SESSION['idEmpresa'])) {
+				
+			 ?>
+			<div class="col-md-6">
+				<label>Empresa</label>
+				<input type="text" name="empresa" id="empresa" value="<?php echo $aEmpresa["razonSocial"] ?>" readonly>
+				
+			</div>
+			<?php }else{ ?>
+          <!-- <input type="hidden" name="item[0][idEmpresa]" id="item[0][idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>"> -->
+          <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa["razonSocial"] ?>" readonly>
+      <?php } ?>
+		<br> <br>
+	<table class="table" cellspacing="6" cellpadding="10">
+		<tbody>
+			<tr>
+				<th><label class="negrita">Grupo</label></th>
+				<input type="hidden" class="form-control idGrupo"  name="item[0][idGrupo]" id="idGrupo" placeholder="Grupo" value="<?php echo $aGrupoC[0]["idGrupo"]; ?>">
+				<td><input type="text" class="form-control grupo mayusculas"  name="item[0][grupo]" id="grupo" placeholder="Grupo" value="<?php echo $aGrupoC[0]["codigo"].' - '.$aGrupoC[0]["denominacion"]; ?>" required></td>
+				
+				
+			</tr>
+			<tr>
+				<th><label class="negrita">Cuenta</label></th>
+				<input type="hidden" class="form-control idCuenta"  name="item[0][idCuenta]" id="idCuenta" placeholder="Cuenta" value="<?php echo $cuenta[0]["idCuenta"]; ?>">
+				<td ><input type="text" class="form-control cuenta mayusculas"  name="item[0][cuenta]" id="cuenta" placeholder="Cuenta" required value="<?php echo $cuenta[0]["codigo"].' - '.$cuenta[0]["denominacion"]; ?>"></td>
+				
+			</tr>
+			<tr>
+				<th><input type="checkbox" name="item[0][checksubcuenta]" id="checksubcuenta" value="1" ><label class="negrita">Subcuenta</label></th>
+				<td style="display: none;" id="tdSubcuenta"><!-- <input type="text" class="form-control idSubcuenta mayusculas numero"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="Codigo subcuenta nuevo"> --></td>
+
+				<td ><input type="hidden" class="form-control idSubcuenta"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="subcuenta" value="<?php echo $aGrupoC[0]["idSubcuenta"]; ?>" ><input type="text" class="form-control subcuenta mayusculas"  name="item[0][subcuenta]" id="subcuenta" placeholder="Subcuenta" value="<?php echo $subcuenta[0]["codigo"].' - '.$subcuenta[0]["denominacion"]; ?>" ></td>
+				<td ><input type="text" class="form-control mayusculas"  name="item[0][descripcionSubcuenta]" id="descripcionSubcuenta" placeholder="Descripción" readonly disabled></td>
+			</tr>
+			<tr >
+				<th><input type="checkbox" name="item[0][checkauxiliar]" id="checkauxiliar" value="1" ><label class="negrita">Auxiliares</label></th>
+				<td><input type="number" class="form-control"  name="item[0][idAuxiliar]" id="idAuxiliar" placeholder="Código" readonly disabled value="<?php if (!empty($auxiliar)) {
+					echo $auxiliar[0]["codigo"]; } ?>"></td>
+				
+				<td ><input type="text" class="form-control mayusculas"  name="item[0][auxiliar]" id="auxiliar" placeholder="Descripción" readonly disabled value="<?php if (!empty($auxiliar)) {
+					echo $aCuentaC["nombre"]; } ?>"></td>
+			</tr>
+			<tr >
+				<th><input type="checkbox" name="item[0][checksubauxiliar]" id="checksubauxiliar" value="2" disabled><label class="negrita">Subauxiliares</label></th>
+				<td><input type="number" class="form-control"  name="item[0][idSubauxiliar]" id="idSubauxiliar" placeholder="Código" readonly disabled value="<?php if (!empty($subauxiliar)) {	echo $subauxiliar[0]["codigo"]; } ?>"></td>
+				
+				<td ><input type="text" class="form-control"  name="item[0][subauxiliar]" id="subauxiliar" placeholder="Descripción" readonly disabled value="<?php if (!empty($subauxiliar)) {	echo $aCuentaC["nombre"]; } ?>"></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<br>
+	<hr>
+	<div class="row">
+		<div class="col-md-3">
+			<label>Detalles</label>
+			<select class="form-control" name="item[0][detalle]" id="detalle">
+				<option <?php if ($aCuentaC["detalle"]==1) {
+						echo 'selected';
+				} ?> value="1">No detalla</option>
+				<option <?php if ($aCuentaC["detalle"]==2) {
+						echo 'selected';
+				} ?> value="2">Por cobrar</option>
+				<option <?php if ($aCuentaC["detalle"]==3) {
+						echo 'selected';
+				} ?> value="3">Por pagar</option>
+			</select>
+		</div>
+		<div class="col-md-3">
+			<label>Tercero</label>
+			<select class="form-control" name="item[0][tercero]" id="tercero">
+				<option <?php if ($aCuentaC["tercero"]==1) {
+					echo "selected";
+				} ?> value="1">Si tercero</option>
+				<option <?php if ($aCuentaC["tercero"]==2) {
+					echo "selected";
+				} ?> value="2">No tercero</option>
+				<option <?php if ($aCuentaC["tercero"]==3) {
+					echo "selected";
+				} ?> value="3" >Retención</option>
+			</select>
+		</div>
+		<div class="col-md-2" id="divPorcentajeRetencion">
+			<label>% Retención</label>
+			<input type="text" class="form-control decimales" name="item[0][porcentajeRetencion]" id="porcentajeRetencion" value="<?php echo $aCuentaC["porcentajeRetencion"]; ?>">
+				
+		</div>
+		<div class="col-md-4">
+			
+			<input type="checkbox" name="item[0][checkcentrocosto]" id="checkcentrocosto" value="1" <?php if ($aCuentaC["centroCosto"]==1) {
+				echo "checked";
+			} ?>><label>Centros de costo</label>
+			
+		</div>
+
+	</div>
+	<br>
+
+	<div class="row">
+		
+		<div class="col-md-4">
+			<label>Tipo cuenta</label>
+			<select class="form-control" name="item[0][tipoCuenta]">
+				<option <?php if ($aCuentaC["tipoCuenta"]==1) {
+					echo "selected";
+				} ?> value="1">Activo</option>
+				<option <?php if ($aCuentaC["tipoCuenta"]==2) {
+					echo "selected";
+				} ?> value="2">Pasivo</option>
+				<option <?php if ($aCuentaC["tipoCuenta"]==3) {
+					echo "selected";
+				} ?> value="3">Patrimonio</option>
+				<option <?php if ($aCuentaC["tipoCuenta"]==4) {
+					echo "selected";
+				} ?> value="4">Ingreso</option>
+				<option <?php if ($aCuentaC["tipoCuenta"]==5) {
+					echo "selected";
+				} ?> value="5">Gasto</option>
+				<option <?php if ($aCuentaC["tipoCuenta"]==6) {
+					echo "selected";
+				} ?> value="6">Costo</option>
+				<option <?php if ($aCuentaC["tipoCuenta"]==7) {
+					echo "selected";
+				} ?> value="7">Orden</option>
+			</select>
+		</div>
+		<div class="col-md-4">
+			<label>Naturaleza</label>
+			<select class="form-control" name="item[0][naturaleza]">
+				<option <?php if ($aCuentaC["naturaleza"]=='debito') {
+					echo "selected";
+				} ?> value="debito">Débito</option>
+				<option <?php if ($aCuentaC["naturaleza"]=='credito') {
+					echo "selected";
+				} ?> value="credito">Crédito</option>
+			</select>
+		</div>
+			</form>
+		</div>
+			 <div class="card-footer text-right">
+
+        	<a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        	
+        </div>	
+		<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" >RETENCIÓN</button> -->
+	</div>
+
+<!-- 	
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">RETENCIÓN</h5>
+        
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmRetencion">
+
+          <div class="form-group">
+            <div class="form-group">
+              <label >Porcentaje de la retención:</label>
+              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control" placeholder="% de la retencion" required value="<?php echo $aCuentaC['porcentajeRetencion'];  ?>">
+
+            </div>
+          </div>
+ 
+         
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> 
+        <button type="button" class="btn btn-primary" id="btnCerrarNegocio">R</button>
+      </div>
+    </div>
+  </div>
+</div> -->

@@ -70,6 +70,30 @@ if($_SESSION["idRol"]!=5 ){
                 <fieldset class="border p-4">
                   <h4>Datos básicos</h4>
                 <!-- <div class="card card-body"> -->
+                  <label class="negrita">Clasificación<span class="requerido">*</span>:</label>
+                  <div class="row">
+                    <!-- <div class="col-md-6"> -->
+                      <!-- <div class="form-group"> -->
+                        <div class="col-md-2">
+                        <div class="form-group">
+                          <input  type="checkbox" name="datos[checkCliente]" id="checkCliente" value="1">
+                          <label class="form-check-label" for="checkCliente">CLIENTE</label>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <input class="form-check-input menu" type="checkbox" name="datos[checkProveedor]" id="checkProveedor" value="1">
+                          <label class="form-check-label" for="checkProveedor">PROVEEDOR</label>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <input class="form-check-input menu" type="checkbox" name="datos[checkOtro]" id="checkOtro" value="1">
+                          <label class="form-check-label" for="checkOtro">OTRO</label>
+                        </div>
+                      </div>
+                    </div>
+                  <!-- </div> -->
                   <div class="row">
 
                     <div class="col-md-3">
@@ -288,22 +312,7 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-                    <div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Clasificación<span class="requerido">*</span>:</label>
-
-                        <select class="form-control" name="datos[clasificacion]" id="datos[clasificacion]" required>
-
-                          <option value="1">Cliente</option>
-                          <option value="2">Proveedor</option>
-                          <option value="3">Otro</option>
-                        </select>
-
-                      </div>
-
-                    </div>
+                    
                     <div class="col-md-4">
 
                       <div class="form-group">
@@ -526,7 +535,7 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                   </div>
-                  <div class="col-md-4">
+                  <!-- <div class="col-md-4">
 
                       <div class="form-group">
 
@@ -534,7 +543,7 @@ if($_SESSION["idRol"]!=5 ){
                           <input type="date" class="form-control" name="datos[fechaNacimiento]" id="datos[fechaNacimiento]" >
                       </div>
 
-                  </div>
+                  </div> -->
                 </div>
                   
               </div>
@@ -543,7 +552,7 @@ if($_SESSION["idRol"]!=5 ){
                   </div> 
 
                   <div class="card card-body">
-                  <?php if($_SESSION["idRol"]!=3){?>
+                  <?php if(empty($_SESSION["idEmpresa"]) ) {?>
                   <div class="card-header">
 
                     <h4>Asociar Empresas</h4>

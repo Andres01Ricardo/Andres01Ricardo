@@ -22,30 +22,18 @@ $item  = (isset($_REQUEST['item'] ) ? $_REQUEST['item'] : "" );
 
 
 $oLista = new Lista('producto_servicio');
-
-// $oLista->setFiltro("idBienes","=",$datos["bien"]);
-
 $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-
 $lista=$oLista->getLista();
-
 unset($oLista); 
 
 
-
-// $oItem=new Data("bienes","idBienes",$datos["bien"]); 
-
-// $aBienes=$oItem->getDatos(); 
-
-// unset($oItem);
-
-
-
-$codi=end($lista);
-$codigo=$codi['codigo']+1;
-
-
-
+if (empty($lista)) {
+    $codigo='1000000';
+}
+if (!empty($lista)) {
+    $codi=end($lista);
+    $codigo=$codi['codigo']+1;
+}
 
 
 
@@ -124,11 +112,14 @@ foreach ($item as $keyP => $valueP) {
     if ($keyP==0) {
         $aItemP["tipoDocumento"]=$datos["tipoDocumentoProductoCompra"];
         $aItemP["tipoFactura"]="compra";
+
     }
     if ($keyP==1) {
         $aItemP["tipoDocumento"]=$datos["tipoDocumentoProductoVenta"];
         $aItemP["tipoFactura"]="venta";
     }
+
+    if ($valueP["idCuentaContable"]!='') {
     
     $oItem=new Data("producto_cuenta_contable","idProductoCuentaContable"); 
             foreach($aItemP  as $keyPR => $valuePR){
@@ -137,6 +128,7 @@ foreach ($item as $keyP => $valueP) {
             $oItem->guardar(); 
             unset($oItem);
 
+    }
 }
 
 

@@ -1,3 +1,12 @@
+<?php
+  $token = "abc123";
+  $challenge = $_REQUEST['hub.challenge'];
+  $verify_token = $_REQUEST['hub.verify_token'];
+
+  if ($verify_token === $token) {
+    echo $challenge;
+  }
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -76,7 +85,7 @@
 
               <div class="card-body">
 
-                <form method="POST" id="frmLogin" class="needs-validation">
+                <form method="POST" id="frmLogin" class="needs-validation" >
                   <p>PRUEBA SMARTBUSS</p>
 
                   <div class="form-group">

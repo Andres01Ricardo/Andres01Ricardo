@@ -23,43 +23,22 @@ $item  = (isset($_REQUEST['item'] ) ? $_REQUEST['item'] : "" );
 
 $responsabilidad = (isset($_REQUEST['responsabilidad'] ) ? $_REQUEST['responsabilidad'] : "" );
 
-// print_r($datos);
-
-if ($datos["clasificacion"]==1) {
-   $tipo='cliente';
-   $tipoT=1;
-   $oItem=new Data("cliente","nit",$datos["nit"]);
-   $aValidate=$oItem->getDatos();
-   unset($oItem); 
-}elseif ($datos["clasificacion"]==2) {
-    $tipo='proveedor';
-    $tipoT=2;
-    $oItem=new Data("proveedor","nit",$datos["nit"]);
-    $aValidate=$oItem->getDatos(); 
-    unset($oItem);
-}elseif ($datos["clasificacion"]==3) {
-    $tipo='otro';
-    $tipoT=3;
-    $oItem=new Data("otros","nit",$datos["nit"]);
-    $aValidate=$oItem->getDatos();
-    unset($oItem); 
-}
-
-
  
+$oItem=new Data("tercero","nit",$datos["nit"]); 
+$aValidate=$oItem->getDatos(); 
+unset($oItem); 
 
 if(empty($aValidate)){
 
     if(!isset($_SESSION)){ session_start(); }
 
 
-        if ($datos["fechaNacimiento"]!='') {
-            $nacimiento=$datos["fechaNacimiento"];
-        }
-        if ($datos["fechaNacimiento"]=='') {
-            $nacimiento=null;
-        }
-
+    // if ($datos["fechaNacimiento"]!='') {
+    //     $nacimiento=$datos["fechaNacimiento"];
+    // }
+    // if ($datos["fechaNacimiento"]=='') {
+    //     $nacimiento=null;
+    // }
     $aDatos["tipoPersona"]=$datos["tipoPersona"]; 
 
     $aDatos["nit"]=$datos["nit"]; 
@@ -86,14 +65,30 @@ if(empty($aValidate)){
 
     $aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
 
-    $aDatos["periodoPago"]=$datos["periodoPago"]; 
+    if ($datos["periodoPago"]=="") {
+        $aDatos["periodoPago"]='30';
+     } 
+     if ($datos["periodoPago"]!="") {
+         $aDatos["periodoPago"]=$datos["periodoPago"];
+     } 
 
     $aDatos["nombreComercial"]=$datos["nombreComercial"];
-    $aDatos["contacto"]=$datos["contacto"];
+
+    if ($datos["contacto"]=="") {
+        $aDatos["contacto"]="";
+    }
+    if ($datos["contacto"]!="") {
+        $aDatos["contacto"]=$datos["contacto"];
+    }
+    
     $aDatos["celular"]=$datos["celular"];
+    
     $aDatos["genero"]=$datos["genero"];
+    
     $aDatos["nombreContactoFacturacion"]=$datos["nombreContactoFacturacion"];
+    
     $aDatos["emailContactoFacturacion"]=$datos["emailContactoFacturacion"];
+    
     $aDatos["telefonoContactoFacturacion"]=$datos["telefonoContactoFacturacion"];
     $aDatos["nombreContacto"]=$datos["nombreContactoOtro"];
     $aDatos["apellidosContacto"]=$datos["apellidosContactoOtro"];
@@ -105,99 +100,82 @@ if(empty($aValidate)){
     $aDatos["cobrador"]=$datos["cobrador"];
     $aDatos["actividadEconomica"]=$datos["actividadEconomica"];
     $aDatos["producto"]=$datos["producto"];
-    $aDatos["fechaNacimiento"]=$nacimiento;
-    // $aDatos["tipoTercero"]=$tipo;
+    // $aDatos["fechaNacimiento"]=$nacimiento;
 
-    if ($tipoT==1) {
-        $oItem=new Data("cliente","idCliente");
-        foreach($aDatos  as $key => $value){
-            $oItem->$key=$value; 
-        }
-        $oItem->guardar(); 
-        $idtercero=$oItem->ultimoId(); 
-        unset($oItem);    
-    }
-    if ($tipoT==2) {
-        $oItem=new Data("proveedor","idProveedor");
-        foreach($aDatos  as $key => $value){
-            $oItem->$key=$value; 
-        }
-        $oItem->guardar(); 
-        $idtercero=$oItem->ultimoId(); 
-        unset($oItem);    
-    }
-    if ($tipoT==3) {
-        $oItem=new Data("otros","idOtro");
-        foreach($aDatos  as $key => $value){
-            $oItem->$key=$value; 
-        }
-        $oItem->guardar(); 
-        $idtercero=$oItem->ultimoId(); 
-        unset($oItem);    
-    }
     
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']!=1 and $datos['checkOtro']!=1) {
+        $aDatos["tipoTercero"]=1;
+        $tipoTercero=1;
+    }
+    if ($datos['checkCliente']!=1 and $datos['checkProveedor']==1 and $datos['checkOtro']!=1) {
+        $aDatos["tipoTercero"]=2;
+        $tipoTercero=2;
+    }
+    if ($datos['checkCliente']!=1 and $datos['checkProveedor']!=1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=3;
+        $tipoTercero=3;
+    }
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']==1 and $datos['checkOtro']!=1) {
+        $aDatos["tipoTercero"]=4;
+        $tipoTercero=4;
+    }
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']!=1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=5;
+        $tipoTercero=5;
+    }
+    if ($datos['checkCliente']!=1 and $datos['checkProveedor']==1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=6;
+        $tipoTercero=6;
+    }
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']==1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=7;
+        $tipoTercero=7;
+    }else{
+        $aDatos["tipoTercero"]=7;
+    }
+
+    
+    $oItem=new Data("tercero","idTercero");
+    foreach($aDatos  as $key => $value){
+        $oItem->$key=$value; 
+    }
+    $oItem->guardar(); 
+    $idtercero=$oItem->ultimoId(); 
+    unset($oItem); 
 
 
     foreach ($responsabilidad as $keyR => $valueR) {
 
         if($valueR["check"]==1){
-
-        $oItem=new Data("responsabilidad_fiscal_tercero","idResponsabilidadFiscalTercero"); 
-
-        $oItem->idResponsabilidadFiscal=$keyR; 
-
-        $oItem->idTercero=$idtercero; 
-
-        if ($datos["clasificacion"]==1) {
-           $oItem->tipoTercero='cliente';
-        }elseif ($datos["clasificacion"]==2) {
-           $oItem->tipoTercero='proveedor';       
-        }elseif ($datos["clasificacion"]==3) {
-           $oItem->tipoTercero='otros';   
+            $oItem=new Data("responsabilidad_fiscal_tercero","idResponsabilidadFiscalTercero"); 
+            $oItem->idResponsabilidadFiscal=$keyR; 
+            $oItem->idTercero=$idtercero; 
+            $oItem->tipoTercero=$tipoTercero;
+            $oItem->guardar(); 
+            unset($oItem); 
         }
-
-        $oItem->guardar(); 
-
-        unset($oItem); 
-
-        }
-
     }
-
-
-
 
     foreach ($item as $key => $value) {
 
         if($value["estado"]==1){
-
-        // $oItem=new Data("tercero_empresa","idClienteEmpresa");
-        if ($datos["clasificacion"]==1) {
-           $oItem=new Data("cliente_empresa","idClienteEmpresa");
-           $oItem->idCliente=$idtercero;
-        }elseif ($datos["clasificacion"]==2) {
-            $oItem=new Data("proveedor_empresa","idProveedorEmpresa");
-            $oItem->idProveedor=$idtercero;  
-        }elseif ($datos["clasificacion"]==3) {
-            $oItem=new Data("otro_empresa","idOtroEmpresa");
-            $oItem->idOtro=$idtercero;
-        }
-
-        // $oItem->idTercero=$idTercero;        
-
-        $oItem->idEmpresa=$value["idEmpresa"]; 
-
-        $oItem->guardar(); 
-
-        unset($oItem); 
-
+            $oItem=new Data("tercero_empresa","idTerceroEmpresa");
+            $oItem->idTercero=$idtercero;        
+            $oItem->idEmpresa=$value["idEmpresa"]; 
+            $oItem->guardar(); 
+            unset($oItem); 
         }
 
     }
 
 
-
-
+    if ($datos["terceroEmpresa"]!="") {
+        $oItem=new Data("tercero_empresa","idTerceroEmpresa");
+        $oItem->idTercero=$idtercero;        
+        $oItem->idEmpresa=$datos["terceroEmpresa"]; 
+        $oItem->guardar(); 
+        unset($oItem); 
+    }
 
     $msg=true; 
 }
@@ -206,10 +184,6 @@ else{
     $msg=false; 
 
 }
-
- 
-
-
 
 echo json_encode(array("msg"=>$msg));
 

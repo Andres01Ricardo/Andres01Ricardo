@@ -236,6 +236,67 @@ class Inventario extends Sql{
 
 	}
 
+	public function getInventarioProductosTerminados($aDatos=array()){
+
+
+
+		$condicion=""; 
+
+		if($aDatos["idEmpresa"]!=""){
+			$condicion.=" AND ipm.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		if($aDatos["idProducto"]!=""){
+			$condicion.=" AND ipm.idProducto=".$aDatos["idProducto"]; 
+		}
+
+		$sql="SELECT ipm.tipoMovimiento,sum(ipm.ingreso) as ingreso,sum(ipm.egreso) as egreso,ipm.fechaRegistro,u.nombreUsuario,u.apellidoUsuario,ps.nombre,ps.idProductoServicio,ipm.observaciones
+			from inventario_productos_movimientos ipm
+			inner join producto_servicio ps on ps.idProductoServicio=ipm.idProducto
+			INNER JOIN usuario u on u.idUsuario=ipm.idUsuarioRegistra
+			WHERE 0=0 ".$condicion." 
+			GROUP BY ipm.idProducto";
+
+
+
+	    $aArray=$this->ejecutarSql($sql); 
+
+	    return $aArray; 
+
+	}
+
+
+
+
+	public function getHistorialInventarioTerminado($aDatos=array()){
+
+
+
+		$condicion=""; 
+
+		if($aDatos["idEmpresa"]!=""){
+			$condicion.=" AND ipm.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		if($aDatos["idProducto"]!=""){
+			$condicion.=" AND ipm.idProducto=".$aDatos["idProducto"]; 
+		}
+
+		$sql="SELECT ipm.tipoMovimiento,ipm.ingreso,ipm.egreso,ipm.fechaRegistro,u.nombreUsuario,u.apellidoUsuario,ps.codigo,ps.nombre,ps.idProductoServicio,ipm.observaciones
+			from inventario_productos_movimientos ipm
+			inner join producto_servicio ps on ps.idProductoServicio=ipm.idProducto
+			INNER JOIN usuario u on u.idUsuario=ipm.idUsuarioRegistra
+			WHERE 0=0 ".$condicion." 
+			
+			ORDER BY ipm.fechaRegistro DESC";
+			
+
+
+
+	    $aArray=$this->ejecutarSql($sql); 
+
+	    return $aArray; 
+
+	}
+
 
 
 

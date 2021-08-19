@@ -9,25 +9,16 @@ if($id==""){
   echo '<script>window.history.back()</script>'; 
 
 }
-
 $decrip["cadena"]=$id; 
-
 $id=$oControl->desencriptar($decrip); 
 
-
-
 $oLista = new Lista('comprobante_items');
-
 $oLista->setFiltro("idComprobante","=",$id);
-
 $aDatos=$oLista->getLista();
-
 unset($oLista);
-
 
 $oItem=new Data("comprobante","idComprobante",$aDatos[0]["idComprobante"]); 
 $aComprobante=$oItem->getDatos(); 
-
 
 $oItem=new Data("empresa","idEmpresa",$aComprobante['idEmpresa']); 
 $aEmpresa=$oItem->getDatos(); 
@@ -38,9 +29,11 @@ $aTipo=$oItem->getDatos();
 // $oItem=new Data("empresa","idEmpresa",$aComprobante['idEmpresa']); 
 // $aComprobanteTipo=$oItem->getDatos(); 
 
-
 $totalDebito=0;
 $totalCredito=0;
+
+$aEncript['cadena']=$aComprobante['idComprobante'];
+$idC=$oControl->encriptar($aEncript); 
 
 ?>
 
@@ -84,21 +77,22 @@ $totalCredito=0;
         <div class="section-body">
           <div class="row">
             <div class="col-md-12 col-lg-12">
+              <a href="../crearcomprobante/<?php echo $idC;?>" class="btn btn-info" style="color:white;">COPIAR COMPROBANTE</a><br><br>
               <div class="card">
 
                 <div class="card-header">
                   <table style="font-size: 20px;font-family: 'Arial';width: 100%;" class="table">
                     <tbody>
                       <tr>
-                        <th style="float:left;">SmartBuss--</th>
-                        <th> <img src="<?php echo $URL.$aEmpresa["logo"]; ?>" width="60" height="60">    <?php echo $aEmpresa['razonSocial'];?></th>
-                        <th></th>
+                        <th style="float:left;">AS-SmartBuss</th>
+                        <th> <img src="<?php echo $URL.$aEmpresa['logo']; ?>" width="140" height="100">    <?php echo $aEmpresa['razonSocial'];?></th>
+                        <!-- <th></th> -->
                         <th> <?php echo date('Y-m-d');?> </th>
                       </tr>
                       <tr>
                         <th> </th>
                         <th>Nit: <?php echo $aEmpresa['nit'];?>-<?php echo $aEmpresa['digitoVerificador'];?></th>
-                        <th> </th>
+                        <!-- <th> </th> -->
                         <th> No. <?php echo $aTipo['letra'].$aComprobante['comprobante'].$aComprobante['numero'];?></th>
                         </tr> 
                     </tbody>
@@ -110,15 +104,16 @@ $totalCredito=0;
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-12 col-lg-12">
-                      <table class="table table-striped mayusculas" id="tableComprobante" >
+                      <table class="table table-hover mayusculas" id="tableComprobante" style="font-size: 80% !important;max-width: 100% !important;">
                         <thead>
                           <tr>
-                            <th class="text-center">#</th>
+                            <!-- <th class="text-center">#</th> -->
                             <th>CUENTA</th>
                             <th>CENTRO COSTO</th>
+                            <th>SUBCENTRO COSTO</th>
                             <th>TERCERO</th>
                             <th>DESCRIPCION</th>
-                            <th>BASE/CRUCE</th>
+                            <th>BASE</th>
                             <th>DÉBITO</th>
                             <th>CRÉDITO</th>
                           </tr>
@@ -132,38 +127,27 @@ $totalCredito=0;
                             unset($oItem);
 
 
-                            switch ($iComprobante['tipoTercero']) {
-                              case 'c':
-                                $oItem=new Data("cliente","idCliente",$iComprobante["idTercero"]); 
+                            $oItem=new Data("tercero","idTercero",$iComprobante["idTercero"]); 
                                 $aTercero=$oItem->getDatos(); 
                                 unset($oItem);
                                 $nombreTercero=$aTercero["razonSocial"];
                                 $nitTercero=$aTercero["nit"];
-                                break;
-                              case 'p':
-                                $oItem=new Data("proveedor","idProveedor",$iComprobante["idTercero"]); 
-                                $aTercero=$oItem->getDatos(); 
-                                unset($oItem);
-                                $nombreTercero=$aTercero["razonSocial"];
-                                $nitTercero=$aTercero["nit"];
-                                break;
-                              case 'e':
-                                $oItem=new Data("empleado","idEmpleado",$valueT["idTercero"]);
-                                $tercero=$oItem->getDatos();
-                                $nitTercero=$tercero["numeroDocumento"];
-                                $nombreTercero=$tercero["nombre"].' '.$tercero["apellido"];
-                                break;
-                              
-                              default:
-                                # code...
-                                break;
-                            }
+
+                            $oItem=new Data("centro_costo","idCentroCosto",$iComprobante["idCentroCosto"]); 
+                            $aCentroCosto=$oItem->getDatos(); 
+                            unset($oItem);
+
+                            $oItem=new Data("subcentro_costo","idSubcentroCosto",$iComprobante["idSubcentroCosto"]); 
+                            $aSubcentroCosto=$oItem->getDatos(); 
+                            unset($oItem);
+                            
                             
                             ?>
                           <tr>
-                            <td><?php echo intval($index+1); ?></td>
+                            <!-- <td><?php echo intval($index+1); ?></td> -->
                             <td><?php echo $aCuentaContable["codigoCuenta"].' - '.$aCuentaContable["nombre"]; ?></td>
-                            <td><?php echo $iComprobante["centroCosto"]; ?></td>
+                            <td><?php echo $aCentroCosto["codigoCentroCosto"].'-'.$aCentroCosto["centroCosto"]; ?></td>
+                            <td><?php echo $aSubcentroCosto["codigoSubcentroCosto"].'-'.$aSubcentroCosto["subcentroCosto"]; ?></td>
                             <td><?php echo $nitTercero.' - '.$nombreTercero; ?></td>
                             <td><?php echo $iComprobante["descripcion"]; ?></td>
                             <td>
@@ -173,14 +157,11 @@ $totalCredito=0;
                             </td>
                             <td>
                               <?php if ($iComprobante["naturaleza"]=='debito') {
-                                // echo strval("$".number_format($iComprobante["valor"],2,",","."));
+             
                                 echo "$".number_format($iComprobante["saldoDebito"],2,",",".");
-                                if (substr($aCuentaContable["codigoCuenta"], 0,4)=='1592') {
-                                  // $totalDebito+=floatval($iComprobante["saldoCredito"]);
-                                }
-                                if (substr($aCuentaContable["codigoCuenta"], 0,4)!='1592') {
+             
                                   $totalDebito+=floatval($iComprobante["saldoDebito"]); 
-                                }
+             
 
                                 
                               }else{echo '-';} 
@@ -190,16 +171,9 @@ $totalCredito=0;
                             </td>
                             <td>
                               <?php if ($iComprobante["naturaleza"]=='credito') {
-                                // echo strval("$".number_format($iComprobante["valor"],2,",","."));
+                                
                                 echo "$".number_format($iComprobante["saldoCredito"],2,",",".");
-                                if (substr($aCuentaContable["codigoCuenta"], 0,4)=='1592') {
-                                  
-                                  // $totalCredito=floatval( $iComprobante["saldoCredito"]); 
-                                  $totalDebito+=floatval($iComprobante["saldoCredito"]);
-                                }
-                                if (substr($aCuentaContable["codigoCuenta"], 0,4)!='1592') {
                                   $totalCredito+=floatval( $iComprobante["saldoCredito"]);
-                                }
                                 
                               }else{echo '-';} ?>
                             </td>
@@ -213,6 +187,7 @@ $totalCredito=0;
                           <td>-</td>
                           <td>-</td>
                           <td>-</td>
+                          <!-- <td>-</td> -->
                           <td class="negrita"><?php echo strval("$".number_format($totalDebito,2,",",".")); ?></td>
                           <td class="negrita"><?php echo strval("$".number_format($totalCredito,2,",",".")); ?></td>
                         </tr>

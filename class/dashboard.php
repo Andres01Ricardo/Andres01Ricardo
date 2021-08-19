@@ -154,7 +154,7 @@ class Dashboard extends Sql{
 		$sql="SELECT  sum(valor) as ica 
 		FROM factura_compra_deduccion fvd
 		INNER JOIN factura_compra fv on fvd.idFacturaCompra=fv.idFacturaCompra
-		WHERE tipoDeduccion=2 AND idEmpresa=$idEmpresa";
+		WHERE fvd.tipoDeduccion=2 AND fv.idEmpresa=$idEmpresa";
 
 
 

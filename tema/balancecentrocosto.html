@@ -1,0 +1,234 @@
+ 
+<?php 
+
+require_once("class/informes.php");
+
+$oControl=new Control(); 
+
+$idEmpresa=$_POST["empresa"];
+$desde=$_POST["desde"];
+$hasta=$_POST["hasta"];
+$cuentaPrimeraF=$_POST["cuentaPrimera"];
+$cuentaSegundaF=$_POST["cuentaSegunda"];
+$terceroPrimeroF=$_POST["terceroPrimero"];
+$terceroSegundoF=$_POST["terceroSegundo"];
+
+$centroCostoPrimeroF=$_POST["centroCostoPrimero"];
+$centroCostoSegundoF=$_POST["centroCostoSegundo"];
+
+if(empty($terceroPrimeroF)){
+  $terceroPrimero=0;
+  // print_r($terceroSegundo); 
+}
+if(empty($terceroSegundoF)){
+
+  $terceroSegundo=9999999999999999; 
+}
+$cuentaPrimeraFF=explode(' - ', $cuentaPrimeraF);
+$cuentaSegundaFF=explode(' - ', $cuentaSegundaF);
+
+$cuentaPrimera=$cuentaPrimeraFF[0];
+$cuentaSegunda=$cuentaSegundaFF[0];
+
+// print_r($cuentaPrimera);
+
+if(!empty($terceroPrimeroF) && !empty($terceroSegundoF)){
+    $terceroPrimeroFF=explode(' - ',$terceroPrimeroF);
+    $terceroSegundoFF=explode(' - ',$terceroSegundoF);
+
+    $terceroPrimero=substr($terceroPrimeroFF[0], 0,8);
+    $terceroSegundo=substr($terceroSegundoFF[0], 0,8);
+}
+
+$centroCostoPrimeroFF=explode(' - ', $centroCostoPrimeroF);
+$centroCostoSegundoFF=explode(' - ', $centroCostoSegundoF);
+
+$centroCostoPrimero=$centroCostoPrimeroFF[0];
+$centroCostoSegundo=$centroCostoSegundoFF[0];
+
+
+
+// $oTerceroDetalladoCuenta=new Informes(); 
+// $aTerceroDetalladoCuenta=$oTerceroDetalladoCuenta->getTerceroDetalladoCuenta(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda));
+
+// $oCentroCosto=new Informes(); 
+// $aCentroCosto=$oCentroCosto->getCentroCostoTC(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda));
+$oCentroCosto=new Informes(); 
+$aCentroCosto=$oCentroCosto->getCentroCostoTC(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda,"terceroPrimero"=>$terceroPrimero,"terceroSegundo"=>$terceroSegundo,"centroCostoPrimero"=>$centroCostoPrimero,"centroCostoSegundo"=>$centroCostoSegundo));
+// print_r($aCentroCosto);
+$oItem=new Data("empresa","idEmpresa",$idEmpresa);
+$aEmpresa=$oItem->getDatos();
+
+?>
+  <div class="card">
+    <div class="card-header">
+      <table style="font-size: 14px;font-family: Arial;" class="table">
+        <tbody >
+          <tr>
+            <th>AS-SmartBuss</th>
+            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="140" height="100">    <?php echo $aEmpresa['razonSocial'];?></th>
+            <th></th>
+            <th><?php echo date('Y/m/d'); ?></th>
+          </tr>
+          <tr>
+            <th> </th>
+            <th>Nit: <?php echo $aEmpresa['nit'];?> - <?php echo $aEmpresa['digitoVerificador'];?></th>
+            <th> </th>
+            <th> </th>
+          </tr> 
+          <tr>
+            <th></th>
+            <th>TERCERO DETALLADO POR CUENTA POR C.C. </th>
+            <th></th>
+          </tr>
+          <tr>
+            <th></th>
+            <th >DESDE:  <?php echo $desde;?> HASTA: <?php echo $hasta;?></th>
+            <th> </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-body">
+    	<div class="row">
+    		<div class="col-md-3">
+          <a href="filtrarbalancecentrocosto" class="btn btn-info">NUEVO FILTRO</a>
+          <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+          <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+          <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+          <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+          <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+          <!-- <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>"> -->
+          <input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
+          <input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">  
+        </div>
+    	</div>
+    	<br><br>
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      <table class="table-hover mayusculas " id="tablecomprobacion" style="font-size: 18px;font-family: 'Arial';width: 100%">
+                      	<thead>
+                      		<tr style="text-align: left;">
+                      			<th></th>
+                            <th>NOMBRE </th>
+                      			<th>SALDO ANTERIOR</th>
+                      			<th>DEBITOS</th>
+                      			<th>CREDITOS</th>
+                      			<th>SALDO</th>
+                      		</tr>
+                      	</thead>
+                      	<tbody>
+                      		<?php 
+                      		foreach($aCentroCosto as $keyG=> $valueG){ 
+                            $totalCentroCostoAnterior=0;
+                            $totalCentroCostoDebito=0;
+                            $totalCentroCostoCredito=0;
+                            $totalCentroCostoNuevo=0;
+                      		?>
+                          <tr>
+                            <td style="color: transparent;"> - </td>
+                            <td style="color: transparent;"> - </td>
+                            <td style="color: transparent;"> - </td>
+                            <td style="color: transparent;"> - </td>
+                            <td style="color: transparent;"> - </td>
+                            <td style="color: transparent;"> - </td>
+                          </tr>
+                          <tr class="negrita">
+                            <td >CENTRO DE COSTO:</td>
+                            <td><strong><?php echo $valueG["codigoCentroCosto"].'   '.$valueG["codigoSubcentroCosto"].'  '.$valueG["subcentroCosto"]; ?></strong></td><td></td><td></td><td></td><td></td>
+                          </tr>
+                          <?php 
+                          $oTerceroDetalladoComprobante=new Informes(); 
+                          // $aTerceroDetalladoComprobante=$oTerceroDetalladoComprobante->getCentroCostoCuenta(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuenta"=>$valueG["codigoCuenta"],"idTercero"=>$valueG["idTercero"],"tipoTercero"=>$valueG["tipoTercero"]));
+                          $aCentroCostoCuenta=$oTerceroDetalladoComprobante->getCentroCostoCuenta(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"idCentroCosto"=>$valueG["idCentroCosto"],"idSubcentroCosto"=>$valueG["idSubcentroCosto"],"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda,"terceroPrimero"=>$terceroPrimero,"terceroSegundo"=>$terceroSegundo,"centroCostoPrimero"=>$centroCostoPrimero,"centroCostoSegundo"=>$centroCostoSegundo));
+                          unset($oTerceroDetalladoComprobante);
+                          foreach ($aCentroCostoCuenta as $key => $value) {
+                            // print_r($key);
+                            // print_r($value["idCentroCosto"]);
+                            // print_r($value["idSubcentroCosto"]);
+                            // print_r($value["idCuentaContable"]);
+                            // print_r('>>>');
+                           ?>
+                           <tr>
+                            <td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td>
+                          </tr>
+                          <tr>
+                            <td class="negrita">CUENTA: <?php echo $value["codigoCuenta"].'-'.$value["nombre"]; ?></td><td></td><td></td><td></td><td></td><td></td>
+                          </tr>
+                          <?php 
+                          $idCuentaContableB=$value["idCuentaContable"];
+                          // print_r($idCuentaContableB);
+                            $oCentroCostoCuentaTerceroA=new Informes();
+                            $aCentroCostoCuentaTerceroA=$oCentroCostoCuentaTerceroA->getCentroCostoCuentaTercero(array("idEmpresa"=>$idEmpresa,"idCuentaContable"=>$idCuentaContableB,"idCentroCosto"=>$valueG["idCentroCosto"],"idSubcentroCosto"=>$valueG["idSubcentroCosto"],"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda,"terceroPrimero"=>$terceroPrimero,"terceroSegundo"=>$terceroSegundo,"centroCostoPrimero"=>$centroCostoPrimero,"centroCostoSegundo"=>$centroCostoSegundo));
+                            unset($oCentroCostoCuentaTerceroA);
+                            $totalCuentaAnterior=0;
+                            $totalCuentaDebito=0;
+                            $totalCuentaCredito=0;
+                            $totalCuentaNuevo=0;
+                            // print_r($aCentroCostoCuentaTerceroA[0]);
+                            foreach ($aCentroCostoCuentaTerceroA as $keyct => $valuect) {
+                              // print_r($valuect);
+                              // print_r($valuect["idCuentaContable"]);
+                              // print_r($valuect["idCentroCosto"]);
+                              // print_r('***');
+                            
+                            $oCentroCostoCuentaTercero=new Informes();
+                            $aCentroCostoCuentaTercero=$oCentroCostoCuentaTercero->getCentroCostoCuentaTercero(array("idEmpresa"=>$idEmpresa,"idCentroCosto"=>$value["idCentroCosto"],"idSubcentroCosto"=>$value["idSubcentroCosto"],"idCuentaContable"=>$valuect["idCuentaContable"],"idComprobanteItem"=>$valuect["idComprobanteItem"],"desde"=>$desde,"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda,"terceroPrimero"=>$terceroPrimero,"terceroSegundo"=>$terceroSegundo,"centroCostoPrimero"=>$centroCostoPrimero,"centroCostoSegundo"=>$centroCostoSegundo));
+                            unset($oCentroCostoCuentaTercero);
+
+                            // print_r($aCentroCostoCuentaTercero[0]['idCuentaContable']);
+                            // print_r($value["idCentroCosto"]);
+                            // print_r($aCentroCostoCuentaTercero[0]['idSubcentroCosto']);
+                            // print_r('+++');
+                            
+                            $saldoAnterior=floatval($valuect["debito"])-floatval($valuect["credito"]);
+                            $nuevoSaldo=$saldoAnterior+floatval($aCentroCostoCuentaTercero[0]["debito"])-floatval($aCentroCostoCuentaTercero[0]["credito"]);
+
+                            $totalCuentaAnterior=$totalCuentaAnterior+$saldoAnterior;
+                            $totalCuentaDebito=$totalCuentaDebito+floatval($aCentroCostoCuentaTercero[0]["debito"]);
+                            $totalCuentaCredito=$totalCuentaCredito+floatval($aCentroCostoCuentaTercero[0]["credito"]);
+                            $totalCuentaNuevo=$totalCuentaNuevo+$nuevoSaldo;
+                            ?>
+                          <tr>
+                            <td style="text-align: center;"> <?php echo $valuect["nit"]; ?></td>
+                            <td><?php echo $valuect["razonSocial"]; ?></td>
+                            <td><?php echo "$".number_format($saldoAnterior,2,".",","); ?> </td>
+                            <td><?php echo "$".number_format($aCentroCostoCuentaTercero[0]["debito"],2,".",","); ?></td>
+                            <td><?php echo "$".number_format($aCentroCostoCuentaTercero[0]["credito"],2,".",","); ?></td>
+                            <td><?php echo "$".number_format($nuevoSaldo,2,".",","); ?></td>
+                          </tr>
+                      <?php 
+                      unset($aCentroCostoCuentaTercero);    
+                    } 
+                    
+                    $totalCentroCostoAnterior=$totalCentroCostoAnterior+$totalCuentaAnterior;
+                    $totalCentroCostoDebito=$totalCentroCostoDebito+$totalCuentaDebito;
+                    $totalCentroCostoCredito=$totalCentroCostoCredito+$totalCuentaCredito;
+                    $totalCentroCostoNuevo=$totalCentroCostoNuevo+$totalCuentaNuevo;
+                      ?>
+                          <tr>
+                            <td></td>
+                            <td class="negrita">Total Cuenta => </td>
+                            <td><?php echo "$".number_format($totalCuentaAnterior,2,".",","); ?><?php echo $key ?></td>
+                            <td><?php echo "$".number_format($totalCuentaDebito,2,".",","); ?></td>
+                            <td><?php echo "$".number_format($totalCuentaCredito,2,".",","); ?></td>
+                            <td><?php echo "$".number_format($totalCuentaNuevo,2,".",","); ?></td>
+                          </tr>
+                      <?php  }  ?>
+                          <tr><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td><td style="color: transparent;"> - </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td class="negrita">Total Centro de Costo => </td>
+                            <td><strong><?php echo number_format($totalCentroCostoAnterior,2,".",","); ?></strong></td>
+                            <td><strong><?php echo number_format($totalCentroCostoDebito,2,".",","); ?></strong></td>
+                            <td><strong><?php echo number_format($totalCentroCostoCredito,2,".",","); ?></strong></td>
+                            <td><strong><?php echo number_format($totalCentroCostoNuevo,2,".",","); ?></strong></td>
+                          </tr>
+                        <?php } ?>
+                      	</tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>

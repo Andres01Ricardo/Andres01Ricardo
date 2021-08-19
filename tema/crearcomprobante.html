@@ -4,6 +4,27 @@
 
 // require_once("class/cuentascontables.php");
 
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+$decrip["cadena"]=$id; 
+$id=$oControl->desencriptar($decrip); 
+
+
+
+
+if ($id!="") {
+  $oComprobante=new Lista("comprobante");
+  $oComprobante->setFiltro("idComprobante","=",$id);
+  $aComprobante=$oComprobante->getLista();
+  unset($oComprobante);
+}
+
+
+require_once("class/empresa.php");
+// include_once("../class/terceros.php"); 
 
 $oLista = new Lista('departamento');
 
@@ -14,7 +35,6 @@ unset($oLista);
 
 
 
-require_once("class/empresa.php");
 
 $oControl=new Control(); 
 
@@ -37,10 +57,6 @@ if($_SESSION["idRol"]==2){
   $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
 
 }
-
-
-
-
 
 if($_SESSION["idRol"]==5){
 
@@ -86,9 +102,11 @@ unset($oLista);
 // print_r($ultimaCuenta);
 
 
+
 ?>
 
 <form enctype="multipart/form-data" id="frmGuardar">
+  <input type="hidden" name="" id="idComprobante" value="<?php echo $id; ?>">
 
 <section class="section">
 
@@ -136,15 +154,24 @@ unset($oLista);
                         <label>Empresa<span class="requerido">*</span>:</label>
                         <select class="form-control" name="datos[idEmpresa]" id="idEmpresa" required>
                           <option value="">Seleccione</option>
-                          <?php foreach($aEmpresa as $index => $iEmpresa){?>
+                          <?php foreach($aEmpresa as $index => $iEmpresa){ ?>
                             <option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
                           <?php } ?>
                         </select>
                       </div>
                     </div>
-                  <?php }else{ ?>
+                  <?php }if (!empty($_SESSION['idEmpresa'])){ ?>
                     <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
                   <?php } ?>
+                  <div class="col-md-3">
+                      <div class="form-group">
+                        <label>Comprobante guardado:</label>
+                        <select class="form-control" name="datos[idComprobanteRecurrente]" id="idComprobanteRecurrente" >
+                          <option value="">Seleccione</option>
+                          
+                        </select>
+                      </div>
+                    </div>
                     <div class="col-md-3">
 
                       <div class="form-group">
@@ -155,7 +182,7 @@ unset($oLista);
 					      <option value="">Seleccione una opción</option>
 
 			                <?php foreach($tiposDocumento as $item){ ?>
-			                	<option value='<?php echo $item["idTiposDocumento"]; ?>'><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
+			                	<option value='<?php echo $item["idTiposDocumento"]; ?>'  ><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
 					      	<?php } ?>
 					    </select>
 
@@ -218,13 +245,14 @@ unset($oLista);
 
                             <th>Seq.</th>
 
-                            <th>Cuenta</th>
+                            <!-- <th>Cuenta<a href="javascript:void(0)" id="btnAgregarCuenta" class="btn btn-light"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 22px;"></i> </a></th> -->
+                            <th>Cuenta<a href="javascript:void(0)" id="btnAgregarCuenta" class="btn btn-light"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 22px;"></i> </a></th>
 
-                            <th>Centro de costo</th>
+                            <th>Centro de costo<a href="javascript:void(0)" id="btnAgregarCentroCosto" class="btn btn-light"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 22px;"></i> </a></th>
 
-                            <!-- <th>S.C</th> -->
+                            <th>Subcentro costo</th>
 
-                            <th>Tercero</th>
+                            <th>Tercero <a href="javascript:void(0)" id="btnAgregarTercero" class="btn btn-light"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 22px;"></i> </a></th>
 
                             <!-- <th>Suc.</th> -->
 
@@ -246,43 +274,100 @@ unset($oLista);
                         </thead>
 
                         <tbody>
-
+                            <?php 
+                            if (empty($aComprobante)) { 
+                              ?>
                             <tr>
                               <input type="hidden" class="form-control mayusculas naturaleza" name="item[0][naturaleza]" id="item[0][naturaleza]" required  >
-
                               <td>1</td>
-
                               <td><input type="text" name="item[0][cuentaContable]" id="item[0][cuentaContable]" class="form-control cuentaContable mayusculas" required placeholder="Cuenta">
                                 <span name="item[0][letreroCuentaContable]" id="item[0][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
                                 <input type="hidden" name="item[0][idCuentaContable]" id="item[0][idCuentaContable]" class="form-control idCuentaContable"  required></td>
-
-                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[0][centroCosto]" id="item[0][centroCosto]" placeholder="centro costo" ><input type="hidden" name="item[0][idCentroCosto]" id="item[0][idCentroCosto]" class="form-control idCentroCosto" ></td>
-
+                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[0][centroCosto]" id="item[0][centroCosto]" placeholder="centro costo" ><input type="hidden" name="item[0][idCentroCosto]" id="item[0][idCentroCosto]" class="form-control idCentroCosto" r="1" >
+                                <span name="item[0][letreroCentroCosto]" id="item[0][letreroCentroCosto]" class="ocultar letreroCentroCosto" style="color: red;">Centro costo no seleccionado correctamente</span>
+                              </td>
                               <!-- <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[0][subcentroCosto]" id="item[0][subcentroCosto]"  required></td> -->
-
-                              <td><input type="text" class="form-control  nit" name="item[0][nit]" id="item[0][nit]" placeholder="NIT" ><input type="hidden" name="item[0][idTercero]" id="item[0][idTercero]" class="form-control idTercero" required>
+                              <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[0][subcentroCosto]" id="item[0][subcentroCosto]" placeholder="subcentro costo" ><input type="hidden" name="item[0][idSubcentroCosto]" id="item[0][idSubcentroCosto]" class="form-control idSubcentroCosto" r="1" >
+                                <span name="item[0][letreroSubcentroCosto]" id="item[0][letreroSubcentroCosto]" class="ocultar letreroSubcentroCosto" style="color: red;">Subcentro costo no seleccionado correctamente</span>
+                              </td>
+                              <td>
+                                <input type="text" class="form-control  nit" name="item[0][nit]" id="item[0][nit]" placeholder="NIT" >
+                                <!-- <input type="text" class="form-control  nit" name="item[0][nit]" id="item[0][nit]" placeholder="NIT" > -->
+                                <input type="hidden" name="item[0][idTercero]" id="item[0][idTercero]" class="form-control idTercero" required>
                                 <span name="item[0][letreroTercero]" id="item[0][letreroTercero]" class="ocultar letreroTercero" style="color: red;">Tercero no seleccionado correctamente</span>
                               <input type="hidden" name="item[0][tipoTercero]" id="item[0][tipoTercero]" class="form-control tipoTercero" ></td>
-
                               <!-- <td><input type="text" class="form-control sucursal mayusculas" name="item[0][sucursal]" id="item[0][sucursal]"  required></td> -->
-
                               <td><input type="text" class="form-control  descripcion mayusculas" name="item[0][descripcion]" id="item[0][descripcion]" placeholder="Descripción" required ></td>
-
                               <td><input type="text" class="form-control  base moneda mayusculas" name="item[0][base]" id="item[0][base]" placeholder="Base/cruce" readonly></td>
-
                               <td><input type="text" class="form-control decimales moneda debito mayusculas" name="item[0][debito]" id="item[0][debito]" placeholder="Débito"   ></td>
-
                               <td><input type="text" class="form-control decimales moneda  credito mayusculas" name="item[0][credito]" id="item[0][credito]" placeholder="Crédito" ></td>
-
 <!-- <input type="text" class="form-control moneda  valor mayusculas" name="item[0][valor]" id="item[0][valor]" placeholder="Valor" required> -->
                               <td class="centrar">
-
                                 <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
-
                               </td>
-
                             </tr>
+                          <?php 
+                        } 
+                        ?>
+                          <?php 
+                          if (!empty($aComprobante)) { 
 
+                            $oComprobanteItems=new Lista("comprobante_items");
+                            $oComprobanteItems->setFiltro("idComprobante","=",$id);
+                            $aComprobanteItems=$oComprobanteItems->getLista();
+
+                            // print_r($aComprobanteItems);
+                            foreach ($aComprobanteItems as $keyCI => $valueCI) {
+
+                              $oCuenta=new Data("cuenta_contable","idCuentaContable",$valueCI["idCuentaContable"]);
+                              $aCuenta=$oCuenta->getDatos();
+                              unset($oCuenta);
+
+
+                              $oCentroCosto=new Data("centro_costo","idCentroCosto",$valueCI["idCentroCosto"]);
+                              $aCentroCosto=$oCentroCosto->getDatos();
+                              unset($oCentroCosto);
+
+                              $oSubcentroCosto=new Data("subcentro_costo","idSubcentroCosto",$valueCI["idSubcentroCosto"]);
+                              $aSubcentroCosto=$oSubcentroCosto->getDatos();
+                              unset($oSubcentroCosto);
+
+
+                              $oTercero=new Data("tercero","idTercero",$valueCI["idTercero"]);
+                              $aTercero=$oTercero->getDatos();
+                              unset($oTercero);
+                            
+                            ?>
+                            <tr>
+                              <input type="hidden" class="form-control mayusculas naturaleza" name="item[<?php echo $keyCI; ?>][naturaleza]" id="item[<?php echo $keyCI; ?>][naturaleza]" required  >
+                              <td><?php echo $keyCI+1 ?></td>
+                              <td><input type="text" name="item[<?php echo $keyCI; ?>][cuentaContable]" id="item[<?php echo $keyCI; ?>][cuentaContable]" class="form-control cuentaContable mayusculas" required placeholder="Cuenta" value="<?php echo $aCuenta['codigoCuenta'].' - '.$aCuenta['nombre']; ?>">
+                                <span name="item[<?php echo $keyCI; ?>][letreroCuentaContable]" id="item[<?php echo $keyCI; ?>][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
+                                <input type="hidden" name="item[<?php echo $keyCI; ?>][idCuentaContable]" id="item[<?php echo $keyCI; ?>][idCuentaContable]" class="form-control idCuentaContable"  required value="<?php echo $valueCI['idCuentaContable']; ?>"></td>
+                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $keyCI; ?>][centroCosto]" id="item[<?php echo $keyCI; ?>][centroCosto]" placeholder="centro costo" value="<?php echo $aCentroCosto['codigoCentroCosto'].' - '.$aCentroCosto['centroCosto']; ?>"><input type="hidden" name="item[<?php echo $keyCI; ?>][idCentroCosto]" id="item[<?php echo $keyCI; ?>][idCentroCosto]" class="form-control idCentroCosto" r="0" value="<?php echo $valueCI['idCentroCosto']; ?>">
+                                <span name="item[<?php echo $keyCI; ?>][letreroCentroCosto]" id="item[<?php echo $keyCI; ?>][letreroCentroCosto]" class="ocultar letreroCentroCosto" style="color: red;">Centro costo no seleccionado correctamente</span>
+                              </td>
+                              <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $keyCI; ?>][subcentroCosto]" id="item[<?php echo $keyCI; ?>][subcentroCosto]" placeholder="subcentro costo" value="<?php echo $aSubcentroCosto['codigoSubcentroCosto'].' - '.$aSubcentroCosto['subcentroCosto']; ?>"><input type="hidden" name="item[<?php echo $keyCI; ?>][idSubcentroCosto]" id="item[<?php echo $keyCI; ?>][idSubcentroCosto]" class="form-control idSubcentroCosto" r="0" value="<?php echo $aSubcentroCosto['idSubcentroCosto']; ?>">
+                                <span name="item[<?php echo $keyCI; ?>][letreroSubcentroCosto]" id="item[<?php echo $keyCI; ?>][letreroSubcentroCosto]" class="ocultar letreroSubcentroCosto" style="color: red;">Subcentro costo no seleccionado correctamente</span>
+                              </td>
+                              <td>
+                                <input type="text" class="form-control  nit" name="item[<?php echo $keyCI; ?>][nit]" id="item[<?php echo $keyCI; ?>][nit]" placeholder="NIT" value="<?php echo $aTercero['nit'].' - '.$aTercero['razonSocial']; ?>">
+                                
+                                <input type="hidden" name="item[<?php echo $keyCI; ?>][idTercero]" id="item[<?php echo $keyCI; ?>][idTercero]" class="form-control idTercero" required value="<?php echo $aTercero['idTercero']; ?>">
+                                <span name="item[<?php echo $keyCI; ?>][letreroTercero]" id="item[<?php echo $keyCI; ?>][letreroTercero]" class="ocultar letreroTercero" style="color: red;">Tercero no seleccionado correctamente</span>
+                              <input type="hidden" name="item[<?php echo $keyCI; ?>][tipoTercero]" id="item[<?php echo $keyCI; ?>][tipoTercero]" class="form-control tipoTercero" ></td>
+                              <td><input type="text" class="form-control  descripcion mayusculas" name="item[<?php echo $keyCI; ?>][descripcion]" id="item[<?php echo $keyCI; ?>][descripcion]" placeholder="Descripción" required value="<?php echo $valueCI["descripcion"];?>"></td>
+                              <td><input type="text" class="form-control  base moneda mayusculas" name="item[<?php echo $keyCI; ?>][base]" id="item[<?php echo $keyCI; ?>][base]" placeholder="Base/cruce" readonly value="<?php if($valueCI["base"]!=0){echo $valueCI["base"];}?>"></td>
+                              <td><input type="text" class="form-control decimales moneda debito mayusculas" name="item[<?php echo $keyCI; ?>][debito]" id="item[<?php echo $keyCI; ?>][debito]" placeholder="Débito" value="<?php if($valueCI["saldoDebito"]!=0){echo  "$".number_format($valueCI["saldoDebito"],2,",",".");} ?>" <?php if($valueCI["saldoDebito"]==0){echo "disabled";}?> ></td>
+                              <td><input type="text" class="form-control decimales moneda  credito mayusculas" name="item[<?php echo $keyCI; ?>][credito]" id="item[<?php echo $keyCI; ?>][credito]" placeholder="Crédito" value="<?php if($valueCI["saldoCredito"]!=0){echo "$".number_format($valueCI["saldoCredito"],2,",",".");}?>" <?php if($valueCI["saldoCredito"]==0){echo "disabled";}?> ></td>
+                              <td class="centrar">
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+                              </td>
+                            </tr>
+                          <?php 
+                        }
+                        } 
+                        ?>
                         </tbody>
 
 
@@ -348,7 +433,7 @@ unset($oLista);
                           </div>
                         </div>
                     </div>
-					<div class="row">
+					         <div class="row">
 	                    <div class="col-md-4">
 	                      <div class="form-group">
 
@@ -362,21 +447,32 @@ unset($oLista);
 
 	                        <input type="text" class="form-control moneda" name="datos[totalDiferencia]" id="totalDiferencia" readonly placeholder="Diferencia">
 
-	                      </div>
-	                    </div>
-	                </div>
+  	                      </div>
+  	                    </div>
+  	                </div>
+                  </fieldset>
+                    <br>
+                </div> 
+                <br>
+                  <fieldset class="border p-2">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="negrita">Guardar el comprobante recurrente</label>
+                          <input type="checkbox"  name="datos[radioComprobanteRecurrente]" id="radioComprobanteRecurrente" value="1">
+                        </div>
+                      </div>
+                      <div class="col-md-4" id="divNombreComprobante">
+                        <div class="form-group">
+                          <label>Nombre del comprobante<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control mayusculas" name="datos[nombreComprobante]" id="nombreComprobante" placeholder="Nombre del comprobante">
 
-
-                    
+                          </div>
+                        </div>
+                    </div>
 
                   </fieldset>
-
-             <br>
-                  </div> 
-
-                  </div>
-           
-
+            </div>
                 <div class="card-footer text-right">
 
                     <a class="btn btn-success mr-1" id="btnGuardar">CONTABILIZAR</a>
@@ -408,6 +504,25 @@ unset($oLista);
       <div class="modal-body">
         <form enctype="multipart/form-data" id="frmRetencion">
           <input type="hidden" name="index" id="index">
+          
+          <div class="form-group">
+            <div class="form-group">
+              <label >Porcentaje de la retención:</label>
+              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control decimales" placeholder="% de la retencion" required>
+            </div>
+          </div>
+           <div class="form-group">
+            <div class="form-group">
+              <label >Base:</label>
+              <input type="text" name="datos[baseModal]" id="baseModal" class="form-control  decimales" placeholder="base retencion" required>
+            </div>
+          </div>
+         <div class="form-group">
+            <div class="form-group">
+              <label >Retención:</label>
+              <input type="text" name="datos[retencionModal]" id="retencionModal" class="form-control"  required disabled>
+            </div>
+          </div>
           <div class="form-check form-check-inline">
               <input class="form-check-input" type="radio"name="datos[dc]"  id="debito" value="debito" >
               <label class="form-check-label" for="debito">DEBITO</label>
@@ -416,40 +531,512 @@ unset($oLista);
               <input class="form-check-input" type="radio" name="datos[dc]"   id="credito" value="credito">
               <label class="form-check-label"  for="credito">CREDITO</label>
             </div>
-
-          <div class="form-group">
-            <div class="form-group">
-              <label >Porcentaje de la retención:</label>
-              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control" placeholder="% de la retencion" required>
-              
-             
-            </div>
-          </div>
-
-           <div class="form-group">
-            <div class="form-group">
-              <label >Base:</label>
-              <input type="text" name="datos[baseModal]" id="baseModal" class="form-control  decimales" placeholder="base retencion" required>
-              
-             
-            </div>
-          </div>
-         
-         <div class="form-group">
-            <div class="form-group">
-              <label >Retención:</label>
-              <input type="text" name="datos[retencionModal]" id="retencionModal" class="form-control"  required disabled>
-              
-             
-            </div>
-          </div>
-
-         
         </form>
       </div>
       <div class="modal-footer">
         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
         <button type="button" class="btn btn-primary" id="btnGuardarRetencion">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalTercero" tabindex="-1" role="dialog" aria-labelledby="modalTerceroLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTerceroLabel">TERCERO</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmTercero">
+          <fieldset class="border p-4">
+                  <h4>Datos básicos</h4>
+                
+                  <label class="negrita">Clasificación<span class="requerido">*</span>:</label>
+                  <div class="row">
+                    <!-- <div class="col-md-6"> -->
+                      <!-- <div class="form-group"> -->
+                        <div class="col-md-2">
+                        <div class="form-group">
+                          <input  type="checkbox" name="datos[checkCliente]" id="checkCliente" value="1">
+                          <label class="form-check-label" for="checkCliente">CLIENTE</label>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <input class="form-check-input menu" type="checkbox" name="datos[checkProveedor]" id="checkProveedor" value="1">
+                          <label class="form-check-label" for="checkProveedor">PROVEEDOR</label>
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <input class="form-check-input menu" type="checkbox" name="datos[checkOtro]" id="checkOtro" value="1">
+                          <label class="form-check-label" for="checkOtro">OTRO</label>
+                        </div>
+                      </div>
+                    </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Persona<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[tipoPersona]" id="datos[tipoPersona]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Persona Natural</option>
+
+                          <option value="2">Persona Juridica</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nit<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[nit]" id="datos[nit]" required>
+
+                      </div>
+
+                    </div>
+                    
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Digito Verificador<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" maxlength="1" name="datos[digitoVerificador]" id="datos[digitoVerificador]" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Responsable IVA<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[responsableIva]" id="datos[responsableIva]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Si</option>
+
+                          <option value="2">No</option>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Razon Social<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[razonSocial]" id="datos[razonSocial]" required>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nombre comercial<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[nombreComercial]" id="datos[nombreComercial]" required>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Contacto:</label>
+                        <input type="text" class="form-control" name="datos[contacto]" id="datos[contacto]" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Email<span class="requerido">*</span>:</label>
+                        <input type="email" class="form-control" name="datos[email]" id="datos[email]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[telefono]" id="datos[telefono]" required>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Celular<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control numero" name="datos[celular]" id="datos[celular]" required>
+
+                      </div>
+
+                    </div>
+
+
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control" name="datos[direccion]" id="datos[direccion]" required>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Departamento<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idDepartamento]" id="datos[idDepartamento]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aDepartamento as $item){ ?>
+
+                          <option value='<?php echo $item["idDepartamento"]; ?>'><?php echo $item["nombre"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idCiudad]" id="datos[idCiudad]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Genero<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[genero]" id="datos[genero]" required>
+
+                          <option value="e">Empresa</option>
+                          <option value="m">Masculino</option>
+                          <option value="f">Femenino</option>
+
+                          
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                    
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Periodo pago:</label>
+
+                        <input type="text" class="form-control" name="datos[periodoPago]" id="datos[periodoPago]" >
+
+                      </div>
+
+                    </div>
+                  </div>
+              </fieldset>
+            <!-- </div> -->
+            <input type="hidden" name="datos[terceroEmpresa]" id="terceroEmpresa" value="<?php echo $_SESSION["idEmpresa"]; ?>">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
+        <button type="button" class="btn btn-primary" id="btnGuardarTercero">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalCuenta" tabindex="-1" role="dialog" aria-labelledby="modalCuentaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCuentaLabel">CUENTA CONTABLE</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+          <form enctype="multipart/form-data" id="frmGuardarCuentaContable">
+
+          <input type="hidden" name="item[0][idEmpresa]" id="idEmpresaCuenta" value="<?php echo $_SESSION['idEmpresa']; ?>">
+    <br> <br>
+  <table class="table" cellspacing="6" cellpadding="10">
+    <tbody>
+      <tr>
+        <th><label class="negrita">Grupo</label></th>
+        <input type="hidden" class="form-control idGrupo"  name="item[0][idGrupo]" id="idGrupo" placeholder="Grupo">
+        <td><input type="text" class="form-control grupo mayusculas"  name="item[0][grupo]" id="grupo" placeholder="Grupo" required></td>
+        
+        
+      </tr>
+      <tr>
+        <th><label class="negrita">Cuenta</label></th>
+        <input type="hidden" class="form-control idCuenta"  name="item[0][idCuenta]" id="idCuenta" placeholder="Cuenta">
+        <td ><input type="text" class="form-control cuenta mayusculas"  name="item[0][cuenta]" id="cuenta" placeholder="Cuenta" required></td>
+        
+      </tr>
+      <tr>
+        <th><input type="checkbox" name="item[0][checksubcuenta]" id="checksubcuenta" value="1" ><label class="negrita">Subcuenta</label></th>
+        <td style="display: none;" id="tdSubcuenta"><input type="text" class="form-control idSubcuenta mayusculas numero"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="Codigo subcuenta nuevo"></td>
+
+        <td ><input type="text" class="form-control subcuenta mayusculas"  name="item[0][subcuenta]" id="subcuenta" placeholder="Subcuenta" ></td>
+        <td ><input type="text" class="form-control mayusculas"  name="item[0][descripcionSubcuenta]" id="descripcionSubcuenta" placeholder="Descripción" readonly disabled></td>
+      </tr>
+      <tr >
+        <th><input type="checkbox" name="item[0][checkauxiliar]" id="checkauxiliar" value="1" ><label class="negrita">Auxiliares</label></th>
+        <td><input type="number" class="form-control"  name="item[0][idAuxiliar]" id="idAuxiliar" placeholder="Código" readonly disabled></td>
+        
+        <td ><input type="text" class="form-control mayusculas"  name="item[0][auxiliar]" id="auxiliar" placeholder="Descripción" readonly disabled></td>
+      </tr>
+      <tr >
+        <th><input type="checkbox" name="item[0][checksubauxiliar]" id="checksubauxiliar" value="2" disabled><label class="negrita">Subauxiliares</label></th>
+        <td><input type="number" class="form-control"  name="item[0][idSubauxiliar]" id="idSubauxiliar" placeholder="Código" readonly disabled></td>
+        
+        <td ><input type="text" class="form-control"  name="item[0][subauxiliar]" id="subauxiliar" placeholder="Descripción" readonly disabled></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <hr>
+  <div class="row">
+    <div class="col-md-3">
+      <label>Detalles</label>
+      <select class="form-control" name="item[0][detalle]" id="detalle">
+        <option value="1">No detalla</option>
+        <option value="2">Por cobrar</option>
+        <option value="3">Por pagar</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label>Tercero</label>
+      <select class="form-control" name="item[0][tercero]" id="tercero">
+        <option value="1">Si tercero</option>
+        <option value="2">No tercero</option>
+        <option value="3" >Retención</option>
+      </select>
+    </div>
+    <div class="col-md-2" id="divPorcentajeRetencion">
+      <label>% Retención</label>
+      <input type="text" class="form-control decimales" name="item[0][porcentajeRetencion]" id="porcentajeRetencion">
+    </div>
+    <div class="col-md-4">
+      <input type="checkbox" name="item[0][checkcentrocosto]" id="checkcentrocosto" value="1"><label>Centros de costo</label>
+    </div>
+  </div>
+  <br>
+      <div class="row">
+        <div class="col-md-4">
+          <label>Tipo cuenta</label>
+          <select class="form-control" name="item[0][tipoCuenta]">
+            <option value="1">Activo</option>
+            <option value="2">Pasivo</option>
+            <option value="3">Patrimonio</option>
+            <option value="4">Ingreso</option>
+            <option value="5">Gasto</option>
+            <option value="6">Costo</option>
+            <option value="7">Orden</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Naturaleza</label>
+          <select class="form-control" name="item[0][naturaleza]">
+            <option value="debito">Débito</option>
+            <option value="credito">Crédito</option>
+          </select>
+        </div>
+      </div>
+      </form>
+    </div>
+
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
+        <button type="button" class="btn btn-primary" id="btnGuardarCuentaContable">GUARDAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalCentroCosto" tabindex="-1" role="dialog" aria-labelledby="modalCentroCostoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCentroCostoLabel">CENTRO COSTO</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+          <form enctype="multipart/form-data" id="frmGuardarCuentaContable">
+
+          <input type="hidden" name="item[0][idEmpresa]" id="idEmpresaCuenta" value="<?php echo $_SESSION['idEmpresa']; ?>">
+    <br> <br>
+  <table class="table" cellspacing="6" cellpadding="10">
+    <tbody>
+      <tr>
+        <th><label class="negrita">Grupo</label></th>
+        <input type="hidden" class="form-control idGrupo"  name="item[0][idGrupo]" id="idGrupo" placeholder="Grupo">
+        <td><input type="text" class="form-control grupo mayusculas"  name="item[0][grupo]" id="grupo" placeholder="Grupo" required></td>
+        
+        
+      </tr>
+      <tr>
+        <th><label class="negrita">Cuenta</label></th>
+        <input type="hidden" class="form-control idCuenta"  name="item[0][idCuenta]" id="idCuenta" placeholder="Cuenta">
+        <td ><input type="text" class="form-control cuenta mayusculas"  name="item[0][cuenta]" id="cuenta" placeholder="Cuenta" required></td>
+        
+      </tr>
+      <tr>
+        <th><input type="checkbox" name="item[0][checksubcuenta]" id="checksubcuenta" value="1" ><label class="negrita">Subcuenta</label></th>
+        <td style="display: none;" id="tdSubcuenta"><input type="text" class="form-control idSubcuenta mayusculas numero"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="Codigo subcuenta nuevo"></td>
+
+        <td ><input type="text" class="form-control subcuenta mayusculas"  name="item[0][subcuenta]" id="subcuenta" placeholder="Subcuenta" ></td>
+        <td ><input type="text" class="form-control mayusculas"  name="item[0][descripcionSubcuenta]" id="descripcionSubcuenta" placeholder="Descripción" readonly disabled></td>
+      </tr>
+      <tr >
+        <th><input type="checkbox" name="item[0][checkauxiliar]" id="checkauxiliar" value="1" ><label class="negrita">Auxiliares</label></th>
+        <td><input type="number" class="form-control"  name="item[0][idAuxiliar]" id="idAuxiliar" placeholder="Código" readonly disabled></td>
+        
+        <td ><input type="text" class="form-control mayusculas"  name="item[0][auxiliar]" id="auxiliar" placeholder="Descripción" readonly disabled></td>
+      </tr>
+      <tr >
+        <th><input type="checkbox" name="item[0][checksubauxiliar]" id="checksubauxiliar" value="2" disabled><label class="negrita">Subauxiliares</label></th>
+        <td><input type="number" class="form-control"  name="item[0][idSubauxiliar]" id="idSubauxiliar" placeholder="Código" readonly disabled></td>
+        
+        <td ><input type="text" class="form-control"  name="item[0][subauxiliar]" id="subauxiliar" placeholder="Descripción" readonly disabled></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <hr>
+  <div class="row">
+    <div class="col-md-3">
+      <label>Detalles</label>
+      <select class="form-control" name="item[0][detalle]" id="detalle">
+        <option value="1">No detalla</option>
+        <option value="2">Por cobrar</option>
+        <option value="3">Por pagar</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label>Tercero</label>
+      <select class="form-control" name="item[0][tercero]" id="tercero">
+        <option value="1">Si tercero</option>
+        <option value="2">No tercero</option>
+        <option value="3" >Retención</option>
+      </select>
+    </div>
+    <div class="col-md-2" id="divPorcentajeRetencion">
+      <label>% Retención</label>
+      <input type="text" class="form-control decimales" name="item[0][porcentajeRetencion]" id="porcentajeRetencion">
+    </div>
+    <div class="col-md-4">
+      <input type="checkbox" name="item[0][checkcentrocosto]" id="checkcentrocosto" value="1"><label>Centros de costo</label>
+    </div>
+  </div>
+  <br>
+      <div class="row">
+        <div class="col-md-4">
+          <label>Tipo cuenta</label>
+          <select class="form-control" name="item[0][tipoCuenta]">
+            <option value="1">Activo</option>
+            <option value="2">Pasivo</option>
+            <option value="3">Patrimonio</option>
+            <option value="4">Ingreso</option>
+            <option value="5">Gasto</option>
+            <option value="6">Costo</option>
+            <option value="7">Orden</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label>Naturaleza</label>
+          <select class="form-control" name="item[0][naturaleza]">
+            <option value="debito">Débito</option>
+            <option value="credito">Crédito</option>
+          </select>
+        </div>
+      </div>
+      </form>
+    </div>
+
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCELAR</button> -->
+        <button type="button" class="btn btn-primary" id="btnGuardarCuentaContable">GUARDAR</button>
       </div>
     </div>
   </div>

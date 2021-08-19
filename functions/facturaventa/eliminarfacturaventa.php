@@ -28,8 +28,45 @@ unset($oItem);
 $oItem=new Data("factura_venta_item","idFacturaVenta",$idFactura); 
 $oItem->eliminar();
 unset($oItem);
-    
-    
+
+
+$oItem=new Lista("factura_venta_comprobante");
+$oItem->setFiltro("idFacturaVenta","=",$idFactura); 
+// $oItem->setFiltro("idFacturaVenta","=",$idFactura); 
+$facturaVentaComprobante=$oItem->getLista();
+unset($oItem);
+
+
+if (!empty($facturaVentaComprobante)) {
+    	foreach ($facturaVentaComprobante as $key => $value) {
+
+    		$oItem=new Data("comprobante","idComprobante",$value["idComprobante"]); 
+			$oItem->eliminar(); 
+			unset($oItem);
+
+
+			$oLista=new Lista("comprobante_items");
+			$oLista->setFiltro("idComprobante","=",$value["idComprobante"]);
+			$comprobanteItems=$oLista->getLista();
+			unset($oLista);
+			if (!empty($comprobanteItems)) {
+				foreach ($comprobanteItems as $keyC => $valueC) {
+				$oItem=new Data("comprobante_items","idComprobanteItem",$valueC["idComprobanteItem"]);
+				$oItem->eliminar();
+				unset($oItem);
+				}
+			}
+
+
+
+
+    		$oItem=new Data("factura_venta_comprobante","idFacturaVentaComprobante",$value["idFacturaVentaComprobante"]);
+    		$oItem->eliminar();
+    		unset($oItem);
+    	}
+    }    
+
+
 
 
 $msg=true; 

@@ -16,7 +16,7 @@ class FacturaVenta extends Sql{
 
 		if(!isset($_SESSION)){ session_start(); }
 
-		if($_SESSION["idRol"]==2){
+		if(empty($_SESSION["idEmpresa"])){
 			if ($aDatos["ingresoPerfilEmpresa"]==0) {
 				$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
 			}else{
@@ -24,7 +24,7 @@ class FacturaVenta extends Sql{
 			}
 		}
 
-		if($_SESSION["idEmpresa"]!=""){
+		if(!empty($_SESSION["idEmpresa"])){
 
 			$condicion.=" AND e.idEmpresa=".$_SESSION["idEmpresa"]; 
 
@@ -44,11 +44,11 @@ class FacturaVenta extends Sql{
 
 		$sql="SELECT fv.idFacturaVenta, fv.fechaRegistro, fv.fechaFactura, c.razonSocial, u.nombreUsuario, u.apellidoUsuario, fv.subtotal,
 
-			fv.total, fv.estado, e.razonSocial as empresa, fv.nroFactura, fv.archivo,fv.saldo
+			fv.total, fv.estado, e.razonSocial as empresa, fv.nroFactura, fv.archivo,fv.saldo,e.idEmpresa
 
 			FROM factura_venta as fv 
 
-			INNER JOIN cliente as c ON(c.idCliente=fv.idCliente)
+			INNER JOIN tercero as c ON(c.idTercero=fv.idCliente)
 
 			INNER JOIN usuario as u ON(u.idUsuario=fv.idUsuarioRegistra)
 
@@ -118,6 +118,39 @@ class FacturaVenta extends Sql{
 
 
 	}
+
+	public function getCuentaTotal($idEmpresa,$tipoFactura){
+
+
+
+	
+
+		$sql="SELECT ccc.concepto,ccc.tipoFactura,cc.codigoCuenta,cc.nombre,ccc.idEmpresaCuenta,ccc.idEmpresa
+		FROM compra_cuenta_contable as ccc
+			  INNER JOIN cuenta_contable as cc ON(ccc.idEmpresaCuenta=cc.idCuentaContable)
+			  WHERE 0=0 AND  ccc.idEmpresa=$idEmpresa AND ccc.tipoFactura='$tipoFactura'";
+
+	    $aCuentaTotal=$this->ejecutarSql($sql); 
+
+	    return $aCuentaTotal; 
+
+	}
+
+	public function getFacturaComprobante($idEmpresa){	
+
+		$sql="SELECT *
+		FROM factura_venta_comprobante fcc
+		INNER JOIN factura_venta fc on fcc.idFacturaVenta=fc.idFacturaVenta
+		WHERE fc.idEmpresa=$idEmpresa  AND (fcc.estado=3 or fcc.estado=4) ";
+
+	    $aFacturaComprobante=$this->ejecutarSql($sql); 
+
+	    return $aFacturaComprobante; 
+
+	}
+
+
+
 }
 
 ?>

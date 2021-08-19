@@ -25,7 +25,13 @@ if (empty($aCliente)) {
         $aDatos["tipo_documento"]=$datos["tipoDocumento"]; 
         $aDatos["idCliente"]=$datos["documento"]; 
         $aDatos["nombre"]=$datos["nombre"];
-        $aDatos["apellidos"]=$datos["apellidos"]; 
+        if ($datos["apellidos"] =='') {
+            $aDatos["apellidos"]=' '; 
+        }
+        if ($datos["apellidos"] !='') {
+            $aDatos["apellidos"]=$datos["apellidos"]; 
+        }
+        
         $aDatos["email"]=$datos["email"]; 
         $aDatos["telefono"]=$datos["telefono"]; 
 

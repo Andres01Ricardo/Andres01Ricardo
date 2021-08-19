@@ -76,11 +76,18 @@ class Data {
 		return $result[0];
 	}
 
+	// public function guardar(){
+	// 	if ($this->pk_value == 0) {
+	// 		$this->setDatos();
+	// 	} else {
+	// 		$this->updateDatos();
+	// 	}
+	// }
 	public function guardar(){
 		if ($this->pk_value == 0) {
-			$this->setDatos();
+			return $this->setDatos();
 		} else {
-			$this->updateDatos();
+			return $this->updateDatos();
 		}
 	}
 	public function setDatos(){		

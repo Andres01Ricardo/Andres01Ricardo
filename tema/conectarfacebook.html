@@ -1,14 +1,190 @@
 <div class="card">
 	<div class="card-body">
+			<?php if(!empty($_SESSION['idEmpresa'])){ ?>
 		<div class="row">
 			<div class="col-md-6">
-				<div class="fb-login-button" data-width="80" data-size="large" data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState();">></div>
+				<!-- <div class="fb-login-button" data-width="80" data-size="large" data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState();">></div> -->
+
+				<fb:login-button 
+
+				  scope="public_profile,email,pages_manage_ads,leads_retrieval,pages_manage_metadata,pages_read_engagement,pages_show_list"
+				  onlogin="checkLoginState();">
+				</fb:login-button>
+				<div class="fb-login-button" data-width="" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" scope="public_profile,email,pages_manage_ads,leads_retrieval,pages_manage_metadata,pages_read_engagement,pages_show_list"></div>
 			</div>
+
 		</div>
 		<div class="row">
 			<div class="col-md-6">
 				<div id="status"></div>
 			</div>
 		</div>
+		<?php }
+		if(empty($_SESSION['idEmpresa'])){ ?>
+		<div class="row">
+			<div class="col-md-6">
+				<p>Por favor ingrese al perfil empresa</p>
+			</div>
+		</div>
+		<?php } ?>
+		
 	</div>
 </div>
+<?php if(!empty($_SESSION['idEmpresa'])){ ?>
+	<div class="card">
+		<div class="card-body">
+			<form enctype="multipart/form-data" id="frmGuardar">
+				<input type="hidden" name="tokenFacebook" id="tokenFacebook">
+			<div class="row">
+				<div class="col-md-6">
+					<label>Paginas administradas</label>
+					<select class="form-control" id="pagina">
+						<option value="">Seleccione la página</option>
+						<option value="1">Pagina 1</option>
+						<option value="2">Pagina 2</option>
+						<option value="3">Pagina 3</option>
+					</select>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<div class="card " id="divCampana">
+		<div class="card-body">
+			
+			<div class="row">
+				<div class="col-md-6">
+					<label>Campañas creadas</label>
+					<select class="form-control" id="campana" name="campana">
+						<option value="">Seleccione la campaña</option>
+						<option value="1">Campaña 1</option>
+						<option value="2">Campaña 2</option>
+						<option value="3">Campaña 3</option>
+						<option value="4">Campaña 4</option>
+						
+					</select>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<div class="card " id="divParametros">
+		<div class="card-body">
+			
+			<div class="row">
+				<div class="col-md-2">
+					<p>Número documento</p>
+				</div>
+				<div class="col-md-6">
+					
+					<select class="form-control" name="documento">
+						<option>Seleccione una opción</option>
+						<option>document</option>
+						<option>name</option>
+						<option>last name</option>
+						<option>phone</option>
+						<option>email</option>
+						<option>address</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<p>Nombre</p>
+				</div>
+				<div class="col-md-6">
+					<label> </label>
+					<select class="form-control" name="nombre">
+						<option>Seleccione una opción</option>
+						<option>document</option>
+						<option>name</option>
+						<option>last name</option>
+						<option>phone</option>
+						<option>email</option>
+						<option>address</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<p>Apellidos</p>
+				</div>
+				<div class="col-md-6">
+					<label> </label>
+					<select class="form-control" name="apellido">
+						<option>Seleccione una opción</option>
+						<option>document</option>
+						<option>name</option>
+						<option>last name</option>
+						<option>phone</option>
+						<option>email</option>
+						<option>address</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<p>Email</p>
+				</div>
+				<div class="col-md-6">
+					<label> </label>
+					<select class="form-control" name="email">
+						<option>Seleccione una opción</option>
+						<option>document</option>
+						<option>name</option>
+						<option>last name</option>
+						<option>phone</option>
+						<option>email</option>
+						<option>address</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<p>Teléfono</p>
+				</div>
+				<div class="col-md-6">
+					<label> </label>
+					<select class="form-control" name="telefono">
+						<option>Seleccione una opción</option>
+						<option>document</option>
+						<option>name</option>
+						<option>last name</option>
+						<option>phone</option>
+						<option>email</option>
+						<option>address</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					<p>Dirección</p>
+				</div>
+				<div class="col-md-6">
+					<label> </label>
+					<select class="form-control" name="direccion">
+						<option>Seleccione una opción</option>
+						<option>document</option>
+						<option>name</option>
+						<option>last name</option>
+						<option>phone</option>
+						<option>email</option>
+						<option>address</option>
+					</select>
+				</div>
+				
+			</div>
+			<div class="card-footer text-right">
+	                <a class="btn btn-primary mr-1" id="btnGuardar">GUARDAR</a>
+	            </div>
+			</form>
+		</div>
+	</div>
+<?php } ?>

@@ -101,3 +101,23 @@ $("body").on("click touchstart","#btnGuardar",function(e){
       }
 
   })
+
+
+$("body").on("change","#tipoDocumento",function(e){
+
+    if ($('#tipoDocumento option:selected').text()=='NIT') {
+      $("#labelNombre").addClass('ocultar');
+      $("#labelRazon").removeClass('ocultar');
+      $("#apellidos").removeAttr('required');
+      $("#divApellidos").css('display',"none");
+
+    }
+    else{
+      $("#labelNombre").removeClass('ocultar');
+      $("#labelRazon").addClass('ocultar');
+      $("#apellidos").attr('required','required');
+      $("#divApellidos").css('display',"block");
+
+    }
+})
+

@@ -19,19 +19,9 @@ $item  = (isset($_REQUEST['subcentros'] ) ? $_REQUEST['subcentros'] : "" );
 if(!isset($_SESSION)){ session_start(); }
 
 
+$aDatos["codigoCentroCosto"]=$datos["codigoCentroCosto"]; 
+
 $aDatos["centroCosto"]=$datos["centroCosto"]; 
-
-$aDatos["responsable"]=$datos["responsable"]; 
-
-$aDatos["direccion"]=$datos["direccion"]; 
-
-$aDatos["telefono1"]=$datos["primerTelefono"]; 
-
-$aDatos["telefono2"]=$datos["segundoTelefono"]; 
-
-$aDatos["email"]=$datos["email"]; 
-
-$aDatos["fax"]=$datos["fax"]; 
 
 $aDatos["fechaRegistro"]=date("Y-m-d H:i:s");
 
@@ -57,6 +47,7 @@ unset($oItem);
 
 foreach ($item as $keyc => $valuec) {
 
+    $aItemSubcentroCosto["codigoSubcentroCosto"]=$valuec["codigo"];
     $aItemSubcentroCosto["subcentroCosto"]=$valuec["nombre"];
     $aItemSubcentroCosto["idCentroCosto"]=$idCentroCosto;
 

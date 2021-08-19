@@ -22,11 +22,11 @@ class FacturaCompra extends Sql{
 
 
 
-		$sql="SELECT p.idProveedor, p.razonSocial,p.nit FROM proveedor_empresa as pe 
+		$sql="SELECT p.idTercero, p.razonSocial,p.nit FROM tercero_empresa as pe 
 
-			  INNER JOIN proveedor as p ON(p.idProveedor=pe.idProveedor)
+			  INNER JOIN tercero as p ON(p.idTercero=pe.idTercero)
 
-			  WHERE 0=0 ".$condicion." GROUP BY p.idProveedor ORDER BY p.razonSocial ASC";
+			  WHERE 0=0 ".$condicion." AND (p.tipoTercero=2 or p.tipoTercero=4 or p.tipoTercero=6 or p.tipoTercero=7) GROUP BY p.idTercero ORDER BY p.razonSocial ASC";
 
 
 
@@ -46,12 +46,12 @@ class FacturaCompra extends Sql{
 
 		if(!isset($_SESSION)){ session_start(); }
 
-		if($_SESSION["idRol"]==3){
+		if(!empty($_SESSION["idEmpresa"])){
 
-			$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
+			$condicion.=" AND fc.idEmpresa=".$_SESSION["idEmpresa"]; 
 
 		}
-		if($_SESSION["idRol"]==2){
+		if(empty($_SESSION["idEmpresa"])){
 			if ($aDatos["ingresoPerfilEmpresa"]==0) {
 				$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
 			}else{
@@ -86,7 +86,7 @@ class FacturaCompra extends Sql{
 
 			  FROM factura_compra as fc 
 
-				INNER JOIN proveedor as p ON(p.idProveedor=fc.idProveedor)
+				INNER JOIN tercero as p ON(p.idTercero=fc.idProveedor)
 
 				INNER JOIN empresa as e ON(e.idEmpresa=fc.idEmpresa)
 
@@ -94,7 +94,7 @@ class FacturaCompra extends Sql{
 
 				-- LEFT JOIN usuario_empresa as ue ON(ue.idEmpresa=e.idEmpresa) 
 
-				WHERE 0=0 ".$condicion." ORDER BY fc.fechaRegistro DESC";
+				WHERE 0=0 ".$condicion." ORDER BY fc.fechaRecibido DESC";
 
 		
 
@@ -172,6 +172,53 @@ class FacturaCompra extends Sql{
 	    $aSaldosProveedorSaldo=$this->ejecutarSql($sql); 
 	    return $aSaldosProveedorSaldo; 
 
+
+	}
+
+
+
+
+	public function getCuentaTotal($idEmpresa,$tipoFactura){
+
+
+
+		// $condicion=""; 
+
+		// if($aDatos["idEmpresa"]!=""){
+
+		// 	$condicion=" AND ccc.idEmpresa=".$aDatos["idEmpresa"]; 
+
+		// }
+		// if($aDatos["tipoFactura"]!=""){
+
+		// 	$condicion=" AND ccc.tipoFactura='".$aDatos["tipoFactura"]."'"; 
+
+		// }
+	
+
+		$sql="SELECT ccc.concepto,ccc.tipoFactura,cc.codigoCuenta,cc.nombre,ccc.idEmpresaCuenta,ccc.idEmpresa
+		FROM compra_cuenta_contable as ccc
+			  INNER JOIN cuenta_contable as cc ON(ccc.idEmpresaCuenta=cc.idCuentaContable)
+			  WHERE 0=0 AND  ccc.idEmpresa=$idEmpresa AND ccc.tipoFactura='$tipoFactura'";
+
+	    $aCuentaTotal=$this->ejecutarSql($sql); 
+
+	    return $aCuentaTotal; 
+
+	}
+
+
+
+	public function getFacturaComprobante($idEmpresa){	
+
+		$sql="SELECT *
+		FROM factura_compra_comprobante fcc
+		INNER JOIN factura_compra fc on fcc.idFacturaCompra=fc.idFacturaCompra
+		WHERE fc.idEmpresa=$idEmpresa  AND (fcc.estado=3 or fcc.estado=4) ";
+
+	    $aFacturaComprobante=$this->ejecutarSql($sql); 
+
+	    return $aFacturaComprobante; 
 
 	}
 

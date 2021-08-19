@@ -60,12 +60,11 @@ $nuevafecha = date ( 'Y-m-d' , $nuevafecha );
 
 $filtroMovimiento["idCuentaBancaria"]=$id; 
 
-$filtroMovimiento["fechaInicio"]=$nuevafecha; 
+// $filtroMovimiento["fechaInicio"]=$nuevafecha; 
 
-$filtroMovimiento["fechaFin"]=$hoy; 
+// $filtroMovimiento["fechaFin"]=$hoy; 
 
 $aMovimientos=$oCuentasBancarias->getMovimientosCuentaBancaria($filtroMovimiento); 
-
 
 
 $oLista = new Lista('cuenta_bancaria_extracto');
@@ -79,6 +78,10 @@ $oLista->setOrden("anioPeriodo","DESC");
 $aExtractos=$oLista->getLista();
 
 unset($oLista);
+
+
+
+
 
 
 
@@ -194,13 +197,7 @@ $meses[12]="Diciembre";
 
                     </li>
 
-                    <li class="nav-item">
-
-                      <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#extractos" role="tab"
-
-                        aria-controls="profile" aria-selected="false">Extractos Bancarios</a>
-
-                    </li>
+                   
 
                   </ul>
 
@@ -254,128 +251,79 @@ $meses[12]="Diciembre";
 
                               <label class="negrita">Número Cuenta:</label>
 
-                              <input type="text" class="form-control " value="<?php echo $aDatos['numeroCuenta']; ?>" required readonly>
+                              <input type="text" class="form-control " id="numeroCuenta" value="<?php echo $aDatos['numeroCuenta']; ?>" required >
 
                             </div>
 
                           </div>
 
                           <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
-
                             <div class="form-group">
-
                               <label class="negrita">Nombre Cuenta:</label>
-
-                              <input type="text" class="form-control " value="<?php echo $aDatos['nombreCuenta']; ?>" required readonly>
-
+                              <input type="text" class="form-control " id="nombreCuenta" value="<?php echo $aDatos['nombreCuenta']; ?>" required >
                             </div>
-
                           </div>
-
                         </div>
-
                         <div class="row">
-
                           <div class="col-md-4">
-
                             <div class="form-group">
-
                               <label class="negrita">Banco:</label>
-
                               <input type="text" class="form-control " value="<?php echo $aBancos["nombre"]; ?>" required readonly>
-
                             </div>
-
                           </div>
-
                           <div class="col-md-4">
-
                             <div class="form-group">
-
                               <label class="negrita">Aplica 4x1.000:</label>
-
-                              <input type="text" class="form-control " value="<?php echo $aDatos['aplicaCuatroMil']==1?'Si':'No'; ?>" readonly>
-
+                              <select class="form-control" id="cuatroMil">
+                                <option value="1" <?php if ($aDatos['aplicaCuatroMil']==1) {
+                                  echo 'selected';
+                                } ?> >SI</option>
+                                <option value="2" <?php if ($aDatos['aplicaCuatroMil']==2) {
+                                  echo 'selected';
+                                } ?> >NO</option>
+                              </select>
+                               <!-- <input type="text" class="form-control " value="<?php echo $aDatos['aplicaCuatroMil']==1?'Si':'No'; ?>" readonly> -->
                             </div>
-
                           </div>
-
                           <div class="col-md-4">
-
                             <div class="form-group">
-
                               <label class="negrita">Cuenta Principal:</label>
-
                               <input type="text" class="form-control " value="<?php echo $aDatos['cuentaPrincipal']==1?'Si':'No'; ?>" readonly>
-
                             </div>
-
                           </div>
-
-                          
-
                         </div>
-
                         <div class="row">
-
                           <div class="col-md-4">
-
                             <div class="form-group">
-
                               <label class="negrita">Fecha Inicio Movimientos:</label>
-
                               <input type="text" class="form-control datepicker" id="fechaInicio" value="<?php echo $nuevafecha; ?>" required readonly>
-
                             </div>
-
                           </div>
-
                           <div class="col-md-4">
-
                             <div class="form-group">
-
                               <label class="negrita">Fecha Final Movimientos:</label>
-
                               <input type="text" class="form-control datepicker" id="fechaFin" value="<?php echo $hoy; ?>" required readonly>
-
                             </div>
-
                           </div>
-
-                          
-
+                        <div class="col-md-4">
+                          <a class="btn btn-primary mr-1" id="btnGuardar">Editar</a>
+                        </div>  
                         </div>
-
                         <div class="row">
-
                           <div class="col-md-12 col-lg-12">
-
                             <table class="table table-striped mayusculas" id="tableMove">
-
                               <thead>
-
                                 <tr>
-
                                   <th class="text-center">#</th>
-
                                   <th>Fecha Movimiento</th>
-
                                   <th>Tipo Movimiento</th>
-
                                   <th>Descripción</th>
-
                                   <th>Valor Movimiento</th>
-
                                   <th>Saldo Actual</th>
-
                                   <th>Saldo Anterior</th>
-
                                 </tr>
-
                               </thead>
-
                               <tbody>
-
                                 <?php foreach($aMovimientos as $index => $iMovimiento){ 
 
                                   $valor=$iMovimiento["valorIngreso"]; 
@@ -420,83 +368,8 @@ $meses[12]="Diciembre";
 
                     </div>
 
-                    <div class="tab-pane fade" id="extractos" role="tabpanel" aria-labelledby="home-tab2">
-
-                      <div class="card-header">
-
-                        <h4>Extractos Bancarios</h4>
-
-                      </div>
-
-                      <div class="card-body">
-
-                        <div class="row">
-
-                          <div class="col-md-12 col-lg-12">
-
-                            <table class="table table-striped mayusculas" id="tableExtracto">
-
-                              <thead>
-
-                                <tr>
-
-                                  <th class="text-center">#</th>
-
-                                  <th>Fecha Registro</th>
-
-                                  <th>Usuario Registra</th>
-
-                                  <th>Periodo</th>
-
-                                  <th>Archivo</th>
-
-                                </tr>
-
-                              </thead>
-
-                              <tbody>
-
-                                <?php foreach($aExtractos as $index => $iExtracto){ 
-
-                                  $oItem=new Data("usuario","idUsuario",$iExtracto["idUsuarioRegistra"]); 
-
-                                  $aUserRegistra=$oItem->getDatos(); 
-
-                                  unset($oItem);
-
-                                  ?>
-
-                                  <tr>
-
-                                    <td class="text-center"><?php echo $index+1; ?></td>
-
-                                    <td><?php echo $iExtracto["fechaRegistro"]; ?></td>
-
-                                    <td><?php echo $aUserRegistra["nombreUsuario"]." ".$aUserRegistra["apellidoUsuario"]; ?></td>
-
-                                    <td><?php echo $meses[$iExtracto["mesPeriodo"]]." de ".$iExtracto["anioPeriodo"]; ?></td>
-
-                                    <td><a href="<?php echo $URL.$iExtracto['extracto']; ?>" target="_blank">Ver Archivo</a></td>
-
-                                  </tr>
-
-                                <?php } ?>
-
-                              </tbody>
-
-                            </table>
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
 
                   </div>
-
-                  
 
                   </div>
 

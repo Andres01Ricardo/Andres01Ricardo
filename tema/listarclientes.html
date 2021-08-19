@@ -89,12 +89,12 @@ $aClientes=$oClientes->getClientesEmpresa();
                           <?php foreach($aClientes as $index => $iCliente){ 
 
                             
-                            $idEliminar=$iCliente["idCliente"];
+                            $idEliminar=$iCliente["idTercero"];
                             $digito=$iCliente["tipoPersona"]==1?"":"-".$iCliente["digitoVerificador"];
 
 
 
-                            $aEncript['cadena']=$iCliente['idCliente'];
+                            $aEncript['cadena']=$iCliente['idTercero'];
 
                             $id=$oControl->encriptar($aEncript);
 

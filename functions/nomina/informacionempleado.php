@@ -404,6 +404,92 @@ foreach ($listaN as $key => $value) {
 			
 		break;
 
+		case 5:
+			$oLista = new Lista('empleado_incapacidad_medica');
+
+			$oLista->setFiltro("idEmpresaNovedad","=",$value["idEmpresaNovedad"]);
+
+			$aIncapacidad=$oLista->getLista();
+			unset($oLista);
+
+			if(count($aIncapacidad)>0){
+				foreach ($aIncapacidad as $Incapacidad) {
+					if ($Incapacidad["idTipoIncapacidad"]=="4") {
+						$aItem["idTipo"]=$value["idNovedades"]; 
+
+						$datetime1 = new DateTime($Incapacidad["fechaInicio"]);
+						$datetime2 = new DateTime($Incapacidad["fechaFinal"]);
+						$difference = $datetime1->diff($datetime2);
+						 $diasE=$difference->d;
+						 $dias=$diasE+1;
+						// $dias=15;
+						$aItem["texto"]=$Incapacidad["descripcion"]; 
+						$diasPago=$diasPago-$dias;
+
+						$valorIncapacidadDiario=($salario/30) * 0.6666;
+						
+						$valorIncapacidad=floatval($valorIncapacidadDiario*$dias);
+						$valorRestante=floatval(($salario/30)*$diasPago);
+						$valorSumado=$valorIncapacidad+$valorRestante;
+						$valorSumadoDiario=$valorSumado/($diasPago+$dias);
+						if ($valorSumadoDiario < $aSalario["salarioDiario"]) {
+							$valorIncapacidad=$aSalario["salarioDiario"]*$dias;
+						}
+							
+						$Incapacidad=1;
+
+
+						$aItem["valor"]=$valorIncapacidad;
+						$aItem["idNovedad"]=$value["idEmpresaNovedad"];
+						
+						$aItem["valorIncapacidad"]=$valorIncapacidad+$valorRestante;
+						$aItem["diasIncapacidad"]=$dias;
+						
+
+
+						$aAdiciones[]=$aItem; 
+
+						
+						
+
+
+						$aDeduccionesley[0]["valor"]=($aLey["saludEmpleado"]/100)*($valorIncapacidad+$valorRestante);
+						
+						$aDeduccionesley[1]["valor"]=($aLey["pensionEmpleado"]/100)*($valorIncapacidad+$valorRestante);
+
+
+						// $aDeduccionesley[2]["valor"]=floatval((($aLey["riesgo".$riesgo]/100)*$salario)/30)*$diasPago;
+						
+						// $aDeduccionesley[3]["valor"]=floatval(($aLey["cajaCompensacion"]/100)*$salario)/30)*$diasPago;
+
+
+
+
+
+
+
+					}
+					// if ($Incapacidad["tipo"]=="trabajadas") {
+					// 	$aItem["idTipo"]=$value["idNovedades"]; 
+
+					// 	$aItem["texto"]='Incapacidad '.$Incapacidad["cantidadDias"].' dias '.$Incapacidad["tipo"]; 
+
+					// 	$valorIncapacidad=($salario * $Incapacidad["cantidadDias"])/30;
+
+					// 	$aItem["valor"]=$valorIncapacidad;
+					// 	$aItem["idNovedad"]=$value["idEmpresaNovedad"];
+
+					// 	$aAdiciones[]=$aItem; 
+
+						
+					// 	$Incapacidad=2;
+					// }
+				}
+			}
+
+			
+		break;
+
 		case 7:
 
 			$oLista = new Lista('empleado_auxilios_extralegales');
@@ -532,7 +618,9 @@ $aArray=array(
 
 	"auxilioTransporte"=>$auxilioTransporte,
 
-	"vacaciones"=>$vacaciones
+	"vacaciones"=>$vacaciones,
+
+	"Incapacidad"=>$Incapacidad,
 
 ); 
 

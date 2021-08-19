@@ -25,7 +25,8 @@ if(empty($_SESSION['idEmpresa'])){
     $idEmpresa=$oControl->desencriptar($decrip); 
     
     }
-  }else if(!empty($_SESSION['idEmpresa'])){
+  }
+  if(!empty($_SESSION['idEmpresa'])){
 
   $idEmpresa= $_SESSION["idEmpresa"];
 
@@ -68,7 +69,7 @@ $aFecha=explode("-",$nuevafecha);
 
 
 
-$aFiltroR["idEmpresa"]=$_SESSION["idEmpresa"]; 
+$aFiltroR["idEmpresa"]=$idEmpresa; 
 
 $aFiltroR["anio"]=$aFecha[0]; 
 
@@ -155,6 +156,7 @@ $oICA=new Dashboard();
 $fICA=$oICA->getICA($idEmpresa);
 unset($oICA);
 
+// print_r($fICA);
 
 $oLista = new Lista('impuesto_pagado');
 
@@ -217,6 +219,7 @@ $dSeguridadSocial = $fSeguridadSocial[0]["totalSeguridadSocial"]-$seguridadSocia
 
 
 $oLista = new Lista('cuenta_bancaria');
+$oLista->setFiltro('idEmpresa','=',$idEmpresa);
 
 $aCuentas=$oLista->getLista();
 
@@ -260,243 +263,244 @@ unset($oItem);
       <li class="breadcrumb-item">Inicio</li>
 
     </ul>
+<div class="card card-body">
 
-<div class="row">
-  <div class="col-md-4"></div>
-  <div class="card col-md-4">
-    <div class="card-body">
-      <!-- <div class="col-md-4"> -->
-        <center><h2><?php echo $rows['razonSocial']; ?></h2></center>
-        
-      <!-- </div> -->
-    </div>
-  </div> 
-</div>
-
-<?php if ($idEmpresa!="") { ?>
-  
-    <div class="section-body">
-    <div class="row ">
-
-      <div class="col-xl-6 col-lg-6">
-
-        <div class="card grey-pastel retenciones" data-toggle="tooltip" title="el ICA es el Impuesto de Industria y Comercio el cual se genera por la realización de actividades industriales de forma directa o indirecta, comerciales o de servicios, que se desarrollan de manera permanente u ocasional, en un inmueble determinado, sea que exista establecimiento de comercio o no.">
-
-          <div class="card-statistic-3 p-4">
-
-            <div class="card-icon card-icon-large" style="color: #8fbbf4 !important;opacity: 0.5 !important"><i class="fas fa-archway"></i></div>
-
-            <div class="mb-4">
-
-              <h5 class="card-title mb-0 elipsis">Proximo ICA a Pagar</h5>
-
-            </div>
-
-            <div class="row align-items-center mb-2 d-flex">
-
-              <div class="col-7">
-
-                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dICA,0,".",","); ?>
-
-                </h2>
-
-
-                <br>
-                
-                  <div class="col-md-2">
-                    <?php if ($dICA==0) {?>
-                  <h4>PAGADO</h4>
-                  <?php } ?>
-                  
-                  <?php if ($dICA!=0) {      ?>
-                  <span class="subtitulo"><button id="btnPagarICA" class="btn btn-success">PAGAR</button></span>
-                <?php }else{ ?>
-                  <span class="subtitulo ocultar"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
-                <?php } ?>
-
-                
-                  </div>
-                  
-
-              </div>
-
-              <div class="col-1 text-left">
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
-                  </div>
-                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <div >
+          <center><h2><?php echo $rows['razonSocial']; ?></h2></center>
+          
       </div>
-
-      <div class="col-xl-6 col-lg-6">
-
-        <div class="card amarillo-pastel horasextras" data-toggle="tooltip" title="la retencion es ">
-
-          <div class="card-statistic-3 p-4">
-
-            <div class="card-icon card-icon-large" style="color: #e6c937 !important;opacity: 0.5 !important"><i class="fas fa-handshake"></i></div>
-
-            <div class="mb-4">
-
-              <h5 class="card-title mb-0 elipsis">Proxima Retención a Pagar</h5>
-
-            </div>
-
-            <div class="row align-items-center mb-2 d-flex">
-
-              <div class="col-8">
-
-                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dRetencion,0,".",","); ?>
-
-                </h2>
-                <br>
-                
-                  <?php if ($dRetencion==0) {?>
-                  <h4>PAGADO</h4>
-                  <?php } ?>
-                  
-                  <?php if ($dRetencion!=0) {?>
-                  <span class="subtitulo"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
-                <?php }else{ ?>
-                  <span class="subtitulo ocultar"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
-                <?php } ?>
-              </div>
-
-              <div class="col-1 text-left">
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalR" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
-                  </div>
-                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xl-6 col-lg-6">
-
-        <div class="card naranja-pastel parafiscales" data-toggle="tooltip" title="El Impuesto sobre el Valor Añadido (IVA) es un tributo de naturaleza indirecta aplicable al consumo doméstico de bienes y servicios producidos tanto en el territorio nacional como en el exterior.">
-
-          <div class="card-statistic-3 p-4">
-
-            <div class="card-icon card-icon-large" style="color: #f9a039 !important;opacity: 0.5 !important"><i class="fas fa-hand-holding-usd"></i></div>
-
-            <div class="mb-4">
-
-              <h5 class="card-title mb-0 elipsis">Proximo IVA a Pagar</h5>
-
-            </div>
-
-            <div class="row align-items-center mb-2 d-flex">
-
-              <div class="col-8">
-
-                <h2 class="d-flex align-items-center mb-0 elipsis">
-
-                  <?php echo "$".number_format($dIVA,0,".",","); ?>
-
-                </h2>
-                <br>
-                <?php if ($dIVA==0) {?>
-                <h4>PAGADO: <?php echo $aIVA[0]['fechaRegistro']; ?></h4>
-                <?php } ?>
-                
-                <?php if ($dIVA!=0) { ?>
-                <span class="subtitulo"><button id="btnPagarIVA" class="btn btn-success">PAGAR</button></span>
-
-                <?php }else{ ?>
-                  <span class="subtitulo ocultar"><button id="btnPagarIVA" class="btn btn-success">PAGAR</button></span>
-                <?php }?>
-              </div>
-
-              <div class="col-1 text-left">
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalIVA" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
-                  </div>
-                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-
- <div class="col-xl-6 col-lg-6">
-
-        <div class="card morado-pastel retenciones" data-toggle="tooltip" title="el pago de seguridad social es ">
-
-          <div class="card-statistic-3 p-4">
-
-            <div class="card-icon card-icon-large" style="color: #4d50a9 !important;opacity: 0.5 !important"><i class="fas fa-notes-medical"></i></div>
-
-            <div class="mb-4">
-
-              <h5 class="card-title mb-0 elipsis">Pago Seguridad Social</h5>
-
-            </div>
-
-            <div class="row align-items-center mb-2 d-flex">
-
-              <div class="col-7">
-
-                <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dSeguridadSocial,0,".",","); ?>
-
-                </h2>
-                <br>
-                <?php if ($dSeguridadSocial==0) {?>
-                <h4>PAGADO: <?php echo $aSeguridadSocial[0]['fechaRegistro']; ?></h4>
-                <?php } ?>
-                
-                <?php if ($dSeguridadSocial!=0) { ?>
-                
-                <span class="subtitulo"><button class="btn btn-success" id="btnPagarSeguridadSocial">PAGAR</button></span>
-                <?php }else{ ?>
-                  
-                  <span class="subtitulo ocultar"><button class="btn btn-success" id="btnPagarSeguridadSocial">PAGAR</button></span>
-                <?php }?>
-                
-              </div>
-
-              <div class="col-1 text-left">
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalSS" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
-                  </div>
-                <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    
+    </div> 
   </div>
+  <br><br>
+
+  <?php if ($idEmpresa!="") { ?>
+    
+      <div class="section-body">
+      <div class="row ">
+
+        <div class="col-xl-6 col-lg-6">
+
+          <div class="card grey-pastel retenciones" data-toggle="tooltip" title="el ICA es el Impuesto de Industria y Comercio el cual se genera por la realización de actividades industriales de forma directa o indirecta, comerciales o de servicios, que se desarrollan de manera permanente u ocasional, en un inmueble determinado, sea que exista establecimiento de comercio o no.">
+
+            <div class="card-statistic-3 p-4">
+
+              <div class="card-icon card-icon-large" style="color: #8fbbf4 !important;opacity: 0.5 !important"><i class="fas fa-archway"></i></div>
+
+              <div class="mb-4">
+
+                <h5 class="card-title mb-0 elipsis">Proximo ICA a Pagar</h5>
+
+              </div>
+
+              <div class="row align-items-center mb-2 d-flex">
+
+                <div class="col-7">
+
+                  <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dICA,0,".",","); ?>
+
+                  </h2>
+
+
+                  <br>
+                  
+                    <div class="col-md-8">
+                      <?php if ($dICA==0) {?>
+                    <h5>PAGADO</h5>
+                    <?php } ?>
+                    
+                    <?php if ($dICA!=0) {      ?>
+                    <span class="subtitulo"><button id="btnPagarICA" class="btn btn-success">PAGAR</button></span>
+                  <?php }else{ ?>
+                    <span class="subtitulo ocultar"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
+                  <?php } ?>
+
+                  
+                    </div>
+                    
+
+                </div>
+
+                <div class="col-1 text-left">
+                  <div class="col-md-2">
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                    </div>
+                  <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="col-xl-6 col-lg-6">
+
+          <div class="card amarillo-pastel horasextras" data-toggle="tooltip" title="la retencion es ">
+
+            <div class="card-statistic-3 p-4">
+
+              <div class="card-icon card-icon-large" style="color: #e6c937 !important;opacity: 0.5 !important"><i class="fas fa-handshake"></i></div>
+
+              <div class="mb-4">
+
+                <h5 class="card-title mb-0 elipsis">Proxima Retención a Pagar</h5>
+
+              </div>
+
+              <div class="row align-items-center mb-2 d-flex">
+
+                <div class="col-8">
+
+                  <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dRetencion,0,".",","); ?>
+
+                  </h2>
+                  <br>
+                  
+                    <?php if ($dRetencion==0) {?>
+                    <h5>PAGADO</h5>
+                    <?php } ?>
+                    
+                    <?php if ($dRetencion!=0) {?>
+                    <span class="subtitulo"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
+                  <?php }else{ ?>
+                    <span class="subtitulo ocultar"><button id="btnPagarRetencion" class="btn btn-success">PAGAR</button></span>
+                  <?php } ?>
+                </div>
+
+                <div class="col-1 text-left">
+                  <div class="col-md-2">
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalR" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                    </div>
+                  <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-6 col-lg-6">
+
+          <div class="card naranja-pastel parafiscales" data-toggle="tooltip" title="El Impuesto sobre el Valor Añadido (IVA) es un tributo de naturaleza indirecta aplicable al consumo doméstico de bienes y servicios producidos tanto en el territorio nacional como en el exterior.">
+
+            <div class="card-statistic-3 p-4">
+
+              <div class="card-icon card-icon-large" style="color: #f9a039 !important;opacity: 0.5 !important"><i class="fas fa-hand-holding-usd"></i></div>
+
+              <div class="mb-4">
+
+                <h5 class="card-title mb-0 elipsis">Proximo IVA a Pagar</h5>
+
+              </div>
+
+              <div class="row align-items-center mb-2 d-flex">
+
+                <div class="col-8">
+
+                  <h2 class="d-flex align-items-center mb-0 elipsis">
+
+                    <?php echo "$".number_format($dIVA,0,".",","); ?>
+
+                  </h2>
+                  <br>
+                  <?php if ($dIVA==0) {?>
+                  <h5>PAGADO: <?php echo $aIVA[0]['fechaRegistro']; ?></h5>
+                  <?php } ?>
+                  
+                  <?php if ($dIVA!=0) { ?>
+                  <span class="subtitulo"><button id="btnPagarIVA" class="btn btn-success">PAGAR</button></span>
+
+                  <?php }else{ ?>
+                    <span class="subtitulo ocultar"><button id="btnPagarIVA" class="btn btn-success">PAGAR</button></span>
+                  <?php }?>
+                </div>
+
+                <div class="col-1 text-left">
+                  <div class="col-md-2">
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalIVA" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                    </div>
+                  <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+
+   <div class="col-xl-6 col-lg-6">
+
+          <div class="card morado-pastel retenciones" data-toggle="tooltip" title="el pago de seguridad social es ">
+
+            <div class="card-statistic-3 p-4">
+
+              <div class="card-icon card-icon-large" style="color: #4d50a9 !important;opacity: 0.5 !important"><i class="fas fa-notes-medical"></i></div>
+
+              <div class="mb-4">
+
+                <h5 class="card-title mb-0 elipsis">Pago Seguridad Social</h5>
+
+              </div>
+
+              <div class="row align-items-center mb-2 d-flex">
+
+                <div class="col-7">
+
+                  <h2 class="d-flex align-items-center mb-0 elipsis"><?php echo "$".number_format($dSeguridadSocial,0,".",","); ?>
+
+                  </h2>
+                  <br>
+                  <?php if ($dSeguridadSocial==0) {?>
+                  <h5>PAGADO: <?php echo $aSeguridadSocial[0]['fechaRegistro']; ?></h5>
+                  <?php } ?>
+                  
+                  <?php if ($dSeguridadSocial!=0) { ?>
+                  
+                  <span class="subtitulo"><button class="btn btn-success" id="btnPagarSeguridadSocial">PAGAR</button></span>
+                  <?php }else{ ?>
+                    
+                    <span class="subtitulo ocultar"><button class="btn btn-success" id="btnPagarSeguridadSocial">PAGAR</button></span>
+                  <?php }?>
+                  
+                </div>
+
+                <div class="col-1 text-left">
+                  <div class="col-md-2">
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModalSS" data-id="<?php echo $idActividad; ?>" data-descripcion="<?php echo $descrip; ?>" data-valor="<?php echo $val; ?>">MODIFICAR</button>
+                    </div>
+                  <!-- <span><i class="fa fa-arrow-right"></i> 2020-09-09</span> -->
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      
+    </div>
+  </div>
+  <?php } ?>
 </div>
-<?php } ?>
 
 
 
@@ -783,7 +787,7 @@ unset($oItem);
           <div class="form-group">
             <div class="form-group">
               <label >Valor anterior:</label>
-              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dIVA; ?>" required>
+              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dIVA; ?>" required readonly>
               
               <!-- <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" > -->
               
@@ -829,7 +833,7 @@ unset($oItem);
           <div class="form-group">
             <div class="form-group">
               <label >Valor anterior:</label>
-              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dSeguridadSocial; ?>" required>
+              <input type="text" name="datos[valorAnterior]" id="valorAnterior" class="form-control" placeholder="valor anterior" value="<?php echo $dSeguridadSocial; ?>" required readonly>
               
               <!-- <input type="hidden"  name="datos[idActividadCerrar]" id="idActividadCerrar" > -->
               

@@ -275,8 +275,14 @@ if(empty($aValidate)){
             $aUser["idCiudadResidencia"]=$datos["idCiudadResidencia"]; 
 
             $aUser["estado"]=1; 
+            if ($datos["tipoUsuario"]==1) {
+                $aUser["idRol"]=4; 
+            }
+            if ($datos["tipoUsuario"]==2) {
+                $aUser["idRol"]=3; 
+            }
 
-            $aUser["idRol"]=4; 
+            
 
             $aUser["cambiarClave"]=1; 
 
@@ -301,20 +307,24 @@ if(empty($aValidate)){
 
             unset($oItem);
 
+            if ($datos["tipoUsuario"]==1) {
+                $oItem=new Data("empleado_usuario","idEmpleadoUsuario"); 
 
+                $oItem->idUsuario=$idUsuario; 
 
-            $oItem=new Data("empleado_usuario","idEmpleadoUsuario"); 
+                $oItem->idEmpleado=$idEmpleado; 
 
-            $oItem->idUsuario=$idUsuario; 
+                $oItem->guardar(); 
 
-            $oItem->idEmpleado=$idEmpleado; 
-
-            $oItem->guardar(); 
-
-            unset($oItem);
-
-
-
+                unset($oItem); 
+            }
+            if ($datos["tipoUsuario"]==2) {
+                $oItem=new Data("empresa_acceso","idEmpresaAcceso"); 
+                $oItem->idUsuario=$idUsuario; 
+                $oItem->idEmpresa=$_SESSION["idEmpresa"];
+                $usuario=$oItem->guardar(); 
+                unset($oItem);
+            }
 
 
             $oItem=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]); 
@@ -501,6 +511,127 @@ if(empty($aValidate)){
 
     $msg=true; 
 
+    
+
+
+
+
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+$oItem=new Data("tercero","nit",$datos["nit"]); 
+$aValidate=$oItem->getDatos(); 
+unset($oItem); 
+if(empty($aValidate)){
+    if(!isset($_SESSION)){ session_start(); }
+    if ($datos["fechaNacimiento"]!='') {
+        $nacimiento=$datos["fechaNacimiento"];
+    }
+    if ($datos["fechaNacimiento"]=='') {
+        $nacimiento=null;
+    }
+    $aDatos["tipoPersona"]=$datos["tipoPersona"]; 
+    $aDatos["nit"]=$datos["nit"]; 
+    $aDatos["digitoVerificador"]=$datos["digitoVerificador"]==""?0:$datos["digitoVerificador"]; 
+    $aDatos["razonSocial"]=$datos["razonSocial"]; 
+    $aDatos["email"]=$datos["email"]; 
+    $aDatos["telefono"]=$datos["telefono"]; 
+    $aDatos["idPais"]=42;
+    $aDatos["idDepartamento"]=$datos["idDepartamento"]; 
+    $aDatos["idCiudad"]=$datos["idCiudad"]; 
+    $aDatos["responsableIva"]=$datos["responsableIva"]; 
+    $aDatos["direccion"]=$datos["direccion"];
+    $aDatos["fechaRegistro"]=date("Y-m-d H:i:s");
+    $aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+    $aDatos["periodoPago"]=$datos["periodoPago"]; 
+    $aDatos["nombreComercial"]=$datos["nombreComercial"];
+    $aDatos["contacto"]=$datos["contacto"];
+    $aDatos["celular"]=$datos["celular"];
+    $aDatos["genero"]=$datos["genero"];
+    $aDatos["nombreContactoFacturacion"]=$datos["nombreContactoFacturacion"];
+    $aDatos["emailContactoFacturacion"]=$datos["emailContactoFacturacion"];
+    $aDatos["telefonoContactoFacturacion"]=$datos["telefonoContactoFacturacion"];
+    $aDatos["nombreContacto"]=$datos["nombreContactoOtro"];
+    $aDatos["apellidosContacto"]=$datos["apellidosContactoOtro"];
+    $aDatos["telefonoContacto"]=$datos["telefonoContactoOtro"];
+    $aDatos["emailContacto"]=$datos["emailContactoOtro"];
+    $aDatos["cargoContacto"]=$datos["cargoContactoOtro"];
+    $aDatos["observaciones"]=$datos["observaciones"];
+    $aDatos["vendedor"]=$datos["vendedor"];
+    $aDatos["cobrador"]=$datos["cobrador"];
+    $aDatos["actividadEconomica"]=$datos["actividadEconomica"];
+    $aDatos["producto"]=$datos["producto"];
+    $aDatos["fechaNacimiento"]=$nacimiento;
+
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']!=1 and $datos['checkOtro']!=1) {
+        $aDatos["tipoTercero"]=1;
+        $tipoTercero=1;
+    }
+    if ($datos['checkCliente']!=1 and $datos['checkProveedor']==1 and $datos['checkOtro']!=1) {
+        $aDatos["tipoTercero"]=2;
+        $tipoTercero=2;
+    }
+    if ($datos['checkCliente']!=1 and $datos['checkProveedor']!=1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=3;
+        $tipoTercero=3;
+    }
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']==1 and $datos['checkOtro']!=1) {
+        $aDatos["tipoTercero"]=4;
+        $tipoTercero=4;
+    }
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']!=1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=5;
+        $tipoTercero=5;
+    }
+    if ($datos['checkCliente']!=1 and $datos['checkProveedor']==1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=6;
+        $tipoTercero=6;
+    }
+    if ($datos['checkCliente']==1 and $datos['checkProveedor']==1 and $datos['checkOtro']==1) {
+        $aDatos["tipoTercero"]=7;
+        $tipoTercero=7;
+    }    
+    $oItem=new Data("tercero","idTercero");
+    foreach($aDatos  as $key => $value){
+        $oItem->$key=$value; 
+    }
+    $oItem->guardar(); 
+    $idtercero=$oItem->ultimoId(); 
+    unset($oItem); 
+    foreach ($responsabilidad as $keyR => $valueR) {
+        if($valueR["check"]==1){
+            $oItem=new Data("responsabilidad_fiscal_tercero","idResponsabilidadFiscalTercero"); 
+            $oItem->idResponsabilidadFiscal=$keyR; 
+            $oItem->idTercero=$idtercero; 
+            $oItem->tipoTercero=$tipoTercero;
+            $oItem->guardar(); 
+            unset($oItem); 
+        }
+    }
+    foreach ($item as $key => $value) {
+
+        if($value["estado"]==1){
+            $oItem=new Data("tercero_empresa","idTerceroEmpresa");
+            $oItem->idTercero=$idtercero;        
+            $oItem->idEmpresa=$value["idEmpresa"]; 
+            $oItem->guardar(); 
+            unset($oItem); 
+        }
+
+    }
+
+    $msg=true; 
+}
+
+
+
+
+
+
+
+
+// ------------------------------------------------------------------------------------------------------------------------------------
     }else{
         $msg=false; 
 

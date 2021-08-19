@@ -14,48 +14,7 @@
     var table = $('#tableFacturas').DataTable({
       orderCellsTop: true,
        fixedHeader: true,
-      // dom: 'Bfrtip',
-      //   buttons: [
-
-      //       {
-      //       extend: 'copyHtml5',
-      //       text: '<i class="far fa-copy" style="color: #fff;font-size: 26px;"></i>',
-      //       className: 'botoncopiar',
-      //       titleAttr: 'COPIAR'
-      //       },
-      //       {
-      //       extend: 'excel',
-      //       footer: true,
-      //       title: 'PLAN CUENTAS',
-      //       filename: 'CUENTAS CONTABLES',
-      //       text:'<i class="fas fa-file-excel" style="color: #fff;font-size: 26px;"></i>',
-      //       titleAttr: 'EXCEL'
-      //       },
-      //       {
-      //       extend: 'csvHtml5',
-      //       text: '<i class="fas fa-file-csv" style="color: #fff;font-size: 26px;"></i>',
-      //       titleAttr: 'CSV'
-            
-      //       },
-      //       {
-      //       extend: 'pdf',
-      //       text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 26px;"></i>',
-      //       messageTop:'CUENTAS CONTABLES',
-      //       titleAttr: 'PDF'
-            
-      //       },
-      //       {
-      //       extend: 'print',
-      //       text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
-      //       autoPrint: true,
-      //       titleAttr: 'IMPRIMIR',
-      //       messageTop:'<br><div>'+'nit: '+nit+'</div>'+'<div>  email: '+email+'</div><div>   telefono: '+telefono+'</div>',
-      //       title: '<img src="'+url+logo+'" width="60" height="60">'+'   '+empresa
-
-      //       }
-            
-      //   ]
-        
+       ordering:false
     });
 
     //Creamos una fila en el head de la tabla y lo clonamos para cada columna
@@ -92,6 +51,8 @@ $("body").on("click",".comprobante",function(e){
     var saldo=$(this).parents("tr").find("td").eq(8).html()
 
 
+var idEmpresa=$(this).parents("tr").find("td").eq(10).html();
+
 
 	var id=$(this).attr("id"); 
 
@@ -114,6 +75,36 @@ $("body").on("click",".comprobante",function(e){
     
   }
     // $("#total").val(total); 
+
+
+    $.ajax({
+      url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+      type:"POST", 
+      data: {"empresa":idEmpresa,"tipoFactura":'compra'}, 
+      dataType: "json",
+      }).done(function(msg){  
+
+          if(msg.length!=0){
+
+              console.log('este:');
+              console.log(msg);
+              var sHtml=""; 
+              msg.forEach(function(element,index){
+                sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+              })
+              $("#cuentaContableTotal").html(sHtml);
+
+              if(msg.length>1){
+                $("#divCuentaContableTotal").removeClass('ocultar');
+              }
+          }
+          if(msg.length==0){
+          }
+
+        })
+
+
+
 
 })
 

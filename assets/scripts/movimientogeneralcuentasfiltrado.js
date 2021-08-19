@@ -22,16 +22,16 @@ $(document).ready(function(){
       dom: 'Bfrtip',
         buttons: [
 
-            {
-            extend: 'copyHtml5',
-            text: '<i class="far fa-copy" style="color: #fff;font-size: 26px;"></i>',
-            className: 'botoncopiar',
-            titleAttr: 'COPIAR'
-            },
+            // {
+            // extend: 'copyHtml5',
+            // text: '<i class="far fa-copy" style="color: #fff;font-size: 26px;"></i>',
+            // className: 'botoncopiar',
+            // titleAttr: 'COPIAR'
+            // },
             {
             extend: 'excelHtml5',
             footer: true,
-            title:'SmartBuss--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n MOVIMIENTO CUENTAS GENERAL  \n DESDE:  '+desde+' HASTA: '+hasta,
+            title:'AS-SmartBuss           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n MOVIMIENTO CUENTAS GENERAL  \n DESDE:  '+desde+' HASTA: '+hasta,
             filename: 'CUENTAS DETALLADO POR TERCEROS',
             text:'<i class="fas fa-file-excel" style="color: #fff;font-size: 26px;"></i>',
             titleAttr: 'EXCEL',
@@ -50,7 +50,7 @@ $(document).ready(function(){
             {
             extend: 'pdf',
             customize: function(doc) {
-                doc.pageMargins = [ 10, 10, 10, 10 ];
+                doc.pageMargins = [ 10, 10, 15, 10 ];
                 doc.defaultStyle.fontSize = 14;
             },
             pageSize: 'A3',
@@ -58,7 +58,7 @@ $(document).ready(function(){
             
             titleAttr: 'PDF',
 
-            title:'SmartBuss--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n MOVIMIENTO CUENTAS GENERAL \n DESDE:  '+desde+' HASTA: '+hasta,  
+            title:'AS-SmartBuss           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n MOVIMIENTO CUENTAS GENERAL \n DESDE:  '+desde+' HASTA: '+hasta,  
           
                 },
             {
@@ -71,7 +71,7 @@ $(document).ready(function(){
             text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
             autoPrint: true,
             titleAttr: 'IMPRIMIR',
-            title:'<table class="table"><thead><tr><th style="float:left;">SmartBuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >MOVIMIENTO CUENTAS GENERAL </th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead<tbody><tr></tr></tbody></table>',
+            title:'<table class="table"><thead><tr><th style="float:left;">AS-SmartBuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >MOVIMIENTO CUENTAS GENERAL </th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead></table>',
 
             
 

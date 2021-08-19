@@ -1,8 +1,10 @@
 var aDatos=[]; 
+var datos=[]; 
+// var datos=[]; 
+var id=0;
 
 $( window ).on( "load", function() {
   cargarProducto();
-
   
 
 })
@@ -41,7 +43,39 @@ autocomplete=function(){
 
         $( ".idProducto" ).eq(index).val( ui.item.value );
 
+        var idEmpresa = $("[name='datos[idEmpresa]'").val();
+        // alert(idEmpresa);
+
+        $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentaproducto.php", 
+          type:"POST", 
+          data: {"producto":ui.item.value ,"empresa":idEmpresa,"tipoFactura":'compra'}, 
+          dataType: "json",
+          }).done(function(msg){             
+              if(msg.length!=0){
+
+                  console.log(msg);
+              }
+              // if(msg.length==0){
+
+              //   Swal.fire(
+              //   {
+              //     icon: 'error',
+              //     title: "El producto no se encuentra parametrizado!",   
+              //     text: "Por favor parametrice la cuenta contable",
+              //     closeOnConfirm: true,
+              //   }).then((element)=>{
+
+              //     $( ".registrar" ).eq(index).removeClass('ocultar');
+
+              //   });
+              // }
+
+            })
+
         
+
+
 
         return false;
 
@@ -81,26 +115,24 @@ $("body").on("click touchstart","#agregar",function(e){
 
 	
 
-	$("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1); 
+	// $("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1); 
+  
+  $("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1+'<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item['+cant+'][registrar]" numero="'+cant+'"><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span>'); 
 
 
 
-	$("#tableProductos tbody tr:last").find(".producto").attr("id","item["+cant+"][producto]").attr("name","item["+cant+"][producto]").val("");
+	$("#tableProductos tbody tr:last").find(".registrar").attr("id","item["+cant+"][registrar]");
 
+  
+  
+  $("#tableProductos tbody tr:last").find(".producto").attr("id","item["+cant+"][producto]").attr("name","item["+cant+"][producto]").val("");
 	$("#tableProductos tbody tr:last").find(".idProducto").attr("id","item["+cant+"][idProducto]").attr("name","item["+cant+"][idProducto]").val("");
-
 	$("#tableProductos tbody tr:last").find(".descripcion").attr("id","item["+cant+"][descripcion]").attr("name","item["+cant+"][descripcion]").val(""); 
-
 	$("#tableProductos tbody tr:last").find(".cantidad").attr("id","item["+cant+"][cantidad]").attr("name","item["+cant+"][cantidad]").val(""); 
-
 	$("#tableProductos tbody tr:last").find(".idUnidad").attr("id","item["+cant+"][idUnidad]").attr("name","item["+cant+"][idUnidad]").val(""); 
-
 	$("#tableProductos tbody tr:last").find(".valorUnitario").attr("id","item["+cant+"][valorUnitario]").attr("name","item["+cant+"][valorUnitario]").val(''); 
-
 	$("#tableProductos tbody tr:last").find(".subtotal").attr("id","item["+cant+"][subtotal]").attr("name","item["+cant+"][subtotal]").val(""); 
-
 	$("#tableProductos tbody tr:last").find(".iva").attr("id","item["+cant+"][iva]").attr("name","item["+cant+"][iva]").val(''); 
-
 	$("#tableProductos tbody tr:last").find(".total").attr("id","item["+cant+"][total]").attr("name","item["+cant+"][total]").val('');
 
 	autocomplete(); 
@@ -123,27 +155,30 @@ $("body").on("click touchstart",".eliminar",function(e){
 
     $("#tableProductos tbody tr").each(function(index,element){
 
-      $(element).find("td").eq(0).html(index+1); 
+      // $(element).find("td").eq(0).html(index+1); 
+
+      $(element).find("td").eq(0).html(cant+1+'<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item['+index+'][registrar]" numero="'+cant+'"><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span>'); 
+
+      $(element).find(".producto").attr("id","item["+index+"][producto]").attr("name","item["+index+"][producto]");
+      $(element).find(".idProducto").attr("id","item["+index+"][idProducto]").attr("name","item["+index+"][idProducto]");
+      $(element).find(".descripcion").attr("id","item["+index+"][descripcion]").attr("name","item["+index+"][descripcion]");
+      $(element).find(".cantidad").attr("id","item["+index+"][cantidad]").attr("name","item["+index+"][cantidad]");
+      $(element).find(".idUnidad").attr("id","item["+index+"][idUnidad]").attr("name","item["+index+"][idUnidad]");
+      $(element).find(".valorUnitario").attr("id","item["+index+"][valorUnitario]").attr("name","item["+index+"][valorUnitario]");
+      $(element).find(".subtotal").attr("id","item["+index+"][subtotal]").attr("name","item["+index+"][subtotal]");
+      $(element).find(".iva").attr("id","item["+index+"][iva]").attr("name","item["+index+"][iva]");
+      $(element).find(".total").attr("id","item["+index+"][total]").attr("name","item["+index+"][total]");
 
 
-
-      $(element).find(".producto").attr("id","item["+index+"][producto]").attr("name","item["+index+"][producto]").val("");
-
-      $(element).find(".idProducto").attr("id","item["+index+"][idProducto]").attr("name","item["+index+"][idProducto]").val("");
-
-      $(element).find(".descripcion").attr("id","item["+index+"][descripcion]").attr("name","item["+index+"][descripcion]").val(""); 
-
-      $(element).find(".cantidad").attr("id","item["+index+"][cantidad]").attr("name","item["+index+"][cantidad]").val(""); 
-
-      $(element).find(".idUnidad").attr("id","item["+index+"][idUnidad]").attr("name","item["+index+"][idUnidad]").val(""); 
-
-      $(element).find(".valorUnitario").attr("id","item["+index+"][valorUnitario]").attr("name","item["+index+"][valorUnitario]").val(''); 
-
-      $(element).find(".subtotal").attr("id","item["+index+"][subtotal]").attr("name","item["+index+"][subtotal]").val(""); 
-
-      $(element).find(".iva").attr("id","item["+index+"][iva]").attr("name","item["+index+"][iva]").val(''); 
-
-      $(element).find(".total").attr("id","item["+index+"][total]").attr("name","item["+index+"][total]").val('');
+      // $("#tableProductos tbody tr:last").find(".producto").attr("id","item["+index+"][producto]").attr("name","item["+index+"][producto]");
+      // $("#tableProductos tbody tr:last").find(".idProducto").attr("id","item["+index+"][idProducto]").attr("name","item["+index+"][idProducto]");
+      // $("#tableProductos tbody tr:last").find(".descripcion").attr("id","item["+index+"][descripcion]").attr("name","item["+index+"][descripcion]"); 
+      // $("#tableProductos tbody tr:last").find(".cantidad").attr("id","item["+index+"][indexidad]").attr("name","item["+index+"][indexidad]"); 
+      // $("#tableProductos tbody tr:last").find(".idUnidad").attr("id","item["+index+"][idUnidad]").attr("name","item["+index+"][idUnidad]"); 
+      // $("#tableProductos tbody tr:last").find(".valorUnitario").attr("id","item["+index+"][valorUnitario]").attr("name","item["+index+"][valorUnitario]"); 
+      // $("#tableProductos tbody tr:last").find(".subtotal").attr("id","item["+index+"][subtotal]").attr("name","item["+index+"][subtotal]"); 
+      // $("#tableProductos tbody tr:last").find(".iva").attr("id","item["+index+"][iva]").attr("name","item["+index+"][iva]"); 
+      // $("#tableProductos tbody tr:last").find(".total").attr("id","item["+index+"][total]").attr("name","item["+index+"][total]");
 
     })
 
@@ -254,7 +289,56 @@ totalizar=function(){
 // })
 
 
+function verificarIVA(){
+    var cuenta=0;
+    var estado=true;
+    $.ajax({
+          url:URL+"functions/facturacompra/consultariva.php", 
+          type:"POST", 
+          data: {"empresa":$("[name='datos[idEmpresa]'").val(),"tipoFactura":'compra'}, 
+          dataType: "json",
+          }).done(function(msg){  
 
+              if(msg.length!=0){
+
+                  console.log('aca');
+                  console.log(msg);
+                 
+              }
+              if(msg.length==0){
+                estado=false;
+                
+              }
+              
+            })
+    return estado;
+  }
+
+
+
+  //  function verificarRetencion(){
+    
+  //   var estado=true;
+  //   $.ajax({
+  //         url:URL+"functions/facturacompra/consultarretencion.php", 
+  //         type:"POST", 
+  //         data: {"empresa":$("[name='datos[idEmpresa]'").val(),"tipoFactura":'compra',"idImpuesto":$("#conceptoText").val();}, 
+  //         dataType: "json",
+  //         }).done(function(msg){  
+
+  //         if(msg.length!=0){
+
+  //             console.log('aca');
+  //             console.log(msg);
+             
+  //         }
+  //         if(msg.length==0){
+  //           estado=false;
+            
+  //         }
+  //         return estado;
+  //     }); 
+  // }
 
 
 $("body").on("click touchstart","#btnGuardar",function(e){
@@ -262,63 +346,34 @@ $("body").on("click touchstart","#btnGuardar",function(e){
     e.preventDefault();
 
       if(true === $("#frmGuardar").parsley().validate()){
-
+        if (verificarIVA()) {
         Swal.fire({
-
           title: 'Está seguro?',
-
           text: 'Está a punto de enviar está factura para su gestión!',
-
           icon: 'warning', 
-
           showCancelButton: true,
-
           showLoaderOnConfirm: true,
-
           confirmButtonText: `Si, Continuar!`,
-
           cancelButtonText:'Cancelar',
-
           preConfirm: function(result) {
-
           return new Promise(function(resolve) {
-
             var formu = document.getElementById("frmGuardar");
-
-        
-
             var data = new FormData(formu);
-
             $.ajax({
-
             url:URL+"functions/facturacompra/guardarfactura.php", 
-
             type:"POST", 
-
             data: data,
-
             contentType:false, 
-
             processData:false, 
-
             dataType: "json",
-
             cache:false 
-
             }).done(function(msg){  
-
               if(msg.msg){
-
                 Swal.fire({
-
                   icon: 'success',
-
                   title: "Factura enviada!",
-
                   text: 'con exito',
-
                   closeOnConfirm: true,
-
                 }
 
                 ).then((result) => {
@@ -337,9 +392,7 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 
                   'error'
 
-                ).then((result) => {
-
-                  
+                ).then((result) => { 
 
                 })
 
@@ -356,73 +409,6 @@ $("body").on("click touchstart","#btnGuardar",function(e){
         }).then((result) => {
 
           if (result.isConfirmed) {
-
-          //   var formu = document.getElementById("frmGuardar");
-
-        
-
-          //   var data = new FormData(formu);
-
-          //   $.ajax({
-
-          //   url:URL+"functions/facturacompra/guardarfactura.php", 
-
-          //   type:"POST", 
-
-          //   data: data,
-
-          //   contentType:false, 
-
-          //   processData:false, 
-
-          //   dataType: "json",
-
-          //   cache:false 
-
-          //   }).done(function(msg){  
-
-          //     if(msg.msg){
-
-          //       Swal.fire({
-
-          //         icon: 'success',
-
-          //         title: "Factura enviada!",
-
-          //         text: 'con exito',
-
-          //         closeOnConfirm: true,
-
-          //       }
-
-          //       ).then((result) => {
-
-          //        window.history.back(); 
-
-          //       })
-
-          //     }else{
-
-          //        Swal.fire(
-
-          //         'Algo ha salido mal!',
-
-          //         'Verifique su conexión a internet',
-
-          //         'error'
-
-          //       ).then((result) => {
-
-                  
-
-          //       })
-
-          //     }
-
-            
-
-          // });
-
           } 
 
 
@@ -430,156 +416,124 @@ $("body").on("click touchstart","#btnGuardar",function(e){
          })
 
 
-
-        
-
-          // swal({
-
-          //   title: 'Está seguro?',
-
-          //   text: 'Está a punto de enviar está factura para su gestión!',
-
-          //   icon: 'warning',
-
-          //   buttons: {
-
-          //       confirm : {text:'Si, Enviar!',className:'sweet-warning',closeModal:false},
-
-          //       cancel : 'Cancelar' 
-
-          //   },
-
-          //   dangerMode: true,
-
-          // })
-
-          //   .then((willDelete) => {
-
-          //     if (willDelete) {
-
-          //       var formu = document.getElementById("frmGuardar");
-
-            
-
-          //       var data = new FormData(formu);
-
-          //       $.ajax({
-
-          //       url:URL+"functions/facturacompra/guardarfactura.php", 
-
-          //       type:"POST", 
-
-          //       data: data,
-
-          //       contentType:false, 
-
-          //       processData:false, 
-
-          //       dataType: "json",
-
-          //       cache:false 
-
-          //       }).done(function(msg){  
-
-          //         if(msg.msg){
-
-
-
-          //           swal({   
-
-          //             title: "Factura enviada!",   
-
-          //             text: "con exito",
-
-          //             type: "success",        
-
-          //             closeOnConfirm: true 
-
-          //             }).then((element)=>{
-
-          //               location.reload(); 
-
-          //             })
-
-          //         }else{
-
-          //           swal({   
-
-          //             title: "Algo ha salido mal!",   
-
-          //             text: "Verifique su conexión a internet",
-
-          //             type: "error",        
-
-          //             closeOnConfirm: true 
-
-          //             }).then((element)=>{
-
-                        
-
-          //             });
-
-          //         }
-
-                
-
-          //     });
-
-          //     } else {
-
-                
-
-          //     }
-
-          //   });
-
-            
-
        
-
+      }else{
+        Swal.fire(
+                {
+                  icon: 'error',
+                  title: "El IVA de la factura no se encuentra parametrizado!",   
+                  text: "Por favor parametrice la cuenta contable",
+                  closeOnConfirm: true,
+                })
+      }
       }
 
   })
 
-
+  
 
 $("body").on("change","[name='datos[idEmpresa]']",function(e){
 
-    var id=$(this).val(); 
+    id=$(this).val(); 
 
     if(id!=""){
 
       cargarProducto(); 
 
       $.ajax({
-
         url:URL+"functions/facturacompra/proveedorempresa.php", 
-
         type:"POST", 
-
         data: {"idEmpresa":id}, 
-
         dataType: "json",
-
         }).done(function(msg){  
-
           var sHtml="<option value=''>Seleccione una opción</option>"; 
-
           msg.lista.forEach(function(element,index){
-
-            sHtml+="<option value='"+element.idProveedor+"'>"+element.razonSocial+"</option>"; 
-
+            sHtml+="<option value='"+element.idTercero+"'>"+element.razonSocial+"</option>"; 
           })
+          $("[name='datos[idTercero]']").html(sHtml);
+      });
 
 
-
-          $("[name='datos[idProveedor]']").html(sHtml);
+        $.ajax({
+        url:URL+"functions/facturacompra/consultarparametrosdocumentos.php", 
+        type:"POST", 
+        data: {"idEmpresa":id}, 
+        dataType: "json",
+        }).done(function(msg){  
+          var sHtml="<option value=''>Seleccione una opción</option>"; 
+          msg.forEach(function(element,index){
+            sHtml+="<option value='"+element.idParametrosDocumentos+"'>"+element.letra+'-'+element.comprobante+'-'+element.descripcionParametro+"</option>"; 
+          })
+          $("#tipoDocumento").html(sHtml);
+          console.log(msg);
 
       });
 
+
+        
+        $.ajax({
+          url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+          type:"POST", 
+          data: {"idEmpresa":id}, 
+          dataType: "json",
+          }).done(function(msg){  
+            // var $aDatos=[];
+            msg.forEach(function(element,index){
+              datos.push({
+                  value: element.idCuentaContable,
+                  label: element.codigoCuentaContable+" - "+element.nombre,
+                  naturaleza: element.naturaleza,
+                })
+            })
+            console.log(datos);
+            autocompleteCuentas(); 
+          }); 
+
+
+
+
+          $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+          type:"POST", 
+          data: {"empresa":$("[name='datos[idEmpresa]'").val(),"tipoFactura":'compra'}, 
+          dataType: "json",
+          }).done(function(msg){  
+
+              if(msg.length!=0){
+
+                  console.log('aca');
+                  console.log(msg);
+                  var sHtml=""; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+                  })
+                  $("#cuentaContableTotal").html(sHtml);
+
+                  if(msg.length>1){
+                    $("#divCuentaContableTotal").removeClass('ocultar');
+                  }
+              }
+              if(msg.length==0){
+                
+                // Swal.fire(
+                // {
+                //   icon: 'error',
+                //   title: "El total a pagar no se encuentra parametrizado!",   
+                //   text: "Por favor parametrice la cuenta contable",
+                //   closeOnConfirm: true,
+                // }).then((element)=>{
+
+                //   // $( ".registrar" ).eq(index).removeClass('ocultar');
+
+                // });
+              }
+
+            })
+
+
     }else{
 
-      $("[name='datos[idProveedor]']").html("<option value=''>Seleccione una opción</option>");
+      $("#tipoDocumento").html("<option value=''>Seleccione una opción</option>");
 
     }
 
@@ -598,6 +552,43 @@ $( '.tipoCompra' ).on( 'click touchstart', function() {
 //     cargarProducto();
 
 //   }
+
+
+autocompleteCuentas=function(){
+  $( ".cuentaContable" ).autocomplete({
+      minLength: 0,
+      source: datos,
+      focus: function( event, ui ) {
+        var index=$(this).index(".cuentaContable");
+        $( ".cuentaContable" ).eq(index).val( ui.item.label );
+        $( ".idCuentaContable" ).eq(index).val( ui.item.value );
+        $( ".naturaleza" ).eq(index).val( ui.item.naturaleza );
+        return false;
+      },
+      select: function( event, ui ) {
+        var index=$(this).index(".cuentaContable");
+        $( ".cuentaContable" ).eq(index).val( ui.item.label );
+        $( ".idCuentaContable" ).eq(index).val( ui.item.value );
+        $( ".naturaleza" ).eq(index).val( ui.item.naturaleza );
+        var id=ui.item.value;
+        return false;
+      },
+      change: function(event, ui){
+        var index=$(this).index(".cuentaContable");
+        if(ui.item==null){
+          $( ".idCuentaContable" ).eq(index).val('');
+        }
+        return false;
+      }
+    })
+}
+
+
+
+
+
+
+
 
 
 cargarProducto=function(){
@@ -663,6 +654,66 @@ cargarProducto=function(){
         autocomplete(); 
 
       });
+
+
+
+      $.ajax({
+          url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+          type:"POST", 
+          data: {"idEmpresa":$("[name='datos[idEmpresa]'").val()}, 
+          dataType: "json",
+          }).done(function(msg){  
+            // var $aDatos=[];
+            msg.forEach(function(element,index){
+              datos.push({
+                  value: element.idCuentaContable,
+                  label: element.codigoCuentaContable+" - "+element.nombre,
+                  naturaleza: element.naturaleza,
+                })
+            })
+            console.log(datos);
+            autocompleteCuentas(); 
+          }); 
+
+
+          $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+          type:"POST", 
+          data: {"empresa":$("[name='datos[idEmpresa]'").val(),"tipoFactura":'compra'}, 
+          dataType: "json",
+          }).done(function(msg){  
+
+              if(msg.length!=0){
+
+                  console.log('aca');
+                  console.log(msg);
+                  var sHtml=""; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+                  })
+                  $("#cuentaContableTotal").html(sHtml);
+
+                  if(msg.length>1){
+                    $("#divCuentaContableTotal").removeClass('ocultar');
+                  }
+              }
+              if(msg.length==0){
+                
+                // Swal.fire(
+                // {
+                //   icon: 'error',
+                //   title: "El total a pagar no se encuentra parametrizado!",   
+                //   text: "Por favor parametrice la cuenta contable",
+                //   closeOnConfirm: true,
+                // }).then((element)=>{
+
+                //   // $( ".registrar" ).eq(index).removeClass('ocultar');
+
+                // });
+              }
+
+            })
+
 
     }else{
 
@@ -883,8 +934,6 @@ $("body").on("change","#tipoDeduccion",function(e){
 
 $("body").on("change","#baseImpuestos",function(e){
 
-
-
    var base=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($(this).val(),"$",""),".",""),",","."))
 
    var subtotal=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($('[name="datos[subtotal]"]').val(),"$",""),".",""),",","."))
@@ -959,3 +1008,129 @@ calcularDeduccion=function(){
 // $("body").on("change","[name='datos[total]']",function(e){
 //     calcularDeduccion();
 // })
+
+
+
+$("body").on("click",".registrar",function(e){
+
+  var posicion=$(this).attr('numero'); 
+
+  // alert(posicion);
+
+  var valor=$("[name='item["+posicion+"][producto]']").val(); 
+  var valorid=$("[name='item["+posicion+"][idProducto]']").val(); 
+  // var valorid=("#item["+posicion+"][idProducto]").val(); 
+
+
+
+
+  $("[name='item[0][productoCompra]']").val(valor); 
+  $("[name='item[0][idProductoCompra]']").val(valorid); 
+
+
+
+
+  // $("#btnGuardarProducto").attr("position",posicion); 
+
+})
+
+
+
+
+$("body").on("click touchstart","#btnGuardarProducto",function(e){
+
+    e.preventDefault();
+    var idEmpresa=$("#idEmpresa").val();
+
+      if(true === $("#frmGuardarProducto").parsley().validate()){
+
+         Swal.fire({
+
+        title: '¿Está seguro?',
+
+        text: 'Está a punto de agregar realizar la parametrización contable de este producto!',
+
+        icon: 'warning', 
+
+        showCancelButton: true,
+
+        showLoaderOnConfirm: true,
+
+        confirmButtonText: `Si, Guardar!`,
+
+        cancelButtonText:'Cancelar',
+
+        preConfirm: function(result) {
+
+          return new Promise(function(resolve) {
+
+            var formu = document.getElementById("frmGuardarProducto");
+            
+            var data = new FormData(formu);
+            
+            $.ajax({
+
+            url:URL+"functions/contable/guardarconfiguracionproducto.php", 
+
+            type:"POST", 
+
+            data: data,
+
+            contentType:false, 
+
+            processData:false, 
+
+            dataType: "json",
+
+            cache:false 
+
+            }).done(function(msg){  
+
+              if(msg.msg){
+
+                Swal.fire(
+
+                  {
+
+                  icon: 'success',
+
+                  title: 'parametrización realizada!',
+
+                  text: 'con exito',
+
+                  closeOnConfirm: true,
+
+                }
+
+                ).then((result) => {
+
+                 // window.history.back(); 
+                 location.reload(); 
+
+
+                })
+
+              }else{
+
+                 Swal.fire(
+
+                  'Algo ha salido mal!',
+
+                  'Verifique su conexión a internet',
+
+                  'error'
+
+                )
+
+              }
+            });
+
+          });
+
+        }
+
+      })
+
+      }
+
+  });

@@ -1,4 +1,6 @@
 var aDatos=[]; 
+var aDatosC=[]; 
+var datos=[]; 
 
 
 $( window ).on( "load", function() {
@@ -11,6 +13,7 @@ $( window ).on( "load", function() {
 cargarProducto=function(){
 
   if($("[name='datos[idEmpresa]'").val()!=""){
+    var idEmpresa=$("[name='datos[idEmpresa]'").val();
     var id=3;
   $.ajax({
 
@@ -40,12 +43,105 @@ cargarProducto=function(){
 
         autocomplete(); 
 
-    });   
+    });  
+
+
+
+
+      $.ajax({
+          url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+          type:"POST", 
+          data: {"idEmpresa":$("[name='datos[idEmpresa]'").val()}, 
+          dataType: "json",
+          }).done(function(msg){  
+            // var $aDatos=[];
+            msg.forEach(function(element,index){
+              datos.push({
+                  value: element.idCuentaContable,
+                  label: element.codigoCuentaContable+" - "+element.nombre,
+                  naturaleza: element.naturaleza,
+                })
+            })
+            console.log(datos);
+            autocompleteCuentas(); 
+          }); 
+
+
+          $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+          type:"POST", 
+          data: {"empresa":$("[name='datos[idEmpresa]'").val(),"tipoFactura":'venta'}, 
+          dataType: "json",
+          }).done(function(msg){  
+
+              if(msg.length!=0){
+
+                  console.log('aca');
+                  console.log(msg);
+                  var sHtml=""; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+                  })
+                  $("#cuentaContableTotal").html(sHtml);
+
+                  if(msg.length>1){
+                    $("#divCuentaContableTotal").removeClass('ocultar');
+                  }
+              }
+              // if(msg.length==0){
+                
+              //   Swal.fire(
+              //   {
+              //     icon: 'error',
+              //     title: "El total a pagar no se encuentra parametrizado!",   
+              //     text: "Por favor parametrice la cuenta contable",
+              //     closeOnConfirm: true,
+              //   }).then((element)=>{
+
+              //     // $( ".registrar" ).eq(index).removeClass('ocultar');
+
+              //   });
+              // }
+
+            })
+
+          // $.ajax({
+
+          //   url:URL+"functions/centrocosto/cargarcentrocosto.php", 
+
+          //   type:"POST", 
+
+          //   data: {"idEmpresa":idEmpresa}, 
+
+          //   dataType: "json",
+
+          //   }).done(function(msg){  
+
+          //     msg.forEach(function(element,index){
+
+          //       aDatosC.push({
+
+          //           value: element.idCentroCosto,
+
+          //           label: element.codigoCentroCosto+'-'+element.centroCosto,
+
+          //         })
+
+          //     })
+
+          //     autocompleteC(); 
+
+
+          // }); 
+
     }else{
 
       $(".producto").val("");
 
     }
+
+
+
 
 }
 
@@ -54,6 +150,51 @@ $('.decimales').keyup(function () {
 
 
 });
+
+
+// autocompleteC=function(){
+//   $( ".centroCosto" ).autocomplete({
+//       minLength: 0,
+//       source: aDatosC,
+//       focus: function( event, ui ) {
+//         var index=$(this).index(".centroCosto");
+//         // $( ".centroCosto" ).eq(index).val( ui.item.label );
+//         // $( ".idCentroCosto" ).eq(index).val( ui.item.value );
+//         return false;
+//       },
+//       select: function( event, ui ) {
+//         var index=$(this).index(".centroCosto");
+//         $( ".centroCosto" ).eq(index).val( ui.item.label );
+//         $( ".idCentroCosto" ).eq(index).val( ui.item.value );
+//         $( ".letreroCentroCosto" ).eq(index).addClass('ocultar');        
+//         var id=ui.item.value;
+//         aDatosSC=[];
+//         $.ajax({
+//           url:URL+"functions/centrocosto/cargarsubcentrocosto.php", 
+//           type:"POST", 
+//           data: {"idCentroCosto":id}, 
+//           dataType: "json",
+//           }).done(function(msg){  
+//             console.log(msg);
+//             msg.forEach(function(element,index){
+//               aDatosSC.push({
+//                   value: element.idSubcentroCosto,
+//                   label: element.codigoSubcentroCosto+' - '+element.subcentroCosto,
+//                 })
+//             })
+//             autocompleteSC(); 
+//         });   
+//         return false;
+//       },
+//       change: function(event, ui){
+//         var index=$(this).index(".centroCosto");
+//         if(ui.item==null){
+//           $( ".idCentroCosto" ).eq(index).val('');
+//         }
+//         return false;
+//       }
+//     })
+// }
 
 autocomplete=function(){
 
@@ -82,8 +223,34 @@ autocomplete=function(){
         $( ".producto" ).eq(index).val( ui.item.label );
 
         $( ".idProducto" ).eq(index).val( ui.item.value );
+        var idEmpresa = $("[name='datos[idEmpresa]'").val();
 
-        
+         $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentaproducto.php", 
+          type:"POST", 
+          data: {"producto":ui.item.value ,"empresa":idEmpresa,"tipoFactura":'venta'}, 
+          dataType: "json",
+          }).done(function(msg){             
+              if(msg.length!=0){
+
+                  console.log(msg);
+              }
+              // if(msg.length==0){
+
+              //   Swal.fire(
+              //   {
+              //     icon: 'error',
+              //     title: "El producto no se encuentra parametrizado!",   
+              //     text: "Por favor parametrice la cuenta contable",
+              //     closeOnConfirm: true,
+              //   }).then((element)=>{
+
+              //     $( ".registrar" ).eq(index).removeClass('ocultar');
+
+              //   });
+              // }
+
+            })
 
         return false;
 
@@ -134,7 +301,7 @@ $("body").on("change","[name='datos[idEmpresa]']",function(e){
 
           msg.lista.forEach(function(element,index){
 
-            sHtml+="<option value='"+element.idCliente+"'>"+element.razonSocial+"</option>"; 
+            sHtml+="<option value='"+element.idTercero+"'>"+element.razonSocial+"</option>"; 
 
           })
 
@@ -252,7 +419,12 @@ $("body").on("click touchstart","#agregar",function(e){
 
   
 
-  $("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1); 
+  // $("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1); 
+   $("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1+'<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item['+cant+'][registrar]" numero="'+cant+'"><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span>'); 
+
+
+
+  $("#tableProductos tbody tr:last").find(".registrar").attr("id","item["+cant+"][registrar]");
 
 
 
@@ -296,7 +468,8 @@ $("body").on("click touchstart",".eliminar",function(e){
 
     $("#tableProductos tbody tr").each(function(index,element){
 
-      $(element).find("td").eq(0).html(index+1); 
+      // $(element).find("td").eq(0).html(index+1); 
+      $(element).find("td").eq(0).html(cant+1+'<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item['+index+'][registrar]" numero="'+cant+'"><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span>'); 
 
 
 
@@ -317,6 +490,17 @@ $("body").on("click touchstart",".eliminar",function(e){
       // $(element).find(".iva").attr("id","item["+index+"][iva]").attr("name","item["+index+"][iva]").val(''); 
 
       // $(element).find(".total").attr("id","item["+index+"][total]").attr("name","item["+index+"][total]").val('');
+
+
+      $(element).find(".producto").attr("id","item["+index+"][producto]").attr("name","item["+index+"][producto]");
+      $(element).find(".idProducto").attr("id","item["+index+"][idProducto]").attr("name","item["+index+"][idProducto]");
+      $(element).find(".descripcion").attr("id","item["+index+"][descripcion]").attr("name","item["+index+"][descripcion]");
+      $(element).find(".cantidad").attr("id","item["+index+"][cantidad]").attr("name","item["+index+"][cantidad]");
+      $(element).find(".idUnidad").attr("id","item["+index+"][idUnidad]").attr("name","item["+index+"][idUnidad]");
+      $(element).find(".valorUnitario").attr("id","item["+index+"][valorUnitario]").attr("name","item["+index+"][valorUnitario]");
+      $(element).find(".subtotal").attr("id","item["+index+"][subtotal]").attr("name","item["+index+"][subtotal]");
+      $(element).find(".iva").attr("id","item["+index+"][iva]").attr("name","item["+index+"][iva]");
+      $(element).find(".total").attr("id","item["+index+"][total]").attr("name","item["+index+"][total]");
 
     })
 
@@ -1042,3 +1226,575 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 //       }
 
 //   })
+
+
+autocompleteCuentas=function(){
+  $( ".cuentaContable" ).autocomplete({
+      minLength: 0,
+      source: datos,
+      focus: function( event, ui ) {
+        var index=$(this).index(".cuentaContable");
+        $( ".cuentaContable" ).eq(index).val( ui.item.label );
+        $( ".idCuentaContable" ).eq(index).val( ui.item.value );
+        $( ".naturaleza" ).eq(index).val( ui.item.naturaleza );
+        return false;
+      },
+      select: function( event, ui ) {
+        var index=$(this).index(".cuentaContable");
+        $( ".cuentaContable" ).eq(index).val( ui.item.label );
+        $( ".idCuentaContable" ).eq(index).val( ui.item.value );
+        $( ".naturaleza" ).eq(index).val( ui.item.naturaleza );
+        var id=ui.item.value;
+        return false;
+      },
+      change: function(event, ui){
+        var index=$(this).index(".cuentaContable");
+        if(ui.item==null){
+          $( ".idCuentaContable" ).eq(index).val('');
+        }
+        return false;
+      }
+    })
+}
+
+
+
+$("body").on("click","#btnAgregar",function(e){
+
+  var tipo=$("#tipoDeduccion").val(); 
+
+  var tipoDeduccion=$("#tipoDeduccion").find("option:selected").html(); 
+
+
+
+  var concepto=$("#conceptoText").val(); 
+
+  var idConcepto=''; 
+
+  var base=0; 
+
+  if($("#tipoDeduccion").val()==1||$("#tipoDeduccion").val()==2){
+
+    concepto=$("#conceptoSelect").find("option:selected").html()
+
+    idConcepto=$("#conceptoSelect").val(); 
+
+    base=$("#baseImpuestos").val(); 
+
+  }
+
+  var valor=$("#valor").val(); 
+
+  if(valor!=""){
+
+    var valorMoneda=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda(valor,"$",""),".",""),",","."));
+
+  }
+
+  
+
+  var cantidad=$("#tableDeducciones tbody tr").length; 
+
+  var totalDeduccion=0; 
+
+  var totalPago=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[total]']").val(),"$",""),".",""),",","."));
+
+  if($("[name='datos[totalDeduccion]']").val()!=""){
+
+    totalDeduccion=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[totalDeduccion]']").val(),"$",""),".",""),",","."));
+
+  }
+
+
+
+  if((totalDeduccion+valorMoneda)>totalPago){
+
+    Swal.fire(
+
+      {
+
+        icon: 'error',
+
+        title: 'Algo ha salido mal!',
+
+        text: 'El valor de las deducciones no puede superar el valor del pago',
+
+        closeOnConfirm: true,
+
+      }
+
+      ).then((result) => {
+
+       $("#valor").val("")
+
+      })
+
+      return false;
+
+  }
+
+  if(concepto!=""&&tipo!=""&&valor!=""){
+
+    
+
+    if(base!=""){
+
+      // base=eliminarMoneda(eliminarMoneda(eliminarMoneda(base,".",""),"$",""),",",".");
+      base=eliminarMoneda(eliminarMoneda(base,".",""),"$","");
+
+    }
+
+
+    var valorMonedaF=eliminarMoneda(eliminarMoneda(valor,"$",""),".","");
+    // var valorMoneda=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda(valor,"$",""),".",""),",","."));
+
+
+    $("#tableDeducciones tbody:last").append("<tr>"
+
+    +"<td><input type='hidden' name='impuesto["+cantidad+"][tipoDeduccion]' id='item["+cantidad+"][tipoDeduccion]' class='form-control tipoDeduccion' value='"+tipo+"' >"
+
+    +"<input type='hidden' name='impuesto["+cantidad+"][concepto]' id='item["+cantidad+"][concepto]' class='form-control concepto' value='"+concepto+"' >"
+
+    +"<input type='hidden' name='impuesto["+cantidad+"][idConcepto]' id='item["+cantidad+"][idConcepto]' class='form-control idConcepto' value='"+idConcepto+"' >"
+
+    +"<input type='hidden' name='impuesto["+cantidad+"][baseImpuestos]' id='item["+cantidad+"][baseImpuestos]' class='form-control baseImpuestos' value='"+base+"' >"
+
+    +"<input type='hidden' name='impuesto["+cantidad+"][valor]' id='item["+cantidad+"][valor]' class='form-control valor' value='"+valorMonedaF+"' >"+
+
+      tipoDeduccion+"</td>"
+
+    +"<td>"+concepto+"</td>"
+
+    +"<td>"+valor+"</td>"
+
+    +"<td><a href='javascript:void(0)' data-toggle='tooltip' id='eliminar' data-placement='top' title='Eliminar' class='btnEliminar btn btn-icon btn-sm btn-danger'><i class='fas fa-trash'></i></a></td>"
+
+    +"</tr>"); 
+
+
+
+    $("#tipoDeduccion").val(''); 
+
+    $("#conceptoText").val(''); 
+
+    $("#conceptoSelect").val('');
+
+    $("#valor").val('');
+
+    $("#baseImpuestos").val('');
+
+  }
+
+  calcularDeduccion(); 
+
+})
+
+$("body").on("change","#tipoDeduccion",function(e){
+
+  if($(this).val()==1||$(this).val()==2){
+
+    $(".concepto-select").removeClass("ocultar")
+
+    $(".baseimpuestos").removeClass("ocultar")
+
+    $(".concepto-texto").addClass("ocultar")
+
+    $(".boton-agregar").addClass("col-md-2").removeClass("col-md-3")
+
+    $(".valor").addClass("col-md-2").removeClass("col-md-3")
+
+    $("#valor").attr("readonly","readonly"); 
+
+     $.ajax({
+
+          url:URL+"functions/configuracion/listarretencioneica.php", 
+
+          type:"POST", 
+
+          data: {"tipo":$(this).val()}, 
+
+          dataType: "json",
+
+          }).done(function(msg){  
+
+            var sHtml="<option value=''>Seleccione una opción</option>"; 
+
+            msg.retenciones.forEach(function(element,index){
+
+              var ciudad=""; 
+
+              if(element.ciudad!=""){
+
+                ciudad="("+element.ciudad+")"; 
+
+              }
+
+              sHtml+="<option porcentaje='"+element.valor+"' value='"+element.idRetencion+"'>"+element.valor+"% - "+element.descripcion+" "+ciudad+"</option>"; 
+
+            })
+
+
+
+            $("#conceptoSelect").html(sHtml);
+
+        });
+
+  }else{
+
+    $(".concepto-select").addClass("ocultar")
+
+    $(".baseimpuestos").addClass("ocultar")
+
+    $(".concepto-texto").removeClass("ocultar")
+
+    $(".boton-agregar").addClass("col-md-3").removeClass("col-md-2")
+
+    $(".valor").addClass("col-md-3").removeClass("col-md-2")
+
+    $("#valor").removeAttr("readonly")
+
+    
+
+  }
+
+})
+
+$("body").on("change","#baseImpuestos",function(e){
+
+
+
+   var base=parseInt(eliminarMoneda(eliminarMoneda(eliminarMoneda($(this).val(),".",""),"$",""),",","."))
+
+   var subtotal=parseInt(eliminarMoneda(eliminarMoneda(eliminarMoneda($('[name="datos[subtotal]"]').val(),".",""),"$",""),",","."))
+
+   if(base>subtotal){
+
+    swal({   
+
+      title: "Algo ha salido mal!",   
+
+      text: "La base de impuestos no puede ser mayor al subtotal",
+
+      type: "error",        
+
+      closeOnConfirm: true 
+
+      }).then((element)=>{
+
+        $("#baseImpuestos").val("")
+
+      });
+
+      return false; 
+
+   }
+
+  if($("#conceptoSelect").val()!=""){
+
+    var porcentaje=parseFloat($("#conceptoSelect").find("option:selected").attr("porcentaje")); 
+
+    var valor=base*(porcentaje/100); 
+
+
+    $("#valor").val(Math.round(valor)).trigger("change"); 
+    $("#valor").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'}); 
+
+  }
+
+})
+
+calcularDeduccion=function(){
+
+  var valor=0;
+
+  $("#tableDeducciones .valor").each(function(index,element){
+
+    // valor+=parseFloat($(element).val()); 
+    var tipo=$("[name='impuesto["+index+"][tipoDeduccion]']").val();  
+    var concepto =$("[name='impuesto["+index+"][idConcepto]']").val();  
+
+    if (concepto!=33) {
+      valor+=parseFloat(eliminarMoneda($(element).val(),",","."));
+    }
+
+
+  })
+
+  // var valorTotal=eliminarMoneda(eliminarMoneda($("[name='datos[total]']").val(),",",""),"$",""); 
+
+  // var amortizacion=eliminarMoneda(eliminarMoneda($("[name='datos[amortizacion]']").val(),",",""),"$",""); 
+  // var valorF=eliminarMoneda(valor,".",",");
+  $("[name='datos[totalDeduccion]']").val(valor).trigger("change");
+
+  // pago=valorTotal-valor-amortizacion; 
+
+  // $("[name='datos[totalPago]']").val(pago).trigger("change");
+
+}
+
+
+// $("body").on("click","#btnAgregar",function(e){
+
+//   var tipo=$("#tipoDeduccion").val(); 
+
+//   var tipoDeduccion=$("#tipoDeduccion").find("option:selected").html(); 
+
+
+
+//   var concepto=$("#conceptoText").val(); 
+
+//   var idConcepto=''; 
+
+//   var base=0; 
+
+//   if($("#tipoDeduccion").val()==1||$("#tipoDeduccion").val()==2){
+
+//     concepto=$("#conceptoSelect").find("option:selected").html()
+
+//     idConcepto=$("#conceptoSelect").val(); 
+
+//     base=$("#baseImpuestos").val(); 
+
+//   }
+
+//   var valor=$("#valor").val(); 
+
+//   if(valor!=""){
+
+//     var valorMoneda=parseFloat(eliminarMoneda(eliminarMoneda(valor,",",""),"$",""));
+
+//   }
+
+  
+
+//   var cantidad=$("#tableDeducciones tbody tr").length; 
+
+//   var totalDeduccion=0; 
+
+//   var totalPago=parseFloat(eliminarMoneda(eliminarMoneda($("[name='datos[total]']").val(),",",""),"$",""));
+
+//   if($("[name='datos[totalDeduccion]']").val()!=""){
+
+//     totalDeduccion=parseFloat(eliminarMoneda(eliminarMoneda($("[name='datos[totalDeduccion]']").val(),",",""),"$",""));
+
+//   }
+
+
+
+//   if((totalDeduccion+valorMoneda)>totalPago){
+
+//     Swal.fire(
+
+//       {
+
+//         icon: 'error',
+
+//         title: 'Algo ha salido mal!',
+
+//         text: 'El valor de las deducciones no puede superar el valor del pago',
+
+//         closeOnConfirm: true,
+
+//       }
+
+//       ).then((result) => {
+
+//        $("#valor").val("")
+
+//       })
+
+//       return false;
+
+//   }
+
+//   if(concepto!=""&&tipo!=""&&valor!=""){
+
+    
+
+//     if(base!=""){
+
+//       base=eliminarMoneda(eliminarMoneda(base,",",""),"$","");
+
+//     }
+
+
+
+//     $("#tableDeducciones tbody:last").append("<tr>"
+
+//     +"<td><input type='hidden' name='impuesto["+cantidad+"][tipoDeduccion]' id='item["+cantidad+"][tipoDeduccion]' class='form-control tipoDeduccion' value='"+tipo+"' >"
+
+//     +"<input type='hidden' name='impuesto["+cantidad+"][concepto]' id='item["+cantidad+"][concepto]' class='form-control concepto' value='"+concepto+"' >"
+
+//     +"<input type='hidden' name='impuesto["+cantidad+"][idConcepto]' id='item["+cantidad+"][idConcepto]' class='form-control idConcepto' value='"+idConcepto+"' >"
+
+//     +"<input type='hidden' name='impuesto["+cantidad+"][baseImpuestos]' id='item["+cantidad+"][baseImpuestos]' class='form-control baseImpuestos' value='"+base+"' >"
+
+//     +"<input type='hidden' name='impuesto["+cantidad+"][valor]' id='item["+cantidad+"][valor]' class='form-control valor' value='"+valorMoneda+"' >"+
+
+//       tipoDeduccion+"</td>"
+
+//     +"<td>"+concepto+"</td>"
+
+//     +"<td>"+valor+"</td>"
+
+//     +"<td><a href='javascript:void(0)' data-toggle='tooltip' id='eliminar' data-placement='top' title='Eliminar' class='btnEliminar btn btn-icon btn-sm btn-danger'><i class='fas fa-trash'></i></a></td>"
+
+//     +"</tr>"); 
+
+
+
+//     $("#tipoDeduccion").val(''); 
+
+//     $("#conceptoText").val(''); 
+
+//     $("#conceptoSelect").val('');
+
+//     $("#valor").val('');
+
+//     $("#baseImpuestos").val('');
+
+//   }
+
+//   calcularDeduccion(); 
+
+// })
+
+
+
+
+
+// $("body").on("change","#tipoDeduccion",function(e){
+
+//   if($(this).val()==1||$(this).val()==2){
+
+//     $(".concepto-select").removeClass("ocultar")
+
+//     $(".baseimpuestos").removeClass("ocultar")
+
+//     $(".concepto-texto").addClass("ocultar")
+
+//     $(".boton-agregar").addClass("col-md-2").removeClass("col-md-3")
+
+//     $(".valor").addClass("col-md-2").removeClass("col-md-3")
+
+//     $("#valor").attr("readonly","readonly"); 
+
+//      $.ajax({
+
+//           url:URL+"functions/configuracion/listarretencioneica.php", 
+
+//           type:"POST", 
+
+//           data: {"tipo":$(this).val()}, 
+
+//           dataType: "json",
+
+//           }).done(function(msg){  
+
+//             var sHtml="<option value=''>Seleccione una opción</option>"; 
+
+//             msg.retenciones.forEach(function(element,index){
+
+//               var ciudad=""; 
+
+//               if(element.ciudad!=""){
+
+//                 ciudad="("+element.ciudad+")"; 
+
+//               }
+
+//               sHtml+="<option porcentaje='"+element.valor+"' value='"+element.idRetencion+"'>"+element.valor+"% - "+element.descripcion+" "+ciudad+"</option>"; 
+
+//             })
+
+
+
+//             $("#conceptoSelect").html(sHtml);
+
+//         });
+
+//   }else{
+
+//     $(".concepto-select").addClass("ocultar")
+
+//     $(".baseimpuestos").addClass("ocultar")
+
+//     $(".concepto-texto").removeClass("ocultar")
+
+//     $(".boton-agregar").addClass("col-md-3").removeClass("col-md-2")
+
+//     $(".valor").addClass("col-md-3").removeClass("col-md-2")
+
+//     $("#valor").removeAttr("readonly")
+
+    
+
+//   }
+
+// })
+
+// $("body").on("change","#baseImpuestos",function(e){
+
+
+
+//    var base=parseInt(eliminarMoneda(eliminarMoneda($(this).val(),",",""),"$",""))
+
+//    var subtotal=parseInt(eliminarMoneda(eliminarMoneda($('[name="datos[subtotal]"]').val(),",",""),"$",""))
+
+//    if(base>subtotal){
+
+//     swal({   
+
+//       title: "Algo ha salido mal!",   
+
+//       text: "La base de impuestos no puede ser mayor al subtotal",
+
+//       type: "error",        
+
+//       closeOnConfirm: true 
+
+//       }).then((element)=>{
+
+//         $("#baseImpuestos").val("")
+
+//       });
+
+//       return false; 
+
+//    }
+
+//   if($("#conceptoSelect").val()!=""){
+
+//     var porcentaje=parseFloat($("#conceptoSelect").find("option:selected").attr("porcentaje")); 
+
+//     var valor=base*(porcentaje/100); 
+//     valor=valor.toFixed(2);
+
+//     $("#valor").val(valor).trigger("change"); 
+
+//   }
+
+// })
+
+// calcularDeduccion=function(){
+
+//   var valor=0;
+
+//   $("#tableDeducciones .valor").each(function(index,element){
+
+//     valor+=parseFloat($(element).val()); 
+
+//   })
+
+//   // var valorTotal=eliminarMoneda(eliminarMoneda($("[name='datos[total]']").val(),",",""),"$",""); 
+
+//   // var amortizacion=eliminarMoneda(eliminarMoneda($("[name='datos[amortizacion]']").val(),",",""),"$",""); 
+//   valor=valor.toFixed(2);
+
+//   $("[name='datos[totalDeduccion]']").val(valor).trigger("change");
+
+//   // pago=valorTotal-valor-amortizacion; 
+
+//   // $("[name='datos[totalPago]']").val(pago).trigger("change");
+
+// }

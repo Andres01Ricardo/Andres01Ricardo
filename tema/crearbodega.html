@@ -1,0 +1,150 @@
+<?php 
+
+
+
+require_once("class/empresa.php"); 
+
+
+
+$oEmpresa=new Empresa(); 
+
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  
+}else{
+  
+  $aEmpresas=$oEmpresa->getEmpresas();
+}
+
+
+
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Inventario</li>
+
+          <li class="breadcrumb-item">Crear bodega</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+                    <?php if (empty($_SESSION['idEmpresa'])) { ?>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empresa<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iEmpresa){ ?>
+
+                            <option value="<?php echo $iEmpresa["idEmpresa"]; ?>"><?php echo $iEmpresa["razonSocial"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                    <?php } if (!empty($_SESSION['idEmpresa'])) { ?>
+                      <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                    <?php } ?>
+
+                  
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Codigo<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[codigoBodega]" id="codigoBodega" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[nombreBodega]" id="nombreBodega" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

@@ -89,3 +89,63 @@ function getMovimientos(){
       $("[name='datos[idCiudad]']").html("<option value=''>Seleccione una opción</option>");
     }
 }
+
+
+
+
+$("body").on("click touchstart","#btnGuardar",function(e){
+    e.preventDefault();
+
+
+    var idCuenta=$("#idCuenta").val();
+    var nombreCuenta=$("#nombreCuenta").val();
+    var numeroCuenta=$("#numeroCuenta").val();
+    var cuatroMil=$("#cuatroMil").val();
+
+
+      
+          Swal.fire({
+        title: '¿Está seguro?',
+        text: 'Está a punto de editar esta cuenta!',
+        icon: 'warning', 
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonText: `Si, Guardar!`,
+        cancelButtonText:'Cancelar',
+        preConfirm: function(result) {
+         
+            $.ajax({
+            url:URL+"functions/cuentabancaria/editarcuentabancaria.php", 
+            type:"POST", 
+            data: {"idCuenta":idCuenta,"nombreCuenta":nombreCuenta,"numeroCuenta":numeroCuenta,"cuatroMil":cuatroMil},
+            dataType: "json",
+            }).done(function(msg){  
+              if(msg.msg){
+                Swal.fire(
+                  {
+                  icon: 'success',
+                  title: 'cuenta editada!',
+                  text: 'con exito',
+                  closeOnConfirm: true,
+                }
+                ).then((result) => {
+                 location.reload(); 
+                })
+              }
+              // else{
+              //    Swal.fire(
+              //     'Algo ha salido mal!',
+              //     'El NIT ya se encuentra registrado',
+              //     'error'
+              //   )
+              // }
+          });
+
+          
+
+        }
+
+      })
+      
+
+  })

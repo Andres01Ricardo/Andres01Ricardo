@@ -25,16 +25,9 @@ class CuentasContables extends Sql{
 
 
 		$sql="SELECT  cc.nombre,cc.idCuentaContable,cc.codigoCuenta as codigoCuentaContable,cc.naturaleza,cc.centroCosto,cc.detalle,cc.tercero,cc.porcentajeRetencion
-
 			FROM cuenta_contable cc
-			
-
 			WHERE 0=0 ".$condicion."";
-
-		
-
 	    $aCuentaContable=$this->ejecutarSql($sql); 
-
 	    return $aCuentaContable; 
 
 	}

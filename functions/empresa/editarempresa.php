@@ -214,7 +214,7 @@ $aDatos["idCiudad"]=$datos["idCiudad"];
 
 $aDatos["direccion"]=$datos["direccion"]; 
 
-$aDatos["logo"]=$sFoto; 
+// $aDatos["logo"]=$sFoto; 
 
 $aDatos["camaraComercio"]=$sCamara; 
 
@@ -327,115 +327,59 @@ unset($oItem);
 
 
 
-if ($datos["checkCliente"]==1) {
-
-    if ($datos["digitoVerificador"]==0) {
-        $aDatosC["tipoPersona"]=1; 
-        # code...
-    }
-    if ($datos["digitoVerificador"]!=0) {
-        $aDatosC["tipoPersona"]=2; 
-        # code...
-    }
+ if ($datos["checkCliente"]==1 || $datos["checkProveedor"]==1) {
 
 
-    $aDatosC["nit"]=$datos["NIT"];; 
-
-    $aDatosC["digitoVerificador"]=$datos["digitoVerificador"]==""?0:$datos["digitoVerificador"];
-
-    $aDatosC["razonSocial"]=$datos["razonSocial"]; 
-
-    $aDatosC["email"]=$datos["correo"];  
-
-    $aDatosC["telefono"]=$datos["telefono"]; 
-
-    // $aDatosC["idPais"]=42; 
-
-    $aDatosC["idDepartamento"]=$datos["idDepartamento"]; 
-
-    $aDatosC["idCiudad"]=$datos["idCiudad"]; 
-
-    $aDatosC["direccion"]=$datos["direccion"]; 
-
-    $aDatosC["fechaRegistro"]=date("Y-m-d H:i:s");
-
-    $aDatosC["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
-
-    $aDatosC["estado"]=1; 
-
+                    $oItem=new Data("tercero","nit",$datos["NIT"]);
+                    $aCliente=$oItem->getDatos();
+                    if (empty($aCliente)) {
+                        if ($datos["digitoVerificador"]==0) {
+                            $aDatosC["tipoPersona"]=1; 
+                        }
+                        if ($datos["digitoVerificador"]!=0) {
+                            $aDatosC["tipoPersona"]=2; 
+                        }
+                        $aDatosC["nit"]=$datos["NIT"];
+                        $aDatosC["digitoVerificador"]=$datos["digitoVerificador"]==""?0:$datos["digitoVerificador"];
+                        $aDatosC["razonSocial"]=$datos["razonSocial"]; 
+                        $aDatosC["email"]=$datos["correo"];  
+                        $aDatosC["telefono"]=$datos["telefono"]; 
+                        $aDatosC["idDepartamento"]=$datos["idDepartamento"]; 
+                        $aDatosC["idCiudad"]=$datos["idCiudad"]; 
+                        $aDatosC["direccion"]=$datos["direccion"]; 
+                        $aDatosC["fechaRegistro"]=date("Y-m-d H:i:s");
+                        $aDatosC["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+                        $aDatosC["estado"]=1; 
+                        $aDatosC["responsableIva"]=1;
+                        $aDatosC["periodoPago"]=30; 
 
 
-    $oItem=new Data("cliente","idCliente"); 
+                        if ($datos["checkCliente"]==1 && $datos["checkProveedor"]==1) {
+                            $aDatosC["tipoTercero"]=4;  
+                        }
+                        if ($datos["checkCliente"]==1 && $datos["checkProveedor"]!=1) {
+                            $aDatosC["tipoTercero"]=1;  
+                        }
+                        if ($datos["checkCliente"]!=1 && $datos["checkProveedor"]==1) {
+                            $aDatosC["tipoTercero"]=2;  
+                        }                    
 
-    foreach($aDatosC  as $keyC => $valueC){
-
-        $oItem->$keyC=$valueC; 
-
-    }
-
-    $oItem->guardar(); 
-
-    $idCliente=$oItem->ultimoId(); 
-
-    unset($oItem);
-
-    }
-
-
-    if ($datos["checkProveedor"]==1) {
-
-
-        if ($datos["digitoVerificador"]==0) {
-        $aDatosP["tipoPersona"]=1; 
-        
-        }
-        if ($datos["digitoVerificador"]!=0) {
-            $aDatosP["tipoPersona"]=2; 
-            
-        }
-
-         
-
-        $aDatosP["nit"]=$datos["NIT"];
-
-        $aDatosP["digitoVerificador"]=$datos["digitoVerificador"]==""?0:$datos["digitoVerificador"];
-
-        $aDatosP["razonSocial"]=$datos["razonSocial"]; 
-
-        $aDatosP["email"]=$datos["correo"];  
-
-        $aDatosP["telefono"]=$datos["telefono"]; 
-
-        $aDatosP["idPais"]=42;
-
-        $aDatosP["idDepartamento"]=$datos["idDepartamento"]; 
-
-        $aDatosP["idCiudad"]=$datos["idCiudad"];
-        
-        $aDatosP["responsableIva"]=1;
-
-        $aDatosP["direccion"]=$datos["direccion"]; 
-
-        $aDatosP["fechaRegistro"]=date("Y-m-d H:i:s");
-
-        $aDatosP["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
-
-        $aDatosP["periodoPago"]=30;  
+                        $oItem=new Data("tercero","idTercero"); 
+                        foreach($aDatosC  as $keyC => $valueC){
+                            $oItem->$keyC=$valueC; 
+                        }
+                        $oItem->guardar(); 
+                        $idTercero=$oItem->ultimoId(); 
+                        unset($oItem);
 
 
-        $oItem=new Data("proveedor","idProveedor"); 
 
-        foreach($aDatosP  as $keyP => $valueP){
-
-            $oItem->$keyP=$valueP; 
-
-        }
-
-        $oItem->guardar(); 
-
-        $idProveedor=$oItem->ultimoId(); 
-
-        unset($oItem);
+                        $oItem=new Data("tercero_empresa","idTerceroEmpresa");
+                        $oItem->idTercero=$idTercero;        
+                        $oItem->idEmpresa=$idEmpresa;
+                        $oItem->guardar(); 
+                        unset($oItem); 
+                    }
 
     }
 

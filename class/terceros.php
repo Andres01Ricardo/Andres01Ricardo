@@ -8,7 +8,7 @@ class Terceros extends Sql{
 
 	
 
-	public function getProveedoresEmpresa($aDatos=array()){
+	public function getTercerosEmpresa($aDatos=array()){
 
 
 
@@ -16,23 +16,13 @@ class Terceros extends Sql{
 
 		if(!isset($_SESSION)){ session_start(); }
 
-		if($_SESSION["idRol"]==2){
-
-			// $condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
-
-		}
-
+		
 		if($_SESSION["idRol"]!=1 && $_SESSION["idRol"]!=2 && $_SESSION["idRol"]!=5){
 
 			$condicion.=" AND pe.idEmpresa=".$_SESSION["idEmpresa"]; 
 
 		}
 
-		// if($_SESSION["idRol"]!=5){
-
-		// 	$condicion.=" AND pe.idEmpresa=".$_SESSION["idEmpresa"]; 
-
-		// }
 
 		if($aDatos["estado"]!=""){
 
@@ -48,9 +38,9 @@ class Terceros extends Sql{
 
 		$sql="SELECT *
 
-			FROM proveedor as p 
+			FROM tercero as p 
 
-			INNER JOIN proveedor_empresa as pe ON(pe.idProveedor=p.idProveedor)
+			INNER JOIN tercero_empresa as pe ON(pe.idTercero=p.idTercero)
 
 			WHERE 0=0 ".$condicion." ORDER BY nit";
 
@@ -185,7 +175,7 @@ class Terceros extends Sql{
 
 
 
-	public function getTercerosEmpresa($aDatos=array()){
+	public function getTercerosEmpresass($aDatos=array()){
 
 
 

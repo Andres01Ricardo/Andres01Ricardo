@@ -1,3 +1,9 @@
+$(document).ready(function(e){
+  sumar_columnas();
+})
+
+
+
 
 $("body").on("click","#btnGuardar",function(e){
 
@@ -215,7 +221,7 @@ var total=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($('[name="dato
 var amortizacion=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($('[name="datos[amortizacion]"]').val(),"$",""),".",""),",","."));
 
     //itera cada input de clase .valorDeduccion y la suma
-    $('.valorDeduccion').each(function() { 
+    $('.valorSumar').each(function() { 
       var valorDeduccion=eliminarMoneda(eliminarMoneda(eliminarMoneda($(this).val(),"$",""),".",""),",",".");
       sumDeducciones +=parseFloat(valorDeduccion);   
     }); 
@@ -375,11 +381,13 @@ $("body").on("click","#btnAgregar",function(e){
 
     if(base!=""){
 
-      base=eliminarMoneda(eliminarMoneda(eliminarMoneda(base,"$",""),".",""),",",".");
+      base=eliminarMoneda(eliminarMoneda(base,"$",""),".","");
 
     }
 
 
+
+    var valorMonedaF=eliminarMoneda(eliminarMoneda(valor,"$",""),".","");
 
     $("#tableDeducciones tbody:last").append("<tr>"
 
@@ -391,7 +399,7 @@ $("body").on("click","#btnAgregar",function(e){
 
     +"<input type='hidden' name='impuesto["+cantidad+"][baseImpuestos]' id='item["+cantidad+"][baseImpuestos]' class='form-control baseImpuestos' value='"+base+"' >"
 
-    +"<input type='hidden' name='impuesto["+cantidad+"][valor]' id='item["+cantidad+"][valor]' class='form-control valorSumar' value='"+valorMoneda+"' >"+
+    +"<input type='hidden' name='impuesto["+cantidad+"][valor]' id='item["+cantidad+"][valor]' class='form-control valorSumar' value='"+valorMonedaF+"' >"+
 
       tipoDeduccion+"</td>"
 
@@ -420,6 +428,7 @@ $("body").on("click","#btnAgregar",function(e){
   }
 
   calcularDeduccion(); 
+  sumar_columnas();
 
 })
 
@@ -555,5 +564,7 @@ calcularDeduccion=function(){
   pago=valorTotal-valor-amortizacion; 
 
   $("[name='datos[totalPago]']").val(pago).trigger("change");
+
+  sumar_columnas();
 
 }

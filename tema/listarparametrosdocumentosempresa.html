@@ -9,12 +9,13 @@ $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
 
 
 $decrip["cadena"]=$id; 
+$id=$oControl->desencriptar($decrip); 
 }
 if (!empty($_SESSION["idEmpresa"])) {
   $id=$_SESSION["idEmpresa"];
 }
 
-$id=$oControl->desencriptar($decrip); 
+
 
 $oParametro=new ParametrosDocumentos(); 
 

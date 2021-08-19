@@ -36,18 +36,32 @@ unset($oItem);
 		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
 		<div class="card">
 			<div class="card-body">
-				<div class="card-header">IMPUESTOS FACTURA VENTA</div>
+				<div class="card-header">PARAMETRIZAR IMPUESTOS</div>
 					<div class="row">
 						<div class=" col-md-3 ">
-							<div class="form-group">
-	            	<label class="negrita d-block">IVA factura venta<span class="requerido">*</span>:</label>                
-	          	</div>
-						</div>
+              <div class="form-group">
+                  <label class="negrita">Tipo Impuesto<span class="requerido">*</span>:</label>
+                  <select class="form-control mayusculas" id="tipoDeduccion" name="datos[tipoDeduccion]">
+                  <option value="">Seleccione una opción</option>
+                  <option value="1">Retención</option>
+                  <option value="2">RETE ICA</option>
+                  <option value="3">IVA</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3 ocultar concepto-select">
+              <div class="form-group">
+                  <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+                  <select class="form-control" name="datos[conceptoSelect]" id="conceptoSelect">
+                  <option value="">Seleccione una opción</option>
+                </select>
+              </div>
+            </div>
 						<div class=" col-md-3 ">
 							<div class="form-group">
 	              <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableivaFacturaVenta]" >
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableivaFacturaVenta]">
+								<input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" >
+								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
 								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaVenta]" id="cuentaContableIvaVenta">                
 	          	</div>
 						</div>
@@ -55,7 +69,7 @@ unset($oItem);
 	          	<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
 							<div class="form-inline">
 		            <div class="form-group mb-1">
-									<select class="form-control" name="datos[tipoDocumentoIvaVenta]" id="tipoDocumentoIvaVenta" >
+									<select class="form-control" name="datos[tipoDocumento]" id="tipoDocumento" >
 										<?php foreach ($aParametros as $key => $value) {
 										$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
 										$aTipo=$oItem->getDatos();
@@ -68,55 +82,17 @@ unset($oItem);
 						</div>
 						<div class=" col-md-3 ">
 							<div class="form-group">
-		             <label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
-									<select class="form-control" name="datos[naturalezaNuevaIvaVenta]" id="naturalezaIvaVenta" >
-										<option value="1">CREDITO</option>
-										<option value="2">DEBITO</option>
+		             <label class="negrita d-block">Tipo factura<span class="requerido">*</span>:</label>
+									<select class="form-control" name="datos[tipoFactura]" id="tipoFactura" >
+										<option value="compra">COMPRA</option>
+										<option value="venta">VENTA</option>
 									</select>              
 		            </div>
 						</div>
 					</div>
-				<div class="row">
-					<?php foreach ($aRetenciones as $keyRV => $valueRV) {
-						
-					 ?>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-	            <label class="negrita d-block"><?php echo $valueRV['descripcion']; ?><span class="requerido">*</span>:</label>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<input type="text" class="form-control cuentaContable" name="item[<?php echo $keyRV ?>][cuentaContableRetencionVentas]" >
-								<input type="hidden" class="form-control idCuentaContable" name="item[<?php echo $keyRV ?>][idCuentaContableRetencionVentas]">
-								<input type="hidden" class="form-control naturaleza" name="item[<?php echo $keyRV ?>][naturalezaRetencionVentas]" id="">	                          
-	            </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-							<div class="form-group mb-1">
-								<select class="form-control" name="item[<?php echo $keyRV ?>][tipoDocumentoRetencionVentas]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 		
-								<?php } ?>
-								</select>
-							</div>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<select class="form-control" name="datos[naturalezaNuevaRetencionVenta]"  >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>     
-	            </div>
-					</div>
-				<?php } ?>
-				
-				</div>
+
+
+			
 				<!-- <div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
@@ -153,122 +129,12 @@ unset($oItem);
 	          </div>
 					</div>
 				</div> -->			
-				<div class="card-header">IMPUESTOS FACTURA COMPRA</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-	            <label class="negrita d-block">IVA factura compra<span class="requerido">*</span>:</label>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-							<label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableIvaCompra]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableIvaCompra]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaCompra]">              
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
-						<div class="form-inline">
-							<div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoIvaCompra]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-								<?php } ?> 
-								</select>
-							</div>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-	            <label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
-								<select class="form-control" name="datos[naturalezaNuevaIvaCompra]" id="" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>     
-	          </div>
-					</div>
-				</div>
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-	            <label class="negrita d-block">Retención compras<span class="requerido">*</span>:</label>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableRetencionCompra]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableRetencionCompra]">
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaRetencionCompra]">
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-	            <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoRetencionCompra]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 		
-								<?php } ?>
-								</select>
-							</div>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<select class="form-control" name="datos[naturalezaNuevaRetencionCompra]" id="naturalezaRetencionCompra" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	          </div>
-					</div>
-				</div>
 				
-				<div class="row">
-					<div class=" col-md-3 ">
-						<div class="form-group">
-	            <label class="negrita d-block">Reteica <span class="requerido">*</span>:</label>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableReteicaBucaramangaCompra]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableReteicaBucaramangaCompra]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaReteicaBucaramangaCompra]">
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-inline">
-	            <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoReteicaBucaramangaCompra]" >
-									<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-								<?php } ?> 
-								</select>
-							</div>
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">     
-								<select class="form-control" name="datos[naturalezaNuevaReteicaBucaramangaCompra]" id="" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-						</div>
-					</div>
-				</div>
-				<div class="card-header">CUENTAS</div>
+				
+
+				<!-- <div class="card-header">CUENTAS</div> -->
 				<?php foreach($aBancos as $key=> $value){ ?>
-				<div class="row">
+				<!-- <div class="row">
 					<div class=" col-md-3 ">
 						<div class="form-group">
 	            <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
@@ -284,49 +150,10 @@ unset($oItem);
 								<input type="hidden" class="form-control naturaleza" name="banco[<?php echo $key ?>][naturaleza]">
 	          </div>
 					</div>
-				</div>
+				</div> -->
 				<?php } ?>
-				<div class="card-header">GESTION FACTURA VENTA</div>
-					<div class="row">
-						<div class=" col-md-3 ">
-							<div class="form-group">
-	              <label class="negrita d-block">Total a pagar:</label>
-	            </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-	            <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
-								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableTotalPagarVenta]" >	
-								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableTotalPagarVenta]">	
-								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaTotalPagarVenta]">              
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
-						<div class="form-inline">
-	            <div class="form-group mb-1">
-								<select class="form-control" name="datos[tipoDocumentoTotalPagarVenta]" >
-								<?php foreach ($aParametros as $key => $value) {
-									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
-									$aTipo=$oItem->getDatos();
-								 ?>
-									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
-								<?php } ?>
-								</select>
-							</div>   
-	          </div>
-					</div>
-					<div class=" col-md-3 ">
-						<div class="form-group">
-								<label class="negrita d-block">Naturaleza<span class="requerido">*</span>:</label>
-								<select class="form-control" name="datos[naturalezaNuevaTotalPagarVenta]" id="" >
-									<option value="1">CREDITO</option>
-									<option value="2">DEBITO</option>
-								</select>
-	          </div>
-					</div>
-				</div>
-				<div class="card-header">GESTION FACTURA COMPRA</div>
+				
+				<!-- <div class="card-header">GESTION FACTURA COMPRA</div>
 					<div class="row">
 						<div class=" col-md-3 ">
 							<div class="form-group">
@@ -365,11 +192,108 @@ unset($oItem);
 								</select>
 	          </div>
 					</div>
-				</div>
+				</div> -->
 				<div class="card-footer text-right">
           <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
         </div>
-			</div>
+			
 		</div>
 	</form>
+
+	<div class="card-header">
+      	<h3>Impuestos parametrizados</h3>
+      </div>
+      <div class="card-body">
+      	<table class="table table-striped" id="tableProductos" style="text-align:center;">
+      		<thead>
+      			<tr>
+      				<!-- <th>#</th> -->
+      				<th>Tipo impuesto</th>
+      				<th>Impuesto</th>
+      				<th>Cuenta contable</th>
+      				<th>Tipo documento</th>
+      				<th>Tipo factura</th>
+      				<th>Acciones</th>
+      			</tr>
+      		</thead>
+      		<tbody>
+      			<?php 
+      			$oItem=new Lista("impuesto_cuenta_contable");
+						$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+						$aImpuestos=$oItem->getLista();
+						unset($oItem);
+      			foreach ($aImpuestos as $key=> $value){ 
+      				
+								
+								$oLista=new Data("cuenta_contable","idCuentaContable",$value["idEmpresaCuenta"]);						
+								$cuentaC=$oLista->getDatos();
+								unset($oLista); 
+
+
+								$oItem=new Data("parametros_documentos","idParametrosDocumentos",$value['tipoDocumento']);
+								// $oItem->setFiltro("","=",);
+								$aParametro=$oItem->getDatos();
+								unset($oItem);
+								$oItem=new Data("tipos_documento_contable","idTiposDocumento",$aParametro["tipo"]);
+								$aLetra=$oItem->getDatos();
+								unset($oItem);
+      				?>
+      			<tr>
+      			
+      				<td><?php
+      				if ($value['tipoImpuesto']==1) {
+      				 	echo "RETENCIÓN";
+      				 } 
+      				 if ($value['tipoImpuesto']==2) {
+      				 	echo "RETE ICA";
+      				 } 
+      				 if ($value['tipoImpuesto']==3) {
+      				 	echo "IVA";
+      				 } 
+      				echo $value['codigo']; 
+      			?></td>
+      				<td><?php 
+      				if ($value['tipoImpuesto']!=3) {
+      					$oItem=new Data("retencion","idRetencion",$value['idImpuesto']);
+								$aImp=$oItem->getDatos();
+								unset($oItem);
+
+
+								echo $aImp['descripcion'].' '.$aImp['valor'].'%';; 
+      				}
+      				if ($value['tipoImpuesto']==3) {
+      					echo 'IVA'; 
+      				}
+      				
+      				
+      			?></td>
+      				<td><?php echo $cuentaC['codigoCuenta'].' '.$cuentaC['nombre']; ?></td>
+      				<td><?php echo $aLetra['letra'].' '.$aParametro['comprobante'].' '.$aParametro['descripcion']; ?></td>
+      				<td><?php echo $value['tipoFactura']; ?></td>
+      				<td><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idImpuestoCuentaContable']; ?>" class="eliminarImpuesto"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
+      			</tr>
+      		<?php } ?>
+      		</tbody>
+      	</table>
+      </div>
+
+
+
+</div>
+
+
+
 </section>
+
+
+
+
+
+
+
+
+				
+			
+
+
+

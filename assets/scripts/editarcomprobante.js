@@ -1,5 +1,6 @@
 var aDatos=[]; 
 var aDatosC=[]; 
+var aDatosSC=[];
 var aDatosT=[]; 
  var debito=0;
  
@@ -9,11 +10,12 @@ var aDatosT=[];
 $(document).ready(function(e){
 
 // })
-
+sumar_columnas();
 
 // $("body").on("change","[name='datos[idEmpresa]']",function(e){
   aDatos=[]; 
   aDatosC=[]; 
+  aDatosSC=[]; 
   aDatosT=[]; 
   
   var idEmpresa=$("#idEmpresa").val();
@@ -22,100 +24,48 @@ $(document).ready(function(e){
   // alert(debito);
   //   valorDebito =eliminarMoneda(eliminarMoneda(valor,"$",""),",","")
   sumar_columnas();
-  
-
   $.ajax({
-
       url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
-
       type:"POST", 
-
       data: {"idEmpresa":idEmpresa}, 
-
       dataType: "json",
-
       }).done(function(msg){  
-
         msg.forEach(function(element,index){
-
           aDatos.push({
-
-              // value: element.idCuentaContable,
-
-              // label: element.codigoCuentaContable+" - "+element.nombre,
-
-              // naturaleza: element.naturaleza,
-
-              // // tercero:element.tercero,
-
-              // centroCosto:element.centroCosto,
               value: element.idCuentaContable,
-
               label: element.codigoCuentaContable+" - "+element.nombre,
-
               naturaleza: element.naturaleza,
-
               tercero:element.tercero,
-
               centroCosto:element.centroCosto,
-
               detalle:element.detalle,
-
               porcentajeRetencion:element.porcentajeRetencion,
-
             })
-
         })
         console.log(aDatos);
         autocomplete(); 
-
-
     }); 
-
     $.ajax({
-
       url:URL+"functions/centrocosto/cargarcentrocosto.php", 
-
       type:"POST", 
-
       data: {"idEmpresa":idEmpresa}, 
-
       dataType: "json",
-
       }).done(function(msg){  
-
         msg.forEach(function(element,index){
-
           aDatosC.push({
-
               value: element.idCentroCosto,
-
-              label: element.idCentroCosto+'-'+element.centroCosto,
-
+              label: element.codigoCentroCosto+' - '+element.centroCosto,
             })
 
         })
-
         autocompleteC(); 
-
-
     });   
-
-
 $.ajax({
-
       url:URL+"functions/terceros/cargarterceros.php", 
-
       type:"POST", 
-
       data: {"idEmpresa":idEmpresa,"tipoDetalle":1}, 
-
       dataType: "json",
-
       }).done(function(msg){
       console.log(msg);
-
-
         msg.forEach(function(element,index){
           if (element.idCliente !=null) {
                var tipo='c'; 
@@ -124,24 +74,45 @@ $.ajax({
                var tipo='p';
               }
           aDatosT.push({
-
               value: element[0],
-
               label: element.nit+" - "+element.razonSocial,
-
-              tipo: tipo,
-               
-
+              tipo: tipo,  
             })
-
         })
-
         autocompleteT(); 
-
-
     });   
 
+      // cargarsc();    
 });
+
+
+
+// function cargarsc(){
+//   $('.idCentroCosto').each(function() { 
+
+//     var idCentroCosto=$(this).val();
+
+
+//       aDatosSC=[];
+//       $.ajax({
+//         url:URL+"functions/centrocosto/cargarsubcentrocosto.php", 
+//         type:"POST", 
+//         data: {"idCentroCosto":idCentroCosto}, 
+//         dataType: "json",
+//         }).done(function(msg){  
+//           console.log(msg);
+//           msg.forEach(function(element,index){
+//             aDatosSC.push({
+//                 value: element.idSubcentroCosto,
+//                 label: element.codigoSubcentroCosto+' - '+element.subcentroCosto,
+//               })
+//           })
+//           autocompleteSC(); 
+//       }); 
+
+//     })
+
+// }
 
 
 // autocomplete=function(){
@@ -462,26 +433,33 @@ autocompleteC=function(){
 
         var index=$(this).index(".centroCosto");
 
-        $( ".centroCosto" ).eq(index).val( ui.item.label );
+        // $( ".centroCosto" ).eq(index).val( ui.item.label );
 
-        $( ".idCentroCosto" ).eq(index).val( ui.item.value );
-
-
-
+        // $( ".idCentroCosto" ).eq(index).val( ui.item.value );
         return false;
-
       },
-
       select: function( event, ui ) {
-
         var index=$(this).index(".centroCosto");
-
         $( ".centroCosto" ).eq(index).val( ui.item.label );
-
         $( ".idCentroCosto" ).eq(index).val( ui.item.value );
-        
         var id=ui.item.value;
- 
+
+        aDatosSC=[];
+        $.ajax({
+          url:URL+"functions/centrocosto/cargarsubcentrocosto.php", 
+          type:"POST", 
+          data: {"idCentroCosto":id}, 
+          dataType: "json",
+          }).done(function(msg){  
+            console.log(msg);
+            msg.forEach(function(element,index){
+              aDatosSC.push({
+                  value: element.idSubcentroCosto,
+                  label: element.codigoSubcentroCosto+' - '+element.subcentroCosto,
+                })
+            })
+            autocompleteSC(); 
+        });  
         return false;
 
       },
@@ -505,7 +483,34 @@ autocompleteC=function(){
 }
 
 
+autocompleteSC=function(){
 
+  $( ".subcentroCosto" ).autocomplete({
+      minLength: 0,
+      source: aDatosSC,
+      focus: function( event, ui ) {
+        var index=$(this).index(".subcentroCosto");
+        // $( ".subcentroCosto" ).eq(index).val( ui.item.label );
+        // $( ".idSubcentroCosto" ).eq(index).val( ui.item.value );
+        return false;
+      },
+      select: function( event, ui ) {
+        var index=$(this).index(".subcentroCosto");
+        $( ".subcentroCosto" ).eq(index).val( ui.item.label );
+        $( ".idSubcentroCosto" ).eq(index).val( ui.item.value );
+        var id=ui.item.value;
+         
+        return false;
+      },
+      change: function(event, ui){
+        var index=$(this).index(".subcentroCosto");
+        if(ui.item==null){
+          $( ".idSubcentroCosto" ).eq(index).val('');
+        }
+        return false;
+      }
+    })
+}
 
 
 
@@ -604,7 +609,7 @@ $("body").on("change","[name='datos[tipoDocumento]']",function(e){
 
           msg.comprobante.forEach(function(element,index){
 
-            sHtml+="<option value='"+element.idParametrosDocumentos+"'>"+element.comprobante+' - '+element.descripcion+"</option>"; 
+            sHtml+="<option value='"+element.comprobante+"'>"+element.comprobante+' - '+element.descripcion+"</option>"; 
 
           })
 
@@ -694,23 +699,23 @@ var restarDebito=0;
        
       var valorCuentaContable=cuentaContable.value;
       
-      if (valorCuentaContable.substring(0,4)=='1592') {
-        restarDebito +=parseFloat(valorCredito);
-      }else{
+      // if (valorCuentaContable.substring(0,4)=='1592') {
+      //   restarDebito +=parseFloat(valorCredito);
+      // }else{
         sumCredito +=parseFloat(valorCredito); 
-      }
+      // }
         contC++; 
     }); 
     //cambia valor del total y lo redondea a la segunda decimal
     
     
     // var totalC=
-    if (restarDebito < 0) {
-      var totalD=sumDebito+restarDebito;
-    }
-    if (restarDebito >= 0) {
-      var totalD=sumDebito-restarDebito;
-    }
+    // if (restarDebito < 0) {
+    //   var totalD=sumDebito+restarDebito;
+    // }
+    // if (restarDebito >= 0) {
+    // }
+      var totalD=sumDebito;
     $('#totalDebito').val(totalD.toFixed(2));
     $('#totalCredito').val(sumCredito.toFixed(2));
     var diferencia=totalD - sumCredito;
@@ -784,24 +789,18 @@ $("body").on("click","#agregar",function(e){
   $("#tableProductos tbody tr:last").find("td").eq(0).html(cant+1);
 
   $("#tableProductos tbody tr:last").find(".cuentaContable").attr("id","item["+cant+"][cuentaContable]").attr("name","item["+cant+"][cuentaContable]").val("");
-$("#tableProductos tbody tr:last").find(".letreroCuentaContable").attr("id","item["+cant+"][letreroCuentaContable]").addClass('ocultar').val("");
+  $("#tableProductos tbody tr:last").find(".letreroCuentaContable").attr("id","item["+cant+"][letreroCuentaContable]").addClass('ocultar').val("");
   $("#tableProductos tbody tr:last").find(".idCuentaContable").attr("id","item["+cant+"][idCuentaContable]").attr("name","item["+cant+"][idCuentaContable]").val("");
-
   $("#tableProductos tbody tr:last").find(".centroCosto").attr("id","item["+cant+"][centroCosto]").attr("name","item["+cant+"][centroCosto]").val(""); 
   $("#tableProductos tbody tr:last").find(".idCentroCosto").attr("id","item["+cant+"][idCentroCosto]").attr("name","item["+cant+"][idCentroCosto]").val(""); 
-
   // $("#tableProductos tbody tr:last").find(".subcentroCosto").attr("id","item["+cant+"][subcentroCosto]").attr("name","item["+cant+"][subcentroCosto]").val(""); 
-
   $("#tableProductos tbody tr:last").find(".nit").attr("id","item["+cant+"][nit]").attr("name","item["+cant+"][nit]").val(""); 
   $("#tableProductos tbody tr:last").find(".idTercero").attr("id","item["+cant+"][idTercero]").attr("name","item["+cant+"][idTercero]").val(""); 
   $("#tableProductos tbody tr:last").find(".tipoTercero").attr("id","item["+cant+"][tipoTercero]").attr("name","item["+cant+"][tipoTercero]").val(""); 
-$("#tableProductos tbody tr:last").find(".letreroTercero").attr("id","item["+cant+"][letreroTercero]").addClass('ocultar').val("");
+  $("#tableProductos tbody tr:last").find(".letreroTercero").attr("id","item["+cant+"][letreroTercero]").addClass('ocultar').val("");
   // $("#tableProductos tbody tr:last").find(".sucursal").attr("id","item["+cant+"][sucursal]").attr("name","item["+cant+"][sucursal]").val(''); 
-
   $("#tableProductos tbody tr:last").find(".descripcion").attr("id","item["+cant+"][descripcion]").attr("name","item["+cant+"][descripcion]").val(""); 
-
   $("#tableProductos tbody tr:last").find(".naturaleza").attr("id","item["+cant+"][naturaleza]").attr("name","item["+cant+"][naturaleza]").val(''); 
-
   $("#tableProductos tbody tr:last").find(".debito").removeAttr("disabled").attr("id","item["+cant+"][debito]").attr("name","item["+cant+"][debito]").val('');
   $("#tableProductos tbody tr:last").find(".credito").removeAttr("disabled").attr("id","item["+cant+"][credito]").attr("name","item["+cant+"][credito]").val('');
 
@@ -816,33 +815,38 @@ $("#tableProductos tbody tr:last").find(".letreroTercero").attr("id","item["+can
 
 
 $("body").on("click",".eliminar",function(e){
-
-
-
   var cant=$("#tableProductos tbody tr").length; 
-
   if(cant>1){
-
     $('select.flexselect').removeData("flexselect");
-
     $(this).parents("tr").remove(); 
-
     $("#tableProductos tbody tr").each(function(index,element){
+      // $(element).find("td").eq(0).html(index+1); 
 
-      $(element).find("td").eq(0).html(index+1); 
+
+   $(element).find(".cuentaContable").attr("id","item["+index+"][cuentaContable]").attr("name","item["+index+"][cuentaContable]");
+  $(element).find(".letreroCuentaContable").attr("id","item["+index+"][letreroCuentaContable]").addClass('ocultar');
+  $(element).find(".idCuentaContable").attr("id","item["+index+"][idCuentaContable]").attr("name","item["+index+"][idCuentaContable]");
+  $(element).find(".centroCosto").attr("id","item["+index+"][centroCosto]").attr("name","item["+index+"][centroCosto]"); 
+  $(element).find(".idCentroCosto").attr("id","item["+index+"][idCentroCosto]").attr("name","item["+index+"][idCentroCosto]"); 
+  // $(element).find(".subcentroCosto").attr("id","item["+index+"][subcentroCosto]").attr("name","item["+index+"][subcentroCosto]"); 
+  $(element).find(".nit").attr("id","item["+index+"][nit]").attr("name","item["+index+"][nit]"); 
+  $(element).find(".idTercero").attr("id","item["+index+"][idTercero]").attr("name","item["+index+"][idTercero]"); 
+  $(element).find(".tipoTercero").attr("id","item["+index+"][tipoTercero]").attr("name","item["+index+"][tipoTercero]"); 
+  $(element).find(".letreroTercero").attr("id","item["+index+"][letreroTercero]").addClass('ocultar');
+  // $(element).find(".sucursal").attr("id","item["+index+"][sucursal]").attr("name","item["+index+"][sucursal]"); 
+  $(element).find(".descripcion").attr("id","item["+index+"][descripcion]").attr("name","item["+index+"][descripcion]"); 
+  $(element).find(".naturaleza").attr("id","item["+index+"][naturaleza]").attr("name","item["+index+"][naturaleza]"); 
+  $(element).find(".debito").removeAttr("disabled").attr("id","item["+index+"][debito]").attr("name","item["+index+"][debito]");
+  $(element).find(".credito").removeAttr("disabled").attr("id","item["+index+"][credito]").attr("name","item["+index+"][credito]");
+
+
 
     })
-
-    
-
     autocomplete(); 
     sumar_columnas();
-
   }
-
-  
-
 })
+
 
 
 
@@ -963,9 +967,10 @@ $("body").on("click",".eliminar",function(e){
 
 $("body").on("change","[name='datos[baseModal]']",function(e){
 
-   var totalRetencion=(( $("#porcentajeRetencion").val() * parseFloat(eliminarMoneda($(this).val(),",",".")) ) / 100);
-   $("#retencionModal").val(totalRetencion);
-
+   // var totalRetencion=(( $("#porcentajeRetencion").val() * parseFloat(eliminarMoneda($(this).val(),",",".")) ) / 100);
+   // $("#retencionModal").val(totalRetencion);
+   var totalRetencion=(( parseFloat(eliminarMoneda($("#porcentajeRetencion").val(),",",".")) * parseFloat(eliminarMoneda($(this).val(),",",".")) ) / 100);
+   $("#retencionModal").val(totalRetencion.toFixed(2));
 })
 
 

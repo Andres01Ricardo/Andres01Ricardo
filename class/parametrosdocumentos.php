@@ -36,6 +36,10 @@ class ParametrosDocumentos extends Sql{
 
 	}
 
+
+
+	
+
 }
 
 ?>

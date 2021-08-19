@@ -20,7 +20,8 @@ if (!empty($_SESSION["idEmpresa"])) {
 $oCuentaContable=new CuentasContables(); 
 $aCuentaContable=$oCuentaContable->getCuentasContablesEmpresa($id);
 
-
+print_r($id);
+print_r($aCuentaContable);
 ?>
 
   <div class="card">
@@ -122,7 +123,10 @@ $aCuentaContable=$oCuentaContable->getCuentasContablesEmpresa($id);
                                 ?>
                               </td> -->
                               <td>
+                                <a href="<?php echo $URL; ?>editarcuentacontable/<?php echo $iCuentaContable['idCuentaContable'] ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar" id="btnEditar" name="btnEditar[<?php echo $index?>]" value="<?php echo $iCuentaContable['idCuentaContable'] ?>"><i class="fas fa-pencil-alt" style="color: #FFCC4D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Editar"  ></i></a>
                                 <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" value="<?php echo $iCuentaContable['idCuentaContable'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
+
+
                               </td>
                             </tr>
 

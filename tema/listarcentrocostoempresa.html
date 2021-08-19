@@ -24,6 +24,7 @@ if (!empty($_SESSION["idEmpresa"])) {
 }
 $oLista=new Lista("centro_costo");
 $oLista->setFiltro("idEmpresa","=",$id);
+$oLista->setOrden("codigoCentroCosto","ASC");
 $aCentroCosto=$oLista->getLista();
 unset($oLista);
 
@@ -59,7 +60,7 @@ unset($oLista);
 
                 <div class="card-header">
 
-                  <h4>Lista de terceros</h4>
+                  <h4>Lista centros de costo</h4>
 
                 </div>
 
@@ -69,29 +70,19 @@ unset($oLista);
 
                     <div class="col-md-12 col-lg-12 table-responsive">
 
-                      <table class="table table-striped mayusculas" id="tableMovimientoGeneral" style="font-size: 84%">
+                      <table class="table table-striped table-hover mayusculas" id="tableMovimientoGeneral" style="text-align:center;">
 
                         <thead>
 
-                          <tr>
+                          <tr style="background-color:#B8B8B8;">
 
-                            <th class="text-center">#</th>
+                            <th class="text-center">CÓDIGO CENTRO COSTO</th>
 
-                            <th>Centro costo</th>
+                            <th>CÓDIGO SUBCENTRO COSTO</th>
 
-                            <th>Responsable</th>
+                            <th>NOMBRE</th>
 
-                            <th>Dirección</th>
-
-                            <th>Telefono</th>
-
-                            <th>Email</th>
-
-                            <!-- <th>Dirección</th>
-
-                            <th>Telefono</th>
-
-                            <th>Acciones</th> -->
+                            <th>Acciones</th>
 
                           </tr>
 
@@ -99,24 +90,41 @@ unset($oLista);
 
                         <tbody>
                           <?php $numero=1;
-                          foreach($aCentroCosto as $index => $iProveedor){ 
+                          foreach($aCentroCosto as $index => $iCentroCosto){ 
                             
                             // $id=$oControl->encriptar($aEncript);
 
                             ?>
                           <tr>
-                            <td><?php echo $index+1; ?></td>
-                            <td><?php echo $iProveedor["centroCosto"];?></td>
-                            <td><?php echo $iProveedor["responsable"];?></td>
-                            <td><?php echo $iProveedor["direccion"];?></td>
-                            <td><?php echo $iProveedor["telefono1"];?></td>
-                            <td><?php echo $iProveedor["email"];?></td>
-                            
-
-                            
+                            <td class="negrita"><?php echo $iCentroCosto["codigoCentroCosto"]; ?></td>
+                            <td class="negrita"></td>
+                            <td class="negrita"><?php echo $iCentroCosto["centroCosto"];?></td>
+                            <td><a href="javascript:void(0)" id="btnAgregar" name="btnAgregar[<?php echo $index?>]" value="<?php echo $iCentroCosto['idCentroCosto'] ?>" class="idCentroCosto"><i class="fas fa-plus" style="color: #A2D7FF;font-size: 19px;" data-toggle="modal" data-target="#modal" data-value="<?php echo $iCentroCosto['idCentroCosto'] ?>" title="Agregar subcentro costo"  ></i></a>
+                              <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" value="<?php echo $iCentroCosto['idCentroCosto'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
                           </tr>
+
+
                         <?php $numero=$index+1;
-                      } ?>
+                        $oLista=new Lista("subcentro_costo");
+                        $oLista->setFiltro("idCentroCosto","=",$iCentroCosto["idCentroCosto"]);
+                        $aSubCentroCosto=$oLista->getLista();
+                        unset($oLista);
+
+                        foreach($aSubCentroCosto as $indexS => $iSubCentroCosto){ 
+                        ?>
+
+                        <tr>
+                          <td><?php echo $iCentroCosto["codigoCentroCosto"]; ?></td>
+                          <td><?php echo $iSubCentroCosto["codigoSubcentroCosto"];?></td>
+                          <td><?php echo $iSubCentroCosto["subcentroCosto"];?></td>
+                          <td><a href="javascript:void(0)" id="btnEliminarSubcentro" name="btnEliminarSubcentro[<?php echo $indexS?>]" value="<?php echo $iSubCentroCosto['idSubcentroCosto'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
+                        </tr>
+
+
+
+                    <?php  
+                        }
+                        } ?>
                         
 
                           
@@ -142,21 +150,39 @@ unset($oLista);
 
 </section>
 
-<div class="settingSidebar">
-
-<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
-
-</a> -->
-
-<div class="settingSidebar-body ps-container ps-theme-default">
-
-  <div class="fade show active" id="body-view">
-
-    
-
+<div class="modal fade " id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="myLargeModalLabel">Agregar subcentro de costos</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form enctype="multipart/form-data" id="frmGuardar" >
+            <input type="hidden" name="datos[idCentroCosto]" id="idCentroCosto" value="">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="negrita">Código:</label>
+                  <input type="text" class="form-control" id="codigo" name="datos[codigo]" required >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="negrita">Nombre:</label>
+                  <input type="text" class="form-control" id="nombre" name="datos[nombre]" required >
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer bg-whitesmoke br">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardar">Guardar</a>
+          </div>
+      </div>
+    </div>
   </div>
-
-</div>
-
-</div>
 

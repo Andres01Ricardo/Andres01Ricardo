@@ -75,17 +75,42 @@ $(document).ready(function(){
 
 $("body").on("click touchstart",".finalizar",function(e){
 
-	var id=$(this).attr("id");
+	var idNomina=$(this).attr("id");
+  var idEmpresa=$(this).attr("idEmpresa");
 
-	var periodo=$(this).parents("tr").find("td").eq(2).html();
-
-	var empresa=$(this).parents("tr").find("td").eq(5).html();
-
-
-
+	var valor=$(this).parents("tr").find("td").eq(3).html();
+	// var empresa=$(this).parents("tr").find("td").eq(5).html();
 	$("[name='datos[idNomina]']").val(id); 
+  $("[name='datos[idEmpresa]']").val(idEmpresa); 
+	// $("#titulo").html(periodo+" / "+empresa)
+  $("#valorNomina").val(valor);
+  
+  e.preventDefault();
 
-	$("#titulo").html(periodo+" / "+empresa)
+        $.ajax({
+            url:URL+"functions/nomina/cargarcuentabancaria.php", 
+            type:"POST",
+            data: {"idEmpresa":idEmpresa},
+            dataType: "json",
+            }).done(function(msg){  
+              
+              if(msg.length!=0){
+
+                  console.log('aca');
+                  console.log(msg);
+                  var sHtml=""; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+                  })
+                  $("#cuentaContableTotal").html(sHtml);
+
+                  if(msg.length>1){
+                    $("#divCuentaContableTotal").removeClass('ocultar');
+                  }
+              }
+          }); 
+
+        
 
 })
 
@@ -93,119 +118,101 @@ $("body").on("click touchstart",".finalizar",function(e){
 
 $("body").on("click touchstart","#btnGuardar",function(e){
 
-    e.preventDefault();
-
-      if(true === $("#frmFinalizar").parsley().validate()){
-
+        e.preventDefault();
         Swal.fire({
-
           title: 'Está seguro?',
-
           text: 'Está a punto de finalizar la realización de esta nomina!',
-
           icon: 'warning', 
-
           showCancelButton: true,
-
           showLoaderOnConfirm: true,
-
           confirmButtonText: `Si, Continuar!`,
-
           cancelButtonText:'Cancelar',
-
           preConfirm: function(result) {
-
           return new Promise(function(resolve) {
-
-            var formu = document.getElementById("frmFinalizar");
-
-        
-
-            var data = new FormData(formu);
-
-            $.ajax({
-
-            url:URL+"functions/nomina/finalizarnomina.php", 
-
-            type:"POST", 
-
-            data: data,
-
-            contentType:false, 
-
-            processData:false, 
-
-            dataType: "json",
-
-            cache:false 
-
-            }).done(function(msg){  
-
-              if(msg.msg){
-
-                Swal.fire({
-
-                  icon: 'success',
-
-                  title: "Nomina finalizada!",
-
-                  text: 'con exito',
-
-                  closeOnConfirm: true,
-
-                }
-
-                ).then((result) => {
-
-                 location.reload();
-
-                })
-
-              }else{
-
-                 Swal.fire(
-
-                  'Algo ha salido mal!',
-
-                  'Verifique su conexión a internet',
-
-                  'error'
-
-                ).then((result) => {
-
-                  
-
-                })
-
-              }
-
             
-
+            $.ajax({
+            url:URL+"functions/nomina/finalizarnomina.php", 
+            type:"POST",
+            data: {"idNomina":idNomina},
+            dataType: "json",
+            }).done(function(msg){  
+              if(msg.msg){
+                Swal.fire({
+                  icon: 'success',
+                  title: "Nomina finalizada!",
+                  text: 'con exito',
+                  closeOnConfirm: true,
+                }
+                ).then((result) => {
+                 location.reload();
+                })
+              }else{
+                 Swal.fire(
+                  'Algo ha salido mal!',
+                  'Verifique su conexión a internet',
+                  'error'
+                ).then((result) => {
+                })
+              }
           });     
 
           });
 
         }
 
-        }).then((result) => {
+        })
+})
 
-          if (result.isConfirmed) {
-
-
-
-          } 
+//     e.preventDefault();
 
 
+//         Swal.fire({
+//           title: 'Está seguro?',
+//           text: 'Está a punto de finalizar la realización de esta nomina!',
+//           icon: 'warning', 
+//           showCancelButton: true,
+//           showLoaderOnConfirm: true,
+//           confirmButtonText: `Si, Continuar!`,
+//           cancelButtonText:'Cancelar',
+//           preConfirm: function(result) {
+//           return new Promise(function(resolve) {
+            
+//             $.ajax({
+//             url:URL+"functions/nomina/finalizarnomina.php", 
+//             type:"POST",
+//             data: {"idNomina":$},
+//             contentType:false, 
+//             processData:false, 
+//             dataType: "json",
+//             cache:false 
+//             }).done(function(msg){  
+//               if(msg.msg){
+//                 Swal.fire({
+//                   icon: 'success',
+//                   title: "Nomina finalizada!",
+//                   text: 'con exito',
+//                   closeOnConfirm: true,
+//                 }
+//                 ).then((result) => {
+//                  location.reload();
+//                 })
+//               }else{
+//                  Swal.fire(
+//                   'Algo ha salido mal!',
+//                   'Verifique su conexión a internet',
+//                   'error'
+//                 ).then((result) => {
+//                 })
+//               }
+//           });     
 
-         })
+//           });
 
- 
+//         }
 
-       
+//         })
 
-      }
-
-  })
+//   })
 
 
 

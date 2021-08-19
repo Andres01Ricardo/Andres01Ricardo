@@ -20,20 +20,20 @@ $idEliminar=(isset($_REQUEST['idEliminar'] ) ? $_REQUEST['idEliminar'] : "" );
 
 
 
-$oItem=new Data("cliente","idCliente",$idEliminar); 
+$oItem=new Data("tercero","idTercero",$idEliminar); 
 $oItem->eliminar(); 
 unset($oItem);
 
 
-$oLista=new Lista("cliente_empresa");
-$oLista->setFiltro("idCliente","=",$idEliminar);
+$oLista=new Lista("tercero_empresa");
+$oLista->setFiltro("idTercero","=",$idEliminar);
 $clientesEmpresa=$oLista->getLista();
 unset($oLista);
 
 
 if (!empty($clientesEmpresa)) {
 	foreach ($clientesEmpresa as $keym => $valuem) {
-	$oItem=new Data("cliente_empresa","idClienteEmpresa",$valuem["idClienteEmpresa"]);
+	$oItem=new Data("tercero_empresa","idTerceroEmpresa",$valuem["idTerceroEmpresa"]);
 	$oItem->eliminar();
 	unset($oItem);
 	}

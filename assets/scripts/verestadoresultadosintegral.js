@@ -45,14 +45,14 @@ $(document).ready(function(){
             {
             extend: 'pdf',
             customize: function(doc) {
-                doc.pageMargins = [ 10, 10, 10, 10 ]
+                doc.pageMargins = [ 10, 10, 15, 10 ]
             },
             pageSize: 'A3',
             text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 26px;"></i>',
             
             titleAttr: 'PDF',
 
-            title:'Juriscon--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n ESTADO RESULTADO INTEGRAL - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,  
+            title:'AS-Smartbuss           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n ESTADO RESULTADO INTEGRAL - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,  
           
                 },
             {
@@ -65,7 +65,7 @@ $(document).ready(function(){
             text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
             autoPrint: true,
             titleAttr: 'IMPRIMIR',
-            title:'<table style="font-size: 20px;font-family: "Arial";width: 100%;" class="table"><thead><tr><th style="float:left;">SmartBuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >ESTADO RESULTADOS INTEGRAL - '+tipo+'</th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead<tbody><tr></tr></tbody></table>',
+            title:'<table style="font-size: 20px;font-family: "Arial";width: 100%;" class="table"><thead><tr><th style="float:left;">AS-SmartBuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >ESTADO RESULTADOS INTEGRAL - '+tipo+'</th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead<tbody><tr></tr></tbody></table>',
 
             
 

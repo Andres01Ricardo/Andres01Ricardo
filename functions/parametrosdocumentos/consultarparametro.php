@@ -40,3 +40,6 @@ if(!isset($_SESSION)){ session_start(); }
 echo json_encode(array("parametro"=>$parametro));
 
 ?>
+
+
+ 

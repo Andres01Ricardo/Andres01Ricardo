@@ -12,6 +12,8 @@ nextinput++;
 // campo = '<input type="text" class="form-control" id="subcentros' + nextinput + '"&nbsp; name="subcentros[' + nextinput + '][nombre]"&nbsp; />';
 // $("#divSubcentros").append(campo);
 label=nextinput+1;
+campoS = '<div id="divCodigoSubcentros'+ nextinput +'"><label>Subcentro'+label+'</label><input type="text" class="form-control" id="codigoSubcentros' + nextinput + '"&nbsp; name="subcentros[' + nextinput + '][codigo]"&nbsp; /><br></div>';
+$("#divCodigoSubcentros").append(campoS);
 campo = '<div id="divNombreSubcentros'+ nextinput +'"><label>Subcentro'+label+'</label><input type="text" class="form-control" id="subcentros' + nextinput + '"&nbsp; name="subcentros[' + nextinput + '][nombre]"&nbsp; /><br></div>';
 $("#divSubcentros").append(campo);
 });
@@ -25,6 +27,7 @@ $("body").on("click touchstart",".eliminar",function(e){
     // $("#subcentros"+nextinput).remove();
     // nextinput--;
     $("#divNombreSubcentros"+nextinput).remove();
+    $("#divCodigoSubcentros"+nextinput).remove();
     nextinput--;
   }
 

@@ -10,72 +10,44 @@ $oNomina=new Nomina();
 
 
 if(!empty($_SESSION["idEmpresa"])){
-$aData["idEmpresa"]=$_SESSION["idEmpresa"];
+  $aData["idEmpresa"]=$_SESSION["idEmpresa"];
 }
 if(empty($_SESSION["idEmpresa"])){
 
   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
-
   $valUser=$oItem->getDatos(); 
-
   unset($oItem);  
-
-
 
   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
 
 }
 
-
-
-
 $aNomina=$oNomina->getNomina($aData);
 
 
-
-
 $meses[1]="Enero"; 
-
 $meses[2]="Febrero"; 
-
 $meses[3]="Marzo"; 
-
 $meses[4]="Abril"; 
-
 $meses[5]="Mayo"; 
-
 $meses[6]="Junio"; 
-
 $meses[7]="Julio"; 
-
 $meses[8]="Agosto"; 
-
 $meses[9]="Septiembre"; 
-
 $meses[10]="Octubre"; 
-
 $meses[11]="Noviembre"; 
-
 $meses[12]="Diciembre"; 
 
 ?>
 
 <section class="section">
-
     <ul class="breadcrumb breadcrumb-style ">
-
       <li class="breadcrumb-item">
-
         <a href="<?php echo $URL; ?>">
-
           <i class="fas fa-home"></i></a>
-
       </li>
-
       <li class="breadcrumb-item">Nomina</li>
-
       <li class="breadcrumb-item">Listar Nominas</li>
-
     </ul>
 
     <div class="section-body">
@@ -131,7 +103,7 @@ $meses[12]="Diciembre";
                           <?php foreach($aNomina as $index => $iItem){ 
 
                             $aEncript['cadena']=$iItem['idNomina'];
-
+                            $idNomina=$iItem['idNomina'];
                             $id=$oControl->encriptar($aEncript); 
 
                             $oLista=new Lista("nomina_empleado"); 
@@ -176,16 +148,23 @@ $meses[12]="Diciembre";
 
                                 
                                 <a href="<?php echo $URL; ?>vernomina/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Ver Nomina"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
-                                <?php if($_SESSION["idRol"]==2||$_SESSION["idRol"]==1){ ?>
+                                <?php if($_SESSION["idRol"]==2||$_SESSION["idRol"]==1){
+                                  if ($iItem["estado"]==1) {
+                                  
+                                 ?>
                                 <a href="<?php echo $URL; ?>editarnomina/<?php echo $id ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFCC4D;font-size: 15px;"></i></a>
-                                 <?php } ?>
+                                 <?php 
+
+                               }} ?>
                                 <a href="<?php echo $URL; ?>verdesprendibles/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="desprendibles de pago"><i class="fas fa-id-card" style="color: #8BE3FF;font-size: 20px;"></i></a>
 
-                                <?php if($_SESSION["idRol"]==2||$_SESSION["idRol"]==1){ ?>
+                                <?php if($_SESSION["idRol"]==2||$_SESSION["idRol"]==1){ 
+                                  if ($iItem["estado"]==1) {
+                                    ?>
 
-                                <a href="javascript:void(0)" id="<?php echo $id; ?>" data-toggle="modal" data-target="#modalNomina" data-toggle="tooltip" data-placement="top" title="Finalizar Nomina" class="finalizar"><i class="far fa-paper-plane" style="color: #6AFF9B;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" id="<?php echo $idNomina; ?>" idEmpresa="<?php echo $iItem['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Finalizar Nomina" class="finalizar" ><i class="far fa-paper-plane" style="color: #6AFF9B;font-size: 20px;"></i></a>
 
-                                <?php } ?>
+                                <?php }} ?>
                                 <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" class="nominaEliminar" value="<?php echo $iItem['idNomina']; ?>" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
 
                                 <!-- <a href="javascript:void(0)" id="btnCerrar" name="btnCerrar[<?php echo $index?>]" class="nominaCerrar" value="<?php echo $iItem['idNomina']; ?>" ><i class="fas fa-dollar-sign" style="color: #8BFFB0;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Cerrar nomina"  ></i></a> -->
@@ -224,7 +203,7 @@ $meses[12]="Diciembre";
 
         <div class="modal-header">
 
-          <h5 class="modal-title" id="myLargeModalLabel">Finalizar Planilla <span id="titulo" class="negrita"></span></h5>
+          <h5 class="modal-title" id="myLargeModalLabel">Finalizar Nómina <span id="titulo" class="negrita"></span></h5>
 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 
@@ -238,28 +217,30 @@ $meses[12]="Diciembre";
 
           <form enctype="multipart/form-data" id="frmFinalizar">
 
-            <input type="hidden" name="datos[idNomina]" id="datos[idNomina]" value="">
+            <input type="hidden" name="datos[idNomina]" id="idNomina" value="">
+            <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="">
 
             <div class="row">
 
-              <div class="col-md-12">
-
+              <div class="col-md-3">
                 <div class="form-group">
-
-                  <label class="negrita">Url Plantilla<span class="requerido">*</span>:</label>
-
-                  <input type="url" class="form-control" placeholder="Url Plantilla" name="datos[url]" id="datos[url]" required>
-
+                  <label class="negrita">Valor a pagar:<span class="requerido">*</span>:</label>
+                  <input type="text" class="form-control" placeholder="valor nómina" name="datos[valorNomina]" id="valorNomina" required readonly>
                 </div>
-
               </div>
-
+              <div class="col-md-3">
+                <div class="form-group">
+                  <div class="form-group">
+                    <label class="negrita">Pagar con:<span class="requerido">*</span>:</label>
+                    <select id="cuentaBancaria" name="datos[cuentaBancaria]" class="form-control">
+                      <option value="">Seleccione la cuenta</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
-
           </form>
-
         </div>
-
         <div class="modal-footer bg-whitesmoke br">
 
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

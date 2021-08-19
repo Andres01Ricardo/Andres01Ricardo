@@ -31,7 +31,7 @@ $aEmpresa=$oItem->getDatos();
 unset($oItem); 
 
 
-$oItem=new Data("proveedor","nit",$nitP); 
+$oItem=new Data("tercero","nit",$nitP); 
 
 $aProveedor=$oItem->getDatos(); 
 

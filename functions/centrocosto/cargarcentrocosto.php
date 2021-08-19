@@ -17,11 +17,12 @@ include_once($CLASS . "lista.php");
 
 date_default_timezone_set("America/Bogota"); 
 
-$id  = (isset($_REQUEST['id'] ) ? $_REQUEST['id'] : "" );
+$id  = (isset($_REQUEST['idEmpresa'] ) ? $_REQUEST['idEmpresa'] : "" );
 
 
 
 $oLista=new Lista("centro_costo");  
+$oLista->setFiltro("idEmpresa","=",$id);
 
 $aLista=$oLista->getLista(); 
 

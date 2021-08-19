@@ -23,7 +23,9 @@ $oControl=new Control();
 
 $oLista = new Lista('comprobante');
 $oLista->setFiltro("idEmpresa","=",$id);
-$oLista->setOrden("idComprobante","DESC");
+$oLista->setOrden("idTipo","DESC");
+$oLista->setOrden("comprobante","DESC");
+$oLista->setOrden("numero","DESC");
 
 $aComprobante=$oLista->getLista();
 
@@ -143,6 +145,8 @@ $idEmpresa=$id;
                                 <a href="<?php  echo $URL; ?>vercomprobante/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Items comprobante"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
 
                                 
+                                <?php if ($iComprobante["estado"]==null) {  ?>
+                                  
                                 
 
                                 <a href="<?php  echo $URL; ?>editarcomprobante/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Editar comprobante"><i class="fas fa-pencil-alt" style="color: #FFCC4D;font-size: 20px;"></i></a>
@@ -153,6 +157,9 @@ $idEmpresa=$id;
                                 <a href="<?php echo $URL.$iComprobante['archivo']; ?>" target="_blank"data-toggle="tooltip" data-placement="top" title="ver archivo"><i class="fas fa-paperclip" style="color: #A59D9D;font-size: 20px;"></i></a>
 
                                 <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" value="<?php echo $idEliminar; ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
+
+                                <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]"  value="<?php echo $idEliminar; ?>" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
+                              <?php } ?>
 
                             </tr>
 

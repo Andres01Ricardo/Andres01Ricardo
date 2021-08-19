@@ -1,0 +1,257 @@
+<?php 
+
+
+
+require_once("class/empresa.php"); 
+
+
+
+$oEmpresa=new Empresa(); 
+
+
+if($_SESSION["idRol"]==2){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  
+}else{
+  
+  $aEmpresas=$oEmpresa->getEmpresas();
+}
+
+
+
+
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Inventario</li>
+
+          <li class="breadcrumb-item">Crear productos y servicios</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+                    <?php if (empty($_SESSION['idEmpresa'])) { ?>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Empresa<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iEmpresa){ ?>
+
+                            <option value="<?php echo $iEmpresa["idEmpresa"]; ?>"><?php echo $iEmpresa["razonSocial"]; ?></option>
+
+                          <?php } ?>
+
+                        </select>
+
+                      </div>
+
+                    </div>
+                    <?php } if (!empty($_SESSION['idEmpresa'])) { ?>
+                      <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                    <?php } ?>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        
+                        <div><label class="negrita">Bien / Servicio<span class="requerido">*</span>:</label></div>
+                        <div class="form-check-inline">
+
+                            <label class="form-check-label" >
+
+                            <input class="form-check-input" type="radio" id="datos[bienServicio]" name="datos[bienServicio]" value="1" required>
+
+                            PRODUCTO</label>
+
+                          </div>
+
+                          <div class="form-check-inline">
+
+                            <label class="form-check-label" >
+
+                            <input class="form-check-input" type="radio" id="datos[bienServicio]" name="datos[bienServicio]" value="2" required>
+
+                            SERVICIO</label>
+
+                          </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Codigo<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[codigoProducto]" id="codigoProducto" required>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+
+                        <input type="text" class="form-control " name="datos[nombreProducto]" id="nombreProducto" required>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                   <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Cuenta contable compra:</label>
+                        <input type="text" class="form-control cuentaContable" name="item[0][cuentaContable]" id="item[0][cuentaContable]" >
+
+                        <input type="hidden" class="form-control idCuentaContable" name="item[0][idCuentaContable]" id="item[0][idCuentaContable]" >
+                        <span name="item[0][letreroCuentaContable]" id="item[0][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
+
+                      </div>
+
+                    </div>
+
+                
+                    <div class=" col-md-3 ">
+                      <label class="negrita d-block">Tipo documento compra:</label>
+                          <select class="form-control" name="datos[tipoDocumentoProductoCompra]" id="tipoDocumentoProducto" >
+                          </select>
+
+                    </div>
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Cuenta contable venta:</label>
+                        <input type="text" class="form-control cuentaContable" name="item[1][cuentaContable]" id="item[1][cuentaContable]" >
+                        <input type="hidden" class="form-control idCuentaContable" name="item[1][idCuentaContable]" id="item[1][idCuentaContable]" >
+                        <span name="item[1][letreroCuentaContable]" id="item[1][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
+
+                      </div>
+
+                    </div> 
+                    <div class=" col-md-3 ">
+                      <label class="negrita d-block">Tipo documento venta:</label>
+                          <select class="form-control" name="datos[tipoDocumentoProductoVenta]" id="tipoDocumentoProductoVenta" >
+                          </select>
+
+                    </div>
+                    
+
+                  </div>
+
+
+                  <div class="row">
+
+                    
+                    <div class="col-md-3">
+                      <div><label class="negrita">Asociar inventario<span class="requerido">*</span>:</label></div>
+                      <div class="form-check-inline">
+
+                            <label class="form-check-label" >
+
+                            <input class="form-check-input" type="radio" id="datos[inventario]" name="datos[inventario]" value="1" required>
+
+                            Si</label>
+
+                          </div>
+
+                          <div class="form-check-inline">
+
+                            <label class="form-check-label" >
+
+                            <input class="form-check-input" type="radio" id="datos[inventario]" name="datos[inventario]" value="2" required>
+
+                            No</label>
+
+                          </div>
+                    </div>
+                    <!-- <div class="col-md-3">
+                      <label class="negrita">Insumo/producto<span class="requerido">*</span>:</label>
+                      <select class="form-control" id="datos[idInventario]" name="datos[idInventario]">
+                        
+                      </select>
+                    </div> -->
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

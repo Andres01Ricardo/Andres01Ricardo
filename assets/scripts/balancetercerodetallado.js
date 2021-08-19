@@ -31,7 +31,7 @@ $(document).ready(function(){
             {
             extend: 'excelHtml5',
             footer: true,
-            title:'Juriscon--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n CUENTAS DETALLADO POR TERCEROS  \n DESDE:  '+desde+' HASTA: '+hasta,
+            title:'AS-Smartbuss           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n CUENTAS DETALLADO POR TERCEROS  \n DESDE:  '+desde+' HASTA: '+hasta,
             filename: 'CUENTAS DETALLADO POR TERCEROS',
             text:'<i class="fas fa-file-excel" style="color: #fff;font-size: 26px;"></i>',
             titleAttr: 'EXCEL',
@@ -65,14 +65,14 @@ $(document).ready(function(){
             {
             extend: 'pdf',
             customize: function(doc) {
-                doc.pageMargins = [ 10, 10, 10, 10 ]
+                doc.pageMargins = [ 10, 10, 15, 10 ]
             },
-            pageSize: 'A4',
+            pageSize: 'A3',
             text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 26px;"></i>',
             
             titleAttr: 'PDF',
 
-            title:'Juriscon--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n CUENTAS DETALLADO POR TERCEROS \n DESDE:  '+desde+' HASTA: '+hasta,  
+            title:'AS-Smartbuss           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n CUENTAS DETALLADO POR TERCEROS \n DESDE:  '+desde+' HASTA: '+hasta,  
           
                 },
             {
@@ -85,7 +85,7 @@ $(document).ready(function(){
             text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
             autoPrint: true,
             titleAttr: 'IMPRIMIR',
-            title:'<table class="table"><thead><tr><th style="float:left;">Juriscon</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >CUENTAS DETALLADO POR TERCEROS </th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead<tbody><tr></tr></tbody></table>',
+            title:'<table class="table"><thead><tr><th style="float:left;">AS-Smartbuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >CUENTAS DETALLADO POR TERCEROS </th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead<tbody><tr></tr></tbody></table>',
 
             
 

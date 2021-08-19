@@ -20,15 +20,20 @@ $oControl=new Control();
 $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
  
 
-$retencion = $datos['valorRetencion'];
-$retencionAdicional = $datos['retencion'];
+$retencion = str_replace(",", ".",$datos['valorRetencion']);
+$retencionAdicional = str_replace(",", ".",$datos['retencion']);
 
-// if (!empty($retencionAdicional)) {
-// 	$totalRetencion= $retencionAdicional + $retencion;
-// }if (empty($retencionAdicional)){
-// 	$totalRetencion = $retencion;
-// }
+if (!empty($retencionAdicional)) {
 
+	$totalRetencion= $retencionAdicional + $retencion;
+}if (empty($retencionAdicional)){
+    // str_replace(".", "", $datos["subtotal"])
+	$totalRetencion = $retencion;
+}
+
+
+
+str_replace("$", "", ); 
 
     $dDatos["tipoImpuesto"]='RETENCION';
     $dDatos["valor"]=$retencion;
@@ -99,13 +104,13 @@ unset($oItem);
 
 
 
-$oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
-    foreach($cDatos  as $key => $value){
-        $oItem->$key=$value; 
-    }
-    $oItem->guardar();
+// $oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
+//     foreach($cDatos  as $key => $value){
+//         $oItem->$key=$value; 
+//     }
+//     $oItem->guardar();
 
-    unset($oItem);
+//     unset($oItem);
 
 
 $oItem=new Data("empresa","idEmpresa",$datos["idEmpresa"]); 

@@ -43,7 +43,7 @@ $idEmpresa=$datos["idEmpresa"];
 
 $oLista=new Lista("parametros_documentos");
 $oLista->setFiltro("tipo","=",$datos["tipoDocumento"]);
-$oLista->setFiltro("idParametrosDocumentos","=",$datos["comprobante"]);
+$oLista->setFiltro("comprobante","=",$datos["comprobante"]);
 $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
 $aNumero=$oLista->getLista();
 unset($oLista);
@@ -74,7 +74,7 @@ $aDatos["fecha"]=$datos["fecha"];
 
 $aDatos["fechaRegistro"]=date('Y-m-d'); 
 
-$aDatos["usuarioRegistra"]=$_SESSION['idUsuario']; 
+$aDatos["usuarioRegistra"]='46'; 
 
 $aDatos["archivo"]=$sFoto; 
 
@@ -114,57 +114,6 @@ foreach ($itemsEliminar as $keyEL => $valueEL) {
 }
 
 
-
-// foreach ($item as $key => $value) {
-//     // $operacionNaturaleza="";
-
-//     $aItem["idComprobante"]=$idComprobante; 
-
-//     $aItem["idCuentaContable"]=$value["idCuentaContable"]; 
-
-//     $aItem["idCentroCosto"]=$value["idCentroCosto"];
-
-
-//     $aItem["idTercero"]=$value["idTercero"]; 
-//     $aItem["idCentroCosto"]=$value["idCentroCosto"]; 
-
-//     $aItem["descripcion"]=$value["descripcion"]; 
-
-//     $aItem["tipoTercero"]=$value["tipoTercero"]; 
-
-//     $aItem["idUsuarioRegistra"]=$_SESSION['idUsuario']; 
-
-
-//     if ($value["debito"] !="") {
-//         $aItem["saldoDebito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$value["debito"]))); 
-//         $aItem["saldoCredito"]=0;
-        
-//         $aItem["naturaleza"]='debito';  
-//     }
-//     if ($value["credito"] !="") {
-//         $aItem["saldoCredito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$value["credito"]))); 
-//         $aItem["saldoDebito"]=0;
-        
-//         $aItem["naturaleza"]='credito';
-//     }
-//     $operacionNaturaleza=$value["naturaleza"];
-// // $operacionNaturaleza='credito';
-
-//     // $valor=$aItem["valor"];
-
-//         $oItem=new Data("comprobante_items","idComprobanteItem"); 
-
-//         foreach($aItem  as $keycc => $valuecc){
-
-//             $oItem->$keycc=$valuecc; 
-
-//         }
-
-//         $oItem->guardar(); 
-
-//         unset($oItem);
-//     }
-
 foreach ($item as $key => $value) {
     $operacionNaturaleza="";
 
@@ -174,6 +123,7 @@ foreach ($item as $key => $value) {
 
     $aItem["idCentroCosto"]=$value["idCentroCosto"];
 
+    $aItem["idSubcentroCosto"]=$value["idSubcentroCosto"];
 
     $aItem["idTercero"]=$value["idTercero"]; 
 
@@ -187,13 +137,6 @@ foreach ($item as $key => $value) {
 
 
 
-
-
-
-     // $oItem=new Data("cuenta_contable","idCuentaContable",$value["idCuentaContable"]); 
-
-     //    $aCuentaContable=$oItem->getDatos(); 
-     //    unset($oItem);
     if ($value["debito"] !="") {
         $valor=$value["debito"];
     }
@@ -201,21 +144,8 @@ foreach ($item as $key => $value) {
         $valor=$value["credito"]; 
     }
 
-    //--------------------------------------------------------------------------------
     $valorN=floatval(str_replace(",", ".",str_replace("$", "", str_replace(".", "",$valor))));
-        if (substr($value["cuentaContable"], 0,4)=='1592' ) {
-            if ($valorN>0) {
-                $valorN=$valorN*(-1);
-            }
-        }
-        if (substr($value["cuentaContable"], 0,4)=='3610' || substr($value["cuentaContable"], 0,4)=='3710') {
-            if ($valorN<0) {
-                $valorN=$valorN*(-1);
-            }
-        }
 
-   
-    //---------------------------------------------------------------
 
     if ($value["debito"] !="") {
         $aItem["naturaleza"]='debito';  

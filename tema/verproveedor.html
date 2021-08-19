@@ -1,146 +1,292 @@
-<?php 
-$oControl=new Control(); 
-$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
-if($id==""){
-  echo '<script>window.history.back()</script>'; 
-}
-$decrip["cadena"]=$id; 
-$id=$oControl->desencriptar($decrip); 
-
-$oItem=new Data("proveedor","idProveedor",$id); 
-$aDatos=$oItem->getDatos(); 
-unset($oItem);
-
-$oItem=new Data("departamento","idDepartamento", $aDatos["idDepartamento"]); 
-$aDepartamento=$oItem->getDatos(); 
-unset($oItem); 
-
-$oItem=new Data("ciudad","idCiudad", $aDatos["idCiudad"]); 
-$aCiudad=$oItem->getDatos(); 
-unset($oItem); 
-
-$digito=$aDatos["digitoVerificador"]==""?"":"-".$aDatos["digitoVerificador"]; 
-
-
-$oLista=new Lista("proveedor_empresa"); 
-$oLista->setFiltro("idProveedor","=",$id); 
-$aLista=$oLista->getLista(); 
-unset($oItem);
-
-$oItem=new Data("usuario","idUsuario",$aDatos["idUsuarioRegistra"]); 
-$aUser=$oItem->getDatos(); 
-unset($oItem);
-?>
-<style type="text/css">
-  input[readonly]{
-    background-color: #FFFF !important;
-    text-transform: uppercase;
-  }
-</style>
-<section class="section">
-        <ul class="breadcrumb breadcrumb-style ">
-          <li class="breadcrumb-item">
-            <a href="<?php echo $URL; ?>">
-              <i class="fas fa-home"></i></a>
-          </li>
-          <li class="breadcrumb-item">Proveedores</li>
-          <li class="breadcrumb-item">Ver proveedor</li>
-        </ul>
-        <div class="section-body">
-          <div class="row">
-            <div class="col-md-12 col-lg-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Información General</h4>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label class="negrita">Usuario Registra:</label>
-                        <input type="text" class="form-control" value="<?php echo $aUser["nombreUsuario"]." ".$aUser["apellidoUsuario"]; ?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label class="negrita">Fecha Registro:</label>
-                        <input type="text" class="form-control" value="<?php echo $aDatos["fechaRegistro"]; ?>" readonly>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Tipo Persona:</label>
-                        <input type="text" class="form-control" value="<?php echo $aDatos["tipoPersona"]==1?'Persona Natural':'Persona Juridica'?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Nit:</label>
-                        <input type="text" class="form-control" value="<?php echo $aDatos["nit"].$digito; ?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Razon Social:</label>
-                        <input type="text" class="form-control" value="<?php echo $aDatos["razonSocial"]; ?>" readonly>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Email:</label>
-                        <input type="email" class="form-control" value="<?php echo $aDatos["email"]; ?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Telefono:</label>
-                        <input type="text" class="form-control " value="<?php echo $aDatos["telefono"]; ?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Ciudad:</label>
-                        <input type="text" class="form-control" value="<?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Dirección:</label>
-                        <input type="text" class="form-control" value="<?php echo $aDatos["direccion"]; ?>" readonly>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                  <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
-                  <div class="card-header">
-                    <h4>Empresas Asociadas</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <?php foreach($aLista as $index=> $iEmpresa){
-
-                        $oItem=new Data("empresa","idEmpresa",$iEmpresa["idEmpresa"]); 
-                        $aEmpresa=$oItem->getDatos(); 
-                        unset($oItem);
-                        $logo="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
-                        if($aEmpresa["logo"]!=""){
-                            $logo=$URL.$aEmpresa["logo"]; 
-                        }
-                       ?>
-                      <div class="col-md-12">
-                        <div class="form-group">
-                            <div class="tabla"><div class="columna foto-mini-empresa" style="background-image: url(<?php echo $logo; ?>)"></div><div class="columna" style="padding-left: 5px; width: 97%;"><?php echo $aEmpresa["razonSocial"]; ?></div></div>
-                      </div>
-                    </div>
-                  <?php } ?>
-                  </div>
-                </div>
-                <?php } ?>
-            </div>
-        </div>
-    </div>
-</section>
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("tercero","idTercero",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem);
+
+
+
+$oItem=new Data("departamento","idDepartamento", $aDatos["idDepartamento"]); 
+
+$aDepartamento=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("ciudad","idCiudad", $aDatos["idCiudad"]); 
+
+$aCiudad=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$digito=$aDatos["digitoVerificador"]==""?"":"-".$aDatos["digitoVerificador"]; 
+
+
+
+
+
+$oLista=new Lista("tercero_empresa"); 
+
+$oLista->setFiltro("idTercero","=",$id); 
+
+$aLista=$oLista->getLista(); 
+
+unset($oItem);
+
+
+
+$oItem=new Data("usuario","idUsuario",$aDatos["idUsuarioRegistra"]); 
+
+$aUser=$oItem->getDatos(); 
+
+unset($oItem);
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Proveedores</li>
+
+          <li class="breadcrumb-item">Ver proveedor</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Usuario Registra:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aUser["nombreUsuario"]." ".$aUser["apellidoUsuario"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Fecha Registro:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["fechaRegistro"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo Persona:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["tipoPersona"]==1?'Persona Natural':'Persona Juridica'?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Nit:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["nit"].$digito; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Razon Social:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["razonSocial"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Email:</label>
+
+                        <input type="email" class="form-control" value="<?php echo $aDatos["email"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono:</label>
+
+                        <input type="text" class="form-control " value="<?php echo $aDatos["telefono"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección:</label>
+
+                        <input type="text" class="form-control" value="<?php echo $aDatos["direccion"]; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+
+                  <div class="card-header">
+
+                    <h4>Empresas Asociadas</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <?php foreach($aLista as $index=> $iEmpresa){
+
+
+
+                        $oItem=new Data("empresa","idEmpresa",$iEmpresa["idEmpresa"]); 
+
+                        $aEmpresa=$oItem->getDatos(); 
+
+                        unset($oItem);
+
+                        $logo="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
+
+                        if($aEmpresa["logo"]!=""){
+
+                            $logo=$URL.$aEmpresa["logo"]; 
+
+                        }
+
+                       ?>
+
+                      <div class="col-md-12">
+
+                        <div class="form-group">
+
+                            <div class="tabla"><div class="columna foto-mini-empresa" style="background-image: url(<?php echo $logo; ?>)"></div><div class="columna" style="padding-left: 5px; width: 97%;"><?php echo $aEmpresa["razonSocial"]; ?></div></div>
+
+                      </div>
+
+                    </div>
+
+                  <?php } ?>
+
+                  </div>
+
+                </div>
+
+                <?php } ?>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+

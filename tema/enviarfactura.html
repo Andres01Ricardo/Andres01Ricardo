@@ -27,9 +27,6 @@ if($_SESSION["idRol"]==2){
   $aEmpresas=$oEmpresa->getEmpresas();
 }
 
-
-
-
 $oLista = new Lista('unidad');
 
 $oLista->setOrden("nombre","ASC");
@@ -37,9 +34,6 @@ $oLista->setOrden("nombre","ASC");
 $aUnidades=$oLista->getLista();
 
 unset($oLista);
-
-
-
 
 
 $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idEmpresa"])); 
@@ -62,7 +56,10 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
 <form enctype="multipart/form-data" id="frmGuardar">
 
-<?php if(!empty($_SESSION['idEmpresa'])){ ?>
+<?php if(!empty($_SESSION['idEmpresa'])){ 
+
+  $idEmpresa=$_SESSION["idEmpresa"];
+  ?>
 
 <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
 
@@ -191,13 +188,13 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                         <label class="negrita">Proveedor<span class="requerido">*</span>:</label>
 
-                        <select class="form-control select2 mayusculas" name="datos[idProveedor]" id="datos[idProveedor]" required>
+                        <select class="form-control select2 mayusculas" name="datos[idTercero]" id="datos[idTercero]" required>
 
                           <option value="">Seleccione una opción</option>
 
                           <?php if($_SESSION["idEmpresa"]!=""){ foreach($aProveedores as $iProveedor){ ?>
 
-                          <option value="<?php echo $iProveedor["idProveedor"]; ?>"><?php echo $iProveedor["nit"].'-'.$iProveedor["razonSocial"]; ?></option>
+                          <option value="<?php echo $iProveedor['idTercero']; ?>"><?php echo $iProveedor["nit"].'-'.$iProveedor["razonSocial"]; ?></option>
 
                         <?php } } ?>
 
@@ -293,11 +290,12 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                         <tbody>
 
-                            <tr>
-
-                              <td>1</td>
-
-                              <td><input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="Detalle">
+                            <tr class="filaItem">
+                              <td>1<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item[0][registrar]" numero='0'><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span></td>
+                              <td>
+                                
+                                
+                                <input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="Detalle">
 
                                 <input type="hidden" name="item[0][idProducto]" id="item[0][idProducto]" class="form-control idProducto" ></td>
 
@@ -548,6 +546,22 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                       </div>
 
+                      <div class="col-md-4 ocultar" id="divCuentaContableTotal">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Cuenta contable total a Pagar:</label>
+
+                          <select class="form-control" name="datos[cuentaContableTotal]" id="cuentaContableTotal">
+
+                            
+                        
+                          </select>
+
+                        </div>
+
+                      </div>
+
 
 
                     </div> 
@@ -572,8 +586,102 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 </section>
 
 </form>
+<?php if(!empty($_SESSION['idEmpresa'])){ 
 
+  $idEmpresa=$_SESSION["idEmpresa"];
 
+  $oItem=new Lista("parametros_documentos");
+  $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+  $aParametros=$oItem->getLista();
+  unset($oItem);
+}
+?>
+<div class="modal fade bd-example-modal-lg" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Parametrizar producto</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body ui-front">
+
+          <form enctype="multipart/form-data" id="frmGuardarProducto">
+
+            <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+            <div class="row">
+          <div class=" col-md-3 ">
+            <div class="form-group">
+              <label class="negrita d-block">Producto:</label>
+
+              <input type="text" class="form-control producto" name="item[0][productoCompra]"  required>
+              <input type="hidden" class="form-control idProducto"  name="item[0][idProductoCompra]" required>
+
+            </div>
+          </div>
+          
+          <div class=" col-md-3 ">
+            <div class="form-group">
+              <label class="negrita d-block">Cuenta contable:</label>
+              <input type="text" class="form-control cuentaContable" name="item[0][cuentaContableProductoCompra]"   required>
+              <input type="hidden" class="form-control idCuentaContable" name="item[0][idCuentaContableProductoCompra]"  required>
+              <input type="hidden" class="form-control naturaleza" name="item[0][naturalezaProductoCompra]"   required>
+            </div>
+          </div>
+          <div class=" col-md-3 ">
+             <label class="negrita d-block">Tipo documento:</label>
+            <!-- <div class="form-inline"> -->
+                <div class="form-group">
+                <select class="form-control" name="item[0][tipoDocumentoProductoCompra]" id="tipoDocumento" >
+                  <?php foreach ($aParametros as $keyT => $valueT) {
+                  $oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueT["tipo"]);
+                  $aTipo=$oItem->getDatos();?>
+                  <option value="<?php echo $valueT["idParametrosDocumentos"]; ?>"><?php echo $aTipo['letra'].'-'.$valueT["comprobante"].'-'.$valueT['descripcion'];?></option> 
+                <?php } ?>
+                </select>
+              </div>
+            <!-- </div> -->
+          </div>
+           <div class=" col-md-3  ocultar">
+            <div class="form-group">
+              
+                <input type="hidden" name="item[0][naturalezaNuevaProducto]" value="compra">
+            </div>
+          </div>
+          <?php 
+        // } 
+          ?>
+
+        </div>
+        
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardarProducto">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 

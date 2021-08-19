@@ -45,6 +45,9 @@ $aCliente=$oLista->getDatos();
 unset($oLista);
 
 
+$nombreImagen = "../../".$aEmpresa['logo'];
+$imagenBase64 = "data:image/png;base64," . base64_encode(file_get_contents($nombreImagen));
+
 ?>
 
 <html>
@@ -57,27 +60,43 @@ unset($oLista);
 	</head>
 	<body>
 		<div class="card" id="muestra" >
+			<div class="card-body">
 			<table style="width: 90%;max-width: 90%">
 			  <thead >
 			    <tr style="text-align: center; ">
-			      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+			      <th scope="col"><img src="<?php echo $imagenBase64;?>" width="70" height="70" alt="image" ></th>
 			      <th scope="col"><span> </span></th>
 			      <th scope="col"><?php echo $aEmpresa['razonSocial'] ?></th>
-			      <th scope="col" style="font-size: 20px;">Cotizacion</th>
+			      <th scope="col" style="font-size: 20px;"><?php echo $aCotizacionTotal['numeroCotizacion']; ?></th>
 			    </tr>
 			  </thead>
 			  <tbody>
-			    <tr style="text-align: center; ">
+			    
+
+			   <tr style="text-align: center;">
 			      <th scope="row"></th>
-			      <td><span>Telefono: </span></td>
-			   	  <td><?php echo $aEmpresa['telefono'] ?></td>
+			      <td></td>
+			   	  <td>NIT:  <?php echo $aEmpresa['nit'] ?></td>
 			   	  <td>Fecha: <?php echo $aCotizacionTotal['fechaRegistro'] ?></td>
 			    </tr>
-			   <tr style="text-align: center; ">
-			   	<th></th>
-			   	  <td><span>Direccion: </span></td>
-			   	  <td><?php echo $aEmpresa['direccion'] ?></td>
+			    <tr style="text-align: center;">
+			   	  <td scope="row" colspan="2"><span>Direccion:  <?php echo $aEmpresa['direccion'] ?> </span></td>
+			   	  <!-- <td ><?php echo $aEmpresa['direccion'] ?></td> -->
+			      <td></td>
 			   	  <td>Fecha venc.: <?php echo $aCotizacionTotal['fechaVencimientoCotizacion'] ?></td>
+
+			    </tr>
+			   <tr style="text-align: center;">
+			   		
+			      <td scope="row"><span>Telefono: </span></td>
+			   	  <td><?php echo $aEmpresa['telefono']; ?></td>
+			      <td><span>Email: </span> <?php echo $aEmpresa['email'] ?></td>
+			   	  <td><?php
+			   	  	if($aEmpresa['responsableIva']==1){
+			   	  		echo 'Responsable de IVA: SI';
+			   	  	}
+
+			   	   ?></td>
 			   </tr>
 			  </tbody>
 		</table>
@@ -106,7 +125,7 @@ unset($oLista);
 		</div>
 		<hr>
 		<br>
-			<table class="table-striped" cellpadding="14" id="muestra" style="width: 90%;max-width: 90%;font-size: 85%">
+			<table class="table-striped" cellpadding="14" id="muestra" style="width: 95%;max-width: 95%;font-size: 85%">
 			  <thead style="background-color: #87BFFE; color: white; ">
 			    <tr style="height: 30px;">
 			      <th scope="col">Detalle producto</th>
@@ -141,16 +160,38 @@ unset($oLista);
 			   </tr>
 			  </tbody>
 		</table>
+		<br>
 		<p style="text-align:justify;">Observaciones: <?php echo $aCotizacionTotal['observaciones'] ?></p>
+		</div>
+		<br>
+		<br><br><br><br>
+		<div class="card-footer">
+			<!-- <hr color="black" size=1 style="width:30%; float: left;">  -->
+			________________________________________<br>
+			<p>Firma Autorización</p>
+		</div>
 		</div>
 	</body>
 </html>
 
 <?php
-require_once "dompdf/autoload.inc.php";
 use Dompdf\Dompdf;
+use Dompdf\Options;
+require_once "dompdf/autoload.inc.php";
 
-$pdf = new Dompdf(array('enable_remote' => true));
+
+// $pdf = new Dompdf(array('enable_remote' => true));
+// $pdf->set_option('isRemoteEnabled', true);
+
+$pdfOptions = new Options();
+$pdfOptions->setIsRemoteEnabled(true);
+$pdf = new Dompdf($pdfOptions);
+// $options=new Options();
+// $options->set('isRemoteEnabled', TRUE);
+// $pdf = new Dompdf($options);
+// $pdf->setBasePath('http://smartbuss.co');
+
+
 
 $pdf->load_html(utf8_decode((utf8_encode(ob_get_clean()))));
 $pdf->render();

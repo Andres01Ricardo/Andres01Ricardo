@@ -31,7 +31,7 @@ $(document).ready(function(){
             {
             extend: 'excelHtml5',
             footer: true,
-            title:'Juriscon--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n BALANCE COMPROBACION - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,
+            title:'AS-Smartbuss           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n BALANCE COMPROBACION - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,
             filename: 'BALANCE COMPROBACION',
             text:'<i class="fas fa-file-excel" style="color: #fff;font-size: 26px;"></i>',
             titleAttr: 'EXCEL',
@@ -77,61 +77,40 @@ $(document).ready(function(){
             {
             extend: 'pdf',
             customize: function(doc) {
-                doc.pageMargins = [ 10, 10, 10, 10 ];
+                doc.pageMargins = [ 10, 10, 15, 10 ];
                 // doc.defaultStyle.font = 'Arial';
-                doc.defaultStyle.fontSize = 16;
+                // doc.defaultStyle.fontSize = 16;
+                // $(doc.document).css('width', '95%');
             },
             // columns: [ 0, 1, 2, 3,4,5,7,8,9,10,11,12 ],
             pageSize: 'A3',
            
-            text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 26px;"></i>',
+            text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 24px;"></i>',
             
             titleAttr: 'PDF',
 
-            title:'Juriscon--           '+empresa+'             '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n BALANCE COMPROBACION - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,  
+            title:'AS-Smartbuss--             '+empresa+'                '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n BALANCE COMPROBACION - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,  
           
                 },
             {
             extend: 'print',
-            
-            text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
-            autoPrint: true,
             customize: function ( win ) {
-                    // $(win.document.body).find( '.derecha' ).css( 'text-align', 'right' );
+                    $(win.document.body).find( '.derecha' ).css( 'text-align', 'right' );
                      $(win.document.body).find('td').css('font-size', '18pt');
                      $(win.document.body).find('th').css('font-size', '25pt');
                 },
+            text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
+            autoPrint: true,
             titleAttr: 'IMPRIMIR',
-            title:'<table style="font-size: 22px;font-family: "Arial";" class="table"><thead ><tr><th>Juriscon</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >BALANCE DE COMPROBACION - '+tipo+'</th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead></table>',
-            // customize: function ( win ) {
-            //         // $(win.document.body).find( '.derecha' ).css( 'text-align', 'right' );
-            //         // win.defaultStyle.font = 'Arial';
-            //         win.defaultStyle.fontSize = 16;
-            // },
-            
-
+            title:'<table style="font-size: 20px;font-family: "Arial";" class="table"><thead ><tr><th>AS-Smartbuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >BALANCE DE COMPROBACION - '+tipo+'</th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead></table>',
             }
+
+             
             
         ]
         
     });
-
-    //Creamos una fila en el head de la tabla y lo clonamos para cada columna
-    // $('#tablecomprobacion thead tr').clone(true).appendTo( '#tablecomprobacion thead' );
-
-    // $('#tablecomprobacion thead tr:eq(1) th').each( function (i) {
-    //     var title = $(this).text(); //es el nombre de la columna
-    //     $(this).html( '<input type="text"  class="form-control" style="heigth:25%;" />' );
- 
-    //     $( 'input', this ).on( 'keyup change', function () {
-    //         if ( table.column(i).search() !== this.value ) {
-    //             table
-    //                 .column(i)
-    //                 .search( this.value )
-    //                 .draw();
-    //         }
-    //     } );
-    // } );   
+  
 });
 
 $('[data-toggle="tooltip"]').tooltip();

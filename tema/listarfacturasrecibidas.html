@@ -14,7 +14,7 @@ $oControl=new Control();
 
 
 
-if($_SESSION["idRol"]==2){
+if(empty($_SESSION["idEmpresa"])){
 
   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
 
@@ -27,19 +27,23 @@ if($_SESSION["idRol"]==2){
   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
   $aFacturas=$oFactura->getFacturasRecibidas(array("ingresoPerfilEmpresa"=>$validarIngreso));
   
+  $oLista = new Lista('cuenta_bancaria');
+  $aCuentas=$oLista->getLista();
+  unset($oLista);  
 
-}else{
+}
+if(!empty($_SESSION["idEmpresa"])){
   
   $aFacturas=$oFactura->getFacturasRecibidas();
+  $oLista = new Lista('cuenta_bancaria');
+  $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+  $aCuentas=$oLista->getLista();
+  unset($oLista);  
 }
 
 
+// print_r($aFacturas);
 
-$oLista = new Lista('cuenta_bancaria');
-
-$aCuentas=$oLista->getLista();
-
-unset($oLista);
 
 
 ?>
@@ -66,7 +70,7 @@ unset($oLista);
 
           <div class="row">
 
-            <div class="col-md-12 col-lg-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
 
               <div class="card">
 
@@ -78,19 +82,19 @@ unset($oLista);
 
                 <div class="card-body">
 
-                  <div class="row">
+                  <div class="row"  style="padding-left: 5px;padding-right: 8px;" >
 
-                    <div class="col-md-12 col-lg-12 table-responsive">
+                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 table-responsive" style="margin-left: 5px;">
 
-                      <table class="table table-striped mayusculas" style="font-size: 14px;" id="tableFacturas">
+                      <table class="table table-striped mayusculas" style="font-size:75%"  id="tableFacturas">
 
                         <thead>
 
                           <tr>
 
-                            <th class="text-center">#</th>
+                            <!-- <th class="text-center" style="width:4px;">#</th> -->
 
-                            <th>Fecha registro</th>
+                            <th style="font-size: 75%; width: 3%;">Fecha registro</th>
 
                             <th>Empresa</th>
 
@@ -98,15 +102,19 @@ unset($oLista);
 
                             <th>N° Factura</th>
 
+                            <th>Fecha factura</th>
+
                             <th>Fecha Pago</th>
 
                             <th>Valor</th>
                             
-                            <th>Estado</th>
+                            <th style="font-size:80%">Estado</th>
 
                             <th>Saldo</th>
 
                             <th>Acciones</th>
+
+                            <th class="ocultar">ID EMPRESA</th>
 
                           </tr>
 
@@ -126,15 +134,17 @@ unset($oLista);
 
                             <tr>
 
-                              <td><?php echo $index+1; ?></td>
+                              <!-- <td style="width:1px;"><?php echo $index+1; ?></td> -->
 
-                              <td><?php echo $iFactura["fechaRegistro"]; ?></td>
+                              <td style="font-size: 75%; width: 3%;"><?php echo $iFactura["fechaRegistro"]; ?></td>
 
                               <td><?php echo $iFactura["empresa"]; ?></td>
 
                               <td><?php echo $iFactura["razonSocial"]; ?></td>
 
                               <td><?php echo $iFactura["nroFactura"]; ?></td>
+
+                              <td><?php echo $iFactura["fechaRecibido"]; ?></td>
 
                               <td><?php echo $iFactura["fechaPago"]; ?></td>
 
@@ -147,31 +157,32 @@ unset($oLista);
                                 <div>
                                   <!-- <form enctype="multipart/form-data" id="frmEliminar"> -->
                                     <a href="<?php  echo $URL; ?>verfacturacompra/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Ver factura"><i class="far fa-eye" style="color: #0B08FF;font-size: 15px;"></i></a>
-                                    <a href="<?php echo $URL; ?>editarfacturacompra/<?php echo $id ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFFC49;font-size: 15px;"></i></a>
+                                    <a href="<?php echo $URL; ?>editarfacturacompra/<?php echo $id ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #942E2E;font-size: 12px;"></i></a>
 
                                     <?php if($iFactura["estado"]==1){ ?>
 
-                                    <a href="<?php echo $URL; ?>gestionfacturacompra/<?php echo $id; ?>"  data-toggle="tooltip" title="Completar gestion" data-placement="top" ><i class="fas fa-money-bill-alt" style="color: #65E572;font-size: 15px;"></i></a>
+                                    <a href="<?php echo $URL; ?>gestionfacturacompra/<?php echo $id; ?>"  data-toggle="tooltip" title="Completar gestion" data-placement="top" ><i class="fas fa-money-bill-alt" style="color: #65E572;font-size: 12px;"></i></a>
 
                                     <?php } ?>
 
                                     <?php if($iFactura["estado"]==2 or $iFactura["estado"]==4){ ?>
 
-                                    <a href="javascript:void(0)" id="<?php echo $iFactura['idFacturaCompra']; ?>" class="comprobante"  data-toggle="modal" data-target="#modal" ><i class="fas fa-donate" style="color: #65E572;font-size: 15px;" data-toggle="tooltip" title="Marcar pagada" data-placement="top" ></i></a>
+                                    <a href="javascript:void(0)" id="<?php echo $iFactura['idFacturaCompra']; ?>" class="comprobante"  data-toggle="modal" data-target="#modal" ><i class="fas fa-donate" style="color: #65E572;font-size: 12px;" data-toggle="tooltip" title="Marcar pagada" data-placement="top" ></i></a>
 
                                     <?php } ?>
 
-                                    <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 15px;"></i></a>
-                                    <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 15px;" data-toggle="tooltip" data-placement="top" title="Eliminar"></i></a>
+                                    <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 12px;"></i></a>
+                                    <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 12px;" data-toggle="tooltip" data-placement="top" title="Eliminar"></i></a>
                                     
                                     <input type="hidden" name="idFacturaCompraEliminar[idFacturaCompraEliminar]" id="idFacturaCompraEliminar[<?php echo $index?>][idFacturaCompraEliminar]" class="ocultar" value="<?php echo $iFactura['idFacturaCompra']; ?>">
 
                                     <?php if($iFactura["estado"]==1 or $iFactura["estado"]==2){ ?>
-                                  <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
+                                  <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 12px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
                                   <?php } ?>
                                   <!-- </form> -->
                                 </div>
                               </td>
+                              <td class="ocultar"><?php echo $iFactura["idEmpresa"]; ?></td>
                             </tr>
 
                           <?php } ?>
@@ -228,7 +239,7 @@ unset($oLista);
 
                   <label class="negrita">Nro Factura:</label>
 
-                  <input type="text" class="form-control" id="nroFactura" name="datos[numeroFactura]" required>
+                  <input type="text" class="form-control" id="nroFactura" name="datos[numeroFactura]" required readonly>
 
                 </div>
 
@@ -240,7 +251,7 @@ unset($oLista);
 
                   <label class="negrita">Proveedor:</label>
 
-                  <input type="text" class="form-control" id="proveedor" name="datos[proveedor]"  required>
+                  <input type="text" class="form-control" id="proveedor" name="datos[proveedor]"  required readonly>
 
                 </div>
 
@@ -252,7 +263,7 @@ unset($oLista);
 
                   <label class="negrita">Empresa:</label>
 
-                  <input type="text" class="form-control" id="empresa" required>
+                  <input type="text" class="form-control" id="empresa" required readonly>
 
                 </div>
 
@@ -315,21 +326,27 @@ unset($oLista);
                 
               </div>
               <div class="col-md-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="datos[radioPago]" id="radioPagoTotal" value="1" checked>
+                  <label class="form-check-label" for="radioPagoTotal" >
+                    Pago total
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="datos[radioPago]" value="2" id="radioAbono" >
+                  <label class="form-check-label" for="radioAbono">
+                    Abono
+                  </label>
+                </div>
+              </div>
 
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="datos[radioPago]" id="radioPagoTotal" value="1" checked>
-                          <label class="form-check-label" for="radioPagoTotal" >
-                            Pago total
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="datos[radioPago]" value="2" id="radioAbono" >
-                          <label class="form-check-label" for="radioAbono">
-                            Abono
-                          </label>
-                        </div>
-
-                      </div>
+              <div class="col-md-3 ocultar" id="divCuentaContableTotal">
+                <div class="form-group">
+                  <label class="negrita">Cuenta contable total a Pagar:</label>
+                  <select class="form-control" name="datos[cuentaContableTotal]" id="cuentaContableTotal">
+                  </select>
+                </div>
+              </div>
 
             </div>
 

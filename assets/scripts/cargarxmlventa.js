@@ -397,19 +397,7 @@ $('[data-toggle="tooltip"]').tooltip();
 
 cargarProducto=function(){
 
-  // var idB=$("[name='datos[tipoCompraB]']");
-  // var idS=$("[name='datos[tipoCompraS]']");
-  // var id=0;
-  //   if( idB.is(':checked') && idS.is(':checked') ){
-  //       // Hacer algo si el checkbox ha sido seleccionado
-  //       id=3;
-  //   } else if( idB.is(':checked') ){
-  //       // Hacer algo si el checkbox ha sido deseleccionado
-  //       id=1;
-  //   }else if( idS.is(':checked') ){
-  //       // Hacer algo si el checkbox ha sido deseleccionado
-  //       id=2;
-  //   }
+
   var id=3;
     // console.log(idB,idS, $("[name='datos[idEmpresa]'").val());
     if(id!=""){
@@ -430,7 +418,7 @@ cargarProducto=function(){
 
         type:"POST", 
 
-        data: {"tipo":id}, 
+        data: {"tipo":id,"idEmpresa":$("#idEmpresa").val()}, 
 
         dataType: "json",
 

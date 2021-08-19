@@ -1,0 +1,302 @@
+<?php 
+
+
+// $oLista=new Lista("empresa");
+// $aEmpresas=$oLista->getLista();
+// unset($oLista);  
+
+require_once("class/empresa.php");
+
+
+//$oLista = new Lista('cuenta_contable');
+
+//$aDatos=$oLista->getLista();
+
+// $oLista=new Lista("empresa");
+// $aEmpresas=$oLista->getLista();
+// unset($oLista);  
+
+$validarIngreso=1; 
+$oEmpresa=new Empresa(); 
+if($_SESSION["idRol"]==5){
+
+  $aEmpresas=$oEmpresa->getEmpresasExterno();
+}
+
+if($_SESSION["idRol"]!=5 ){
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  
+
+}
+
+?>
+<style type="text/css">
+  .picker__box{
+       background-color: #0000;
+}
+</style>
+<div class="card card-body">
+  
+  <h3>TERCERO DETALLADO POR CUENTA POR CENTRO DE COSTOS</h3>
+  <div class="row">
+    <div class="col-md-3">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" >FILTRAR</button>
+      
+    </div>
+  </div>
+</div>
+  <hr>
+
+
+
+
+
+<div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">ESCOJA LOS FILTROS</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close"> -->
+        <!--   <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="balancecentrocosto">
+          <div class="form-group">
+            <?php if(empty($_SESSION['idEmpresa'])){ ?>
+                <div class="form-group">
+                  <label>EMPRESA</label>
+                    <select class=" form-control" name="empresa" id="empresa" required>
+                      <option value="">Seleccione la empresa</option>
+                      <?php foreach($aEmpresas as $index => $iEmpresa){ ?>
+                      <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+                      <?php } ?>
+                    </select>
+                </div>
+                <?php }if(!empty($_SESSION['idEmpresa'])){ ?>
+                <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                <?php } ?>
+          </div>
+          <div class="form-group">
+            <label>Rango de cuentas</label>
+            <div class="row align-items-center">
+              <div class="col-2">
+                <label class="negrita">DESDE: </label>
+              </div>
+
+              <div class="col-4">
+         
+                <input type="text" class="form-control cuentaContable" name="cuentaPrimera" id="cuentaPrimera"  >
+                
+              </div>
+              <div class="col-2">
+                <label class="negrita">HASTA: </label>
+              </div>
+              <div class="col-md-4">
+                <input type="text" class="form-control cuentaContable" name="cuentaSegunda" id="cuentaSegunda"  >
+              </div>
+            </div> 
+          </div>
+
+          <div class="form-group">
+            <label>Rango de terceros</label>
+            <div class="row align-items-center">
+              <div class="col-md-2">
+                <label class="negrita">DESDE: </label>
+              </div>
+
+              <div class="col-4">
+         
+                <input type="text" class="form-control terceros" name="terceroPrimero" id="terceroPrimero"  >
+                
+              </div>
+              <div class="col-2">
+                <label class="negrita">HASTA: </label>
+              </div>
+              <div class="col-4">
+                <input type="text" class="form-control terceros" name="terceroSegundo" id="terceroSegundo"  >
+              </div>
+            </div>   
+          </div>
+
+          <div class="form-group">
+            <label>Rango de centro de costos</label>
+            <div class="align-items-center row">
+              <div class="col-md-2">
+                <label class="negrita">DESDE: </label>
+              </div>
+
+              <div class="col-md-4">
+         
+                <input type="text" class="form-control centroCosto" name="centroCostoPrimero" id="centroCostoPrimero"  >
+                
+              </div>
+              <div class="col-md-2">
+                <label class="negrita">HASTA: </label>
+              </div>
+              <div class="col-md-4">
+                <input type="text" class="form-control centroCosto" name="centroCostoSegundo" id="centroCostoSegundo"  >
+              </div>
+            </div>   
+          </div>
+
+
+          <div class="form-row align-items-center">
+            <div class="col-auto my-1">
+              <label class="negrita">DESDE: </label>
+            </div>
+
+            <div class="col-auto my-1">
+       
+              <input type="date" class="form-control" name="desde" id="desde"  required>
+              
+            </div>
+            <div class="col-auto my-1">
+              <label class="negrita">HASTA: </label>
+            </div>
+            <div class="col-auto my-1">
+              <input type="date" class="form-control" name="hasta" id="hasta"  required>
+            </div>
+          </div>
+
+        
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <button type="submit" class="btn btn-info" id="btnFiltrar">FILTRAR</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">ESCOJA LOS FILTROS</h3><br>
+            <form method="POST" action="balancetercerodetallado">
+              <div class="swal-content"> -->
+                <!-- <?php if(empty($_SESSION['idEmpresa'])){ ?>
+                <label>EMPRESA</label>
+                <select class=" form-control" name="empresa" id="empresa" required>
+                  <option value="">Seleccione la empresa</option>
+                  <?php foreach($aEmpresas as $index => $iEmpresa){ ?>
+                  <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+                  <?php } ?>
+                </select>
+                <?php }if(!empty($_SESSION['idEmpresa'])){ ?>
+                <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                <?php } ?> -->
+     
+     
+           <!-- <div class="form-group">
+            <label>Rango de cuentas</label>
+            <div class="form-row align-items-center">
+              <div class="col-auto my-1">
+                <label class="negrita">DESDE: </label>
+              </div>
+
+              <div class="col-auto my-1">
+         
+                <input type="text" class="form-control cuentaContable" name="cuentaPrimera" id="cuentaPrimera"  >
+                
+              </div>
+              <div class="col-auto my-1">
+                <label class="negrita">HASTA: </label>
+              </div>
+              <div class="col-auto my-1">
+                <input type="text" class="form-control cuentaContable" name="cuentaSegunda" id="cuentaSegunda"  >
+              </div>
+            </div>   
+          </div>    -->
+         
+     
+
+    <!-- <div class="form-group">
+      <label>Rango de terceros</label>
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <label class="negrita">DESDE: </label>
+        </div>
+
+        <div class="col-auto my-1">
+   
+          <input type="text" class="form-control terceros" name="terceroPrimero" id="terceroPrimero"  >
+          
+        </div>
+        <div class="col-auto my-1">
+          <label class="negrita">HASTA: </label>
+        </div>
+        <div class="col-auto my-1">
+          <input type="text" class="form-control terceros" name="terceroSegundo" id="terceroSegundo"  >
+        </div>
+      </div>   
+    </div> --> 
+
+
+    <!-- <div class="form-group">
+      <label>Rango de centro de costos</label>
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <label class="negrita">DESDE: </label>
+        </div>
+
+        <div class="col-auto my-1">
+   
+          <input type="text" class="form-control centroCosto" name="centroCostoPrimero" id="centroCostoPrimero"  >
+          
+        </div>
+        <div class="col-auto my-1">
+          <label class="negrita">HASTA: </label>
+        </div>
+        <div class="col-auto my-1">
+          <input type="text" class="form-control centroCosto" name="centroCostoSegundo" id="centroCostoSegundo"  >
+        </div>
+      </div>   
+    </div>    -->
+         
+                  <br>
+<!-- 
+    <div class="form-row align-items-center">
+      <div class="col-auto my-1">
+        <label class="negrita">DESDE: </label>
+      </div>
+
+      <div class="col-auto my-1">
+ 
+        <input type="date" class="form-control" name="desde" id="desde"  required>
+        
+      </div>
+      <div class="col-auto my-1">
+        <label class="negrita">HASTA: </label>
+      </div>
+      <div class="col-auto my-1">
+        <input type="date" class="form-control" name="hasta" id="hasta"  required>
+      </div>
+    </div> -->
+     <!--    </div>
+        <br><br>
+        <div class="swal-footer">
+          <button type="submit" class="btn btn-info" id="btnFiltrar">FILTRAR</button>
+        </div>
+      </form>
+  </div>
+</div> -->
+
+
+
+
+  

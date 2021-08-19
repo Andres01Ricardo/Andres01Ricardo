@@ -64,101 +64,47 @@ $(document).ready(function() {
 
 
 $("body").on("click touchstart","#btnEliminar",function(e){
-
     e.preventDefault();
-
       var idEliminar=$(this).attr("value");
-      
-
-    // alert(idEliminar);
-      
-
         Swal.fire({
-
         title: '¿Está seguro?',
-
         text: 'Está a punto de eliminar esta cuenta contable!',
-
         icon: 'warning', 
-
         showCancelButton: true,
-
         showLoaderOnConfirm: true,
-
         confirmButtonText: `Si, Eliminar!`,
-
         cancelButtonText:'Cancelar',
-
         preConfirm: function(result) {
-
           return new Promise(function(resolve) {
-
-            // var formu = document.getElementById("frmEliminar");
-
-      
-
-            // var data = new FormData(formu);
-
             $.ajax({
-
             url:URL+"functions/cuentascontables/eliminarcuentacontable.php", 
-
             type:"POST", 
-
             data:  {"idEliminar":idEliminar},
-
             dataType: "json"
-
-
             }).done(function(msg){  
-
               if(msg.msg){
-
                 Swal.fire(
-
                  {icon: 'success',
-
                   title: 'Cuenta contable eliminada!',
-
                   text: 'con exito',
-
                   closeOnConfirm: true,
-
                 }
-
                 ).then((result) => {
-
                  location.reload(); 
-
                 })
-
               }else{
-
                  Swal.fire(
-
                   'Algo ha salido mal!',
-
                   'Verifique su conexión a internet',
-
                   'error'
-
                 ).then((result) => {
-
-                  
-
                 })
-
               }
-
-            
-
+            });
           });
-
-          });
-
         }
-
       })
-      // }
-
   })
+
+
+

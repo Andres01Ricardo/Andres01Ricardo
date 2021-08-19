@@ -26,7 +26,7 @@ $item  = (isset($_REQUEST['item'] ) ? $_REQUEST['item'] : "" );
 
 
 
-$oItem=new Data("proveedor","nit",$datos["nit"]); 
+$oItem=new Data("tercero","nit",$datos["nit"]); 
 
 $aValidate=$oItem->getDatos(); 
 
@@ -122,9 +122,16 @@ if(empty($aValidate)){
 
     $aDatos["periodoPago"]=30;
 
+    // $aDatos["tipoTercero"]=2;
 
+    if ($datos["checkCliente"]==1) {
+        $aDatos["tipoTercero"]=4; 
+    }
+    if ($datos["checkCliente"]!=1) {
+        $aDatos["tipoTercero"]=2; 
+    }
 
-    $oItem=new Data("proveedor","idProveedor"); 
+    $oItem=new Data("tercero","idTercero"); 
 
     foreach($aDatos  as $key => $value){
 
@@ -134,7 +141,7 @@ if(empty($aValidate)){
 
     $oItem->guardar(); 
 
-    $idProveedor=$oItem->ultimoId(); 
+    $idTercero=$oItem->ultimoId(); 
 
     unset($oItem);
 
@@ -144,9 +151,9 @@ if(empty($aValidate)){
 
         if($value["estado"]==1){
 
-        $oItem=new Data("proveedor_empresa","idProveedorEmpresa"); 
+        $oItem=new Data("tercero_empresa","idTerceroEmpresa"); 
 
-        $oItem->idProveedor=$idProveedor; 
+        $oItem->idTercero=$idTercero; 
 
         $oItem->idEmpresa=$value["idEmpresa"]; 
 

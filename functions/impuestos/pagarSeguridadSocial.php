@@ -20,14 +20,14 @@ $oControl=new Control();
 $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
  
 
-$seguridadSocial = $datos['valorSeguridadSocial'];
-$retencionseguridadSocial = $datos['seguridadSocial'];
+$seguridadSocial = str_replace(",", ".",$datos['valorSeguridadSocial']);
+$seguridadSocialAdicional = str_replace(",", ".",$datos['seguridadSocial']);
 
-// if (!empty($retencionAdicional)) {
-// 	$totalRetencion= $retencionAdicional + $retencion;
-// }if (empty($retencionAdicional)){
-// 	$totalRetencion = $retencion;
-// }
+if (!empty($seguridadSocialAdicional)) {
+	$totalSeguridadSocial= $seguridadSocialAdicional + $seguridadSocial;
+}if (empty($seguridadSocialAdicional)){
+	$totalSeguridadSocial = $seguridadSocial;
+}
 
 
     $dDatos["tipoImpuesto"]='SEGURIDADSOCIAL';
@@ -48,7 +48,7 @@ $retencionseguridadSocial = $datos['seguridadSocial'];
     $oItem->guardar(); 
     unset($oItem);
 
-$totalSeguridadSocial=0;
+// $totalSeguridadSocial=0;
 if (!empty($datos['sancionesSeguridadSocial'])) {
     $totalSeguridadSocial = $totalSeguridadSocial +  $datos['sancionesSeguridadSocial'];
 }
@@ -77,35 +77,27 @@ $bDatos["saldoAnterior"]=$saldoActual;
 $bDatos["saldoActual"]=$nuevoSaldo;
 $bDatos["descripcionMovimiento"]='pago de seguridad social'; 
 
-// $oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
-//     foreach($bDatos  as $key => $value){
-//         $oItem->$key=$value; 
-//     }
-//     $oItem->guardar();
+$oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
+    foreach($bDatos  as $key => $value){
+        $oItem->$key=$value; 
+    }
+    $oItem->guardar();
 
-//     unset($oItem);
-
-
-
-// $oItem=new Data("cuenta_bancaria","idCuentaBancaria",$datos["cuentaBancaria"]); 
-
-// $oItem->saldoActual=$nuevoSaldo; 
-
-// $oItem->guardar(); 
-
-// unset($oItem);
+    unset($oItem);
 
 
 
+$oItem=new Data("cuenta_bancaria","idCuentaBancaria",$datos["cuentaBancaria"]); 
+
+$oItem->saldoActual=$nuevoSaldo; 
+
+$oItem->guardar(); 
+
+unset($oItem);
 
 
-// $oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
-//     foreach($cDatos  as $key => $value){
-//         $oItem->$key=$value; 
-//     }
-//     $oItem->guardar();
 
-//     unset($oItem);
+
 
 
 $oItem=new Data("empresa","idEmpresa",$datos["idEmpresa"]); 

@@ -279,9 +279,28 @@ unset($oLista);
 
                   </div>
 
+                  
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>¿Desea registrar el proveedor como cliente?</label>
+                    </div>
                   </div>
-
-                  <?php if($_SESSION["idRol"]!=3){?>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <div class="form-group">
+                              <input  type="checkbox" name="datos[checkCliente]" id="datos[checkCliente" value="1">
+                              <label class="form-check-label" for="defaultCheck1">CLIENTE</label>
+                            </div>
+                    </div>
+                    <!-- <div class="col-md-2">
+                      <div class="form-group">
+                              <input class="form-check-input menu" type="checkbox" name="datos[checkProveedor]" id="datos[checkProveedor]" value="1">
+                              <label class="form-check-label" for="defaultCheck1">PROVEEDOR</label>
+                            </div>
+                    </div> -->
+                  </div>
+                </div>  
+                  <?php if(empty($_SESSION["idEmpresa"]) ) {?>
 
                   <div class="card-header">
 
@@ -336,6 +355,7 @@ unset($oLista);
                   <?php } ?>
 
                   </div>
+                  
 
                 </div>
 

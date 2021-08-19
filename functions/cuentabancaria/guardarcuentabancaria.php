@@ -30,7 +30,7 @@ $datos["idUsuarioRegistro"]=$_SESSION["idUsuario"];
 
 $datos["fechaRegistro"]=date("Y-m-d H:i:s"); 
 
-$datos["saldoActual"]=str_replace("$", "", str_replace(",", "", $datos["saldoActual"])); 
+$datos["saldoActual"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "", $datos["saldoActual"]))); 
 
 $datos["estado"]=1; 
 

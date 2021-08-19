@@ -520,7 +520,6 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 
 	    $aBalanceComprobacion=$this->ejecutarSql($sql); 
-
 	    return $aBalanceComprobacion; 
 
 	}
@@ -1794,11 +1793,11 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		if(!isset($_SESSION)){ session_start(); }
 		if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2 || $_SESSION["idRol"]==5){
-			$condicion=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
 		}
 		
 		if($_SESSION["idRol"]==3){
-			$condicion=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
 		}
 		if($aDatos["desde"]!=""){ 
 
@@ -1852,15 +1851,15 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 
 
-		$condicion=""; 
-
+		// $condicion=""; 
+		$condicion="AND ccm.idComprobante !=0"; 
 		if(!isset($_SESSION)){ session_start(); }
 		if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2 || $_SESSION["idRol"]==5){
-			$condicion=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
 		}
 		
 		if($_SESSION["idRol"]==3){
-			$condicion=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
 		}
 		if($aDatos["desde"]!=""){ 
 
@@ -1907,46 +1906,33 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		if(!isset($_SESSION)){ session_start(); }
 		if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2 || $_SESSION["idRol"]==5){
-			$condicion=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
 		}
-		
 		if($_SESSION["idRol"]==3){
-			$condicion=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
 		}
 		if($aDatos["desde"]!=""){ 
-
 			$condicion.=" AND ccm.fecha>='".$aDatos["desde"]."'";
-
 		}
 		if($aDatos["hasta"]!=""){ 
-
 			$condicion.=" AND ccm.fecha <='".$aDatos["hasta"]."'";
-
 		}
 		if($aDatos["cuenta"]!=""){ 
-
 			$condicion.=" AND substring(cc.codigoCuenta,1,10)='".$aDatos["cuenta"]."'";
-
 		}
 		if($aDatos["idTercero"]!=""){ 
-
 			$condicion.="  AND ccm.idTercero='".$aDatos["idTercero"]."'";
-
 		}
 		if($aDatos["tipoTercero"]!=""){ 
-
 			$condicion.="  AND ccm.tipoTercero='".$aDatos["tipoTercero"]."'";
-
 		}
-
-		
 
 		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante,ccm.base,ccm.descripcion
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
 			WHERE 0=0  ".$condicion."
-			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idComprobante
+			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idComprobante,ccm.descripcion,ccm.idTercero
 			ORDER BY cc.codigoCuenta ASC,ccm.fecha ASC";
 
 
@@ -1966,11 +1952,11 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		if(!isset($_SESSION)){ session_start(); }
 		if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2 || $_SESSION["idRol"]==5){
-			$condicion=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
 		}
 		
 		if($_SESSION["idRol"]==3){
-			$condicion=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
+			$condicion.=" AND cc.idEmpresa=".$_SESSION["idEmpresa"]; 
 		}
 		// if($aDatos["desde"]!=""){ 
 
@@ -2015,6 +2001,189 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 	}
 
 
+
+
+
+
+
+
+
+
+	public function getCentroCostoTC($aDatos=array()){
+
+
+		$condicion=""; 
+
+		if(!isset($_SESSION)){ session_start(); }
+		
+
+		if($aDatos["idEmpresa"]!=""){ 
+			$condicion.=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		
+		if($aDatos["desde"]!=""){ 
+			$condicion.=" AND ci.fecha >='".$aDatos["desde"]."'";
+		}
+		if($aDatos["hasta"]!=""){ 
+			$condicion.=" AND ci.fecha <='".$aDatos["hasta"]."'";
+		}
+		if($aDatos["cuentaPrimera"]!=""){ 
+			$condicion.=" AND c.codigoCuenta >='".$aDatos["cuentaPrimera"]."'";
+		}
+		if($aDatos["cuentaSegunda"]!=""){ 
+			$condicion.=" AND c.codigoCuenta <='".$aDatos["cuentaSegunda"]."'";
+		}
+		if($aDatos["terceroPrimero"]!=""){ 
+			$condicion.=" AND t.nit >='".$aDatos["terceroPrimero"]."'";
+		}
+		if($aDatos["terceroSegundo"]!=""){ 
+			$condicion.=" AND t.nit <='".$aDatos["terceroSegundo"]."'";
+		}
+
+		if($aDatos["centroCostoPrimero"]!=""){ 
+			$condicion.=" AND cc.codigoCentroCosto >='".$aDatos["centroCostoPrimero"]."'";
+		}
+		if($aDatos["centroCostoSegundo"]!=""){ 
+			$condicion.=" AND cc.codigoCentroCosto <='".$aDatos["centroCostoSegundo"]."'";
+		}
+
+		$sql="SELECT *,sum(saldoDebito) as debito,sum(saldoCredito) as credito FROM comprobante_items ci 
+		INNER JOIN subcentro_costo scc ON ci.idSubcentroCosto=scc.idSubcentroCosto 
+		INNER JOIN centro_costo cc on ci.idCentroCosto=cc.idCentroCosto 
+		INNER JOIN cuenta_contable c on c.idCuentaContable=ci.idCuentaContable 
+		INNER JOIN tercero t on t.idTercero=ci.idTercero
+		WHERE 0=0 ".$condicion."
+		GROUP BY ci.idCentroCosto,ci.idSubcentroCosto
+		ORDER BY cc.codigoCentroCosto ASC, scc.codigoSubcentroCosto ASC";
+
+	    $aCentroCosto=$this->ejecutarSql($sql); 
+	    return $aCentroCosto; 
+
+	}
+
+
+
+	public function getCentroCostoCuenta($aDatos=array()){
+
+		$condicion=""; 
+		if(!isset($_SESSION)){ session_start(); }
+
+
+		if($aDatos["idEmpresa"]!=""){ 
+			$condicion.=" AND cc.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		
+		if($aDatos["desde"]!=""){ 
+			$condicion.=" AND ci.fecha >='".$aDatos["desde"]."'";
+		}
+		if($aDatos["hasta"]!=""){ 
+			$condicion.=" AND ci.fecha <='".$aDatos["hasta"]."'";
+		}
+		if($aDatos["idCentroCosto"]!=""){ 
+			$condicion.=" AND cc.idCentroCosto=".$aDatos["idCentroCosto"]; 
+			// print_r($aDatos["idCentroCosto"]);
+		}
+		if($aDatos["idSubcentroCosto"]!=""){ 
+			$condicion.=" AND scc.idSubcentroCosto=".$aDatos["idSubcentroCosto"]; 
+			// print_r($aDatos["idSubcentroCosto"]);
+		}
+		if($aDatos["cuentaPrimera"]!=""){ 
+			$condicion.=" AND c.codigoCuenta >='".$aDatos["cuentaPrimera"]."'";
+		}
+		if($aDatos["cuentaSegunda"]!=""){ 
+			$condicion.=" AND c.codigoCuenta <='".$aDatos["cuentaSegunda"]."'";
+		}
+		if($aDatos["terceroPrimero"]!=""){ 
+			$condicion.=" AND t.nit >='".$aDatos["terceroPrimero"]."'";
+		}
+		if($aDatos["terceroSegundo"]!=""){ 
+			$condicion.=" AND t.nit <='".$aDatos["terceroSegundo"]."'";
+		}
+		if($aDatos["centroCostoPrimero"]!=""){ 
+			$condicion.=" AND cc.codigoCentroCosto >='".$aDatos["centroCostoPrimero"]."'";
+		}
+		if($aDatos["centroCostoSegundo"]!=""){ 
+			$condicion.=" AND cc.codigoCentroCosto <='".$aDatos["centroCostoSegundo"]."'";
+		}
+
+		$sql="SELECT *,sum(saldoDebito) as debito,sum(saldoCredito) as credito FROM comprobante_items ci 
+		INNER JOIN centro_costo cc on ci.idCentroCosto=cc.idCentroCosto 
+		INNER JOIN subcentro_costo scc ON ci.idSubcentroCosto=scc.idSubcentroCosto 
+		INNER JOIN cuenta_contable c on c.idCuentaContable=ci.idCuentaContable 
+		INNER JOIN tercero t on t.idTercero=ci.idTercero
+		WHERE 0=0 ".$condicion."
+		GROUP BY ci.idCuentaContable
+		ORDER BY c.codigoCuenta ASC";
+
+	    $aCentroCosto=$this->ejecutarSql($sql); 
+	    return $aCentroCosto; 
+	}
+
+	public function getCentroCostoCuentaTercero($aDatos=array()){
+
+		$condicion=""; 
+		if(!isset($_SESSION)){ session_start(); }
+
+		if($aDatos["idCuentaContable"]!=""){ 
+			$condicion.=" AND cu.idCuentaContable= ".$aDatos["idCuentaContable"];
+			// print_r('ingreso');
+			// print_r($aDatos["idCuentaContable"]);
+			// print_r('++');
+		}
+		if($aDatos["idEmpresa"]!=""){ 
+			$condicion.=" AND c.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		if($aDatos["idCentroCosto"]!=""){ 
+			$condicion.=" AND cc.idCentroCosto=".$aDatos["idCentroCosto"]; 
+			// print_r($aDatos["idCentroCosto"]);
+		}
+		if($aDatos["idSubcentroCosto"]!=""){ 
+			$condicion.=" AND scc.idSubcentroCosto=".$aDatos["idSubcentroCosto"]; 
+			// print_r($aDatos["idSubcentroCosto"]);
+		}
+		if($aDatos["hasta"]!=""){ 
+			$condicion.=" AND ci.fecha <='".$aDatos["hasta"]."'";
+		}
+		if($aDatos["desde"]!=""){ 
+			$condicion.=" AND ci.fecha >='".$aDatos["desde"]."'";
+		}
+		if($aDatos["idComprobanteItem"]!=""){ 
+			$condicion.=" AND ci.idComprobanteItem =".$aDatos["idComprobanteItem"];
+		}
+		if($aDatos["cuentaPrimera"]!=""){ 
+			$condicion.=" AND cu.codigoCuenta >='".$aDatos["cuentaPrimera"]."'";
+		}
+		if($aDatos["cuentaSegunda"]!=""){ 
+			$condicion.=" AND cu.codigoCuenta <='".$aDatos["cuentaSegunda"]."'";
+		}
+		if($aDatos["terceroPrimero"]!=""){ 
+			$condicion.=" AND t.nit >='".$aDatos["terceroPrimero"]."'";
+		}
+		if($aDatos["terceroSegundo"]!=""){ 
+			$condicion.=" AND t.nit <='".$aDatos["terceroSegundo"]."'";
+		}
+		if($aDatos["centroCostoPrimero"]!=""){ 
+			$condicion.=" AND cc.codigoCentroCosto >='".$aDatos["centroCostoPrimero"]."'";
+		}
+		if($aDatos["centroCostoSegundo"]!=""){ 
+			$condicion.=" AND cc.codigoCentroCosto <='".$aDatos["centroCostoSegundo"]."'";
+		}
+
+		$sql="SELECT *,sum(saldoDebito) as debito, sum(saldoCredito) as credito 
+		FROM comprobante_items ci 
+		INNER JOIN comprobante c on c.idComprobante= ci.idComprobante
+		INNER JOIN subcentro_costo scc ON ci.idSubcentroCosto=scc.idSubcentroCosto 
+		INNER JOIN centro_costo cc on ci.idCentroCosto=cc.idCentroCosto 
+		INNER JOIN tercero t on t.idTercero=ci.idTercero
+		INNER JOIN cuenta_contable cu on cu.idCuentaContable=ci.idCuentaContable 
+		WHERE 0=0  ".$condicion."
+		GROUP BY t.idTercero";
+
+	    $aCentroCosto=$this->ejecutarSql($sql); 
+	    // print_r($aCentroCosto);
+	    // print_r('+++');
+	    return $aCentroCosto; 
+	}
 }
 
 ?>

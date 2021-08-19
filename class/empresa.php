@@ -10,46 +10,32 @@ class Empresa extends Sql{
 
 	public function getEmpresas($aDatos=array()){
 
-
-
 		$condicion=""; 
 
 		if(!isset($_SESSION)){ session_start(); }
 
 		if(empty($_SESSION["idEmpresa"])){
-			if ($aDatos["ingresoPerfilEmpresa"]==0) {
-			
-
-			$condicion=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
+			if ($aDatos["ingresoPerfilEmpresa"]=='0') {
+				$condicion=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
+				
 			}
-
+			// print_r($aDatos["ingresoPerfilEmpresa"]);
 		}
 		if(!empty($_SESSION["idEmpresa"])){
-			
-			
-
 			$condicion=" AND e.idEmpresa=".$_SESSION["idEmpresa"]; 
-			
-
 		}
 
 
 		$sql="SELECT e.idEmpresa, e.razonSocial ,e.nit, e.direccion, c.nombre as ciudad,e.telefono,e.digitoVerificador,d.nombre as departamento,e.estado
-
 			FROM empresa as e 
-
 			LEFT JOIN usuario_empresa as ue ON(ue.idEmpresa=e.idEmpresa)
-
 			INNER JOIN ciudad as c ON(c.idCiudad = e.idCiudad)
-
 			INNER JOIN departamento as d ON(d.idDepartamento = e.idDepartamento)
-
 			WHERE 0=0 ".$condicion." GROUP BY e.idEmpresa ORDER BY e.razonSocial ASC";
 
 
-
 	    $aEmpresas=$this->ejecutarSql($sql); 
-
+	    // print_r($condicion);
 	    return $aEmpresas; 
 
 	}
@@ -82,8 +68,6 @@ class Empresa extends Sql{
 			INNER JOIN departamento as d ON(d.idDepartamento = e.idDepartamento)
 
 			WHERE 0=0 ".$condicion." GROUP BY e.idEmpresa ORDER BY e.razonSocial ASC";
-
-
 
 	    $aEmpresas=$this->ejecutarSql($sql); 
 

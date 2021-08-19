@@ -1,46 +1,36 @@
+$("#divTipoTercero").css("display","none");
 $("body").on("change","[name='datos[idDepartamentoResidencia]']",function(e){
-
     var id=$(this).val(); 
-
     if(id!=""){
-
       $.ajax({
-
         url:URL+"functions/generales/ciudades.php", 
-
         type:"POST", 
-
         data: {"idDepartamento":id}, 
-
         dataType: "json",
-
         }).done(function(msg){  
-
           var sHtml="<option value=''>Seleccione una opción</option>"; 
-
           msg.ciudades.forEach(function(element,index){
-
             sHtml+="<option value='"+element.idCiudad+"'>"+element.nombre+"</option>"; 
-
           })
-
-
-
           $("[name='datos[idCiudadResidencia]']").html(sHtml);
-
       });
-
     }else{
-
       $("[name='datos[idCiudadResidencia]']").html("<option value=''>Seleccione una opción</option>");
-
     }
-
-    
-
 })
+$("body").on("click","[name='crearUsuarioSwitch']",function(e){
+  if ($("#crearUsuarioSwitch").prop('checked')) {
+    $("#divTipoTercero").css("display","block");
+    $("#empleadoVenta").attr('checked','checked');
 
-
+    $("#crearUsuario").val('1');
+  }
+  else {
+    $("#divTipoTercero").css("display","none");
+    $("#empleadoVenta").removeAttr('checked','checked');
+    $("#crearUsuario").val('0');
+  }
+});
 
 $("body").on("click touchstart","#btnGuardar",function(e){
 

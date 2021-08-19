@@ -1,0 +1,172 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$id; 
+if($id==""){
+  echo '<script>window.history.back()</script>'; 
+}
+
+$decrip["cadena"]=$id; 
+$idEmpresa=$oControl->desencriptar($decrip); 
+
+
+$oItem=new Lista("cuenta_bancaria");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aBancos=$oItem->getLista();
+unset($oItem);
+
+$oItem=new Lista("parametros_documentos");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aParametros=$oItem->getLista();
+unset($oItem);
+
+
+$oItem=new Lista("retencion");
+// $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aRetenciones=$oItem->getLista();
+unset($oItem);
+
+?>
+
+
+<section>
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+		<div class="card">
+			<div class="card-body">
+				<div class="card-header">PARAMETRIZAR CUENTAS</div>
+
+				<!-- <div class="card-header">CUENTAS</div> -->
+				
+				<div class="row">
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
+                
+
+               	<select class="form-control mayusculas" id="idCuentaBancaria" name="datos[idCuentaBancaria]">
+
+                  <option value="">Seleccione una opción</option>
+                  <?php foreach($aBancos as $key=> $value){ ?>
+                  <option value="<?php echo $value['idCuentaBancaria'];?>"><?php echo $value['nombreCuenta'].'-'.$value['numeroCuenta'];?></option>
+                  <?php } ?>
+                </select>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <!-- <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+								<input type="text" class="form-control cuentaContable" name="banco[<?php echo $key ?>][cuentaContable]" >	
+								<input type="hidden" class="form-control idCuentaContable" name="banco[<?php echo $key ?>][idCuentaContable]">	
+								<input type="hidden" class="form-control naturaleza" name="banco[<?php echo $key ?>][naturaleza]"> -->
+
+
+	              <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+								<input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" >
+								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
+								<input type="hidden" class="form-control naturaleza" name="datos[naturaleza]" id="naturaleza">                
+	          	
+	          </div>
+					</div>
+				</div>
+				
+				<div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
+			
+		</div>
+	</form>
+<hr>
+	<div class="card-header">
+      	<h3>Cuentas parametrizadas</h3>
+      </div>
+      <div class="card-body">
+      	<table class="table table-striped" id="tableProductos" style="text-align:center;">
+      		<thead>
+      			<tr>
+      				<!-- <th>#</th> -->
+      				<th>Tipo cuenta</th>
+      				<th>Número</th>
+      				<th>Nombre</th>
+      				<th>Cuenta contable</th>
+      				<th>Acciones</th>
+      			</tr>
+      		</thead>
+      		<tbody>
+      			<?php 
+      			$oItem=new Lista("banco_cuenta_contable");
+						$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+						$aBancos=$oItem->getLista();
+						unset($oItem);
+      			foreach ($aBancos as $key=> $value){ 
+      				
+								
+								$oLista=new Data("cuenta_contable","idCuentaContable",$value["idEmpresaCuenta"]);						
+								$cuentaC=$oLista->getDatos();
+								unset($oLista); 
+
+
+								$oItem=new Data("cuenta_bancaria","idCuentaBancaria",$value['idCuentaBancaria']);
+								// $oItem->setFiltro("","=",);
+								$aCuentaBancaria=$oItem->getDatos();
+								unset($oItem);
+								// $oItem=new Data("tipos_documento_contable","idTiposDocumento",$aParametro["tipo"]);
+								// $aLetra=$oItem->getDatos();
+								// unset($oItem);
+      				?>
+      			<tr>
+      			
+      				<td><?php
+      				if ($aCuentaBancaria['tipoCuenta']!=3) {
+      				 	echo "CUENTA BANCARIA";
+      				 } 
+      				 
+      				 if ($aCuentaBancaria['tipoCuenta']==3) {
+      				 	echo "CAJA";
+      				 } 
+      				
+      			?></td>
+      				<td><?php 
+      				if ($aCuentaBancaria['tipoCuenta']!=3) {
+      					
+
+
+								echo $aCuentaBancaria['numeroCuenta']; 
+      				}
+      				if ($aCuentaBancaria['tipoCuenta']==3) {
+      					echo 'NO APLICA'; 
+      				}
+      				
+      				
+      			?></td>
+      				<td><?php echo $aCuentaBancaria['nombreCuenta']; ?></td>
+      				<td><?php echo $cuentaC['codigoCuenta'].' '.$cuentaC['nombre']; ?></td>
+      				<td><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idBancoCuentaContable']; ?>" class="eliminarImpuesto"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
+      			</tr>
+      		<?php } ?>
+      		</tbody>
+      	</table>
+      </div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+				
+			
+
+
+

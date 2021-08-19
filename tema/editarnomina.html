@@ -108,7 +108,7 @@ $meses[12]="Diciembre";
 
           <li class="breadcrumb-item">Nomina</li>
 
-          <li class="breadcrumb-item">Crear Nomina</li>
+          <li class="breadcrumb-item">Editar Nomina</li>
 
         </ul>
 
@@ -123,6 +123,11 @@ $meses[12]="Diciembre";
                 <div class="card-header">
 
                   <h4>Información General</h4>
+                  <div style="width: 100%;" id="divEliminar" class="ocultar">
+                    <a href="javascript:void(0)" style="float: right;"  id="btnEliminar" name="btnEliminar" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 36px;" data-toggle="tooltip" data-placement="top" title="Eliminar registro de empleado de esta nomina"></i></a>  
+                    <input type="hidden" name="datos[idEliminar]" id="idEliminar">
+                  </div>
+                  
 
                 </div>
 
@@ -285,6 +290,14 @@ $meses[12]="Diciembre";
                     <div>
                       <input type="hidden" name="datos[vacacionesControl]" id="vacacionesControl">
                     </div>
+                    <!-- <div class="col-md-3"></div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+
+                        <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar empleado de esta nomina" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+                      </div>
+                    </div> -->
                   </div>
 
                   </div>

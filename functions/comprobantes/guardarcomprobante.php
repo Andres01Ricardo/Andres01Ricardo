@@ -12,6 +12,8 @@ date_default_timezone_set("America/Bogota");
 
 $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
 $item  = (isset($_REQUEST['item'] ) ? $_REQUEST['item'] : "" );
+
+
 if( isset($_FILES['file']) && $_FILES['file'] != 'undefined')
 
     {
@@ -36,20 +38,13 @@ if(!isset($_SESSION)){ session_start(); }
 
 
 
-// $oLista=new Lista("parametros_documentos");
-// $oLista->setFiltro("tipo","=",$datos["tipoDocumento"]);
-// $oLista->setFiltro("idParametrosDocumentos","=",$datos["comprobante"]);
-// $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-// $aNumero=$oLista->getLista();
-// unset($oLista);
+$oLista=new Lista("parametros_documentos");
+$oLista->setFiltro("tipo","=",$datos["tipoDocumento"]);
+$oLista->setFiltro("comprobante","=",$datos["comprobante"]);
+$oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+$aNumero=$oLista->getLista();
+unset($oLista);
 
-// if ($aNumero[0]["numeracionActual"]==$aNumero[0]["numeracionInicial"]) {
-     // $numeroComprobanteA=intval($aNumero[0]["numeracionActual"]);
-    
-    // $numeroComprobanteAn=substr($numeroComprobanteA, 4);
-    
-    // $fechaComp=explode('-', $datos["fecha"]);
-    
     $numeroComprobante=$datos["numeroComprobante"];
     
 // }
@@ -80,27 +75,18 @@ $aDatos["numero"]=$numeroComprobante;
 $oItem=new Data("comprobante","idComprobante"); 
 
 foreach($aDatos  as $key => $value){
-
     $oItem->$key=$value; 
-
 }
-
 $oItem->guardar(); 
-
 $idComprobante=$oItem->ultimoId(); 
-
 unset($oItem);
 
 $nCom["numeracionActual"]=intval($numeroComprobante)+1;
-
-$oItem=new Data("parametros_documentos","idParametrosDocumentos",$datos["comprobante"]); 
+$oItem=new Data("parametros_documentos","idParametrosDocumentos",$aNumero[0]["idParametrosDocumentos"]); 
 
 foreach($nCom  as $keyC => $valueC){
-
     $oItem->$keyC=$valueC; 
-
 }
-
 $oItem->guardar(); 
 unset($oItem);
 
@@ -113,6 +99,8 @@ foreach ($item as $key => $value) {
     $aItem["idCuentaContable"]=$value["idCuentaContable"]; 
 
     $aItem["idCentroCosto"]=$value["idCentroCosto"];
+    
+    $aItem["idSubcentroCosto"]=$value["idSubcentroCosto"];
 
 
     $aItem["idTercero"]=$value["idTercero"]; 
@@ -127,13 +115,6 @@ foreach ($item as $key => $value) {
 
 
 
-
-
-
-     // $oItem=new Data("cuenta_contable","idCuentaContable",$value["idCuentaContable"]); 
-
-     //    $aCuentaContable=$oItem->getDatos(); 
-     //    unset($oItem);
     if ($value["debito"] !="") {
         $valor=$value["debito"];
     }
@@ -141,21 +122,10 @@ foreach ($item as $key => $value) {
         $valor=$value["credito"]; 
     }
 
-    //--------------------------------------------------------------------------------
+  
     $valorN=floatval(str_replace(",", ".",str_replace("$", "", str_replace(".", "",$valor))));
-        if (substr($value["cuentaContable"], 0,4)=='1592' ) {
-            if ($valorN>0) {
-                $valorN=$valorN*(-1);
-            }
-        }
-        if (substr($value["cuentaContable"], 0,4)=='3610' || substr($value["cuentaContable"], 0,4)=='3710') {
-            if ($valorN<0) {
-                $valorN=$valorN*(-1);
-            }
-        }
-
-   
-    //---------------------------------------------------------------
+    
+  
 
     if ($value["debito"] !="") {
         $aItem["naturaleza"]='debito';  
@@ -177,20 +147,32 @@ foreach ($item as $key => $value) {
 
 
     $operacionNaturaleza=$value["naturaleza"];
-    
-
         $oItem=new Data("comprobante_items","idComprobanteItem"); 
-
         foreach($aItem  as $keycc => $valuecc){
-
             $oItem->$keycc=$valuecc; 
-
         }
-
         $oItem->guardar(); 
-
         unset($oItem);
+    }
 
+
+
+
+
+
+
+    if ($datos["radioComprobanteRecurrente"]==1) {
+        
+        $recurrente["idComprobante"]=$idComprobante;
+        $recurrente["idEmpresa"]=$datos["idEmpresa"];
+        $recurrente["nombre"]=$datos["nombreComprobante"];
+
+        $oItem=new Data("comprobante_recurrente","idComprobanteRecurrente"); 
+        foreach($recurrente  as $keyr => $valuer){
+            $oItem->$keyr=$valuer; 
+        }
+        $oItem->guardar(); 
+        unset($oItem);
 
     }
 

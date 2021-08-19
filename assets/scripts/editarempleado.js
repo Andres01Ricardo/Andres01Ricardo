@@ -1,3 +1,4 @@
+$("#divTipoTercero").css("display","none");
 $("body").on("change","[name='datos[idDepartamento]']",function(e){
 
     var id=$(this).val(); 
@@ -43,7 +44,19 @@ $("body").on("change","[name='datos[idDepartamento]']",function(e){
 
 
 
+$("body").on("click","[name='crearUsuarioSwitch']",function(e){
+  if ($("#crearUsuarioSwitch").prop('checked')) {
+    $("#divTipoTercero").css("display","block");
+    $("#empleadoVenta").attr('checked','checked');
 
+    $("#crearUsuario").val('1');
+  }
+  else {
+    $("#divTipoTercero").css("display","none");
+    $("#empleadoVenta").removeAttr('checked','checked');
+    $("#crearUsuario").val('0');
+  }
+});
 
 
 $("body").on("click touchstart","#btnGuardar",function(e){

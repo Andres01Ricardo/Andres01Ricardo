@@ -554,7 +554,7 @@ unset($oLista);
 
                           <label class="negrita">Auxilio de transporte<span class="requerido">*</span>:</label>
 
-                          <input type="text" class="form-control numero" name="datos[auxilioTransporte]" id="datos[auxilioTransporte]" value="<?php echo $aInformacionLaboral['auxilioTransporte']; ?>" required>
+                          <input type="text" class="form-control moneda " name="datos[auxilioTransporte]" id="datos[auxilioTransporte]" value="<?php echo "$".number_format($aInformacionLaboral['auxilioTransporte'],2,",","."); ?>" required>
 
 
                         </div>
@@ -568,14 +568,14 @@ unset($oLista);
 
                           <label class="negrita">Salario<span class="requerido">*</span>:</label>
 
-                          <input type="text" class="form-control numero" name="datos[salario]" id="datos[salario]" value="<?php echo $aInformacionLaboral['valorSalario']; ?>" required>
+                          <input type="text" class="form-control moneda " name="datos[salario]" id="datos[salario]" value="<?php echo "$".number_format($aInformacionLaboral['valorSalario'],2,",","."); ?>" required>
 
 
                         </div>
 
                       </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
 
                     <div class="form-group">
 
@@ -593,6 +593,36 @@ unset($oLista);
 
                     </div>
 
+                  </div> -->
+                  <div class="row">
+                    <div class="col-md-3">
+                      <!-- <div class="form-group">
+                        <label class="custom-switch mt-2">
+                          <input type="hidden" name="crearUsuario" id="crearUsuario" value="0">
+                          <input type="checkbox" name="crearUsuario" id="crearUsuario" value="1" class="custom-switch-input">
+                          <span class="custom-switch-indicator"></span>
+                          <span class="custom-switch-description">Crear Usuario De Acceso</span>
+                        </label>
+                      </div> -->
+                      <input type="hidden" name="crearUsuario" id="crearUsuario" value="0">
+                      <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" name="crearUsuarioSwitch" id="crearUsuarioSwitch" >
+                        <label class="custom-control-label" for="crearUsuarioSwitch">Crear Usuario De Acceso</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6" id="divTipoTercero">
+                      <div class="form-group">
+                        <label>Seleccione el tipo de ingreso</label>
+                        <div class="col-md-6">
+                          <input type="radio" name="datos[tipoUsuario]" id="empleadoVenta" value="1">
+                          <label for="empleadoVenta">SOLO CRM</label>
+                        </div>
+                        <div class="col-md-6">
+                          <input type="radio" name="datos[tipoUsuario]" id="empleadoTotal" value="2">
+                          <label for="empleadoTotal">INGRESO TOTAL EMPRESA</label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   </div>

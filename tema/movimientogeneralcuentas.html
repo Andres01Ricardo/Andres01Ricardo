@@ -47,7 +47,7 @@ if($_SESSION["idRol"]!=5){
                   <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
                   <?php } ?>
                 </select>
-              <?php }else{ ?>
+              <?php }if (!empty($_SESSION["idEmpresa"])){ ?>
                 <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
               <?php } ?>
           <br><br>

@@ -16,15 +16,14 @@ class Proveedores extends Sql{
 
 		if(!isset($_SESSION)){ session_start(); }
 
-		if(empty($_SESSION["idEmpresa"])){
-			if ($aDatos["ingresoPerfilEmpresa"]==0) {
-				$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
-			}
-		}
-
 		if(!empty($_SESSION["idEmpresa"])){
 
-			$condicion.=" AND pe.idEmpresa=".$_SESSION["idEmpresa"]; 
+			$condicion=" AND pe.idEmpresa=".$_SESSION["idEmpresa"]; 
+
+		}
+		if($aDatos["idEmpresa"]!=""){
+
+			$condicion=" AND pe.idEmpresa=".$aDatos["idEmpresa"]; 
 
 		}
 
@@ -34,21 +33,18 @@ class Proveedores extends Sql{
 
 		}
 
-		$sql="SELECT p.tipoPersona, p.idProveedor, p.nit, p.digitoVerificador, p.razonSocial, p.email, p.telefono, p.direccion,
+		$sql="SELECT p.tipoPersona, p.idTercero, p.nit, p.digitoVerificador, p.razonSocial, p.email, p.telefono, p.direccion,
 
 			p.fechaRegistro, 
 
 			CONCAT(u.nombreUsuario,' ',u.apellidoUsuario) as usuarioRegistra, 
 
-			d.nombre as departamento, c.nombre as ciudad, pa.nombre as pais
+			d.nombre as departamento, c.nombre as ciudad
 
-			FROM proveedor as p 
+			FROM tercero_empresa as pe
 
-			LEFT JOIN proveedor_empresa as pe ON(pe.idProveedor=p.idProveedor)
-
-			LEFT JOIN usuario_empresa as ue ON(ue.idEmpresa=pe.idEmpresa)
-
-			INNER JOIN pais as pa ON(pa.idPais=p.idPais)
+			INNER JOIN tercero as p   ON(pe.idTercero=p.idTercero)
+			
 
 			INNER JOIN departamento as d ON(d.idDepartamento=p.idDepartamento)
 
@@ -56,7 +52,7 @@ class Proveedores extends Sql{
 
 			INNER JOIN usuario as u ON(u.idUsuario=p.idUsuarioRegistra)
 
-			WHERE 0=0 ".$condicion." GROUP BY p.idProveedor ORDER BY p.razonSocial ASC";
+			WHERE 0=0 ".$condicion." AND (p.tipoTercero=2 or p.tipoTercero=4 or p.tipoTercero=6 or p.tipoTercero=7) GROUP BY p.idTercero ORDER BY p.razonSocial ASC";
 
 
 

@@ -3,15 +3,16 @@ var aDatos=[];
 $(document).ready(function(e){
 $("#selectCaja").css("display", "none");
 $("#divAbono").css("display", "none");
-
-
+$("#divEnlazarFactura").css("display", "none");
+var idEmpresa=$("#idEmpresaGestion").val();
+// alert(idEmpresa);
 	$.ajax({
 
 	    url:URL+"functions/productosservicios/listarproductosservicios.php", 
 
 	    type:"POST", 
 
-	    data: {"tipo":$("[name='datos[tipoFactura']").val(),"idEmpresa":$("[name='datos[idEmpresa']").val()}, 
+	    data: {"tipo":$("[name='datos[tipoFactura']").val(),"idEmpresa":idEmpresa}, 
 
 	    dataType: "json",
 
@@ -34,6 +35,70 @@ $("#divAbono").css("display", "none");
 	      autocomplete(); 
 
 	  });   
+
+       $.ajax({
+          url:URL+"functions/facturaventa/consultarcomprobantefactura.php", 
+          type:"POST", 
+          data: {"idEmpresa":idEmpresa}, 
+          dataType: "json",
+          }).done(function(msg){  
+            console.log('este es:');
+            console.log(msg);
+              if(msg.length!=0){
+
+                  
+                  var sHtml="<option value=''>Seleccione una opción</option>"; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idComprobante+"'>"+element.nroFactura+"</option>"; 
+                  })
+                  $("#enlazarFactura").html(sHtml);
+
+                  // if(msg.length>1){
+                    // $("#divEnlazarFactura").removeClass('ocultar');
+                  // }
+              }
+              // if(msg.length==0){
+              // }
+
+            })
+
+      $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+          type:"POST", 
+          data: {"empresa":idEmpresa,"tipoFactura":'venta'}, 
+          dataType: "json",
+          }).done(function(msg){  
+
+              if(msg.length!=0){
+
+                  console.log('aca');
+                  console.log(msg);
+                  var sHtml=""; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+                  })
+                  $("#cuentaContableTotal").html(sHtml);
+
+                  if(msg.length>1){
+                    $("#divCuentaContableTotal").removeClass('ocultar');
+                  }
+              }
+              if(msg.length==0){
+                
+                // Swal.fire(
+                // {
+                //   icon: 'error',
+                //   title: "El total a pagar no se encuentra parametrizado!",   
+                //   text: "Por favor parametrice la cuenta contable",
+                //   closeOnConfirm: true,
+                // }).then((element)=>{
+
+                //   // $( ".registrar" ).eq(index).removeClass('ocultar');
+
+                // });
+              }
+
+            })
 
 })
 
@@ -719,7 +784,14 @@ $("body").on("click touchstart","#btnAgregar",function(e){
 
 $("body").on("change","[name='datos[amortizacion]']",function(e){
 
-  calcularDeduccion(); 
+  calcularTotal(); 
+
+})
+
+
+$("body").on("change","[name='datos[totalDeduccion]']",function(e){
+
+  calcularTotal(); 
 
 })
 
@@ -740,6 +812,30 @@ calcularDeduccion=function(){
   $("[name='datos[totalDeduccion]']").val(valor).trigger("change");
 
   pago=valorTotal-valor-amortizacion; 
+
+  $("[name='datos[totalPago]']").val(pago).trigger("change");
+
+}
+
+calcularTotal=function(){
+
+  // var valor=0;
+
+  // $("#tableDeducciones .valor").each(function(index,element){
+
+  //   valor+=parseFloat($(element).val()); 
+
+  // })
+
+  var valorTotal=eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[total]']").val(),"$",""),".",""),",","."); 
+
+  var amortizacion=eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[amortizacion]']").val(),"$",""),".",""),",","."); 
+
+  var valorDeducciones=eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[totalDeduccion]']").val(),"$",""),".",""),",","."); 
+
+  // $("[name='datos[totalDeduccion]']").val(valor).trigger("change");
+
+  pago=valorTotal-valorDeducciones-amortizacion; 
 
   $("[name='datos[totalPago]']").val(pago).trigger("change");
 
@@ -1039,6 +1135,24 @@ $("body").on("change","[name='datos[radioPago]']",function(e){
       $("#divAbono").css("display", "block");
       $("#abono").attr("required", "required");
       $("[name='datos[comprobante]']").removeAttr("required");
+      
+      // $("#selectCaja").css("display", "block");
+    }
+})
+
+
+
+$("body").on("change","[name='datos[radioEnlazar]']",function(e){
+
+  // $(this).val()
+    if($("#radioNoEnlazar").is(':checked')){
+      $("#divEnlazarFactura").css("display", "none");
+      $("#enlazarFactura").removeAttr("required");
+      // $("#selectCaja").css("display", "none");
+    }
+    if($("#radioEnlazar").is(':checked')){
+      $("#divEnlazarFactura").css("display", "block");
+      $("#enlazarFactura").attr("required", "required");
       
       // $("#selectCaja").css("display", "block");
     }

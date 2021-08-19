@@ -19,15 +19,15 @@ $oControl=new Control();
 
 $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
 
-$ICA = $datos['valorICA'];
-$ICAAdicional = $datos['ICA'];
+$ICA = str_replace(",", ".",$datos['valorICA']);
+$ICAAdicional = str_replace(",", ".",$datos['ICA']);
 
 
-// if (!empty($ICAAdicional)) {
-//     $totalICA= $ICAAdicional + $ICA;
-// }if (empty($ICAAdicional)){
-//     $totalICA = $ICA;
-// }
+if (!empty($ICAAdicional)) {
+    $totalICA= $ICAAdicional + $ICA;
+}if (empty($ICAAdicional)){
+    $totalICA = $ICA;
+}
 
     
     $dDatos["tipoImpuesto"]='ICA';

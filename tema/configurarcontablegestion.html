@@ -1,0 +1,215 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$id; 
+if($id==""){
+  echo '<script>window.history.back()</script>'; 
+}
+
+$decrip["cadena"]=$id; 
+$idEmpresa=$oControl->desencriptar($decrip); 
+
+
+$oItem=new Lista("cuenta_bancaria");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aBancos=$oItem->getLista();
+unset($oItem);
+
+$oItem=new Lista("parametros_documentos");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aParametros=$oItem->getLista();
+unset($oItem);
+
+
+$oItem=new Lista("retencion");
+// $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aRetenciones=$oItem->getLista();
+unset($oItem);
+
+?>
+
+
+<section>
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+		<div class="card">
+			<div class="card-body">
+				<div class="card-header">PARAMETRIZAR GESTIÓN FACTURAS</div>
+
+				
+				
+				<!-- <div class="row">
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
+                
+
+               	<select class="form-control mayusculas" id="idCuentaBancaria" name="datos[idCuentaBancaria]">
+
+                  <option value="">Seleccione una opción</option>
+                  <?php foreach($aBancos as $key=> $value){ ?>
+                  <option value="<?php echo $value['idCuentaBancaria'];?>"><?php echo $value['nombreCuenta'].'-'.$value['numeroCuenta'];?></option>
+                  <?php } ?>
+                </select>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	              <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+								<input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" >
+								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
+								<input type="hidden" class="form-control naturaleza" name="datos[naturaleza]" id="naturaleza">                	          	
+	          </div>
+					</div>
+				</div> -->
+
+
+
+				<div class="card-header">GESTION FACTURA</div>
+					<div class="row">
+						<div class=" col-md-3 ">
+							<div class="form-group">
+	              <label class="negrita d-block">Total a pagar<span class="requerido">*</span>:</label>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+								<label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+								<input type="text" class="form-control cuentaContable" name="datos[cuentaContableTotalPagarCompra]" >	
+								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContableTotalPagarCompra]">	
+								<input type="hidden" class="form-control naturaleza" name="datos[naturalezaTotalPagarCompra]">
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<label class="negrita d-block">Tipo documento<span class="requerido">*</span>:</label>
+						<div class="form-inline">
+	            <div class="form-group mb-1">
+								<select class="form-control" name="datos[tipoDocumentoTotalPagarCompra]" >
+									<?php foreach ($aParametros as $key => $value) {
+									$oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["tipo"]);
+									$aTipo=$oItem->getDatos();
+								 ?>
+									<option value="<?php echo $value['idParametrosDocumentos']; ?>"><?php echo $aTipo['letra'].'-'.$value["comprobante"].'-'.$aTipo['descripcion']; ?></option> 
+								<?php } ?>
+								</select>
+							</div>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+							<label class="negrita d-block">Tipo factura<span class="requerido">*</span>:</label>
+								<select class="form-control" name="datos[naturalezaNuevaTotalPagarCompra]" id="" >
+									<option value="compra">COMPRA</option>
+										<option value="venta">VENTA</option>
+								</select>
+	          </div>
+					</div>
+				</div>
+
+
+
+
+
+
+
+
+
+
+				
+				<div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
+			
+		</div>
+	</form>
+<hr>
+	<div class="card-header">
+      	<h3>Gestión parametrizada</h3>
+      </div>
+      <div class="card-body">
+      	<table class="table table-striped" id="tableProductos">
+      		<thead>
+      			<tr>
+      				<!-- <th>#</th> -->
+      				<th>Tipo</th>
+      				<th>Tipo factura</th>
+      				<!-- <th>Nombre</th> -->
+      				<th>Cuenta contable</th>
+      				<th>Tipo documento</th>
+      			</tr>
+      		</thead>
+      		<tbody>
+      			<?php 
+      			$oItem=new Lista("compra_cuenta_contable");
+						$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+						$aBancos=$oItem->getLista();
+						unset($oItem);
+      			foreach ($aBancos as $key=> $value){ 
+      				
+								
+								$oLista=new Data("cuenta_contable","idCuentaContable",$value["idEmpresaCuenta"]);						
+								$cuentaC=$oLista->getDatos();
+								unset($oLista); 
+
+
+								// $oItem=new Data("cuenta_bancaria","idCuentaBancaria",$value['idCuentaBancaria']);
+								// // $oItem->setFiltro("","=",);
+								// $aCuentaBancaria=$oItem->getDatos();
+								// unset($oItem);
+								// $oItem=new Data("tipos_documento_contable","idTiposDocumento",$aParametro["tipo"]);
+								// $aLetra=$oItem->getDatos();
+								// unset($oItem);
+
+								$oItem=new Data("parametros_documentos","idParametrosDocumentos",$value['tipoDocumento']);
+								// $oItem->setFiltro("","=",);
+								$aParametro=$oItem->getDatos();
+								unset($oItem);
+								$oItem=new Data("tipos_documento_contable","idTiposDocumento",$aParametro["tipo"]);
+								$aLetra=$oItem->getDatos();
+								unset($oItem);
+      				?>
+      			<tr>
+      			
+      				<td><?php
+      				
+      				 	echo "Total a pagar factura";
+      				
+      			?></td>
+      				<td><?php       					
+
+								echo $value['tipoFactura']
+     				
+      				
+      			?></td>
+      				
+      				<td><?php echo $cuentaC['codigoCuenta'].' '.$cuentaC['nombre']; ?></td>
+      				<td><?php echo $aLetra['letra'].' '.$aParametro['comprobante'].' '.$aParametro['descripcion']; ?></td>
+      				
+      			</tr>
+      		<?php } ?>
+      		</tbody>
+      	</table>
+      </div>
+
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+				
+			
+
+
+

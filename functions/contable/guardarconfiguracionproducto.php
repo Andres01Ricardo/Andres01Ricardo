@@ -23,6 +23,9 @@ $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
 if(!isset($_SESSION)){ session_start(); }
 
 
+// print_r($item);
+// print_r('---');
+// print_r($datos);
 
 foreach ($item as $key => $value) {
     if ($value["cuentaContableProductoCompra"]!="" and $value["idCuentaContableProductoCompra"]!=""  ) {
@@ -32,7 +35,7 @@ foreach ($item as $key => $value) {
 
     $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
     $oLista->setFiltro("idProducto","=",$value["idProductoCompra"]);
-    $oLista->setFiltro("tipoFactura","=","compra");
+    $oLista->setFiltro("tipoFactura","=",$value["naturalezaNuevaProducto"]);
     $lista=$oLista->getLista();
     unset($oLista); 
     if (!empty($lista)) {
@@ -43,14 +46,12 @@ foreach ($item as $key => $value) {
         }
     }
 
-
-
     $aItemAuxiliar["idProducto"]=$value["idProductoCompra"];
     $aItemAuxiliar["idEmpresa"]=$datos["idEmpresa"];
     $aItemAuxiliar["idEmpresaCuenta"]=$value["idCuentaContableProductoCompra"];
     // $aItemAuxiliar["naturaleza"]=1;
     $aItemAuxiliar["tipoDocumento"]=$value["tipoDocumentoProductoCompra"];
-    $aItemAuxiliar["tipoFactura"]='compra';  
+    $aItemAuxiliar["tipoFactura"]=$value["naturalezaNuevaProducto"];  
 
     $oItem=new Data("producto_cuenta_contable","idProductoCuentaContable"); 
 
@@ -63,46 +64,6 @@ foreach ($item as $key => $value) {
         // $idAuxiliar=$oItem->ultimoId();
         unset($oItem);
         }
-
- if ($value["cuentaContableProductoVenta"]!="" and $value["idCuentaContableProductoVenta"]!=""   ) {
-
-    $oLista = new Lista('producto_cuenta_contable');
-
-    $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-    $oLista->setFiltro("idProducto","=",$value["idProductoVenta"]);
-    $oLista->setFiltro("tipoFactura","=","venta");
-    $listaV=$oLista->getLista();
-    unset($oLista); 
-    if (!empty($listaV)) {
-        foreach ($listaV as $keyBV => $valueBV) {
-            $oItem=new Data("producto_cuenta_contable","idProductoCuentaContable",$valueBV["idProductoCuentaContable"]); 
-            $oItem->eliminar();
-            unset($oItem);
-        }
-    }
-
-
-
-
-    $aItemAuxiliarV["idProducto"]=$value["idProductoVenta"];
-    $aItemAuxiliarV["idEmpresa"]=$datos["idEmpresa"];
-    $aItemAuxiliarV["idEmpresaCuenta"]=$value["idCuentaContableProductoVenta"];
-    // $aItemAuxiliarV["naturaleza"]=2;
-    $aItemAuxiliarV["tipoDocumento"]=$value["tipoDocumentoProductoVenta"];
-    $aItemAuxiliarV["tipoFactura"]='venta';  
-
-    $oItem=new Data("producto_cuenta_contable","idProductoCuentaContable"); 
-
-        foreach($aItemAuxiliarV  as $keyv => $valuev){
-
-            $oItem->$keyv=$valuev; 
-
-        }
-        $oItem->guardar(); 
-        // $idAuxiliar=$oItem->ultimoId();
-        unset($oItem);
-    }
-
 }
 
    $msg=true; 

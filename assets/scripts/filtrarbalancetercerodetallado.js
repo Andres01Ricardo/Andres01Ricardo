@@ -1,3 +1,12 @@
+
+
+
+var aDatos=[];
+var aDatosT=[];
+var tipoDetalle=3;
+
+
+
 $(document).ready(function(e){
 
     var overlay = document.getElementById("overlayImpuestos");
@@ -6,7 +15,86 @@ $(document).ready(function(e){
    
     overlay.classList.add('active');
     popup.classList.add('active');
+    // alert('ingreso');
+
+if ($("#empresa").val()!=""){
+  aDatos=[]; 
+  var idEmpresa=$("#empresa").val();
+  // alert(idEmpresa);
+  $.ajax({
+
+      url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+
+      type:"POST", 
+
+      data: {"idEmpresa":idEmpresa}, 
+
+      dataType: "json",
+
+      }).done(function(msg){  
+
+        msg.forEach(function(element,index){
+
+          aDatos.push({
+
+              value: element.idCuentaContable,
+
+              label: element.codigoCuentaContable+" - "+element.nombre,
+
+              naturaleza: element.naturaleza,
+
+              // tercero:element.tercero,
+
+              centroCosto:element.centroCosto,
+
+            })
+
+        })
+        console.log(aDatos);
+        autocomplete(); 
+
+
+    }); 
+
+aDatosT=[];
+tipoDetalle=3;
+  $.ajax({
+
+      url:URL+"functions/terceros/cargarterceros.php", 
+
+      type:"POST", 
+
+      data: {"idEmpresa":idEmpresa}, 
+
+      dataType: "json",
+
+      }).done(function(msg){
+      console.log(msg);
+
+
+        msg.forEach(function(element,index){
+         
+          aDatosT.push({
+
+              value: element.idTercero,
+
+              label: element.nit+" - "+element.razonSocial,               
+
+            })
+
+        })
+        console.log(aDatosT);
+        // autocompleteT(); 
+        autocompleteTS(); 
+
+
+    });  
+
+  }
+
 });
+
+
 
 
 
@@ -124,10 +212,6 @@ $('[data-toggle="tooltip"]').tooltip();
 
 
 
-
-
-var aDatosT=[];
-var tipoDetalle=3;
 
 
 

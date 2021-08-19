@@ -13,16 +13,16 @@ var comprobante=document.getElementById('comprobante').value;
 $(document).ready(function() {
     var table= $('#tableComprobante').DataTable( {
         paging: true,
-      ordering: false,
-      dom: 'Blfrtip',
+        ordering: false,
+        dom: 'Blfrtip',
         buttons: [
 
-            {
-            extend: 'copyHtml5',
-            text: '<i class="far fa-copy" style="color: #fff;font-size: 26px;"></i>',
-            className: 'botoncopiar',
-            titleAttr: 'COPIAR'
-            },
+            // {
+            // extend: 'copyHtml5',
+            // text: '<i class="far fa-copy" style="color: #fff;font-size: 26px;"></i>',
+            // className: 'botoncopiar',
+            // titleAttr: 'COPIAR'
+            // },
             {
             extend: 'excel',
             footer: true,
@@ -31,32 +31,35 @@ $(document).ready(function() {
             text:'<i class="fas fa-file-excel" style="color: #fff;font-size: 26px;"></i>',
             titleAttr: 'EXCEL'
             },
-            {
-            extend: 'csvHtml5',
-            text: '<i class="fas fa-file-csv" style="color: #fff;font-size: 26px;"></i>',
-            titleAttr: 'CSV'
+            // {
+            // extend: 'csvHtml5',
+            // text: '<i class="fas fa-file-csv" style="color: #fff;font-size: 26px;"></i>',
+            // titleAttr: 'CSV'
             
-            },
+            // },
             {
             extend: 'pdfHtml5',
             text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 26px;"></i>',
             // messageTop:'<br><div>'+'nit: '+nit+'</div>'+'<div>  email: '+email+'</div><div>   telefono: '+telefono+'</div>',
             // messageTop:'nit: '+nit+'  email: '+email+'   telefono: '+telefono,
             // title: '<table class="table"><thead style="text-aling:left;"><tr style="text-aling:left;"><th rowspan="2"><img src="'+url+logo+'" width="60" height="60"></th><th>'+empresa+'</th><th>No. '+tipo+'-'+comprobante+'-'+numero+'</th></tr><tr><th>Nit: '+nit+'</th><th>fecha: '+fecha+'</th></tr></thead></table>',
-            title:empresa,
+            title:'AS-Smartbuss--                 '+empresa+'                       '+fecha+'\n Nit: '+nit+'\n Telefono: '+telefono+'\n Correo electrónico:  '+email+'                  No. '+tipo+'-'+comprobante+'-'+numero,  
+            // title:empresa,
             titleAttr: 'PDF',
             customize: function(doc) {
-                doc.pageMargins = [ 10, 10, 10, 10 ]
-            },
-            
+                doc.pageMargins = [ 10, 10, 15, 10 ],
+                doc.defaultStyle.fontSize = 10
+                },
+            pageSize: 'A4',
             },
             {
             extend: 'print',
-            text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
+            text: '<i class="fas fa-print" style="color: #fff;font-size: 20px;"></i>',
             autoPrint: true,
             messageTop:'<br><div>'+'nit: '+nit+'</div>'+'<div>  email: '+email+'</div><div>   telefono: '+telefono+'</div>',
             title: '<table class="table"><thead style="text-aling:left;"><tr style="text-aling:left;"><th rowspan="2"><img src="'+url+logo+'" width="60" height="60"></th><th>'+empresa+'</th><th>No. '+tipo+'-'+comprobante+'-'+numero+'</th></tr><tr><th>Nit: '+nit+'</th><th>fecha: '+fecha+'</th></tr></thead></table>',
-            titleAttr: 'IMPRIMIR'
+            titleAttr: 'IMPRIMIR',
+            
             }
             
         ]

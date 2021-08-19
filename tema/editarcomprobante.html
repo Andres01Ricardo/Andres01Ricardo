@@ -182,7 +182,7 @@ unset($oLista);
 					               <option value="">Seleccione una opción</option>
 
                       <?php foreach($parametrosDocumentos as $itemP){ ?>
-                        <option  value='<?php echo $itemP["idParametrosDocumentos"]; ?>' <?php if($itemP["comprobante"]==$aComprobante["comprobante"]){echo 'selected';} ?>  ><?php echo $itemP["comprobante"].' - '.$itemP["descripcion"]; ?></option>
+                        <option  value='<?php echo $itemP["comprobante"]; ?>' <?php if($itemP["comprobante"]==$aComprobante["comprobante"]){echo 'selected';} ?>  ><?php echo $itemP["comprobante"].' - '.$itemP["descripcion"]; ?></option>
                       <?php } ?>
 					              </select>
 
@@ -234,7 +234,7 @@ unset($oLista);
 
                             <th>Centro de costo</th>
 
-                            <!-- <th>S.C</th> -->
+                            <th>Subcentro de costo</th>
 
                             <th>Tercero</th>
 
@@ -276,46 +276,20 @@ unset($oLista);
 
                             // print_r($cuentaC);
 
-                          $nitT=explode("-", $value["tercero"]);
-                          if ($value["tipoTercero"]=='c') {
-                            $oItem=new Data("cliente","idCliente",$value["idTercero"]);
-                            $tercero=$oItem->getDatos();
-                            $idTerc=$tercero["idCliente"];
-                            $nombreT=$tercero["razonSocial"];
-                            $nitTercero=$tercero["nit"];
-                            $tipoT='c';
-                            unset($oItem);
-                          }
-                          if ($value["tipoTercero"]=='p') {
-                            $oItem=new Data("proveedor","idProveedor",$value["idTercero"]);
-                            $tercero=$oItem->getDatos();
-                            $idTerc=$tercero["idProveedor"];
-                            $nombreT=$tercero["razonSocial"];
-                            $nitTercero=$tercero["nit"];
-                            $tipoT='p';
-                            unset($oItem);
-                          }
-                          if ($value["tipoTercero"]=='e') {
-                            $oItem=new Data("empleado","idEmpleado",$value["idTercero"]);
-                            $tercero=$oItem->getDatos();
-                            $idTerc=$tercero["idEmpleado"];
-                            $nombreT=$tercero["nombre"].' '.$tercero["apellido"];
-                            $nitTercero=$tercero["numeroDocumento"];
-                            $tipoT='e';
-                            unset($oItem);
-                          }
-                          if ($value["tipoTercero"]=='o') {
-                            $oItem=new Data("otros","idOtro",$value["idTercero"]);
-                            $tercero=$oItem->getDatos();
-                            $idTerc=$tercero["idOtro"];
-                            $nombreT=$tercero["razonSocial"];
-                            $nitTercero=$tercero["nit"];
-                            $tipoT='o';
-                            unset($oItem);
-                          }
+                          // $nitT=explode("-", $value["tercero"]);
+                          $oItem=new Data("tercero","idTercero",$value["idTercero"]);
+                          $tercero=$oItem->getDatos();
+                          $idTerc=$tercero["idTercero"];
+                          $nombreT=$tercero["razonSocial"];
+                          $nitTercero=$tercero["nit"];
 
                           $oItem=new Data("centro_costo","idCentroCosto",$value['idCentroCosto']);
                           $centroCos=$oItem->getDatos();
+                          unset($oItem);
+
+
+                          $oItem=new Data("subcentro_costo","idSubcentroCosto",$value['idSubcentroCosto']);
+                          $subcentroCos=$oItem->getDatos();
                           unset($oItem);
                           // $idCentroCos=explode('-', $value['centroCosto']);  
                           
@@ -329,9 +303,13 @@ unset($oLista);
                                 <span name="item[0][letreroCuentaContable]" id="item[0][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
                                 <input type="hidden" name="item[<?php echo $key; ?>][idCuentaContable]" id="item[<?php echo $key; ?>][idCuentaContable]" class="form-control idCuentaContable" value="<?php echo $cuentaC['idCuentaContable'];?>"></td>
 
-                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $key; ?>][centroCosto]" id="item[<?php echo $key; ?>][centroCosto]" placeholder="centro costo" value="<?php echo $centroCos["codigo"].' '.$centroCos["centroCosto"]; ?>">
+                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $key; ?>][centroCosto]" id="item[<?php echo $key; ?>][centroCosto]" placeholder="centro costo" value="<?php echo $centroCos["codigoCentroCosto"].' - '.$centroCos["centroCosto"]; ?>">
                                 
                                 <input type="hidden" name="item[<?php echo $key; ?>][idCentroCosto]" id="item[<?php echo $key; ?>][idCentroCosto]" class="form-control idCentroCosto" value="<?php echo $centroCos["idCentroCosto"];?>"></td>
+
+                              <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]" placeholder="subcentro costo" value="<?php echo $subcentroCos["codigoSubcentroCosto"].' - '.$subcentroCos["subcentroCosto"]; ?>">
+                                
+                                <input type="hidden" name="item[<?php echo $key; ?>][idSubcentroCosto]" id="item[<?php echo $key; ?>][idSubcentroCosto]" class="form-control idSubcentroCosto" value="<?php echo $subcentroCos["idSubcentroCosto"];?>"></td>
 
                               <!-- <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]"  required></td> -->
 
@@ -511,7 +489,7 @@ unset($oLista);
           <div class="form-group">
             <div class="form-group">
               <label >Porcentaje de la retención:</label>
-              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control" placeholder="% de la retencion" required>
+              <input type="text" name="datos[porcentajeRetencion]" id="porcentajeRetencion" class="form-control decimales" placeholder="% de la retencion" required>
               
              
             </div>

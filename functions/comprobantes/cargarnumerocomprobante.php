@@ -31,7 +31,7 @@ $idEmpresa  = (isset($_REQUEST['idEmpresa'] ) ? $_REQUEST['idEmpresa'] : "" );
 
 $oLista=new Lista("parametros_documentos");
 $oLista->setFiltro("tipo","=",$tipoDocumento);
-$oLista->setFiltro("idParametrosDocumentos","=",$comprobante);
+$oLista->setFiltro("comprobante","=",$comprobante);
 $oLista->setFiltro("idEmpresa","=",$idEmpresa);
 $aNumero=$oLista->getLista();
 unset($oLista);

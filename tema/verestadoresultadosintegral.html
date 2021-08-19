@@ -90,8 +90,8 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
       <table style="font-size: 14px;font-family: Arial;" class="table">
         <tbody >
           <tr>
-            <th>SmartBuss</th>
-            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="60" height="60">    <?php echo $aEmpresa['razonSocial'];?></th>
+            <th>AS-SmartBuss</th>
+            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="140" height="100">    <?php echo $aEmpresa['razonSocial'];?></th>
             <th></th>
             <th><?php echo date('Y/m/d'); ?></th>
           </tr>
@@ -116,15 +116,17 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
     </div>
     <div class="card-body">
       <div class="row">
-        <a href="filtrarestadosituacionfinanciera" class="btn btn-info">NUEVO FILTRO</a>
-        <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
-        <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
-        <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
-        <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
-        <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
-        <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>">
-        <input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
-        <input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">
+       <div class="col-md-12">
+          <a href="filtrarestadosituacionfinanciera" class="btn btn-info">NUEVO FILTRO</a>
+          <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+          <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+          <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+          <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+          <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+          <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>">
+          <input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
+          <input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">
+       </div>
       </div>
       <br><br>
                   <div class="row">
@@ -248,7 +250,7 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                           ?>
 
                           <tr>
-                            <td style="text-align: center;" class="centrado"><?php echo substr($value["codigoCuenta"],0,2);?></td>
+                            <td  class="centrado"><?php echo substr($value["codigoCuenta"],0,4);?></td>
                             <td><?php echo $value["nombre"];?></td>
                             <td></td>
                             <td></td>
@@ -300,16 +302,19 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                             <td><?php 
                             if (strlen($valueSC["codigoCuenta"])==6) {
                             echo number_format($saldoNSC,2,".",",");
+
                             }
                             ?></td>
                             <td><?php 
                             if (strlen($valueSC["codigoCuenta"])==4) {
                             echo number_format($saldoNSC,2,".",",");
+                            
                             }
                             ?></td>
                             <td><?php 
                             if (strlen($valueSC["codigoCuenta"])==2) {
                             echo number_format($saldoNSC,2,".",",");
+
                             }
                             ?></td>
                             <td><?php 

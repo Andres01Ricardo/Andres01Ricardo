@@ -10,7 +10,8 @@ $oFactura=new FacturaVenta();
 
 $oControl=new Control(); 
 
-if($_SESSION["idRol"]==2){
+// if($_SESSION["idRol"]==2){
+if(empty($_SESSION["idEmpresa"])){
 
   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
 
@@ -23,18 +24,25 @@ if($_SESSION["idRol"]==2){
   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
   $aFacturas=$oFactura->getFacturasVenta(array("ingresoPerfilEmpresa"=>$validarIngreso));
 
+  $oLista = new Lista('cuenta_bancaria');
+  $aCuentas=$oLista->getLista();
+  unset($oLista);
+
+
 }else{
   
   $aFacturas=$oFactura->getFacturasVenta();
+
+  $oLista = new Lista('cuenta_bancaria');
+  $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+  $aCuentas=$oLista->getLista();
+  unset($oLista);
 }
 
 
 
-$oLista = new Lista('cuenta_bancaria');
 
-$aCuentas=$oLista->getLista();
 
-unset($oLista);
 
 
 ?>
@@ -60,6 +68,11 @@ unset($oLista);
           <li class="breadcrumb-item">Listar facturas</li>
 
         </ul>
+
+
+        <?php if(!empty($_SESSION["idEmpresa"])){  ?>
+          <input type="hidden" name="datos[idEmpresaSesion]" id="idEmpresaSesion" value="<?php if(!empty($_SESSION["idEmpresa"])){ echo $_SESSION["idEmpresa"];}if(empty($_SESSION["idEmpresa"])){echo '0';}  ?>">
+        <?php } ?>
 
         <div class="section-body">
 
@@ -109,6 +122,7 @@ unset($oLista);
                             <th>Saldo</th>
 
                             <th>Acciones</th>
+                            <th class="ocultar">ID Empresa</th>
 
                           </tr>
 
@@ -126,7 +140,7 @@ unset($oLista);
 
                             <tr>
 
-                              <td><?php echo $index+1; ?></td>
+                              <td><?php echo $index+1; ?> </td>
 
                               <td><?php echo $iFactura["fechaRegistro"]; ?></td>
 
@@ -140,7 +154,8 @@ unset($oLista);
 
                               <td><?php if($iFactura["estado"]==1){ echo 'Pendiente'; }elseif($iFactura["estado"]==2){ echo 'Enviada'; }elseif($iFactura["estado"]==4){ echo 'Abonada'; }elseif($iFactura["estado"]==5){ echo 'Anulada'; }else{ echo 'Pagada'; } ?></td>
 
-                              <?php if($_SESSION["idRol"]==1||$_SESSION["idRol"]==2){  ?>
+                              
+                                <?php if(empty($_SESSION["idEmpresa"])){  ?>
 
                               <td><?php echo $iFactura["empresa"]; ?></td>
 
@@ -156,7 +171,7 @@ unset($oLista);
                                    <?php } ?>
                                   <a href="<?php echo $URL.$iFactura['archivo']; ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 19px;"></i></a>
                                 
-                                <?php if(empty($_SESSION["idEmpresa"])){  ?>
+                                <?php if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){  ?>
 
                                 <?php if($iFactura["estado"]==1){ ?>
                                   <a href="<?php echo $URL; ?>gestionfacturaventa/<?php echo $id; ?>" data-toggle="tooltip" title="Completar gestion" data-placement="top" ><i class="fas fa-money-bill-alt" style="color: #65E572;font-size: 19px;"></i></a>
@@ -174,6 +189,7 @@ unset($oLista);
                                 <!-- </form> -->
                                 </div>
                               </td>
+                              <td class="ocultar"><?php echo $iFactura["idEmpresa"]; ?></td>
                             </tr>
 
                           <?php } ?>
@@ -232,7 +248,7 @@ unset($oLista);
 
                   <label class="negrita">Nro Factura:</label>
 
-                  <input type="text" class="form-control" id="nroFactura" name="datos[numeroFactura]" required>
+                  <input type="text" class="form-control" id="nroFactura" name="datos[numeroFactura]" required readonly>
 
                 </div>
 
@@ -287,20 +303,29 @@ unset($oLista);
               </div>
               <div class="col-md-2">
 
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="datos[radioPago]" id="radioPagoTotal" value="1" checked>
-                          <label class="form-check-label" for="radioPagoTotal" >
-                            Pago total
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="datos[radioPago]" value="2" id="radioAbono" >
-                          <label class="form-check-label" for="radioAbono">
-                            Abono
-                          </label>
-                        </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="datos[radioPago]" id="radioPagoTotal" value="1" checked>
+                  <label class="form-check-label" for="radioPagoTotal" >
+                    Pago total
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="datos[radioPago]" value="2" id="radioAbono" >
+                  <label class="form-check-label" for="radioAbono">
+                    Abono
+                  </label>
+                </div>
 
-                      </div>
+              </div>
+              
+              <div class="col-md-3 ocultar" id="divCuentaContableTotal">
+                <div class="form-group">
+                  <label class="negrita">Cuenta contable total a Pagar:</label>
+                  <select class="form-control" name="datos[cuentaContableTotal]" id="cuentaContableTotal">
+                  </select>
+                </div>
+              </div>
+              
 
             </div>
               <!-- <button type="submit" class="btn btn-primary">GUARDAR</button> -->

@@ -18,7 +18,7 @@ $id=$oControl->desencriptar($decrip);
 
 
 
-$oItem=new Data("proveedor","idProveedor",$id); 
+$oItem=new Data("tercero","idTercero",$id); 
 
 $aDatos=$oItem->getDatos(); 
 
@@ -48,7 +48,7 @@ unset($oLista);
 
 <form enctype="multipart/form-data" id="frmGuardar">
 
-  <input type="hidden" name="id" id="id" value="<?php echo $aDatos["idProveedor"]; ?>">
+  <input type="hidden" name="id" id="id" value="<?php echo $aDatos["idTercero"]; ?>">
 
 <section class="section">
 
@@ -237,33 +237,36 @@ unset($oLista);
                     </div>
 
                   </div>
-                  <!-- <div class="row">
-                    <label>¿Registrar el proveedor como cliente o empleado?</label>
+                  <div class="row">
+                    <label>¿Registrar el proveedor como cliente?</label>
                   </div>
 
                   <div class="row">
                     <div class="col-md-2">
                       <div class="form-group">
-                              <input  type="checkbox" name="datos[checkCliente]" id="datos[checkCliente]" value="1">
+                              <input  type="checkbox" name="datos[checkCliente]" id="datos[checkCliente]" value="1" 
+                              <?php if ($aDatos["tipoTercero"]==4) {
+                                echo 'checked';
+                              } ?> >
                               <label class="form-check-label" for="defaultCheck1">CLIENTE</label>
                             </div>
                     </div>
                     <?php if($_SESSION["idRol"]==1 or $_SESSION["idRol"]==2){?>
-                      <div class="col-md-2">
+                      <!-- <div class="col-md-2">
                       <div class="form-group">
                               <input class="form-check-input menu" type="checkbox" name="datos[checkEmpresa]" id="datos[checkEmpresa]" value="1">
                               <label class="form-check-label" for="defaultCheck1">EMPRESA</label>
                             </div>
-                    </div>
+                    </div> -->
                   <?php } ?>
                   
-                  <div class="col-md-2">
+                  <!-- <div class="col-md-2">
                       <div class="form-group">
                               <input class="form-check-input menu" type="checkbox" name="datos[checkEmpleado]" id="datos[checkEmpleado]" value="1">
                               <label class="form-check-label" for="defaultCheck1">EMPLEADO</label>
                             </div>
-                    </div>
                     </div> -->
+                    </div>
                   </div>
 
                   

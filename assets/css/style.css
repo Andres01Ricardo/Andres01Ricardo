@@ -4928,7 +4928,7 @@ textarea.form-control{
 
     background-color:transparent;
 
-    padding:20px 25px
+    padding:10px 10px
 
 }
 
@@ -6016,7 +6016,7 @@ textarea.form-control{
 
 .table:not(.table-sm):not(.table-md):not(.dataTable) td,.table:not(.table-sm):not(.table-md):not(.dataTable) th{
 
-    padding:0 10px;
+    padding:0 1px;
 
     height:60px;
 

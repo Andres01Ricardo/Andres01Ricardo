@@ -1,0 +1,247 @@
+
+
+<?php 
+
+require_once("class/empresa.php"); 
+
+ include("class/clientes.php") ; 
+
+
+$oEmpresa=new Empresa(); 
+
+$aEmpresas=$oEmpresa->getEmpresas();
+
+$oLista = new Lista('unidad');
+$oLista->setOrden("nombre","ASC");
+$aUnidades=$oLista->getLista();
+unset($oLista);
+
+
+$idEmpresa=$_SESSION['idEmpresa'];
+
+$oLista = new Lista('unidad');
+// $oLista->setOrden("nombre","ASC");
+$aUnidades=$oLista->getLista();
+unset($oLista);
+
+
+
+$oLista = new Lista('inventario_inicial');
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+$aInventario=$oLista->getLista();
+unset($oLista);
+
+$oItem=new Data("empresa","idEmpresa",$idEmpresa);
+$aEmpresa=$oItem->getDatos();
+unset($oItem);
+
+?>
+
+
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<form enctype="multipart/form-data"  id="frmGuardar" >
+	<?php if(!empty($_SESSION['idEmpresa'])){ ?>
+	<input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+	<?php } ?>
+		<div class="card">
+			<div class="card-body">
+				<?php if(empty($_SESSION['idEmpresa'])){ ?>
+					<div class="form-group">
+
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+
+                          <select class="form-control select2" name="datos[idEmpresa]" id="idEmpresa" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <?php foreach($aEmpresas as $iItem){ ?>
+
+                          <option value="<?php echo $iItem['idEmpresa']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+
+                        <?php } ?>
+
+                        </select>
+
+                      </div>
+      				<?php }?>
+      				</div>
+              <div class="card-header">
+                    <h4>AGREGAR INVENTARIO INICIAL</h4>
+                </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12 col-lg-12 table-responsive">
+                        <table class="table  mayusculas" id="tableProductos">
+                          <thead>
+                            <tr>
+                              <th>PRODUCTO<a href="javascript:void(0)" id="btnAgregarProducto" class="btn btn-light" title="AGREGAR PRODUCTO NUEVO" data-toggle="tooltip"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 25px;"></i> </a></th>
+                              <th>CATEGORIA<a href="javascript:void(0)" id="btnAgregarCat" class="btn btn-light" title="AGREGAR CATERGORIA NUEVA" data-toggle="tooltip"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 25px;"></i> </a></th>
+                              <th>UNIDAD</th>
+                              <th>CANTIDAD</th>
+                              <th>STOCK MÍNIMO</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                <td>
+                                  <select class="form-control select2 mayusculas" name="datos[idProducto]" id="idProducto" required>
+                                    <option value="">Seleccione una opción</option>
+                                  </select>
+                                </td>
+                                <td>
+                                  <select class="form-control select2 mayusculas" name="datos[idCategoria]" id="idCategoria" required>
+                                    <option value="">Seleccione una opción</option>
+                                  </select>
+                                </td>
+                                <td><select class="form-control select2 mayusculas idUnidad" name="datos[idUnidad]" id="idUnidad" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <?php foreach($aUnidades as $iUnidades){ ?>
+                                    <option value="<?php echo $iUnidades['idUnidad'];?>"><?php echo $iUnidades["nombre"]; ?></option>
+                                    <?php } ?>
+                                  </select>
+                                  </td>
+                                  <td><input type="text" class="form-control numero cantidad centrar" name="datos[cantidad]" id="cantidad" placeholder="Cantidad" required></td>
+                                  <td><input type="text" class="form-control numero minimo centrar" name="datos[minimo]" id="minimo" placeholder="Stock mínimo" required></td>
+                                <!-- <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="datos[valorUnitario]" id="valorUnitario" placeholder="Valor Unitario" required ></td>
+                                <td><input type="text" class="form-control moneda total mayusculas" name="datos[total]" id="total" placeholder="TOTAL" required readonly></td> -->
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1"  id="btnGuardar">Guardar</a>
+                  </div>
+            
+                        
+                  <div class="card-header">
+                    <h4>INVENTARIO INICIAL</h4>
+                    <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+                    <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+                    <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+                    <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+                    <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-hover table-bordered mayusculas" id="tableInsumos" style="text-align: center;">
+                        <thead>
+                          <tr>
+                            <th>CÓDIGO</th>
+                            <th>PRODUCTO</th>
+                            <th>CATEGORIA</th>
+                            <th>UNIDAD</th>
+                            <th>EXISTENCIA</th>
+                            <th>STOCK MÍNIMO</th>
+                            <!-- <th>VALOR UNITARIO</th>
+                            <th>TOTAL</th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <?php
+
+                          foreach ($aInventario as $key => $value) {
+                            
+                          
+                            $oItem = new Data("producto_servicio","idProductoServicio",$value["idProducto"]);
+                            $producto=$oItem->getDatos();
+                            unset($oLista);
+
+                            $oItem = new Data("unidad","idUnidad",$value["idUnidad"]);
+                            $unidad=$oItem->getDatos();
+                            unset($oLista);
+
+                            $oItem = new Data("categoria_inventario","idCategoriaInventario",$value["idCategoria"]);
+                            $categoria=$oItem->getDatos();
+                            unset($oLista);
+                           ?>
+                            <tr>
+                              <td><?php echo $producto["codigo"];?></td>
+                              <td><?php echo $producto["nombre"];?></td>
+                              <td>
+                                <?php echo $categoria["nombre"];?>
+                              </td>
+                              <td> <?php echo $unidad["nombre"]; ?> </td>
+                                <td><?php echo $value["existencia"]; ?></td>
+                                <td><?php echo $value["stockMinimo"]; ?></td>
+                              <!-- <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="datos[valorUnitario]" id="valorUnitario" placeholder="Valor Unitario" required ></td>
+                              <td><input type="text" class="form-control moneda total mayusculas" name="datos[total]" id="total" placeholder="TOTAL" required readonly></td> -->
+                            </tr>
+                          <?php } ?>
+                        </tbody>
+                      </table>
+                  </div>
+                </div>
+              
+</form>
+
+
+<div class="modal fade " id="modalProductos" tabindex="-1" role="dialog" aria-labelledby="modalProductosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalProductosLabel">AGREGAR PRODUCTO</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+          <form enctype="multipart/form-data" id="frmGuardarProducto">
+          <input type="hidden" name="datos[idEmpresa]" id="idEmpresaCuenta" value="<?php echo $_SESSION['idEmpresa']; ?>"> 
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <label>CODIGO:</label>
+        <input type="text" name="datos[codigoProducto]" class="form-control" id="codigoProducto" required>
+      </div>
+      <div class="col-md-6">
+        <label>PRODUCTO:</label>
+        <input type="text" name="datos[producto]" class="form-control" id="producto" required>
+      </div>
+        
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btnGuardarProducto">GUARDAR</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="modalCat" tabindex="-1" role="dialog" aria-labelledby="modalCatLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCatLabel">AGREGAR CATEGORIA</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <form enctype="multipart/form-data" id="frmGuardarCategoria">
+          
+          <input type="hidden" name="datos[idEmpresa]" id="idEmpresaCategoria" value="<?php echo $_SESSION['idEmpresa']; ?>"> 
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <label>NOMBRE CATEGORIA:</label>
+        <input type="text" name="datos[categoria]" class="form-control" id="categoria" required>
+      </div>
+        
+      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="btnGuardarCategoria">GUARDAR</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

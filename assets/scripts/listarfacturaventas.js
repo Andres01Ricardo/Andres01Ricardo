@@ -120,7 +120,20 @@ $("body").on("click touchstart",".comprobante",function(e){
 
     var total=$(this).parents("tr").find("td").eq(5).html();
 
+var idEmpresaSesion = $("#idEmpresaSesion").val();
+
+
+  if (idEmpresaSesion!="0") {
+    var saldo=$(this).parents("tr").find("td").eq(7).html();
+    var idEmpresa=$(this).parents("tr").find("td").eq(9).html();
+  }
+  if (idEmpresaSesion=="0") {
     var saldo=$(this).parents("tr").find("td").eq(8).html();
+    var idEmpresa=$(this).parents("tr").find("td").eq(10).html();
+  }
+
+
+// alert(numero);
 
 	var id=$(this).attr("id"); 
 
@@ -140,6 +153,32 @@ $("body").on("click touchstart",".comprobante",function(e){
 	$("#nroFactura").val(factura); 
 
     
+  $.ajax({
+          url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+          type:"POST", 
+          data: {"empresa":idEmpresa,"tipoFactura":'venta'}, 
+          dataType: "json",
+          }).done(function(msg){  
+
+              if(msg.length!=0){
+
+                  console.log('este:');
+                  console.log(msg);
+                  var sHtml=""; 
+                  msg.forEach(function(element,index){
+                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+                  })
+                  $("#cuentaContableTotal").html(sHtml);
+
+                  if(msg.length>1){
+                    $("#divCuentaContableTotal").removeClass('ocultar');
+                  }
+              }
+              if(msg.length==0){
+              }
+
+            })
+
 
 })
 

@@ -1,3 +1,57 @@
+$(document).ready(function(e){
+  if ($("#idEmpresa").val()!="") {
+      var id=$("#idEmpresa").val();
+
+      $("#periodoPago").val($(this).find("option:selected").attr("pago"));
+      if($(this).find("option:selected").attr("pago")==1){
+
+        $("[name='datos[tiempoPago]']").removeAttr("required"); 
+
+        $("[name='datos[tiempoPago]']").attr("disabled","disabled"); 
+
+        $("[name='datos[tiempoPago]']").val(''); 
+
+      }else if($(this).find("option:selected").attr("pago")==2){
+
+        $("[name='datos[tiempoPago]']").attr("required","required"); 
+
+        $("[name='datos[tiempoPago]']").removeAttr("disabled"); 
+
+      }
+
+      $.ajax({
+
+        url:URL+"functions/nomina/empleados.php", 
+
+        type:"POST", 
+
+        data: {"idEmpresa":id}, 
+
+        dataType: "json",
+
+        }).done(function(msg){  
+
+          var sHtml="<option value=''>Seleccione una opción</option>"; 
+
+          msg.lista.forEach(function(element,index){
+
+            sHtml+="<option value='"+element.idEmpleado+"'>"+element.nombre+" "+element.apellido+"</option>"; 
+
+          })
+
+
+
+          $("[name='datos[idEmpleado]']").html(sHtml);
+
+      });
+
+  }
+})
+
+
+
+
+
 $("body").on("change","[name='datos[idEmpresa]']",function(e){
 
     var id=$(this).val(); 
@@ -86,7 +140,9 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
 
         dataType: "json",
 
-        }).done(function(msg){  
+        }).done(function(msg){ 
+
+          console.log(msg);
 
           $("[name='datos[salario]']").val(msg.valorSalario).trigger("change");
 
@@ -96,7 +152,9 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
           $("[name='datos[auxilioTransporteInicial]']").val(msg.auxilioTransporte);
 
           $("#vacacionesControl").val(msg.vacaciones);
+          // $("#salarioIncapacidad").val(msg.vacaciones);
           var vacacionesControl=msg.vacaciones;
+          // var incapacidadControl=msg.incapacidad;
 
           var sHtmlA=""; 
 
@@ -105,6 +163,12 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
           if(msg.adiciones!=null){
 
             msg.adiciones.forEach(function(element,index){
+
+              $("#salarioIncapacidad").val(element.valorIncapacidad);
+
+              $("#diasIncapacidad").val(element.diasIncapacidad);
+
+              console.log(element.valorIncapacidad);
 
               sHtmlA+='<tr>'+
 
@@ -147,6 +211,11 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
 
               clase='empleador'; 
 
+            }
+            if (element.concepto==3 || element.concepto==4) {
+              // alert('ingreso');
+              element.valor=(element.valor/30)*msg.diasPago;
+              // alert(element.valor);
             }
 
             sHtmlL+='<tr class="'+clase+'">'+
@@ -236,6 +305,10 @@ calcularProvisiones=function(){
   if ($("#vacacionesControl").val() ==1 || $("#vacacionesControl").val() ==2) {
     var diasTrabajados=30;
   }
+
+  if ($("#diasIncapacidad").val()!="") {
+    diasTrabajados=parseInt($("#diasTrabajados").val())+parseInt($("#diasIncapacidad").val());
+  }
   var salarioDias= (salarioBase/30)*diasTrabajados;
   salarioDias=Math.round(salarioDias);
   
@@ -246,7 +319,7 @@ calcularProvisiones=function(){
 
   var cesantias=((salarioDias+valorAuxilioTransporte)*8.333)/100;
   cesantias=Math.round(cesantias);
-  var interesesCesantias=((cesantias)*1)/100;
+  var interesesCesantias=((cesantias)*12)/100;
   interesesCesantias=Math.round(interesesCesantias);
   var prima=((salarioDias+valorAuxilioTransporte)*8.333)/100;
   prima=Math.round(prima);
@@ -329,6 +402,7 @@ $("body").on("keyup","#diasTrabajados",function(e){
 })
 $("body").on("keyup","#diasSeguridadSocial",function(e){
   var cantidadDiasSeguridadSocial= $(this).val();
+  var cantidadDiasIncapacidad=$("#diasIncapacidad").val();
   var inputSalud=document.getElementById("ley[0][producto]").value;
   var inputARL=document.getElementById("ley[2][producto]").value;
   var inputCajaCompensacion=document.getElementById("ley[3][producto]").value;
@@ -359,7 +433,21 @@ $("body").on("keyup","#diasSeguridadSocial",function(e){
 
 
   var salarioBase=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[salario]']").val(),"$",""),".",""),",","."));
-  var valorSeguridadSocial =(((salarioBase*parseFloat(porcentajeSalud))/100)/30)*cantidadDiasSeguridadSocial;
+  
+  if ($("#salarioIncapacidad").val()!="") {
+    var diasTotalS=parseInt(cantidadDiasSeguridadSocial)+parseInt(cantidadDiasIncapacidad);
+    // alert(diasTotalS);
+    var valorSeguridadSocial =((($("#salarioIncapacidad").val()*parseFloat(porcentajeSalud))/100)/30)*diasTotalS;  
+
+    var valorPensionEmpleador =(((salarioBase*parseFloat(porcentajePensionEmpleador2))/100)/30)*diasTotalS;
+
+  }
+  if ($("#salarioIncapacidad").val()=="") {
+    var valorSeguridadSocial =(((salarioBase*parseFloat(porcentajeSalud))/100)/30)*cantidadDiasSeguridadSocial;  
+
+    var valorPensionEmpleador =(((salarioBase*parseFloat(porcentajePensionEmpleador2))/100)/30)*cantidadDiasSeguridadSocial;
+  }
+  
   var valorARL =(((salarioBase*parseFloat(porcentajeARL2))/100)/30)*cantidadDiasSeguridadSocial;
   var valorCajaCompensacion =(((salarioBase*parseFloat(porcentajeCajaCompensacion2))/100)/30)*cantidadDiasSeguridadSocial;
   var valorSaludEmpleador =(((salarioBase*parseFloat(porcentajeSaludEmpleador2))/100)/30)*cantidadDiasSeguridadSocial;
@@ -378,6 +466,74 @@ $("body").on("keyup","#diasSeguridadSocial",function(e){
   calcularSalario();
   // calcularSalario();
 })
+
+
+
+
+
+$("body").on("keyup","#valorSeguridadSocial",function(e){
+  var salarioBase= $(this).val();
+  var cantidadDiasSeguridadSocial= $("#diasSeguridadSocial").val();
+  if (cantidadDiasSeguridadSocial=="") {
+    cantidadDiasSeguridadSocial= $("#diasTrabajados").val();
+  }
+  var cantidadDiasIncapacidad=$("#diasIncapacidad").val();
+  var inputSalud=document.getElementById("ley[0][producto]").value;
+  var inputARL=document.getElementById("ley[2][producto]").value;
+  var inputCajaCompensacion=document.getElementById("ley[3][producto]").value;
+  var inputSaludEmpleador=document.getElementById("ley[4][producto]").value;
+  var inputPensionEmpleador=document.getElementById("ley[5][producto]").value;
+  var inputValorSalud=document.getElementById("ley[0][valor]");
+  var inputValorPension=document.getElementById("ley[1][valor]");
+  var inputValorARL=document.getElementById("ley[2][valor]");
+  var inputValorCajaCompensacion=document.getElementById("ley[3][valor]");
+  var inputValorSaludEmpleador=document.getElementById("ley[4][valor]");
+  var inputValorPensionEmpleador=document.getElementById("ley[5][valor]");
+  var porcentajeSalud=inputSalud.substring(6,7);
+  var porcentajeSalud=inputSalud.substring(6,7);
+
+  var porcentajeARL=inputARL.split(' ');
+  var porcentajeARL2=porcentajeARL[3].split('%');
+
+  var porcentajeCajaCompensacion=inputCajaCompensacion.split(' ');
+  var porcentajeCajaCompensacion2=porcentajeCajaCompensacion[2].split('%');
+
+  var porcentajeSaludEmpleador=inputSaludEmpleador.split(' ');
+  var porcentajeSaludEmpleador2=porcentajeSaludEmpleador[1].split('%');
+
+  var porcentajePensionEmpleador=inputPensionEmpleador.split(' ');
+  var porcentajePensionEmpleador2=porcentajePensionEmpleador[1].split('%');
+  // var salarioBase=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[salario]']").val(),"$",""),".",""),",","."));
+
+  if ($("#salarioIncapacidad").val()!="") {
+    var diasTotalS=parseInt(cantidadDiasSeguridadSocial)+parseInt(cantidadDiasIncapacidad);
+    var valorSeguridadSocial =((($("#salarioIncapacidad").val()*parseFloat(porcentajeSalud))/100)/30)*diasTotalS;  
+    var valorPensionEmpleador =(((salarioBase*parseFloat(porcentajePensionEmpleador2))/100)/30)*diasTotalS;
+  }
+  if ($("#salarioIncapacidad").val()=="") {
+    var valorSeguridadSocial =(((salarioBase*parseFloat(porcentajeSalud))/100)/30)*cantidadDiasSeguridadSocial;  
+    var valorPensionEmpleador =(((salarioBase*parseFloat(porcentajePensionEmpleador2))/100)/30)*cantidadDiasSeguridadSocial;
+  }
+  var valorARL =(((salarioBase*parseFloat(porcentajeARL2))/100)/30)*cantidadDiasSeguridadSocial;
+  var valorCajaCompensacion =(((salarioBase*parseFloat(porcentajeCajaCompensacion2))/100)/30)*cantidadDiasSeguridadSocial;
+  var valorSaludEmpleador =(((salarioBase*parseFloat(porcentajeSaludEmpleador2))/100)/30)*cantidadDiasSeguridadSocial;
+  var valorPensionEmpleador =(((salarioBase*parseFloat(porcentajePensionEmpleador2))/100)/30)*cantidadDiasSeguridadSocial;
+  
+  $("[name='ley[0][valor]']").val(valorSeguridadSocial.toFixed(3)).trigger('change');
+  $("[name='ley[1][valor]']").val(valorSeguridadSocial.toFixed(3)).trigger('change');
+  $("[name='ley[2][valor]']").val(valorARL.toFixed(3)).trigger('change');
+  $("[name='ley[3][valor]']").val(valorCajaCompensacion.toFixed(3)).trigger('change');
+  $("[name='ley[4][valor]']").val(valorSaludEmpleador.toFixed(3)).trigger('change');
+  $("[name='ley[5][valor]']").val(valorPensionEmpleador.toFixed(3)).trigger('change');
+  calcularSalario();
+  // calcularSalario();
+})
+
+
+
+
+
+
 $("body").on("click touchstart",".eliminar",function(e){
 
   $(this).parents("tr").remove(); 

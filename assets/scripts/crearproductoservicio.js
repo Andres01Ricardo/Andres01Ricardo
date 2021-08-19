@@ -186,9 +186,62 @@
 
 // })
 var aDatos=[]; 
+var idEmpresa='';
+
+$(document).ready(function(e){
+
+  aDatos=[]; 
+  idEmpresa=$("#idEmpresa").val();
+  if (idEmpresa !=null) {
+    if (idEmpresa!="") {
+      $.ajax({
+        url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+        type:"POST", 
+        data: {"idEmpresa":idEmpresa}, 
+        dataType: "json",
+        }).done(function(msg){  
+          msg.forEach(function(element,index){
+            aDatos.push({
+                value: element.idCuentaContable,
+                label: element.codigoCuentaContable+" - "+element.nombre,
+                // naturaleza: element.naturaleza,
+                // tercero:element.tercero,
+                // centroCosto:element.centroCosto,
+                // detalle:element.detalle,
+                // porcentajeRetencion:element.porcentajeRetencion,
+              })
+          })
+          autocomplete(); 
+      }); 
+
+        $.ajax({
+        url:URL+"functions/parametrosdocumentos/cargarparametros.php", 
+        type:"POST", 
+        data: {"idEmpresa":idEmpresa}, 
+        dataType: "json",
+        }).done(function(msg){  
+            var sHtml="<option value=''>Seleccione una opción</option>"; 
+          msg.forEach(function(element,index){
+
+                var valor=element.idParametrosDocumentos; 
+
+                sHtml+="<option value='"+valor+"'>"+element.letra+'-'+element.comprobante+"</option>";             
+
+          })
+              $("[name='datos[tipoDocumentoProductoCompra]']").html(sHtml);
+              $("[name='datos[tipoDocumentoProductoVenta]']").html(sHtml);
+            
+      }); 
+    }
+  }
+
+})
+
+
+
 $("body").on("change","[name='datos[idEmpresa]']",function(e){
-   aDatos=[]; 
-  var idEmpresa=$(this).val();
+  aDatos=[]; 
+  idEmpresa=$(this).val();
   // if (idEmpresa =="") {
   //   tabla.style.display="none";
   // }
@@ -250,18 +303,25 @@ $("body").on("change","[name='datos[idEmpresa]']",function(e){
 function verificar_id_cuenta_contable(){
     var cuenta=0;
     var estado=true;
-    $('.idCuentaContable').each(function() { 
+    $('.cuentaContable').each(function() { 
 
         var cuentaContable=document.getElementById('item['+cuenta+'][cuentaContable]');
         var idCuentaContable=document.getElementById('item['+cuenta+'][idCuentaContable]');
         var letreroCuentaContable=document.getElementById('item['+cuenta+'][letreroCuentaContable]');
 
         if ($(this).val()=='') {
-          letreroCuentaContable.classList.remove("ocultar");
-          estado= false;
+          
+          letreroCuentaContable.classList.add("ocultar");
         }
         else{
-          letreroCuentaContable.classList.add("ocultar");
+          if (idCuentaContable == null) {
+            letreroCuentaContable.classList.remove("ocultar");
+            estado= false;  
+          }else{
+            letreroCuentaContable.classList.add("ocultar");   
+          }
+          // letreroCuentaContable.classList.add("ocultar");
+          
         }
 
 
@@ -331,7 +391,7 @@ autocomplete=function(){
 
         // $( ".naturaleza" ).eq(index).val( ui.item.naturaleza );
 
-        verificar_id_cuenta_contable();
+        // verificar_id_cuenta_contable();
 
         var id=ui.item.value;
  

@@ -10,7 +10,7 @@ class Empleados extends Sql{
 
 	public function getEmpleadosEmpresa($aDatos=array()){
 
-
+		if(!isset($_SESSION)){ session_start(); }
 
 		$condicion=""; 
 

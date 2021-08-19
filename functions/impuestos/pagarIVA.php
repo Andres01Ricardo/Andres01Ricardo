@@ -28,13 +28,18 @@ $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
 
 // $item  = (isset($_REQUEST['item'] ) ? $_REQUEST['item'] : "" );
 
-// if (!empty($IVAAdicional)) {
-//     $totalIVA= $IVAAdicional + $IVA;
-// }if (empty($IVAAdicional)){
-//     $totalIVA = $IVA;
-// }
-$IVA = $datos['valorIVA'];
-$IVAAdicional = $datos['iva'];
+
+$IVA = str_replace(",", ".",$datos['valorIVA']);
+
+$IVAAdicional = str_replace(",", ".",$datos['iva']);
+
+
+if (!empty($IVAAdicional)) {
+    $totalIVA= $IVAAdicional + $IVA;
+}if (empty($IVAAdicional)){
+    $totalIVA = $IVA;
+}
+
     
     $dDatos["tipoImpuesto"]='IVA';
     $dDatos["valor"]=$IVA;

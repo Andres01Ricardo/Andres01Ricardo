@@ -579,8 +579,12 @@ calcularDeduccion=function(){
   $("#tableDeducciones .valorSumar").each(function(index,element){
 
     // parseFloat(.val()); 
-    valor+=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($(element).val(),"$",""),".",""),",",".")); 
+    var tipo=$("[name='impuesto["+index+"][tipoDeduccion]']").val();  
+    var concepto =$("[name='impuesto["+index+"][idConcepto]']").val();  
 
+    if (concepto!=33) {
+      valor+=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($(element).val(),"$",""),".",""),",",".")); 
+    }
   })
 
  var valorTotal=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[totalFactura]']").val(),"$",""),".",""),",",".")); 

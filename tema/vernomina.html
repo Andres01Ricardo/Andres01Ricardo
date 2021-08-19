@@ -16,56 +16,31 @@ $decrip["cadena"]=$id;
 
 $id=$oControl->desencriptar($decrip); 
 
-
-
 require_once("class/nomina.php"); 
-
-
 
 $oNomina=new Nomina();
 
-
-
 $aData["idNomina"]=$id;  
-
 $aNomina=$oNomina->getNomina($aData)[0];
 
-
-
 $oLista=new Lista("nomina_empleado"); 
-
 $oLista->setFiltro("idNomina","=",$id); 
-
 $aLista=$oLista->getLista(); 
-
 unset($oItem);
 
 
-
 $meses[1]="Enero"; 
-
 $meses[2]="Febrero"; 
-
 $meses[3]="Marzo"; 
-
 $meses[4]="Abril"; 
-
 $meses[5]="Mayo"; 
-
 $meses[6]="Junio"; 
-
 $meses[7]="Julio"; 
-
 $meses[8]="Agosto"; 
-
 $meses[9]="Septiembre"; 
-
 $meses[10]="Octubre"; 
-
 $meses[11]="Noviembre"; 
-
 $meses[12]="Diciembre"; 
-
 
 
 $aFiltroS["idNomina"]=$id; 
@@ -207,20 +182,165 @@ unset($oEmpresa);
 
             <!-- <div class="col-md-12 col-lg-12"> -->
 
-              <div class="card" style="height: 100%">
+              
 
-                <div class="card-header">
+
+                <div class="card" style="height: 100%">
+                    <div class="card-header">
                   <table class="table" id="tableNominaCabecera">
-                    <thead >
+                    <tbody >
                       <tr>
                         <th scope="col"><input type="hidden" class="form-control mayusculas" value="<?php echo $URL.$aEmpresa['logo']; ?>" required readonly>        
-                        <img width="80" height="80" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+                        <img width="140" height="140" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
                         <!-- <th scope="col"></th> -->
                         <th scope="col"><h3><?php echo $aNomina['razonSocial']; ?></h3></th>
                         <!-- <th scope="col"></th> -->
                         <th scope="col">Periodo pago: <?php echo $meses[$aNomina["periodoMes"]]." de ".$aNomina["periodoAnio"]; ?></th>
                       </tr>
-                    </thead>
+                    </tbody>
+                  </table>
+                  
+                        <!-- <div class="rounded"  style="background-image: url();"></div> -->
+                  <!-- <h4>Información General</h4> -->
+                </div>
+                <div class="card-body" >
+                  <table class="table   mayusculas " id="tablenomina"  style="width: 98%;max-width: 98%;text-align: center;">
+                    <tbody style="background-color: #5DC9EE;color:white;font-size: 80%;">
+                      <tr>
+                        <th >Nombre</th>
+                        <th >Cedula</th>
+                        <th >Salario</th>
+                        <th >Aux transp</th>
+                        <th >Días</th>
+                        <!-- <th colspan="6">Devengado</th> -->
+                        <!-- <th colspan="4">Deducciones</th> -->
+                        <th >Neto pagar</th>
+                        <!-- <th rowspan="2" colspan="4">Firma</th> -->
+                      </tr>
+                      <!-- <tr>
+                        <th>Salario</th>
+                        <th>Aux transp</th>
+                        <th>Aux aliment</th>
+                        <th>Rodamiento</th>
+                        <th>Comisión</th>
+                        <th>Total devengado</th>
+                        <th>Salud</th>
+                        <th>Pensión</th>
+                        <th>Prestamos/ adelantos</th>
+                        <th>Total deducido</th>
+                      </tr> -->
+                    </tbody>
+                    <tbody style="font-size: 80%;">
+            <?php foreach($aLista as $index=> $iLista){ 
+              $oItem=new Data("empleado","idEmpleado", $iLista["idEmpleado"]); 
+              $aEmpleado=$oItem->getDatos(); 
+              unset($oItem); 
+              $oLista=new Lista("nomina_empleado_adiciones"); 
+              $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+              $aAdiciones=$oLista->getLista(); 
+              unset($oItem);
+              $devengados=0;
+              $auxilioAlimentacion=0;
+              $comision=0;
+              $vacaciones=0;
+              $rodamiento=0;
+              foreach ($aAdiciones as $keyAd => $valueAd) {
+                $conceptoif=strval($valueAd["concepto"]);
+                if (stripos($conceptoif,"AUXILIO ALIMENTACION")!==FALSE) {
+                  $auxilioAlimentacion=$valueAd["valor"];
+                }
+                if (stripos($conceptoif,"Comision")!==FALSE) {
+                  $comision=$valueAd["valor"];
+                }
+                if (stripos($conceptoif,"Vacaciones")!==FALSE) {
+                  $vacaciones=$valueAd["valor"];
+                }
+                if (stripos($conceptoif,"OTRO(RODAMIENTO)")!==FALSE) {
+                  $rodamiento=$valueAd["valor"];
+                }
+                $devengados=$devengados+$valueAd["valor"];
+              }
+              $oLista=new Lista("nomina_empleado_parafiscales"); 
+              $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+              $oLista->setFiltro("tipoDeduccion","=",1); 
+              $aLeyes=$oLista->getLista(); 
+              unset($oItem);
+              $deducidos=0;
+              foreach ($aLeyes as $keyL => $valueL) {
+                if (stripos($valueL["concepto"],'Salud 4%')!==FALSE) {
+                  $salud=$valueL["valor"];
+                }
+                if (stripos($valueL["concepto"],'Pension 4%')!==FALSE) {
+                  $pension=$valueL["valor"];
+                }
+                $deducidos=$deducidos+$valueL["valor"];
+              }
+              $oLista=new Lista("nomina_empleado_deducciones"); 
+              $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
+              $aDeducciones=$oLista->getLista(); 
+              unset($oItem);
+              foreach ($aDeducciones as $keyD => $valueD) {
+                if (stripos($valueD["concepto"],'Cuota de descuento')!==FALSE) {
+                  $prestamos=$valueD["valor"];
+                }
+                $deducidos=$deducidos+$valueD["valor"];
+              }    ?>
+                <tr>
+                  <td style="text-align: left;"><a  data-toggle="collapse" href="#collapseExample<?php echo $index ?>" role="button" aria-expanded="false" aria-controls="collapseExample<?php echo $index ?>">
+                   <i class="fas fa-chevron-down" style="color:blue;"></i> </a>      <?php echo $aEmpleado["nombre"]." ".$aEmpleado["apellido"]; ?></td>
+                    <!-- <div class="card card-body"> -->
+                      <td><?php echo number_format($aEmpleado["numeroDocumento"],0,"","."); ?></td>
+                      <td><?php echo "$".number_format($iLista["salarioEmpleado"],0,",","."); ?></td>
+                      <td><?php echo "$".number_format($iLista["auxilioTransporte"],0,",","."); ?></td>
+                      <td><?php echo $iLista["dias"]; ?></td>  
+                      <td class="negrita"><?php echo "$".number_format($iLista["valorPagar"],0,",","."); ?></td>
+                    <!-- </div> -->
+                  </tr>
+                   <div class="collapse" id="collapseExample<?php echo $index ?>">
+                      <tr >
+                        <td ><?php 
+                        $devengadoS=(intval($iLista["salarioEmpleado"])/30)*intval($iLista["dias"]);
+                        echo "$".number_format($devengadoS,0,",",".");
+                          ?></td>
+                        <td ><?php 
+                        $devengadoAT=(intval($iLista["auxilioTransporte"])/30)*intval($iLista["dias"]);
+                        echo "$".number_format($devengadoAT,0,",",".");
+                          ?></td>
+                        <td ><?php echo "$".number_format($auxilioAlimentacion,2,",","."); ?></td>
+                        <td ><?php echo "$".number_format($rodamiento,0,",","."); ?></td>
+                        <td ><?php echo "$".number_format($comision,0,",","."); ?></td>
+                        <td ><?php 
+                        $devengados=$devengados+$devengadoS+$devengadoAT;
+                        echo "$".number_format($devengados,0,",","."); ?></td>
+                        <td ><?php echo "$".number_format($salud,0,",","."); ?></td>
+                        <td ><?php echo "$".number_format($pension,0,",","."); ?></td>
+                        <td ><?php echo "$".number_format($prestamos,0,",","."); ?></td>
+                        <td ><?php echo "$".number_format($deducidos,0,",","."); ?></td>
+                      </tr>
+                  </div>
+                  <!-- <td colspan="4" style="color: transparent;">_____________________________</td> -->
+                
+
+              <?php } ?>
+              </tbody>
+            </table>
+            
+          </div>
+        </div>
+        <div class="card" >
+
+                <div class="card-header">
+                  <table class="table" id="tableNominaCabecera">
+                    <tbody >
+                      <tr>
+                        <th scope="col"><input type="hidden" class="form-control mayusculas" value="<?php echo $URL.$aEmpresa['logo']; ?>" required readonly>        
+                        <img width="140" height="140" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+                        <!-- <th scope="col"></th> -->
+                        <th scope="col"><h3><?php echo $aNomina['razonSocial']; ?></h3></th>
+                        <!-- <th scope="col"></th> -->
+                        <th scope="col">Periodo pago: <?php echo $meses[$aNomina["periodoMes"]]." de ".$aNomina["periodoAnio"]; ?></th>
+                      </tr>
+                    </tbody>
                   </table>
                   
                         <!-- <div class="rounded"  style="background-image: url();"></div> -->
@@ -228,335 +348,97 @@ unset($oEmpresa);
                   
 
                 </div>
-
                 <div class="card-body">
-
                   <table class="table" id="tableNominaSeguridadSocial">
-                    <thead class="thead-info">
-                      <tr class="table-info">
+                    <tbody >
+                      <tr >
                         <th colspan="4">
-                          <h4>Pago Seguridad Social Empleador</h4>
+                          <a class="btn btn-info" data-toggle="collapse" href="#collapseSeguridadEmpleador" role="button" aria-expanded="false" aria-controls="collapseSeguridadEmpleador"><h4>Pago Seguridad Social Empleador</h4></a>
                         </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                      <tr>
-                        <td> <label class="negrita">Total Pago Salud:</label>
-
-                        <input type="text" class="form-control " value='<?php echo "$".number_format($saludEmpleador,2,",","."); ?>' required readonly></td>
-                        <td> <label class="negrita">Total Pago Pensión:</label>
-
-                        <input type="text" class="form-control " value='<?php echo "$".number_format($pensionEmpleador,2,",","."); ?>' required readonly></td>
-                        <td><label class="negrita">Total Pago ARL:</label>
-
-                        <input type="text" class="form-control " value='<?php echo "$".number_format($aArlEmpresa["valor"],2,",","."); ?>' required readonly></td>
-                        <td><label class="negrita">Total Pago Caja Compensación:</label>
-
-                        <input type="text" class="form-control " value='<?php echo "$".number_format($aCajaEmpresa["valor"],2,",","."); ?>' required readonly></td>
                       </tr>
                     </tbody>
                   </table>
-            
+                      <div class="collapse" id="collapseSeguridadEmpleador">
+                        <div class="row">
+                          <div class="col-md-3"> <label class="negrita">Total Pago Salud:</label>
 
-                  <table class="table">
-                    <thead style="background-color: #5DC9EE;">
-                      <tr>
-                        <th colspan="2">
-                          <h4>Pago Seguridad Social Empleados</h4>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                          <input type="text" class="form-control " value='<?php echo "$".number_format($saludEmpleador,2,",","."); ?>' required readonly></div>
+                          <div class="col-md-3"> <label class="negrita">Total Pago Pensión:</label>
+
+                          <input type="text" class="form-control " value='<?php echo "$".number_format($pensionEmpleador,2,",","."); ?>' required readonly></div>
+                          <div class="col-md-3"><label class="negrita">Total Pago ARL:</label>
+
+                          <input type="text" class="form-control " value='<?php echo "$".number_format($aArlEmpresa["valor"],2,",","."); ?>' required readonly></div>
+                          <div class="col-md-3"><label class="negrita">Total Pago Caja Compensación:</label>
+                          <input type="text" class="form-control " value='<?php echo "$".number_format($aCajaEmpresa["valor"],2,",","."); ?>' required readonly></div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <label class="negrita">Total Pago Salud:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($saludEmpleado,2,",","."); ?>' required readonly>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="negrita">Total Pago Pensión:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($pensionEmpleado,2,",","."); ?>' required readonly>
+                          </div>
+                        </div>
+                    </div>
+              
                      
-                      <tr>
-                        <td>
-                          <label class="negrita">Total Pago Salud:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($saludEmpleado,2,",","."); ?>' required readonly>
-                        </td>
-                        <td>
-                          <label class="negrita">Total Pago Pensión:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($pensionEmpleado,2,",","."); ?>' required readonly>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
                   <?php 
-
                   $saludGeneral=$saludEmpleador+$saludEmpleado; 
-
                   $pensionGeneral=$pensionEmpleador+$pensionEmpleado; 
                   $totalSeguridadSocial=$saludGeneral+$pensionGeneral+$aCajaEmpresa["valor"]+$aArlEmpresa["valor"];
                   $totalNominaSalarios=$valorNomina; 
                   $totalNomina=$totalSeguridadSocial+$totalNominaSalarios; 
-
                   ?>
 
                   <table class="table">
-                    <thead style="background-color: #5DC9EE;">
+                    <tbody >
                       <tr>
                         <th colspan="4">
-                          <h4>Nomina General</h4>
+                          <a class="btn btn-info"   data-toggle="collapse" href="#collapseNominaGeneral" role="button" aria-expanded="false" aria-controls="collapseNominaGeneral"><h4>Nomina General</h4></a>
                         </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                     
-                      <tr>
-                        <td>
-                          <label class="negrita">Total Pago Salud Nomina:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($saludGeneral,2,",","."); ?>' required readonly>
-                        </td>
-                        <td>
-                          <label class="negrita">Total Pago Pensión Nomina:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($pensionGeneral,2,",","."); ?>' required readonly>
-                        </td>
-                        <td>
-                          <label class="negrita">Total Pago ARL Nomina:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($aArlEmpresa["valor"],2,",","."); ?>' required readonly>
-                        </td>
-                        <td>
-                          <label class="negrita">Total Pago Caja Compensación Nomina:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($aCajaEmpresa["valor"],2,",","."); ?>' required readonly>
-                        </td>
-
                       </tr>
                     </tbody>
                   </table>
-
-
-
-
-                  <table class="table">
-                    <thead  style="background-color: #5DC9EE;color:white;">
-                      <tr>
-                        <th colspan="4">
-                          <h4>Nomina General</h4>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                     
-                      <tr>
-                        <td>
-                          <label class="negrita">Total seguridad social nomina:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($totalSeguridadSocial,2,",","."); ?>' required readonly>
-                        </td>
-                        <td>
-                          <label class="negrita">Total Pago empleados Nomina:</label>
-                          <input type="text" class="form-control " value='<?php echo "$".number_format($totalNominaSalarios,2,",","."); ?>' required readonly>
-                        </td>
-                        <td>
-                          <label class="negrita">Total Nomina:</label>
-                          <input type="text" class="form-control text-rigth" value='<?php echo "$".number_format($totalNomina,2,",","."); ?>' required readonly>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-
+                    <div class="collapse" id="collapseNominaGeneral">
+                    
+                        <div class="row">
+                          <div class="col-md-3">
+                            <label class="negrita">Total Pago Salud Nomina:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($saludGeneral,2,",","."); ?>' required readonly>
+                          </div>
+                          <div class="col-md-3">
+                            <label class="negrita">Total Pago Pensión Nomina:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($pensionGeneral,2,",","."); ?>' required readonly>
+                          </div>
+                          <div class="col-md-3">
+                            <label class="negrita">Total Pago ARL Nomina:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($aArlEmpresa["valor"],2,",","."); ?>' required readonly>
+                          </div>
+                          <div class="col-md-3">
+                            <label class="negrita">Total Pago Caja Compensación Nomina:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($aCajaEmpresa["valor"],2,",","."); ?>' required readonly>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <label class="negrita">Total seguridad social nomina:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($totalSeguridadSocial,2,",","."); ?>' required readonly>
+                          </div>
+                          <div class="col-md-4">
+                            <label class="negrita">Total Pago empleados Nomina:</label>
+                            <input type="text" class="form-control " value='<?php echo "$".number_format($totalNominaSalarios,2,",","."); ?>' required readonly>
+                          </div>
+                          <div class="col-md-4">
+                            <label class="negrita">Total Nomina:</label>
+                            <input type="text" class="form-control text-rigth" value='<?php echo "$".number_format($totalNomina,2,",","."); ?>' required readonly>
+                          </div>
+                        </div>
+                  </div>
                   </div>
                 </div>
-<!-- <br><br><br><br><br><br><br><br><br> -->
-                 <!--  <div class="card-header">
-
-                    <h4>Detalles </h4>
-
-                  </div> -->
-
-                  <div class="card" style="height: 100%">
-                    <div class="card-header">
-                  <table class="table" id="tableNominaCabecera">
-                    <thead >
-                      <tr>
-                        <th scope="col"><input type="hidden" class="form-control mayusculas" value="<?php echo $URL.$aEmpresa['logo']; ?>" required readonly>        
-                        <img width="80" height="80" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
-                        <!-- <th scope="col"></th> -->
-                        <th scope="col"><h3><?php echo $aNomina['razonSocial']; ?></h3></th>
-                        <!-- <th scope="col"></th> -->
-                        <th scope="col">Periodo pago: <?php echo $meses[$aNomina["periodoMes"]]." de ".$aNomina["periodoAnio"]; ?></th>
-                      </tr>
-                    </thead>
-                  </table>
-                  
-                        <!-- <div class="rounded"  style="background-image: url();"></div> -->
-                  <!-- <h4>Información General</h4> -->
-                  
-
-                </div>
-
-                  <div class="card-body" >
-
-                   <!-- <div id="accordion"> -->
-
-                      
-                        <!-- <div class="row"> -->
-                          <!-- <div class=""> -->
-                            <table class="table-bordered  mayusculas " id="tablenomina"  style="width: 98%;max-width: 98%;">
-                              <thead style="background-color: #5DC9EE;color:white;font-size: 80%;">
-                                <tr>
-                                  <th rowspan="2">Nombre</th>
-                                  <th rowspan="2">Cedula</th>
-                                  <th rowspan="2">Salario</th>
-                                  <th rowspan="2">Aux transp</th>
-                                  <th rowspan="2">Días</th>
-                                  <th colspan="6">Devengado</th>
-                                  <th colspan="4">Deducciones</th>
-                                  <th rowspan="2">Neto pagar</th>
-                                  <th rowspan="2" colspan="4">Firma</th>
-                                </tr>
-                                <tr>
-                                  <th>Salario</th>
-                                  <th>Aux transp</th>
-                                  <th>Aux aliment</th>
-                                  <th>Rodamiento</th>
-                                  <th>Comisión</th>
-                                  <!-- <th>Vacaciones</th> -->
-                                  <th>Total devengado</th>
-
-                                  <th>Salud</th>
-                                  <th>Pensión</th>
-                                  <th>Prestamos/ adelantos</th>
-                                  <th>Total deducido</th>
-                                  
-                                </tr>
-                              </thead>
-                              <tbody style="font-size: 80%;">
-                      <?php foreach($aLista as $index=> $iLista){ 
-
-                        $oItem=new Data("empleado","idEmpleado", $iLista["idEmpleado"]); 
-
-                        $aEmpleado=$oItem->getDatos(); 
-
-                        unset($oItem); 
-
-
-
-                        $oLista=new Lista("nomina_empleado_adiciones"); 
-
-                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
-
-                        $aAdiciones=$oLista->getLista(); 
-
-                        unset($oItem);
-                        $devengados=0;
-                        $auxilioAlimentacion=0;
-                        $comision=0;
-                        $vacaciones=0;
-                        $rodamiento=0;
-                        
-                        foreach ($aAdiciones as $keyAd => $valueAd) {
-                          
-                          
-                          $conceptoif=strval($valueAd["concepto"]);
-                          if (stripos($conceptoif,"AUXILIO ALIMENTACION")!==FALSE) {
-                            $auxilioAlimentacion=$valueAd["valor"];
-                            
-                          }
-                          if (stripos($conceptoif,"Comision")!==FALSE) {
-                            $comision=$valueAd["valor"];
-                            
-                          }
-                          if (stripos($conceptoif,"Vacaciones")!==FALSE) {
-                            
-                            $vacaciones=$valueAd["valor"];
-                          }
-                          // if (preg_match("/'Vacaciones'/i", $valueAd["concepto"])) {
-                          //   print_r('ingreso');
-                          //   $vacaciones=$valueAd["valor"];
-                          // }
-                          if (stripos($conceptoif,"OTRO(RODAMIENTO)")!==FALSE) {
-                            $rodamiento=$valueAd["valor"];
-                            
-                          }
-                          $devengados=$devengados+$valueAd["valor"];
-                        }
-                        
-
-                        $oLista=new Lista("nomina_empleado_parafiscales"); 
-
-                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
-
-                        $oLista->setFiltro("tipoDeduccion","=",1); 
-
-                        $aLeyes=$oLista->getLista(); 
-
-                        unset($oItem);
-
-                        $deducidos=0;
-                        foreach ($aLeyes as $keyL => $valueL) {
-                          if (stripos($valueL["concepto"],'Salud 4%')!==FALSE) {
-                            $salud=$valueL["valor"];
-                          }
-                          if (stripos($valueL["concepto"],'Pension 4%')!==FALSE) {
-                            $pension=$valueL["valor"];
-                          }
-                          $deducidos=$deducidos+$valueL["valor"];
-                        }
-
-
-                        $oLista=new Lista("nomina_empleado_deducciones"); 
-
-                        $oLista->setFiltro("idNominaEmpleado","=",$iLista["idNominaEmpleado"]); 
-
-                        $aDeducciones=$oLista->getLista(); 
-
-                        unset($oItem);
-
-                        foreach ($aDeducciones as $keyD => $valueD) {
-                          if (stripos($valueD["concepto"],'Cuota de descuento')!==FALSE) {
-                            $prestamos=$valueD["valor"];
-                          }
-                          
-                          $deducidos=$deducidos+$valueD["valor"];
-                        }
-
-                        ?>
-                                <tr>
-                                  <td><?php echo $aEmpleado["nombre"]." ".$aEmpleado["apellido"]; ?></td>
-                                  <td><?php echo number_format($aEmpleado["numeroDocumento"],0,"","."); ?></td>
-                                  <td><?php echo "$".number_format($iLista["salarioEmpleado"],0,",","."); ?></td>
-                                  <td><?php echo "$".number_format($iLista["auxilioTransporte"],0,",","."); ?></td>
-                                  <td><?php echo $iLista["dias"]; ?></td>
-                                  <td><?php 
-                                  $devengadoS=(intval($iLista["salarioEmpleado"])/30)*intval($iLista["dias"]);
-                                  echo "$".number_format($devengadoS,0,",",".");
-                                    ?></td>
-                                  <td><?php 
-                                  $devengadoAT=(intval($iLista["auxilioTransporte"])/30)*intval($iLista["dias"]);
-                                  echo "$".number_format($devengadoAT,0,",",".");
-                                    ?></td>
-                                  <td><?php echo "$".number_format($auxilioAlimentacion,2,",","."); ?></td>
-                                  <td><?php echo "$".number_format($rodamiento,0,",","."); ?></td>
-                                  <td><?php echo "$".number_format($comision,0,",","."); ?></td>
-                                  <!-- <td><?php echo "$".number_format($vacaciones,0,",","."); ?></td> -->
-                                  <td><?php 
-                                  $devengados=$devengados+$devengadoS+$devengadoAT;
-
-                                  echo "$".number_format($devengados,0,",","."); ?></td>
-                                  <td><?php echo "$".number_format($salud,0,",","."); ?></td>
-                                  <td><?php echo "$".number_format($pension,0,",","."); ?></td>
-                                  <td><?php echo "$".number_format($prestamos,0,",","."); ?></td>
-                                  <td><?php echo "$".number_format($deducidos,0,",","."); ?></td>
-                                  <td class="negrita"><?php echo "$".number_format($iLista["valorPagar"],0,",","."); ?></td>
-                                  <td colspan="4" style="color: transparent;">_____________________________</td>
-                                </tr>
-                              <?php } ?>
-                              </tbody>
-                            </table>
-                      
-
-                </div>
-              </div>
-               <!--  aca -->
-
-            <!-- </div> -->
-
-        <!-- </div> -->
-
-    <!-- </div> -->
-
 </section>
 
 </form>
@@ -576,7 +458,7 @@ function imprimir(){
     
 
     mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style><link rel="stylesheet" href="<?php echo $URL ?>assets/css/app.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/style.css" media="all"> <link rel="stylesheet" href="<?php echo $URL ?>assets/css/estilo2.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/components.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/jqvmap/dist/jqvmap.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/custom.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/css/estilo.css?<?php echo uniqid(); ?>" media="all"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"><link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/datatables/datatables.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL ?>assets/bundles/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css" media="all"><link rel="stylesheet" href="<?php echo $URL; ?>assets/bundles/select2/dist/css/select2.min.css" media="all"><link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" media="all">');
-    mywindow.document.write('</head><body onload="window.print();window.close();">');
+    mywindow.document.write('</head><body onload="window.print();">');
     mywindow.document.write('<style type="text/css" media="print">@page {size: landscape;}</style>');
     mywindow.document.write('<style type="text/css">#tablenomina {width:98%;}</style>');
     mywindow.document.write('<style type="text/css">*{margin:2; padding:0;}</style>');

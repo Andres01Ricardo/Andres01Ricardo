@@ -43,22 +43,6 @@ $periodo=explode("-",$datos["periodo"]);
 $datos["tiempoPago"]=$datos["tiempoPago"]==""?0:$datos["tiempoPago"]; 
 
 
-
-// $oLista = new Lista('nomina');
-
-// $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-
-// $oLista->setFiltro("periodoMes","=",$periodo[0]);
-
-// $oLista->setFiltro("periodoAnio","=",$periodo[1]);
-
-// $oLista->setFiltro("tiempoPago","=",$datos["tiempoPago"]);
-
-// $aNomina=$oLista->getLista();
-
-// unset($oLista); 
-
-
 $idNomina=$datos["idNominaEditar"]; 
 
 	

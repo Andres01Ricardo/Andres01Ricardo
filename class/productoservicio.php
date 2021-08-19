@@ -11,7 +11,7 @@ class ProductoServicio extends Sql{
 	public function getProductosServicios($aDatos=array()){
 
 
-
+		if(!isset($_SESSION)){ session_start(); }
 		$condicion=""; 
 
 		if($aDatos["idEmpresa"]!=""){
@@ -20,7 +20,11 @@ class ProductoServicio extends Sql{
 
 		}
 
+		if(!empty($_SESSION["idEmpresa"])){
 
+			$condicion.=" AND p.idEmpresa=".$_SESSION["idEmpresa"]; 
+
+		}
 
 		if($aDatos["tipo"]!=""){
 			if($aDatos["tipo"]!=3){

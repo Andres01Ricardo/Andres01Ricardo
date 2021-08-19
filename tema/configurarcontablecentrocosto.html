@@ -1,0 +1,167 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+
+$idEmpresa=$_SESSION['idEmpresa'];
+
+// $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+// $url=$id; 
+if($idEmpresa==""){
+  echo '<script>window.history.back()</script>'; 
+}
+
+// $decrip["cadena"]=$id; 
+// $idEmpresa=$oControl->desencriptar($decrip); 
+
+
+$oItem=new Lista("centro_costo");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aCentroC=$oItem->getLista();
+unset($oItem);
+
+$oItem=new Lista("producto_servicio");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aProductos=$oItem->getLista();
+unset($oItem);
+
+
+?>
+
+
+<section>
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+		<div class="card">
+			<div class="card-body">
+				<div class="card-header">PARAMETRIZAR CUENTAS</div>
+
+				<!-- <div class="card-header">CUENTAS</div> -->
+				
+				<div class="row">
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <label class="negrita d-block">Tipo factura<span class="requerido">*</span>:</label>
+               	<select class="form-control select2 mayusculas" id="tipoFactura" name="datos[tipoFactura]" required>
+                  <option value="">Seleccione una opción</option>
+                  <option value="1">COMPRA</option>
+                  <option value="2">VENTA</option>
+                </select>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <label class="negrita d-block">Producto<span class="requerido">*</span>:</label>
+               	<select class="form-control select2 mayusculas" id="idProducto" name="datos[idProducto]" required>
+                  <option value="">Seleccione una opción</option>
+                  <?php foreach($aProductos as $key=> $value){ ?>
+                  <option value="<?php echo $value['idProductoServicio'];?>"><?php echo $value['codigo'].'-'.$value['nombre'];?></option>
+                  <?php } ?>
+                </select>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <label class="negrita d-block">Centro de costo<span class="requerido">*</span>:</label>
+               	<select class="form-control select2 mayusculas" id="idCentroCosto" name="datos[idCentroCosto]" required>
+                  <option value="">Seleccione una opción</option>
+                  <?php foreach($aCentroC as $key=> $value){ ?>
+                  <option value="<?php echo $value['idCentroCosto'];?>"><?php echo $value['codigoCentroCosto'].'-'.$value['centroCosto'];?></option>
+                  <?php } ?>
+                </select>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	            <label class="negrita d-block">Subcentro de costo<span class="requerido">*</span>:</label>
+               	<select class="form-control select2 mayusculas" id="idSubcentroCosto" name="datos[idSubcentroCosto]" required>
+                  <option value="">Seleccione una opción</option>
+                </select>
+	          </div>
+					</div>
+					<div class=" col-md-3 ">
+						<div class="form-group">
+	              <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+								<input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" required >
+								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
+								
+	          </div>
+					</div>
+				</div>
+				
+				<div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
+			
+		</div>
+	</form>
+<hr>
+	<div class="card-header">
+      	<h3>Cuentas parametrizadas</h3>
+      </div>
+      <div class="card-body">
+      	<table class="table table-striped" id="tableProductos" style="text-align:center;">
+      		<thead>
+      			<tr>
+      				<!-- <th>#</th> -->
+      				<th>PRODUCTO</th>
+      				<th>CENTRO COSTO</th>
+      				<th>SUBCENTRO COSTO</th>
+      				<th>TIPO FACTURA</th>
+      				<th>Cuenta contable</th>
+      				<th>Acciones</th>
+      			</tr>
+      		</thead>
+      		<tbody>
+      			<?php 
+      			$oItem=new Lista("centro_costo_contable");
+						$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+						$aCentroCosto=$oItem->getLista();
+						unset($oItem);
+      			foreach ($aCentroCosto as $key=> $value){ 
+      				
+								
+      					$oLista=new Data("producto_servicio","idProductoServicio",$value["idProducto"]);						
+								$producto=$oLista->getDatos();
+								unset($oLista); 
+
+								$oLista=new Data("cuenta_contable","idCuentaContable",$value["idCuentaContable"]);						
+								$cuentaC=$oLista->getDatos();
+								unset($oLista); 
+
+
+								$oItem=new Data("centro_costo","idCentroCosto",$value['idCentroCosto']);
+								$aCentroCosto=$oItem->getDatos();
+								unset($oItem);
+
+								// print_r($aCentroCosto);
+								$oItem=new Data("subcentro_costo","idSubcentroCosto",$value['idSubcentroCosto']);
+								$aSubcentroCosto=$oItem->getDatos();
+								unset($oItem);
+
+								// print_r($aSubcentroCosto);
+								// $oItem=new Data("tipos_documento_contable","idTiposDocumento",$aParametro["tipo"]);
+								// $aLetra=$oItem->getDatos();
+								// unset($oItem);
+      				?>
+      			<tr>
+      				<td><?php echo $producto['codigo'].' '.$producto['nombre']; ?></td>
+      				<td><?php echo $aCentroCosto['codigoCentroCosto'].' '.$aCentroCosto['centroCosto']; ?></td>
+      				<td><?php echo $aSubcentroCosto['codigoSubcentroCosto'].' '.$aSubcentroCosto['subcentroCosto']; ?></td>
+      				<td><?php 
+      					if ($value["tipoFactura"]==1) {
+      						echo "Compra";
+      					}
+      					if ($value["tipoFactura"]==2) {
+      						echo "Venta";
+      					}
+      			?></td>
+      				<td><?php echo $cuentaC['codigoCuenta'].' '.$cuentaC['nombre']; ?></td>
+      				<td><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idCentroCostoContable']; ?>" class="eliminarCuenta"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
+      			</tr>
+      		<?php } ?>
+      		</tbody>
+      	</table>
+      </div>
+		</div>
+</section>

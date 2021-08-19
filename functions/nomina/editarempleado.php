@@ -104,9 +104,9 @@ $contrasena="";
     $aLaboral["idEps"]=$datos["idEps"]; 
     $aLaboral["idArl"]=$datos["idArl"]; 
     $aLaboral["riesgoLaboral"]=$datos["riesgoLaboral"]; 
-    $aLaboral["auxilioTransporte"]=$datos["auxilioTransporte"];
+    $aLaboral["auxilioTransporte"]=str_replace("$", "", str_replace(".", "", $datos["auxilioTransporte"]));
 
-    $aLaboral["valorSalario"]=$datos["salario"]; 
+    $aLaboral["valorSalario"]=str_replace("$", "", str_replace(".", "", $datos["salario"])); 
 
     // $aLaboral["estado"]=1;   
 
@@ -165,7 +165,13 @@ $contrasena="";
 
             $aUser["estado"]=1; 
 
-            $aUser["idRol"]=4; 
+            $aUser["estado"]=1; 
+            if ($datos["tipoUsuario"]==1) {
+                $aUser["idRol"]=4; 
+            }
+            if ($datos["tipoUsuario"]==2) {
+                $aUser["idRol"]=3; 
+            }
 
             $aUser["cambiarClave"]=1; 
 
@@ -192,15 +198,34 @@ $contrasena="";
 
 
 
-            $oItem=new Data("empleado_usuario","idEmpleadoUsuario"); 
+            // $oItem=new Data("empleado_usuario","idEmpleadoUsuario"); 
 
-            $oItem->idUsuario=$idUsuario; 
+            // $oItem->idUsuario=$idUsuario; 
 
-            $oItem->idEmpleado=$datos["id"]; 
+            // $oItem->idEmpleado=$datos["id"]; 
 
-            $oItem->guardar(); 
+            // $oItem->guardar(); 
 
-            unset($oItem);
+            // unset($oItem);
+
+            if ($datos["tipoUsuario"]==1) {
+                $oItem=new Data("empleado_usuario","idEmpleadoUsuario"); 
+
+                $oItem->idUsuario=$idUsuario; 
+
+                $oItem->idEmpleado=$idEmpleado; 
+
+                $oItem->guardar(); 
+
+                unset($oItem); 
+            }
+            if ($datos["tipoUsuario"]==2) {
+                $oItem=new Data("empresa_acceso","idEmpresaAcceso"); 
+                $oItem->idUsuario=$idUsuario; 
+                $oItem->idEmpresa=$_SESSION["idEmpresa"];
+                $usuario=$oItem->guardar(); 
+                unset($oItem);
+            }
 
 
 

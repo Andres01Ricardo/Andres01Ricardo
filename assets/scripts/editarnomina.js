@@ -58,15 +58,21 @@ $("body").on("change","[name='datos[idEmpresa]']",function(e){
 
     }
 
-    
-
 })
 
 
 
 $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",function(e){
 
-    var idEmpleado=$("[name='datos[idEmpleado]']").val(); 
+    var idEmpleado=$("[name='datos[idEmpleado]']").val();
+
+    $("#idEliminar").val(idEmpleado);
+    if (idEmpleado!="") {
+      $("#divEliminar").removeClass('ocultar');
+    } 
+    if (idEmpleado=="") {
+      $("#divEliminar").addClass('ocultar');
+    } 
 
     var idPeriodo=$("[name='datos[periodo]']").val();
 
@@ -389,84 +395,87 @@ $("body").on("click touchstart",".eliminar",function(e){
 
 
 $("body").on("click touchstart","#btnGuardar",function(e){
-
-    
-
   e.preventDefault();
-
   Swal.fire({
-
     title: 'Está seguro?',
-
     text: 'Está a punto de editar la nomina de este empleado!',
-
     icon: 'warning', 
-
     showCancelButton: true,
-
     showLoaderOnConfirm: true,
-
     confirmButtonText: `Si, Continuar!`,
-
     cancelButtonText:'Cancelar',
-
     preConfirm: function(result) {
-
         return new Promise(function(resolve) {
-
           var formu = document.getElementById("frmGuardar");
-
-  
-
           var data = new FormData(formu);
-
           $.ajax({
-
           url:URL+"functions/nomina/editarnomina.php", 
-
           type:"POST", 
-
           data: data,
-
           contentType:false, 
-
           processData:false, 
-
           dataType: "json",
-
           cache:false 
-
           }).done(function(msg){  
-
             if(msg.msg){
-
               Swal.fire(
-
                 {
-
                 icon: 'success',
-
                 title: 'Nomina editada!',
-
                 text: 'con exito',
-
                 closeOnConfirm: true,
-
               }
-
               ).then((result) => {
-
                location.reload(); 
-
               })
+            }
+          });    
+        });
+      }
+    })
+  })
 
+
+$("body").on("click touchstart","#btnEliminar",function(e){
+  e.preventDefault();
+  Swal.fire({
+    title: 'Está seguro?',
+    text: 'Está a punto de eliminar el registro de la nomina de este empleado!',
+    icon: 'warning', 
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonText: `Si, Continuar!`,
+    cancelButtonText:'Cancelar',
+    preConfirm: function(result) {
+        return new Promise(function(resolve) {
+          var formu = document.getElementById("frmGuardar");
+          var data = new FormData(formu);
+          $.ajax({
+          url:URL+"functions/nomina/eliminarnominaempleado.php", 
+          type:"POST",
+          data: data,
+          contentType:false, 
+          processData:false, 
+          dataType: "json",
+          cache:false 
+          }).done(function(msg){  
+            if(msg.msg){
+              Swal.fire(
+                {
+                icon: 'success',
+                title: 'Registro empleado eliminado!',
+                text: 'con exito',
+                closeOnConfirm: true,
+              }
+              ).then((result) => {
+               location.reload(); 
+              })
             }
         });    
-
-        });
-
-      }
-
+      });
+    }
   })
+})
 
-  })
+
+$('[data-toggle="tooltip"]').tooltip();

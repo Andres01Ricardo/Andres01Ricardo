@@ -165,10 +165,11 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
                                 
                                  <?php if($_SESSION['idRol']==1 || $_SESSION['idRol']==2){ ?>
 
-                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a empresa" ><i class="fas fa-arrow-circle-right" style="color: #A2D7FF;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresarRol" data-toggle="tooltip"  data-placement="top" title="Cambiar al perfil de la empresa" ><i class="fas fa-arrow-circle-right" style="color: #09D2A4;font-size: 20px;"></i></a>
 
+                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a trabajar en la empresa" ><i class="fas fa-arrow-alt-circle-up" style="color: #A2D7FF;font-size: 20px;"></i></a>
                                 <?php } ?>
-
+                                
                             </tr>
 
                           <?php } ?>

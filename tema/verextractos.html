@@ -1,0 +1,379 @@
+<?php 
+
+require_once("class/cuentasbancarias.php"); 
+
+
+
+$oControl=new Control(); 
+
+$oCuentasBancarias=new CuentasBancarias();
+
+
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("cuenta_bancaria","idCuentaBancaria",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem);  
+
+
+
+$oItem=new Data("bancos","idBancos",$aDatos["idBanco"]); 
+
+$aBancos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+
+$aEmpresa=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+$hoy=date('Y-m-d'); 
+
+$nuevafecha = strtotime ( '-1 Months' , strtotime ( $hoy ) ) ;
+
+$nuevafecha = date ( 'Y-m-d' , $nuevafecha );
+
+
+
+$filtroMovimiento["idCuentaBancaria"]=$id; 
+
+$filtroMovimiento["fechaInicio"]=$nuevafecha; 
+
+$filtroMovimiento["fechaFin"]=$hoy; 
+
+$aMovimientos=$oCuentasBancarias->getMovimientosCuentaBancaria($filtroMovimiento); 
+
+
+
+$oLista = new Lista('cuenta_bancaria_extracto');
+
+$oLista->setFiltro("idCuentaBancaria","=",$id);
+
+$oLista->setOrden("mesPeriodo","DESC");
+
+$oLista->setOrden("anioPeriodo","DESC");
+
+$aExtractos=$oLista->getLista();
+
+unset($oLista);
+
+
+
+
+
+
+
+$meses[1]="Enero"; 
+
+$meses[2]="Febrero"; 
+
+$meses[3]="Marzo"; 
+
+$meses[4]="Abril"; 
+
+$meses[5]="Mayo"; 
+
+$meses[6]="Junio"; 
+
+$meses[7]="Julio"; 
+
+$meses[8]="Agosto"; 
+
+$meses[9]="Septiembre"; 
+
+$meses[10]="Octubre"; 
+
+$meses[11]="Noviembre"; 
+
+$meses[12]="Diciembre";
+
+
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+  .no-producto{
+
+    width: calc(100% - 18px) !important;
+
+    display: inline-block;
+
+  }
+
+  .saldoactual{
+
+    text-align: right;
+
+    font-size: 22px;
+
+    margin-bottom: 10px;
+
+  }
+
+  .saldoactual span{
+
+    font-weight: bold;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<input type="hidden" id="idCuenta" value="<?php echo $id; ?>">
+
+<section class="section">
+
+    <ul class="breadcrumb breadcrumb-style ">
+
+      <li class="breadcrumb-item">
+
+        <a href="<?php echo $URL; ?>">
+
+          <i class="fas fa-home"></i></a>
+
+      </li>
+
+      <li class="breadcrumb-item">Cuentas Bancarias</li>
+
+      <li class="breadcrumb-item">Ver Cuenta Bancaria</li>
+
+    </ul>
+
+    <div class="section-body">
+
+      <div class="row">
+
+        <div class="col-md-12 col-lg-12">
+
+          <div class="card">
+
+            <div class="card-header">
+
+              <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <ul class="nav nav-tabs" id="myTab2" role="tablist">
+
+
+                    <li class="nav-item">
+
+                      <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#extractos" role="tab"
+
+                        aria-controls="profile" aria-selected="false">Extractos Bancarios</a>
+
+                    </li>
+
+                  </ul>
+
+                  <div class="tab-content tab-bordered" id="myTab3Content">
+
+                    <div class="tab-pane fade show active" id="movimientos" role="tabpanel" aria-labelledby="home-tab2">
+
+                      <div class="card-header">
+
+                        <h4>Información Personal</h4>
+
+                      </div>
+
+                      <div class="card-body">
+
+                        <div class="row">
+
+                          <div class="col-md-12">
+
+                            <div class="saldoactual">Saldo Actual:
+
+                              <span><?php echo "$".number_format($aDatos["saldoActual"],2,",","."); ?></span>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <div class="row">
+
+                          <?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?>
+
+                          <div class="col-md-4">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Empresa:</label>
+
+                              <input type="text" class="form-control mayusculas" value="<?php echo $aEmpresa['razonSocial']; ?>" required readonly>
+
+                            </div>
+
+                          </div>
+
+                          <?php } ?>
+
+                          <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+
+                            <div class="form-group">
+
+                              <label class="negrita">Número Cuenta:</label>
+
+                              <input type="text" class="form-control " id="numeroCuenta" value="<?php echo $aDatos['numeroCuenta']; ?>" required readonly>
+
+                            </div>
+
+                          </div>
+
+                          <div class="<?php if($_SESSION["idRol"]!=3&&$_SESSION["idRol"]!=4){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
+                            <div class="form-group">
+                              <label class="negrita">Nombre Cuenta:</label>
+                              <input type="text" class="form-control " id="nombreCuenta" value="<?php echo $aDatos['nombreCuenta']; ?>" required readonly>
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="negrita">Banco:</label>
+                              <input type="text" class="form-control " value="<?php echo $aBancos["nombre"]; ?>" required readonly>
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="negrita">Aplica 4x1.000:</label>
+                              <input type="text" id="cuatroMil" class="form-control " value="<?php echo $aDatos['aplicaCuatroMil']==1?'Si':'No'; ?>" readonly>
+                             
+                               <!-- <input type="text" class="form-control " value="<?php echo $aDatos['aplicaCuatroMil']==1?'Si':'No'; ?>" readonly> -->
+                            </div>
+                          </div>
+                          
+                        
+                        
+
+                      </div>
+
+                    </div>
+
+                    
+
+                      <div class="card-header">
+
+                        <h4>Extractos Bancarios</h4>
+
+                      </div>
+
+                      <div class="card-body">
+
+                        <div class="row">
+
+                          <div class="col-md-12 col-lg-12">
+
+                            <table class="table table-striped mayusculas" id="tableExtracto">
+
+                              <thead>
+
+                                <tr>
+
+                                  <th class="text-center">#</th>
+
+                                  <th>Fecha Registro</th>
+
+                                  <th>Usuario Registra</th>
+
+                                  <th>Periodo</th>
+
+                                  <th>Archivo</th>
+
+                                </tr>
+
+                              </thead>
+
+                              <tbody>
+
+                                <?php foreach($aExtractos as $index => $iExtracto){
+                                
+
+                                  $oItem=new Data("usuario","idUsuario",$iExtracto["idUsuarioRegistra"]); 
+
+                                  $aUserRegistra=$oItem->getDatos(); 
+
+                                  unset($oItem);
+
+                                  ?>
+
+                                  <tr>
+
+                                    <td class="text-center"><?php echo $index+1; ?></td>
+
+                                    <td><?php echo $iExtracto["fechaRegistro"]; ?></td>
+
+                                    <td><?php echo $aUserRegistra["nombreUsuario"]." ".$aUserRegistra["apellidoUsuario"]; ?></td>
+
+                                    <td><?php echo $meses[$iExtracto["mesPeriodo"]]." de ".$iExtracto["anioPeriodo"]; ?></td>
+
+                                    <td><a href="<?php echo $URL.$iExtracto['extracto']; ?>" target="_blank">Ver Archivo</a></td>
+
+                                  </tr>
+
+                                <?php } ?>
+
+                              </tbody>
+
+                            </table>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+

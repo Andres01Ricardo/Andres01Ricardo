@@ -66,9 +66,10 @@ unset($oLista);
 
 
 	<br><br>
+	<input type="hidden" name="" id="" value="<?php echo ?>">
 
-<div class="card table-responsive" id="muestra">
-	<table class="table">
+<div class="card card-body table-responsive" id="muestra" style="font-size: 95%;">
+	<table class="table" >
 	  <thead >
 	    <tr style="text-align: center; font-size: 25px;">
 	      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
@@ -80,15 +81,28 @@ unset($oLista);
 	  <tbody>
 	    <tr style="text-align: center; font-size: 25px;">
 	      <th scope="row"></th>
-	      <td><span>Telefono: </span></td>
-	   	  <td><?php echo $aEmpresa['telefono'] ?></td>
+	      <td></td>
+	   	  <td>NIT:  <?php echo $aEmpresa['nit'] ?></td>
 	   	  <td>Fecha: <?php echo $aCotizacionTotal['fechaRegistro'] ?></td>
 	    </tr>
-	   <tr style="text-align: center; font-size: 25px;">
-	   	<th></th>
-	   	  <td><span>Direccion: </span></td>
+	    <tr style="text-align: center; font-size: 25px;">
+	   	  <td scope="row"><span>Direccion: </span></td>
 	   	  <td><?php echo $aEmpresa['direccion'] ?></td>
+	      <td></td>
 	   	  <td>Fecha venc.: <?php echo $aCotizacionTotal['fechaVencimientoCotizacion'] ?></td>
+
+	    </tr>
+	   <tr style="text-align: center; font-size: 25px;">
+	   		
+	      <td scope="row"><span>Telefono: </span></td>
+	   	  <td><?php echo $aEmpresa['telefono']; ?></td>
+	      <td><span>Email: </span> <?php echo $aEmpresa['email'] ?></td>
+	   	  <td><?php
+	   	  	if($aEmpresa['responsableIva']==1){
+	   	  		echo 'Responsable de IVA: SI';
+	   	  	}
+
+	   	   ?></td>
 	   </tr>
 	  </tbody>
 </table>
@@ -117,7 +131,7 @@ unset($oLista);
 </div>
 <hr>
 <br>
-	<table class="table-striped" cellpadding="20" id="tablamuestra">
+	<table class="table table-striped" cellpadding="20" id="tablamuestra">
 	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
 	    <tr style="height: 50px;">
 	      <th scope="col">Detalle producto</th>
@@ -152,7 +166,22 @@ unset($oLista);
 	   </tr>
 	  </tbody>
 </table>
+<br><br>
 <span>Observaciones: <?php echo $aCotizacionTotal['observaciones'] ?></span>
+<br>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+	<hr color="black" size=1 style="width:30%; float: left;">
+	<br>
+	<p>Firma Autorización</p>
+
 </div>
 
 
@@ -217,7 +246,7 @@ function imprim2(){
     mywindow.document.close(); 
     mywindow.focus(); 
     mywindow.print();
-    mywindow.close(); 
+    // mywindow.close(); 
     
     
     return true;
@@ -226,39 +255,3 @@ function imprim2(){
     $('[data-toggle="tooltip"]').tooltip();
 </script>  
 
-<!-- 
-<script type="text/javascript">
-	function exportTableToExcel(tableID, filename = ''){
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
-    // Specify file name
-    filename = filename?filename+'.xls':'excel_data.xls';
-    
-    // Create download link element
-    downloadLink = document.createElement("a");
-    
-    document.body.appendChild(downloadLink);
-    
-    if(navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['ufeff', tableHTML], {
-            type: dataType
-        });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    }else{
-        // Create a link to the file
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-    
-        // Setting the file name
-        downloadLink.download = filename;
-        
-        //triggering the function
-        downloadLink.click();
-    }
-}
-</script>
-
-
- -->

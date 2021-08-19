@@ -51,6 +51,9 @@ if (!empty($movimientos)) {
 }
 
 
+$oItem=new Data("comprobante_recurrente","idComprobante",$idEliminar); 
+$oItem->eliminar(); 
+unset($oItem);
     
 
 

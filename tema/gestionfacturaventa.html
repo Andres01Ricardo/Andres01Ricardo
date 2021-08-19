@@ -12,22 +12,6 @@ $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
 
 
 
-$oLista = new Lista('cuenta_bancaria');
-$oLista->setFiltro("tipoCuenta","!=","3");
-
-$aCuentas=$oLista->getLista();
-
-unset($oLista);
-
-$oLista = new Lista('cuenta_bancaria');
-$oLista->setFiltro("tipoCuenta","=","3");
-
-$aCajas=$oLista->getLista();
-
-unset($oLista);
-
-
-
 if($id==""){
 
   echo '<script>window.history.back()</script>'; 
@@ -65,8 +49,20 @@ $aEmpresa=$oItem->getDatos();
 unset($oItem); 
 
 
+$oLista = new Lista('cuenta_bancaria');
+$oLista->setFiltro("tipoCuenta","!=","3");
+$oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
+$aCuentas=$oLista->getLista();
+unset($oLista);
 
-$oItem=new Data("cliente","idCliente",$aDatos["idCliente"]); 
+$oLista = new Lista('cuenta_bancaria');
+$oLista->setFiltro("tipoCuenta","=","3");
+$oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
+$aCajas=$oLista->getLista();
+unset($oLista);
+
+
+$oItem=new Data("tercero","idTercero",$aDatos["idCliente"]); 
 
 $aCliente=$oItem->getDatos(); 
 
@@ -137,7 +133,7 @@ unset($oLista);
 <!-- <input type="hidden" name="datos[tipoFactura]" id="datos[tipoFactura]" value="<?php echo $aDatos['tipoFactura']; ?>"> -->
 
 <input type="hidden" name="datos[idFacturaVenta]" id="datos[idFacturaVenta]" value="<?php echo $id; ?>">
-<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $aEmpresa['idEmpresa']; ?>">
+<input type="hidden" name="datos[idEmpresa]" id="idEmpresaGestion" value="<?php echo $aEmpresa['idEmpresa']; ?>">
 
 <section class="section">
 
@@ -257,8 +253,8 @@ unset($oLista);
 
                           <label class="negrita">Cliente:</label>
 
-                          <input type="hidden" class="form-control mayusculas" name="datos[idCliente]" value="<?php echo $aCliente['idCliente']; ?>" placeholder="Cliente" required>
-                          <input type="text" class="form-control mayusculas" value="<?php echo $aCliente['razonSocial']; ?>" placeholder="Cliente" required>
+                          <input type="hidden" class="form-control mayusculas" name="datos[idCliente]" value="<?php echo $aCliente['idTercero']; ?>" placeholder="Cliente" required>
+                          <input type="text" class="form-control mayusculas" value="<?php echo $aCliente['razonSocial']; ?>"  required readonly>
 
                       </div>
 
@@ -510,7 +506,7 @@ unset($oLista);
 
                             <label class="negrita ">Base Impuestos<span class="requerido">*</span>:</label>
 
-                            <input type="text" class="form-control moneda numero" name="baseImpuestos" id="baseImpuestos">
+                            <input type="text" class="form-control moneda decimales" name="baseImpuestos" id="baseImpuestos">
 
                         </div>
 
@@ -636,7 +632,7 @@ unset($oLista);
 
                             <label class="negrita">Total Deducciones:</label>
 
-                            <input type="text" class="form-control mayusculas moneda" name="datos[totalDeduccion]" id="datos[totalDeduccion]" value='<?php echo "$".number_format($totalDeduccion,2,",",".");?>' readonly>
+                            <input type="text" class="form-control mayusculas decimales moneda" name="datos[totalDeduccion]" id="datos[totalDeduccion]" value='<?php echo "$".number_format($totalDeduccion,2,",",".");?>' >
 
                         </div>
 
@@ -769,9 +765,39 @@ unset($oLista);
                         </div>
 
                       </div>
-                      <div class="col-md-3" id="divAbono">
+                      <div class="col-md-2" id="divAbono">
                         <label class="negrita">Abono factura:</label>
                         <input type="text" class="form-control moneda abono" name="datos[abono]" id="abono" >
+                      </div>
+                      <div class="col-md-3 ocultar" id="divCuentaContableTotal">
+                        <div class="form-group">
+                          <label class="negrita">Cuenta contable total a Pagar:</label>
+                          <select class="form-control" name="datos[cuentaContableTotal]" id="cuentaContableTotal">
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-md-2">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="datos[radioEnlazar]" id="radioNoEnlazar" value="1" checked>
+                          <label class="form-check-label" for="radioNoEnlazar" >
+                            No enlazar comprobante
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="datos[radioEnlazar]" value="2" id="radioEnlazar" >
+                          <label class="form-check-label" for="radioEnlazar">
+                            Enlazar comprobante
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="col-md-3 " id="divEnlazarFactura">
+                        <div class="form-group">
+                          <label class="negrita">Enlazar comprobante con otra factura:</label>
+                          <select class="form-control" name="datos[enlazarFactura]" id="enlazarFactura">
+                          </select>
+                        </div>
                       </div>
                     </div>
 
