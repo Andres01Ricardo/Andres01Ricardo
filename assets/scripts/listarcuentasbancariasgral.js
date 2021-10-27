@@ -6,9 +6,12 @@ $(document).ready(function(e){
 
 
 
-$("body").on("click touchstart",".cargarExtracto",function(e){
+$("body").on("click touchstart",".cargarextracto",function(e){
+
 
 	var id=$(this).attr("id"); 
+
+  
 
 	var nombre=$(this).parents("tr").find("td").eq(2).html()
 

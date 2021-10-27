@@ -116,10 +116,20 @@ unset($oLista);
 
                               <td><?php echo "$".number_format($iFactura["total"],2,",","."); ?></td>
 
-                              <td><?php if($iFactura["estado"]==1){ echo 'Enviada'; }elseif($iFactura["estado"]==2){ echo 'Procesada'; }elseif($iFactura["estado"]==
-                                4){ echo 'Abonada'; }else{ echo 'pagada';} ?></td>
+                              <!-- <td><?php if($iFactura["estado"]==1){ echo 'Enviada'; }elseif($iFactura["estado"]==2){ echo 'Procesada'; }elseif($iFactura["estado"]==
+                                4){ echo 'Abonada'; }else{ echo 'pagada';} ?></td> -->
+                                <td><?php if($iFactura["estado"]==1){ echo 'Enviada'; }elseif($iFactura["estado"]==2){ echo 'Procesada'; }elseif($iFactura["estado"]==3){ echo 'Pagada';}elseif($iFactura["estado"]==5){ echo 'Anulada';}else{ echo 'Abonada';} ?></td>
 
-                                <td><?php echo "$".number_format($iFactura["saldo"],2,",",".");?></td>
+                                <td><?php 
+                              if($iFactura["estado"]==3){
+                                echo "$".number_format(0,2,",",".");
+                              }
+                              if ($iFactura["estado"]!=3) {
+                                echo "$".number_format($iFactura["saldo"],2,",",".");
+                              }
+
+                              ?></td>
+
 
                               <td class="centrar">
 

@@ -122,6 +122,15 @@ $idEmpresa=$id;
                             $aDatosU=$oItem->getDatos(); 
 
                             unset($oItem); 
+                            $fechaEx= explode("-", $iComprobante["fecha"]);
+                            $mes=$fechaEx[0].'-'.intval($fechaEx[1]);
+                            
+                            $oLista=new Lista("cierre_mes_contable");
+                            $oLista->setFiltro("mes","=",$mes);
+                            $oLista->setFiltro("idEmpresa","=",$idEmpresa);
+                            $cierre=$oLista->getLista();
+                            unset($oLista);
+                            
                             ?> 
 
                             <tr>
@@ -144,21 +153,24 @@ $idEmpresa=$id;
 
                                 <a href="<?php  echo $URL; ?>vercomprobante/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Items comprobante"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
 
+                                <a href="<?php echo $URL.$iComprobante['archivo']; ?>" target="_blank"data-toggle="tooltip" data-placement="top" title="ver archivo"><i class="fas fa-paperclip" style="color: #A59D9D;font-size: 20px;"></i></a>
                                 
                                 <?php if ($iComprobante["estado"]==null) {  ?>
-                                  
-                                
 
                                 <a href="<?php  echo $URL; ?>editarcomprobante/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Editar comprobante"><i class="fas fa-pencil-alt" style="color: #FFCC4D;font-size: 20px;"></i></a>
-
-                                <!-- <a href="<?php echo $URL; ?>editarcomprobante/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 20px;"></i></a> -->
-                               
-                                
-                                <a href="<?php echo $URL.$iComprobante['archivo']; ?>" target="_blank"data-toggle="tooltip" data-placement="top" title="ver archivo"><i class="fas fa-paperclip" style="color: #A59D9D;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]"  value="<?php echo $idEliminar; ?>" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
+                                    <?php if (empty($cierre)) {
+                                      
+                                  ?>
 
                                 <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" value="<?php echo $idEliminar; ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
 
-                                <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]"  value="<?php echo $idEliminar; ?>" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
+                                    
+                                  <?php  } ?>
+                                
+                               
+                                
+
                               <?php } ?>
 
                             </tr>

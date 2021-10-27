@@ -43,6 +43,7 @@ if(!isset($_SESSION)){ session_start(); }
             $aMovimiento['idProducto']=$datos["idProducto"];
             $aMovimiento['idEmpresa']=$empresa;
             $aMovimiento['observaciones']=$datos["observacionesSumar"];
+            $aMovimiento['idBodega']=$datos["idBodega"];
 
             $oItem=new Data("inventario_productos_movimientos","idInventarioProductosMovimientos"); 
             foreach($aMovimiento  as $keym => $valuem){
@@ -66,6 +67,7 @@ if(!isset($_SESSION)){ session_start(); }
             $aMovimiento['idProducto']=$datos["idProductoRestar"];
             $aMovimiento['idEmpresa']=$empresa;
             $aMovimiento['observaciones']=$datos["observacionesRestar"];
+            $aMovimiento['idBodega']=$datos["idBodega"];
 
             $oItem=new Data("inventario_productos_movimientos","idInventarioProductosMovimientos"); 
             foreach($aMovimiento  as $keym => $valuem){

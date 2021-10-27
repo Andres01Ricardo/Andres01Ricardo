@@ -1,4 +1,3 @@
-
 $("body").on("click","#btnGuardar",function(e){
 
     e.preventDefault();
@@ -12,119 +11,79 @@ $("body").on("click","#btnGuardar",function(e){
           text: 'Está a punto de editar los datos de la factura!',
 
           icon: 'warning', 
-
           showCancelButton: true,
-
           showLoaderOnConfirm: true,
-
           confirmButtonText: `Si, Continuar!`,
-
           cancelButtonText:'Cancelar',
-
           preConfirm: function(result) {
-
           return new Promise(function(resolve) {
-
             var formu = document.getElementById("frmGuardar");
-
-        
-
             var data = new FormData(formu);
-
             $.ajax({
-
             url:URL+"functions/facturaventa/editarfacturaventa.php", 
-
             type:"POST", 
-
             data: data,
-
             contentType:false, 
-
             processData:false, 
-
             dataType: "json",
-
             cache:false 
-
             }).done(function(msg){  
-
               if(msg.msg){
-
                 Swal.fire(
-
                   {
-
                   icon: 'success',
-
                   title: "Factura actualizada!",
-
                   text: 'con exito',
-
                   closeOnConfirm: true,
-
                 }
-
                 ).then((result) => {
-
                  window.history.back(); 
-
                 })
-
               }else{
-
                  Swal.fire(
-
                   'Algo ha salido mal!',
-
                   'Verifique su conexión a internet',
-
                   'error'
-
                 )
-
               }
           });
 
           });
-
         }
-
         })
       }
 
   })
 
-// $("body").on("change",".conceptoSelect",function(e){
-//   var texto = $(this).find('option:selected').text();
-//   var idConceptoSelect=$(this).attr("id");
-//    var numeroConceptoSelect= idConceptoSelect.substring(15,16);
-//    var conceptoSelectTexto="conceptoSelectTexto["+numeroConceptoSelect+"]";
-//    inputConceptoSelectTexto=document.getElementById(conceptoSelectTexto).value=texto;
-
-//    var baseId="baseImpuestos["+numeroConceptoSelect+"]";
-//    var base=parseInt(eliminarMoneda(eliminarMoneda(eliminarMoneda(document.getElementById(baseId).value,"$",""),".",""),",","."));
-
-//    var conceptoS="conceptoSelect["+numeroConceptoSelect+"]";
-//    var valueConcepto=document.getElementById(conceptoS);
-
-//    var valorS="valor["+numeroConceptoSelect+"]";
-//    var valorF=document.getElementById(valorS);
-//   if(valueConcepto.value !=""){
-    
-//     // var porcentaje=valueConcepto.getAttribute("porcentaje");
-//     var porcentaje=valueConcepto.options[valueConcepto.selectedIndex].text;
-//     var valorPorcentaje=parseFloat(porcentaje.split("%")[0]);
-//     var valor=base*(valorPorcentaje/100); 
-//     valorF.value=valor; 
-
-//   }
+$("body").on("change",".centroCosto",function(e){
+  // var texto = $(this).find('option:selected').text();
+  var idCentroCosto = $(this).find('option:selected').val();
+  var idItemCentroCosto=$(this).attr("id");
+  var numeroC=$(this).attr("numeroC");
+  // alert(idCentroCosto);
+  // alert(idItemCentroCosto);
+  // alert(numeroC);
 
 
+  $.ajax({
+    url:URL+"functions/centrocosto/cargarsubcentrocosto.php", 
+    type:"POST", 
+    data: {"idCentroCosto":idCentroCosto},
+    dataType: "json",
+    }).done(function(msg){ 
+      console.log(msg);
+      var sHtml="<option value=''>Seleccione</option>"; 
+          msg.forEach(function(element,index){
+            sHtml+="<option value='"+element.idSubcentroCosto+"'>"+element.codigoSubcentroCosto+" "+element.subcentroCosto  +"</option>"; 
+          })
+          var subcentro="item["+numeroC+"][subcentroCosto]";
+          $("[name='"+subcentro+"']").html(sHtml);
+  });
+});
 
-//    sumar_columnas();
+
+
   
-// });
 $("body").on("change",".conceptoSelect",function(e){
   var texto = $(this).find('option:selected').text();
   var idConceptoSelect=$(this).attr("id");
@@ -143,24 +102,6 @@ var porcentaje=$(this).parents("tr").find(".conceptoSelect option:selected").att
 
 
   $(this).parents("tr").find(".valorDeduccion").val(valor).trigger("change");
-
-
-   // var conceptoS="conceptoSelect["+numeroConceptoSelect+"]";
-   // var valueConcepto=document.getElementById(conceptoS);
-
-   // var valorS="valor["+numeroConceptoSelect+"]";
-   // var valorF=document.getElementById(valorS);
-  // if(valueConcepto.value !=""){
-    
-  //   // var porcentaje=valueConcepto.getAttribute("porcentaje");
-  //   var porcentaje=valueConcepto.options[valueConcepto.selectedIndex].text;
-  //   var valorPorcentaje=parseFloat(porcentaje.split("%")[0]);
-  //   var valor=base*(valorPorcentaje/100); 
-  //   valorF.value=valor; 
-
-  // }
-
-
 
    sumar_columnas();
    calcularDeduccion();

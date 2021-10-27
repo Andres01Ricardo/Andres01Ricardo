@@ -79,6 +79,52 @@ $oClientes=new Dashboard();
 $dClientes=$oClientes->getSaldoClientes($_SESSION["idEmpresa"]);
 unset($oClientes);
 
+// $oLista=new Lista("factura_venta");
+// $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+// $oLista->setFiltro("estado","!=","3");
+// $aFacturaVenta=$oLista->getLista();
+// unset($oLista);
+
+
+
+require_once("class/facturaventa.php");
+
+
+$oCuentasCobrar=new FacturaVenta();
+$aFacturaVenta=$oCuentasCobrar->getSaldoClientesEmpresa($_SESSION["idEmpresa"]);
+unset($oCuentasCobrar);
+
+
+$saldoFinal=0;
+foreach($aFacturaVenta as $index => $iFactura){ 
+
+  $oLista = new Lista('factura_venta_deduccion');
+  $oLista->setFiltro("idFacturaVenta","=",$iFactura['idFacturaVenta']);
+  $aDeduccion=$oLista->getLista();
+  unset($oLista);
+
+
+
+  if (empty($aDeduccion)) {
+    $saldoFinal=$saldoFinal+$iFactura["saldo"];
+  }
+  if (!empty($aDeduccion)) {
+    if ($iFactura["estado"]==4) {
+      $saldoFinal=$saldoFinal+$iFactura["saldo"];
+    }
+    if ($iFactura["estado"]==1 || $iFactura["estado"]==2) {
+      $retencion=0;
+      foreach ($aDeduccion as $keyde => $valuede) {
+        $retencion=$retencion+$valuede["valor"];
+      }
+      $saldoFinal=$saldoFinal+$iFactura["total"]-$retencion;  
+    }
+    // else{
+    //   $saldoFinal=$saldoFinal+$iFactura["saldo"];   
+    // }
+  }
+
+}
 
 
 $oRetencion=new Dashboard(); 
@@ -752,7 +798,8 @@ unset($oItem);
 
                 <h3 class="d-flex align-items-center mb-0" style="color: #868686">
 
-                  <?php echo "$".number_format($dClientes[0]["totalVentas"],2,",","."); ?>
+                  <!-- <?php echo "$".number_format($dClientes[0]["totalVentas"],2,",","."); ?> -->
+                  <?php echo "$".number_format($saldoFinal,2,",","."); ?>
 
                 </h3>
 

@@ -507,31 +507,39 @@ if (!empty($aCC)) {
         $oLista->setFiltro("tipoFactura","like",'compra');
         $aProductoCuenta=$oLista->getLista();
         
-        $oItem=new Data("cuenta_contable","idCuentaContable",$aProductoCuenta[0]["idEmpresaCuenta"]);
-        $aCuentaContable=$oItem->getDatos();
-        unset($oItem);
+        if (empty($aProductoCuenta)) {
+            $comp=false;
+        }
 
-        $aItem["idComprobante"]=$idComprobante; 
-        $aItem["idCuentaContable"]=$aProductoCuenta[0]["idEmpresaCuenta"];
-        $aItem["idCentroCosto"]=" ";
-        $aItem["idTercero"]=$datos["idTercero"];
-        $aItem["descripcion"]=$value["descripcion"];
-        $aItem["naturaleza"]='debito';
-        $aItem["tipoTercero"]='p';
-        $aItem["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
-        $aItem["fecha"]=$datos["fechaRecibido"]; 
-        $aItem["saldoDebito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$value["subtotal"])));
-        $aItem["saldoCredito"]=0;
-        $aItem["base"]=0;
-
-         $oItem=new Data("comprobante_items","idComprobanteItem"); 
-            foreach($aItem  as $keycc => $valuecc){
-                $oItem->$keycc=$valuecc; 
-            }
-            $oItem->guardar(); 
+        if ($comp==true) {
+            $oItem=new Data("cuenta_contable","idCuentaContable",$aProductoCuenta[0]["idEmpresaCuenta"]);
+            $aCuentaContable=$oItem->getDatos();
             unset($oItem);
-    }
 
+            $aItem["idComprobante"]=$idComprobante; 
+            $aItem["idCuentaContable"]=$aProductoCuenta[0]["idEmpresaCuenta"];
+            $aItem["idCentroCosto"]=" ";
+            $aItem["idTercero"]=$datos["idTercero"];
+            $aItem["descripcion"]=$value["descripcion"];
+            $aItem["naturaleza"]='debito';
+            $aItem["tipoTercero"]='p';
+            $aItem["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+            $aItem["fecha"]=$datos["fechaRecibido"]; 
+            $aItem["saldoDebito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$value["subtotal"])));
+            $aItem["saldoCredito"]=0;
+            $aItem["base"]=0;
+
+             $oItem=new Data("comprobante_items","idComprobanteItem"); 
+                foreach($aItem  as $keycc => $valuecc){
+                    $oItem->$keycc=$valuecc; 
+                }
+                $oItem->guardar(); 
+                unset($oItem);
+        }
+    }
+        // if ($comp==true) {
+            
+        // }
         $oLista=new Lista("impuesto_cuenta_contable");
         $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
         $oLista->setFiltro("tipoImpuesto","=",'3');
@@ -579,28 +587,30 @@ if (!empty($aCC)) {
                 $comp=false;
             }
             
+            if ($comp==true) {
             
             
-            $aCompra["idComprobante"]=$idComprobante; 
-            $aCompra["idCuentaContable"]=$idCuentaContableTotal;
-            $aCompra["idCentroCosto"]=" ";
-            $aCompra["idTercero"]=$datos["idTercero"];
-            $aCompra["descripcion"]=$value["descripcion"];
-            $aCompra["naturaleza"]='credito';
-            $aCompra["tipoTercero"]='p';
-            $aCompra["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
-            $aCompra["fecha"]=$datos["fechaRecibido"]; 
-            $aCompra["saldoDebito"]=0;
-            $aCompra["saldoCredito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$datos["totalPago"])));
-            $aCompra["base"]=0;
+                $aCompra["idComprobante"]=$idComprobante; 
+                $aCompra["idCuentaContable"]=$idCuentaContableTotal;
+                $aCompra["idCentroCosto"]=" ";
+                $aCompra["idTercero"]=$datos["idTercero"];
+                $aCompra["descripcion"]=$value["descripcion"];
+                $aCompra["naturaleza"]='credito';
+                $aCompra["tipoTercero"]='p';
+                $aCompra["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+                $aCompra["fecha"]=$datos["fechaRecibido"]; 
+                $aCompra["saldoDebito"]=0;
+                $aCompra["saldoCredito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$datos["totalPago"])));
+                $aCompra["base"]=0;
 
-            $oItem=new Data("comprobante_items","idComprobanteItem"); 
-                foreach($aCompra  as $keyImpuesto => $valueImpuesto){
-                    $oItem->$keyImpuesto=$valueImpuesto; 
-                }
-                $oItem->guardar(); 
-                unset($oItem);
+                $oItem=new Data("comprobante_items","idComprobanteItem"); 
+                    foreach($aCompra  as $keyImpuesto => $valueImpuesto){
+                        $oItem->$keyImpuesto=$valueImpuesto; 
+                    }
+                    $oItem->guardar(); 
+                    unset($oItem);
 
+            }
 
             // }
 
@@ -680,7 +690,7 @@ if (!empty($aCC)) {
                     unset($oLista);
                     foreach ($comEliminar as $keym => $valuem) {
                         $oItem=new Data("comprobante","idComprobante",$valuem["idComprobante"]);
-                        // $oItem->eliminar();
+                        $oItem->eliminar();
                         unset($oItem);
                     }
 
@@ -690,7 +700,7 @@ if (!empty($aCC)) {
                     unset($oLista);
                     foreach ($comprobanteItemsEliminar as $keym => $valuem) {
                         $oItem=new Data("comprobante_items","idComprobanteItem",$valuem["idComprobanteItem"]);
-                        // $oItem->eliminar();
+                        $oItem->eliminar();
                         unset($oItem);
                     }
 

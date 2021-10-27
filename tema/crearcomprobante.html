@@ -77,14 +77,9 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 // $aEmpresa=$oLista->getLista();
 
 // unset($oLista);
-
-
-
 $oLista = new Lista('tipos_documento_contable');
 $tiposDocumento=$oLista->getLista();
-
 unset($oLista);
-
 // $oCuentasContables=new CuentasContables(); 
 // $aCuentasContables=$oCuentasContables->getCuentasContables(array("idEmpresa"=>'6'));
 
@@ -100,32 +95,18 @@ unset($oLista);
 //   $ultimaCuenta[$key]=end($aCuentaContable);
 // }
 // print_r($ultimaCuenta);
-
-
-
 ?>
-
 <form enctype="multipart/form-data" id="frmGuardar">
   <input type="hidden" name="" id="idComprobante" value="<?php echo $id; ?>">
-
 <section class="section">
-
         <ul class="breadcrumb breadcrumb-style ">
-
           <li class="breadcrumb-item">
-
             <a href="<?php echo $URL; ?>">
-
               <i class="fas fa-home"></i></a>
-
           </li>
-
           <li class="breadcrumb-item">Comprobantes</li>
-
           <li class="breadcrumb-item">Crear comprobante</li>
-
         </ul>
-
         <div class="section-body">
 
           <div class="row">

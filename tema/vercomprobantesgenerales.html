@@ -1,0 +1,274 @@
+ 
+<?php 
+
+require_once("class/informes.php");
+
+$oControl=new Control(); 
+
+if (!empty($_SESSION['idEmpresa'])) {
+  $idEmpresa=$_SESSION['idEmpresa'];
+}
+if (empty($_SESSION['idEmpresa'])) {
+  
+  $idEmpresa=$_POST["empresa"];
+}
+$desde=$_POST["desde"];
+$hasta=$_POST["hasta"];
+$tipo=$_POST["tipo"];
+
+
+$tipoP=explode("-", $tipo);
+
+
+$idTipo=$tipoP[0];
+
+$numeroComprobante=$tipoP[1];
+
+// $filtroCuenta=$_POST["filtroCuenta"];
+
+
+$oItem=new Data("empresa","idEmpresa",$idEmpresa);
+$aEmpresa=$oItem->getDatos();
+unset($oItem);
+// print_r($aBalanceComprobacionT);
+
+
+if ($idTipo==0) {
+    $oLista=new Lista("comprobante");
+    $oLista->setFiltro("fecha",">=",$desde);
+    $oLista->setFiltro("fecha","<=",$hasta);
+    $oLista->setFiltro("idEmpresa","=",$idEmpresa);
+    $oLista->setOrden("idTipo","ASC");
+    $oLista->setOrden("comprobante","DESC");
+    $oLista->setOrden("numero","ASC");
+    $comprobante=$oLista->getLista();
+    unset($oLista);
+  }  
+
+if ($idTipo!=0) {
+    $oLista=new Lista("comprobante");
+    $oLista->setFiltro("idTipo","=",$idTipo);
+    $oLista->setFiltro("comprobante","=",$numeroComprobante);
+    $oLista->setFiltro("fecha",">=",$desde);
+    $oLista->setFiltro("fecha","<=",$hasta);
+    $oLista->setFiltro("idEmpresa","=",$idEmpresa);
+    $oLista->setOrden("idTipo","DESC");
+    $oLista->setOrden("comprobante","DESC");
+    $oLista->setOrden("numero","ASC");
+    $comprobante=$oLista->getLista();
+    unset($oLista);
+  }  
+
+// print_r($comprobante);
+
+?>
+
+
+  <div class="card">
+    <div class="card-header">
+      <table style="font-size: 14px;font-family: Arial;" class="table">
+        <tbody >
+          <tr>
+            <th>AS-SmartBuss</th>
+            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="140" height="100">    <?php echo $aEmpresa['razonSocial'];?></th>
+            <th></th>
+            <th><?php echo date('Y/m/d'); ?></th>
+          </tr>
+          <tr>
+            <th> </th>
+            <th>Nit: <?php echo $aEmpresa['nit'];?> - <?php echo $aEmpresa['digitoVerificador'];?></th>
+            <th> </th>
+            <th> </th>
+          </tr> 
+          <tr>
+            <th></th>
+            <th >COMPROBANTES GENERALES</th>
+            <th> </th>
+          </tr>
+          <tr>
+            <th></th>
+            <th >DESDE:  <?php echo $desde;?> HASTA: <?php echo $hasta;?></th>
+            <th> </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <a href="comprobantesgenerales" class="btn btn-info">NUEVO FILTRO</a>
+          <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+          <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+          <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+          <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+          <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+          <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>">
+          <input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
+          <input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">
+        </div>
+      </div>
+      <br><br>
+
+                  <div class="row">
+                    <div class="col-md-12 col-lg-12 table-responsive">
+                      <table class="table table-hover table-bordered mayusculas " id="tablecomprobacion" style="font-family: 'Tahoma'; width: 100%;" >
+                        <thead>
+                          <tr>
+                            <!-- <th>FECHA</th> -->
+                            <!-- <th>COMP</th> -->
+                            <!-- <th>NÚMERO</th> -->
+                            <th>NIT</th>
+                            <th>CUENTA</th>
+                            <th>DESCRIPCIÓN</th>
+                            <th>CC</th>
+                            <th>SC</th>
+                            <th>BASE</th>
+                            <th>DETALLE</th>
+                            <th>DEBITOS</th>
+                            <th>CREDITOS</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                  <?php 
+                  $totalDebitosGeneral=0;
+                  $totalCreditosGeneral=0;
+
+                  $totalDebitosLetra=0;
+                  $totalCreditosLetra=0;
+                  foreach($comprobante as $key => $value){ 
+                    
+                  $totalDebitos=0;
+                  $totalCreditos=0;
+
+                   $oItem=new Data("tipos_documento_contable","idTiposDocumento",$value["idTipo"]);
+                   $letra=$oItem->getDatos();
+                   unset($oItem);
+
+
+                          $oLista=new Lista("comprobante_items");
+                          $oLista->setFiltro("idComprobante","=",$value["idComprobante"]);
+                          $comprobanteItems=$oLista->getLista();
+                          unset($oLista); 
+                          ?>
+
+                           <tr>                            
+                            <td></td>
+                            <td><?php echo $value["fecha"] ?></td>
+                            <td><?php echo $letra["letra"].'-'.$value["comprobante"].' '.$value["numero"] ?></td>
+                            <!-- <td><?php echo $value["numero"] ?></td> -->
+                            
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <?php
+                          foreach($comprobanteItems as $keyCI => $valueCI){
+
+                            $oItem=new Data("cuenta_contable","idCuentaContable",$valueCI["idCuentaContable"]); 
+                            $aCuentaContable=$oItem->getDatos(); 
+                            unset($oItem);
+
+
+                            $oItem=new Data("tercero","idTercero",$valueCI["idTercero"]); 
+                                $aTercero=$oItem->getDatos(); 
+                                unset($oItem);
+                                $nombreTercero=$aTercero["razonSocial"];
+                                $nitTercero=$aTercero["nit"];
+
+                            $oItem=new Data("centro_costo","idCentroCosto",$valueCI["idCentroCosto"]); 
+                            $aCentroCosto=$oItem->getDatos(); 
+                            unset($oItem);
+
+                            $oItem=new Data("subcentro_costo","idSubcentroCosto",$valueCI["idSubcentroCosto"]); 
+                            $aSubcentroCosto=$oItem->getDatos(); 
+                            unset($oItem);
+                            $totalDebitos=$totalDebitos+$valueCI["saldoDebito"];
+                            $totalCreditos=$totalCreditos+$valueCI["saldoCredito"];
+                          ?>
+
+
+                          <tr>                            
+                            <td><?php echo $nitTercero ?></td>
+                            <td><?php echo $aCuentaContable["codigoCuenta"] ?></td>
+                            <td><?php echo $aCuentaContable["nombre"] ?></td>
+                            <td><?php echo $aCentroCosto["codigoCentroCosto"] ?></td>
+                            <td><?php echo $aSubcentroCosto["codigoSubcentroCosto"] ?></td>
+                            <td><?php echo $valueCI["base"] ?></td>
+                            <td><?php echo $valueCI["descripcion"] ?></td>
+                            <td><?php echo number_format($valueCI["saldoDebito"],2,".",",") ?></td>
+                            <td><?php echo number_format($valueCI["saldoCredito"],2,".",",") ?></td>
+                          </tr>
+
+                        <?php } ?>
+                        <tr>
+                          <td ></td>
+                          <td></td>
+                          <td class="negrita">TOTAL <?php echo $value["numero"] ?></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <!-- <td></td>
+                          <td></td>
+                          <td></td> -->
+                          <td class="negrita"><?php echo number_format($totalDebitos,2,".",",");?></td>
+                          <td class="negrita"><?php echo number_format($totalCreditos,2,".",",");?></td>
+                        </tr>
+                        <?php 
+                        
+                        $totalDebitosLetra=$totalDebitosLetra+$totalDebitos;
+                        $totalCreditosLetra=$totalCreditosLetra+$totalCreditos;
+                        if ($comprobante[$key+1]["idTipo"] != $value["idTipo"] || $comprobante[$key+1]["comprobante"] != $value["comprobante"]) {
+                          
+                        
+                        ?>
+                        <tr>
+                          <td ></td>
+                          <td class="negrita">TOTAL <?php echo $letra["letra"].'-'.$value["comprobante"]  ?> </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <!-- <td></td>
+                          <td></td>
+                          <td></td> -->
+                          <td class="negrita"><?php echo number_format($totalDebitosLetra,2,".",",");?></td>
+                          <td class="negrita"><?php echo number_format($totalCreditosLetra,2,".",",");?></td>
+                        </tr>
+                        <?php 
+
+                        $totalDebitosLetra=0;
+                        $totalCreditosLetra=0;
+                        }
+
+                        $totalDebitosGeneral=$totalDebitosGeneral+$totalDebitos;
+                        $totalCreditosGeneral=$totalCreditosGeneral+$totalCreditos;
+                      } ?>
+                      
+                      
+
+
+                      <tr>
+                          <td ></td>
+                          <td class="negrita">TOTAL GENERAL </td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <!-- <td></td>
+                          <td></td>
+                          <td></td> -->
+                          <td></td>
+                          <td class="negrita"><?php echo number_format($totalDebitosGeneral,2,".",",");?></td>
+                          <td class="negrita"><?php echo number_format($totalCreditosGeneral,2,".",",");?></td>
+                        </tr>
+                        </tbody>
+                      </table>
+                  </div>
+              </div> 
+          </div>
+      </div> 

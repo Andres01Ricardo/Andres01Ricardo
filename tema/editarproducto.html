@@ -1,0 +1,164 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+// $decrip["cadena"]=$id; 
+
+// $id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("producto_servicio","idProductoServicio",$id); 
+
+$aDatos=$oItem->getDatos(); 
+
+unset($oItem); 
+
+
+
+
+
+// $oItem=new Data("bienes","idBienes",$aDatos["idBienes"]); 
+
+// $aBienes=$oItem->getDatos(); 
+
+// unset($oItem); 
+
+
+
+// $oItem=new Data("clase","idClase",$aBienes["idClase"]); 
+
+// $aClase=$oItem->getDatos(); 
+
+// unset($oItem); 
+
+
+
+// $oItem=new Data("familia","idFamilia",$aClase["idFamilia"]); 
+
+// $aFamilia=$oItem->getDatos(); 
+
+// unset($oItem); 
+
+
+
+// $oItem=new Data("segmento","idSegmento",$aFamilia["idSegmento"]); 
+
+// $aSegmento=$oItem->getDatos(); 
+
+// unset($oItem); 
+
+
+
+// $oItem=new Data("grupo","idGrupo",$aSegmento["idGrupo"]); 
+
+// $aGrupo=$oItem->getDatos(); 
+
+// unset($oItem); 
+
+ // $oLista = new Lista('grupo_inventario');
+ //  $oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
+ //  $grupoInventario=$oLista->getLista();
+ //  unset($oLista);
+
+$oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+$aEmpresa=$oItem->getDatos(); 
+unset($oItem); 
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="datos[id]" id="id" value="<?php echo $id; ?>">
+
+<!-- <input type="hidden" id="tipo" value="1"> -->
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Productos</li>
+
+          <li class="breadcrumb-item">Editar producto</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+              <div class="card-body">
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>CODIGO:</label>
+                    <input type="text" name="datos[codigoProducto]" class="form-control" id="codigoProducto" required value="<?php echo $aDatos["codigo"]; ?>">
+                  </div>
+                  <div class="col-md-6">
+                    <label>PRODUCTO:</label>
+                    <input type="text" name="datos[producto]" class="form-control" id="producto" required value="<?php echo $aDatos["nombre"]; ?>">
+                  </div>
+                    
+                </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

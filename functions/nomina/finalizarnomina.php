@@ -10,17 +10,17 @@ $oControl=new Control();
 
 date_default_timezone_set("America/Bogota"); 
 
-$idNomina  = (isset($_REQUEST['idNomina'] ) ? $_REQUEST['idNomina'] : "" );
+// $idNomina  = (isset($_REQUEST['idNomina'] ) ? $_REQUEST['idNomina'] : "" );
 
-$idEmpresa  = (isset($_REQUEST['idEmpresa'] ) ? $_REQUEST['idEmpresa'] : "" );
+// $idEmpresa  = (isset($_REQUEST['idEmpresa'] ) ? $_REQUEST['idEmpresa'] : "" );
 
-$valor  = (isset($_REQUEST['valor'] ) ? $_REQUEST['valor'] : "" );
+$datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
 
 if(!isset($_SESSION)){ session_start(); }
 
 
 $aData["estado"]=2;
-$oItem=new Data("nomina","idNomina",$idNomina); 
+$oItem=new Data("nomina","idNomina",$datos['idNomina']); 
 foreach ($aData as $key => $value) {
   $oItem->$key=$value; 
 }
@@ -29,32 +29,37 @@ unset($oItem);
 
 
 
-
-
-    $totalFactura=$totalFactura;
+$oItem=new Data("nomina","idNomina",$datos['idNomina']);
+$nomina=$oItem->getDatos();
+unset($oItem);
+    
+    
 
     $oItem=new Data("cuenta_bancaria","idCuentaBancaria",$datos["cuentaBancaria"]); 
+    $cuentaDatos=$oItem->getDatos(); 
+    unset($oItem);
     $idCuenta=$datos["cuentaBancaria"];
 
+    $valorPago=floatval(str_replace(",", ".",str_replace("$", "", str_replace(".", "", $datos["valorNomina"]))));
     
-        $cuentaDatos=$oItem->getDatos(); 
         $saldoActual=$cuentaDatos["saldoActual"];
-        $nuevoSaldo=$saldoActual + $totalFactura;
-        $cuatropormil=$cuentaDatos['aplicaCuatroMil'];
-        unset($oItem);
+        $nuevoSaldo=$saldoActual - $valorPago;
+        
+
 
         $oItem=new Data("tercero","idTercero",$fDatos["idCliente"]); 
         $clienteDatos=$oItem->getDatos(); 
         unset($oItem);
 
+
         $bDatos["idCuentaBancaria"]=$idCuenta;
-        $bDatos["idTipoMovimiento"]=3;
+        $bDatos["idTipoMovimiento"]=1;
         $bDatos["fechaRegistro"]=date("Y-m-d H:i:s");
         $bDatos["valorIngreso"]=0;
-        $bDatos["valorEgreso"]=$valor;  
+        $bDatos["valorEgreso"]=$valorPago;  
         $bDatos["saldoAnterior"]=$saldoActual;
         $bDatos["saldoActual"]=$nuevoSaldo;
-        $bDatos["descripcionMovimiento"]='pago de factura '.$fDatos["nroFactura"].' del cliente '.$clienteDatos["razonSocial"]; 
+        $bDatos["descripcionMovimiento"]='pago de nómina del mes '.$nomina["periodoMes"].'/'.$nomina["periodoAnio"]; 
 
         $oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
             foreach($bDatos  as $key => $value){
@@ -71,8 +76,36 @@ unset($oItem);
 
 
 
+        if ($cuentaDatos['aplicaCuatroMil']==1) {
+            
+            $valorcuatromil = $valorPago*4/1000;
+            $nuevoSaldoActual = $nuevoSaldo - $valorcuatromil;
+            $bDatos["idCuentaBancaria"]=$idCuenta;
+            $bDatos["idTipoMovimiento"]=1;
+            $bDatos["fechaRegistro"]=date("Y-m-d H:i:s");
+            $bDatos["valorIngreso"]=0;
+            $bDatos["valorEgreso"]=$valorcuatromil;  
+            $bDatos["saldoAnterior"]=$nuevoSaldo;
+            $bDatos["saldoActual"]=$nuevoSaldoActual;
+            $bDatos["descripcionMovimiento"]='pago de 4xmil de la nómina del mes '.$nomina["periodoMes"].'/'.$nomina["periodoAnio"]; 
+
+            $oItem=new Data("cuenta_bancaria_movimientos","idCuentaBancariaMovimientos"); 
+            foreach($bDatos  as $key => $value){
+                $oItem->$key=$value; 
+            }
+            $oItem->guardar(); 
+             
+            unset($oItem);
+
+            $nuevoSaldo = $nuevoSaldoActual;
 
 
+
+            $oItem=new Data("cuenta_bancaria","idCuentaBancaria",$idCuenta); 
+            $oItem->saldoActual=$nuevoSaldo; 
+            $oItem->guardar(); 
+            unset($oItem);
+        }
 
 
 

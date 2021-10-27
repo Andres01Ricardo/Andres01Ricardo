@@ -86,7 +86,12 @@ $aUnidades=$oLista->getLista();
 
 unset($oLista);
 
-print_r($_SESSION["idUsuario"]);
+
+$oLista=new Lista("centro_costo");
+$oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
+$aCentroCosto=$oLista->getLista();
+unset($oLista);
+
 ?>
 
 <style type="text/css">
@@ -295,8 +300,11 @@ print_r($_SESSION["idUsuario"]);
                             <th>Productos</th>
 
                             <th>Descripción</th>
+                            <th>CC</th>
 
-                            <th>Cantidad</th>
+                            <th>SC</th>
+
+                            <th>Cant</th>
 
                             <th>Unidad</th>
 
@@ -333,11 +341,26 @@ print_r($_SESSION["idUsuario"]);
                                 <?php echo $item["detalleProducto"]; ?>
                                 <input type="hidden" name="item[<?php echo $index ?>][idProducto]" id="item[<?php echo $index ?>][idProducto]" class="form-control idProducto" value="<?php echo $item["idProductoServicio"] ?>" ></td>
 
-                              <td><input type="text" class="form-control descripcion mayusculas" name="item[<?php echo $index ?>][descripcion]" id="item[<?php echo $index ?>][descripcion]" placeholder="Descripción" required value="<?php echo $item["descripcion"]; ?>" readonly></td>
+                              <!-- <td><input type="text" class="form-control descripcion mayusculas" name="item[<?php echo $index ?>][descripcion]" id="item[<?php echo $index ?>][descripcion]" placeholder="Descripción" required value="<?php echo $item["descripcion"]; ?>" readonly></td> -->
+                              <td><?php echo $item["descripcion"]; ?></td>
+                              <td><select name="item[<?php echo $index; ?>][centroCosto]" id="item[<?php echo $index; ?>][centroCosto]" class="form-control select2 centroCosto" numeroC="<?php echo $index; ?>" >
+                                <option>Seleccione</option>
+                                <?php foreach ($aCentroCosto as $keyCC => $valueCC) {
+                                  
+                               ?>
+                                <option value="<?php echo $valueCC["idCentroCosto"] ?>"><?php echo $valueCC["codigoCentroCosto"].' '.$valueCC["centroCosto"] ?></option>
+                               <?php } ?>
 
-                              <td><input type="text" class="form-control decimales cantidad" name="item[<?php echo $index ?>][cantidad]" id="item[<?php echo $index ?>][cantidad]" placeholder="Cantidad" required value="<?php echo $item["cantidad"]; ?>" readonly></td>
+                              </select></td>
 
-                              <td><select class="form-control mayusculas idUnidad" name="item[<?php echo $index ?>][idUnidad]" id="item[<?php echo $index ?>][idUnidad]" required disabled>
+                              <td><select name="item[<?php echo $index; ?>][subcentroCosto]" id="item[<?php echo $index; ?>][subcentroCosto]" class="form-control select2 subcentroCosto">
+                                <option value="">Seleccione</option>
+                              </select></td>
+
+                              <!-- <td><input type="text" class="form-control decimales cantidad" name="item[<?php echo $index ?>][cantidad]" id="item[<?php echo $index ?>][cantidad]" placeholder="Cantidad" required value="<?php echo $item["cantidad"]; ?>" readonly></td> -->
+                              <td><?php echo $item["cantidad"]; ?></td>
+
+                              <!-- <td><select class="form-control mayusculas idUnidad" name="item[<?php echo $index ?>][idUnidad]" id="item[<?php echo $index ?>][idUnidad]" required disabled>
 
                                   <option value="">Seleccione una opción</option>
 
@@ -347,16 +370,23 @@ print_r($_SESSION["idUsuario"]);
 
                                   <?php } ?>
 
-                                </select></td>
+                                </select></td> -->
+                                <td><?php echo $aUnidad["nombre"]; ?></td>
 
-                              <td><input type="text" class="form-control moneda decimales valorUnitario " name="item[<?php echo $index ?>][valorUnitario]" id="item[<?php echo $index ?>][valorUnitario]" placeholder="Valor Unitario" required readonly value="<?php echo "$".number_format($item["valorUnitario"],2,",","."); ?>"></td>
+                             <!--  <td><input type="text" class="form-control moneda decimales valorUnitario " name="item[<?php echo $index ?>][valorUnitario]" id="item[<?php echo $index ?>][valorUnitario]" placeholder="Valor Unitario" required readonly value="<?php echo "$".number_format($item["valorUnitario"],2,",","."); ?>"></td>
 
                               <td><input type="text" class="form-control moneda subtotal " name="item[<?php echo $index ?>][subtotal]" id="item[<?php echo $index ?>][subtotal]" placeholder="Subtotal" required readonly value="<?php echo "$".number_format($item["subtotal"],2,",","."); ?>"></td>
 
                               <td><input type="text" class="form-control decimales iva " name="item[<?php echo $index ?>][iva]" id="item[<?php echo $index ?>][iva]" placeholder="IVA" required value="<?php echo $item["iva"];?>" readonly></td>
 
-                              <td><input type="text" class="form-control moneda total " name="item[<?php echo $index ?>][total]" id="item[<?php echo $index ?>][total]" placeholder="TOTAL" required readonly value="<?php echo "$".number_format($item["total"],2,",","."); ?>"></td>
+                              <td><input type="text" class="form-control moneda total " name="item[<?php echo $index ?>][total]" id="item[<?php echo $index ?>][total]" placeholder="TOTAL" required readonly value="<?php echo "$".number_format($item["total"],2,",","."); ?>"></td> -->
+                              <td style="text-align: right;"><?php echo "$".number_format($item["valorUnitario"],2,",","."); ?></td>
 
+                              <td style="text-align: right;"><?php echo "$".number_format($item["subtotal"],2,",","."); ?></td>
+
+                              <td style="text-align: right;"><?php echo $item["iva"]."%"; ?></td>
+
+                              <td style="text-align: right;"><?php echo "$".number_format($item["total"],2,",","."); ?></td>
 
 
                               
@@ -387,7 +417,7 @@ print_r($_SESSION["idUsuario"]);
 
                           <tr>
 
-                            <td colspan="7" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">SUBTOTAL:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;"  name="datos[subtotal]" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["subtotal"],2,",","."); ?>' readonly ></td>
 
@@ -395,7 +425,7 @@ print_r($_SESSION["idUsuario"]);
 
                           <tr>
 
-                            <td colspan="7" style="text-align: right;" class="negrita">DESCUENTO:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">DESCUENTO:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["descuento"],2,",","."); ?>' readonly ></td>
 
@@ -403,7 +433,7 @@ print_r($_SESSION["idUsuario"]);
 
                           <tr>
 
-                            <td colspan="7" style="text-align: right;" class="negrita">IVA:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">IVA:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" name="datos[iva]" value='<?php echo "$".number_format($aDatos["iva"],2,",","."); ?>' readonly ></td>
 
@@ -411,7 +441,7 @@ print_r($_SESSION["idUsuario"]);
 
                           <tr>
 
-                            <td colspan="7" style="text-align: right;" class="negrita">TOTAL:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">TOTAL:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[totalFactura]" id="totalFactura" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["total"],2,",","."); ?>' readonly ></td>
 

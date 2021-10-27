@@ -59,26 +59,26 @@ unset($oLista);
 			  </div>
 			</div> -->
 
-	<a style="float: right;" data-toggle="tooltip" title="Facturar" data-placement="top" href="#"><i class="fas fa-file-invoice-dollar" style="color: blue; font-size: 30px;"></i></a>
+	<!-- <a style="float: right;" data-toggle="tooltip" title="Facturar" data-placement="top" href="#"><i class="fas fa-file-invoice-dollar" style="color: blue; font-size: 30px;"></i></a> -->
 	<a style="float: right;" data-toggle="tooltip" title="Generar pdf" data-placement="top" target="_blank" href="../functions/crm/pdfremision.php?id=<?php echo $aCotizacionTotal['idRemision'];?>&url=<?php echo $URL ?>"><i class="fas fa-file-pdf" style="color: blue; font-size: 30px;"></i></a>
 	<a style="float: right;" data-toggle="tooltip" title="Imprimir" data-placement="top" type="button" onclick="javascript:imprim2();"><i class="fas fa-print" style="color: blue; font-size: 30px;"></i></a>
 	<br><br>
 
 <div class="card" id="muestra">
-	<table >
-	  <thead >
+	<!-- <table > -->
+	  <!-- <thead >
 	    <tr style="text-align: center; font-size: 25px;">
 	      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
 	      <th scope="col"><span><?php echo $aEmpresa['razonSocial'] ?></span></th>
 	      
 	      <th scope="col" style="font-size: 20px;">Remision</th>
-	      <th scope="col"></th>
+	      <th scope="col"><?php echo $aCotizacionTotal['numero'] ?></th>
 	    </tr>
-	  </thead>
-	  <tbody>
+	  </thead> -->
+	  <!-- <tbody>
 	    <tr style="text-align: center; font-size: 20px;">
-	      <!-- <th scope="row"></th>
- -->	      <td><span>Telefono: <?php echo $aEmpresa['telefono'] ?></span></td>
+	      
+     <td><span>Telefono: <?php echo $aEmpresa['telefono'] ?></span></td>
 	   	  
 	   	  <td>Fecha: <?php echo $aCotizacionTotal['fecha'] ?></td>
 	   	  <td></td>
@@ -90,8 +90,44 @@ unset($oLista);
 	   	  <td></td>
 	   	  
 	   </tr>
+	  </tbody> -->
+<!-- </table> -->
+
+<table  >
+	  <thead >
+	    <tr style="text-align: center; font-size: 25px;">
+	      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
+	      
+	      <th scope="col"><?php echo $aEmpresa['razonSocial'] ?></th>
+	      <th scope="col" style="font-size: 20px;" class="mayusculas">Remisión <?php echo $aCotizacionTotal['numero']; ?></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr style="text-align: center; font-size: 25px;">
+	      <th scope="row"></th>
+	      
+	   	  <td>NIT:  <?php echo $aEmpresa['nit'] ?></td>
+	   	  <td>Fecha: <?php echo $aCotizacionTotal['fecha'] ?></td>
+	    </tr>
+	    <tr style="text-align: center; font-size: 25px;">
+	   	  <td ><span>Direccion: <?php echo $aEmpresa['direccion'] ?></span></td>
+	   	  <td></td>
+	      <td></td>
+	   	  
+
+	    </tr>
+	   <tr style="text-align: center; font-size: 25px;">
+	   		
+	      <td scope="row"><span>Telefono: <?php echo $aEmpresa['telefono']; ?></span></td>
+	      <td><span>Email: </span> <?php echo $aEmpresa['email'] ?></td>
+	   	  <td></td>
+	   	  
+	   </tr>
 	  </tbody>
 </table>
+
+
+
 
 <br><br>
 <hr>
@@ -142,7 +178,25 @@ unset($oLista);
 </div>
 
 <script>
-function imprim2(){
+// function imprim2(){
+//     var mywindow = window.open('', 'PRINT');
+//     mywindow.document.write('<html><head>');
+// 	mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
+//     mywindow.document.write('</head><body >');
+
+//     mywindow.document.write(document.getElementById('muestra').innerHTML);
+//     mywindow.document.write('</body></html>');
+//     mywindow.document.close(); 
+//     mywindow.focus(); 
+//     mywindow.print();
+    
+    
+//     return true;}
+
+
+    
+
+    function imprim2(){
     var mywindow = window.open('', 'PRINT');
     mywindow.document.write('<html><head>');
 	mywindow.document.write('<style>.table-striped thead{background-color: #87BFFE; color: white; font-size: 20px;}</style>');
@@ -153,12 +207,12 @@ function imprim2(){
     mywindow.document.close(); 
     mywindow.focus(); 
     mywindow.print();
-    
-    
-    return true;}
+    mywindow.close();     
+    return true;
+	}
 
+	$('[data-toggle="tooltip"]').tooltip();
 
-    $('[data-toggle="tooltip"]').tooltip();
 </script>  
 
 

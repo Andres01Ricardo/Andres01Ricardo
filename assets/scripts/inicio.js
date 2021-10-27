@@ -48,10 +48,19 @@ $("body").on(" change",".moneda",function(e){
 
 	$(this).formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
 
-// var v=$(this).val();	
+})
 
+
+
+
+$("body").on(" change",".monedaComaPunto",function(e){
+
+	$(this).formatCurrency({decimalSymbol:'.',digitGroupSymbol:','});
 
 })
+
+
+
 $("body").on("keyup",".numero",function(e){
 	this.value = this.value.replace(/[^0-9]/g,'');
 })

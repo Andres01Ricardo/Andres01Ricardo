@@ -42,7 +42,7 @@ class FacturaVenta extends Sql{
 
 		}
 
-		$sql="SELECT fv.idFacturaVenta, fv.fechaRegistro, fv.fechaFactura, c.razonSocial, u.nombreUsuario, u.apellidoUsuario, fv.subtotal,
+		$sql="SELECT fv.idFacturaVenta, fv.fechaRegistro, fv.fechaFactura,fv.fechaVencimiento, c.razonSocial, u.nombreUsuario, u.apellidoUsuario, fv.subtotal,
 
 			fv.total, fv.estado, e.razonSocial as empresa, fv.nroFactura, fv.archivo,fv.saldo,e.idEmpresa
 
@@ -97,7 +97,7 @@ class FacturaVenta extends Sql{
 
 		$sql="SELECT * 
 			from factura_venta
-			WHERE estado != '3' and fechaFactura >= '$desde' and fechaFactura <= '$hasta' and idEmpresa = $empresa";
+			WHERE estado != '3' and estado!=5 and fechaFactura >= '$desde' and fechaFactura <= '$hasta' and idEmpresa = $empresa";
 
 	    $aCuentasCobrar=$this->ejecutarSql($sql); 
 	    return $aCuentasCobrar; 
@@ -111,7 +111,22 @@ class FacturaVenta extends Sql{
 
 		$sql="SELECT * 
 			from factura_venta
-			WHERE estado != '3' and fechaFactura >= '$desde' and fechaFactura <= '$hasta' and idEmpresa = $empresa and idCliente = $cliente";
+			WHERE estado != '3' and estado!=5 and fechaFactura >= '$desde' and fechaFactura <= '$hasta' and idEmpresa = $empresa and idCliente = $cliente";
+
+	    $aCuentasCobrarCliente=$this->ejecutarSql($sql); 
+	    return $aCuentasCobrarCliente; 
+
+
+	}
+
+
+	public function getSaldoClientesEmpresa($empresa){
+
+
+
+		$sql="SELECT * 
+			from factura_venta
+			WHERE idEmpresa = $empresa AND (estado=1 or estado=2 or estado=4)  ";
 
 	    $aCuentasCobrarCliente=$this->ejecutarSql($sql); 
 	    return $aCuentasCobrarCliente; 
@@ -146,6 +161,55 @@ class FacturaVenta extends Sql{
 	    $aFacturaComprobante=$this->ejecutarSql($sql); 
 
 	    return $aFacturaComprobante; 
+
+	}
+
+	public function getFacturaPendiente($fecha){	
+
+		$sql="SELECT *
+		FROM factura_venta fv
+		WHERE fv.fechaVencimiento='$fecha' AND (fv.estado=1 or fv.estado=2 or fv.estado=4) AND fv.idEmpresa=1";
+	    $aFactura=$this->ejecutarSql($sql); 
+
+	    return $aFactura; 
+
+	}
+
+
+	public function getFacturaPendienteDiasMenosTreinta(){	
+
+		$sql="SELECT *
+		FROM factura_venta fv
+		WHERE datediff(curdate(),fv.fechaVencimiento)<'30'   AND (fv.estado=1 or fv.estado=2 or fv.estado=4) AND fv.idEmpresa=1 ";
+		
+	    $aFactura=$this->ejecutarSql($sql); 
+
+	    return $aFactura; 
+
+	}
+
+	public function getFacturaPendienteDias($dias){	
+
+		$sql="SELECT *
+		FROM factura_venta fv
+		WHERE datediff(curdate(),fv.fechaVencimiento)='$dias' AND (fv.estado=1 or fv.estado=2 or fv.estado=4) AND fv.idEmpresa=1 ";
+		
+	    $aFactura=$this->ejecutarSql($sql); 
+
+	    return $aFactura; 
+
+	}
+
+
+	public function getFacturaPendienteDiasTreinta(){	
+
+		$sql="SELECT *
+		FROM factura_venta fv
+		WHERE datediff(curdate(),fv.fechaVencimiento)>'30' AND datediff(curdate(),fv.fechaVencimiento)<'60' AND (fv.estado=1 or fv.estado=2 or fv.estado=4) AND fv.idEmpresa=1 ";
+		
+	    $aFactura=$this->ejecutarSql($sql); 
+
+	    return $aFactura; 
 
 	}
 

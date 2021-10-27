@@ -136,7 +136,7 @@ $meses[12]="Diciembre";
 
                               <td><?php echo "$".number_format($valorNomina,2,",","."); ?></td>
 
-                              <td><?php echo $iItem["estado"]==1?'Activa':'Procesada'; ?></td>
+                              <td><?php echo $iItem["estado"]==1?'Activa':'Pagada'; ?></td>
 
                               <?php if($_SESSION["idRol"]==2||$_SESSION["idRol"]==1){ ?>
 
@@ -162,7 +162,7 @@ $meses[12]="Diciembre";
                                   if ($iItem["estado"]==1) {
                                     ?>
 
-                                <a href="javascript:void(0)" id="<?php echo $idNomina; ?>" idEmpresa="<?php echo $iItem['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Finalizar Nomina" class="finalizar" ><i class="far fa-paper-plane" style="color: #6AFF9B;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" id="<?php echo $idNomina; ?>" idEmpresa="<?php echo $iItem['idEmpresa']; ?>" data-toggle="modal" data-placement="top" data-target="#modalNomina" title="Finalizar Nomina" class="finalizar" ><i class="fas fa-money-bill-wave" style="color: #65E572;font-size: 20px;"></i></a>
 
                                 <?php }} ?>
                                 <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" class="nominaEliminar" value="<?php echo $iItem['idNomina']; ?>" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
@@ -222,13 +222,13 @@ $meses[12]="Diciembre";
 
             <div class="row">
 
-              <div class="col-md-3">
+              <div class="col-md-6">
                 <div class="form-group">
                   <label class="negrita">Valor a pagar:<span class="requerido">*</span>:</label>
                   <input type="text" class="form-control" placeholder="valor nómina" name="datos[valorNomina]" id="valorNomina" required readonly>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-6">
                 <div class="form-group">
                   <div class="form-group">
                     <label class="negrita">Pagar con:<span class="requerido">*</span>:</label>

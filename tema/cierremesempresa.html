@@ -1,0 +1,179 @@
+<?php 
+
+require_once("class/informes.php");
+
+$oControl=new Control(); 
+if (empty($_SESSION["idEmpresa"])) {
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+}
+if (!empty($_SESSION["idEmpresa"])) {
+  $id=$_SESSION["idEmpresa"];
+}
+
+$idEmpresa=$id;
+
+$oCierreMes=new Informes(); 
+$aCierreMes=$oCierreMes->getComprobantesCierreMes(array("idEmpresa"=>$idEmpresa));
+// unset($oLista);
+// print_r($aCierreMes);
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i data-feather="home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Comprobantes</li>
+
+          <li class="breadcrumb-item">Cierre mes</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped mayusculas" style="font-size: 16px;" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>FECHA</th>
+                            
+                            <th>SALDO DEBITO</th>
+                            
+                            <th>SALDO CREDITO</th>
+
+                            <th>DIFERENCIA</th>
+                            
+                            <th>ESTADO</th>
+
+                            <th>ACCIONES</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php foreach($aCierreMes as $index => $iComprobante){ 
+
+                            // $aEncript['cadena']=$iComprobante['idComprobante'];
+                            // $idEliminar=$iComprobante['idComprobante'];
+
+                            // $id=$oControl->encriptar($aEncript); 
+                            
+                            $mes=$iComprobante["anio"].'-'.$iComprobante["mes"];
+
+                            $oLista=new Lista("cierre_mes_contable");
+                            $oLista->setFiltro("mes","=",$mes);
+                            $oLista->setFiltro("idEmpresa","=",$idEmpresa);
+                            $cierre=$oLista->getLista();
+                            unset($oLista);
+
+
+                            ?> 
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              <!-- <td class="centrar"><?php echo $aDatos["letra"].'-'.$iComprobante["comprobante"].'-'.$iComprobante["numero"]; ?></td> -->
+
+                              <td class="centrar"><?php echo $iComprobante["anio"].'-'.$iComprobante["mes"]; ?></td>
+                              
+                              <td class="centrar"><?php echo "$".number_format($iComprobante["debito"],2,",","."); ?></td>
+                              
+                              <td class="centrar"><?php echo "$".number_format($iComprobante["credito"],2,",","."); ?></td>
+
+                              <?php $diferencia=floatval(round($iComprobante["debito"],2))- floatval(round($iComprobante["credito"],2)); ?>
+                              
+                              <td class="centrar" ><?php  
+                              
+                              echo "$".number_format($diferencia,2,",",".");
+                            ?></td>
+
+                              <td class="centrar"  ><?php 
+                              if (empty($cierre)) {
+                                echo 'ABIERTO'; 
+                              }
+                              if (!empty($cierre)) {
+                                echo 'CERRADO'; 
+                              }
+                            ?></td>
+
+                              <td class="centrar">
+
+                                <!-- <a href="<?php  echo $URL; ?>vercomprobante/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Items comprobante"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a> -->
+                                <?php 
+                                
+                                if ($diferencia==0.0) {
+                                  if (empty($cierre)) {
+                                    // code...
+                                 ?>
+                                <a href="javascript:void(0)" id="btnGuardar" name="btnEliminar[<?php echo $index?>]" idEmpresa="<?php echo $idEmpresa; ?>"
+                                  mes="<?php echo $iComprobante["anio"].'-'.$iComprobante["mes"]; ?>"><i class="far fa-check-circle" style="color: #26E58E;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Cerrar mes"  ></i></a>
+                                  
+                              <?php }} ?>
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+

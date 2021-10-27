@@ -1,14 +1,15 @@
-$("body").on("click touchstart",".cargarExtracto",function(e){
+$("body").on("click touchstart",".cargarextracto",function(e){
 
 	var id=$(this).attr("id"); 
 
-	var nombre=$(this).parents("tr").find("td").eq(2).html()
+  alert(id);
+	// var nombre=$(this).parents("tr").find("td").eq(2).html()
 
-	var empresa=$(this).parents("tr").find("td").eq(5).html()
+	// var empresa=$(this).parents("tr").find("td").eq(5).html()
 
 	$("[name='datos[idCuenta]']").val(id); 
 
-	$("#titulo").html(nombre+" - "+empresa); 
+	// $("#titulo").html(nombre+" - "+empresa); 
 
 })
 

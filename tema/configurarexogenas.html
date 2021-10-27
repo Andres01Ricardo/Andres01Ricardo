@@ -1,0 +1,286 @@
+<?php 
+
+include_once("class/exogenas.php");
+
+$oControl=new Control(); 
+$validarIngreso=1; 
+// $oEmpresa=new Empresa(); 
+
+if (empty($_SESSION["idEmpresa"])) {
+
+
+    if($_SESSION["idRol"]==2){
+
+      $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+      $valUser=$oItem->getDatos(); 
+
+      unset($oItem);  
+      $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+      $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+    }
+
+    if($_SESSION["idRol"]==5){
+
+      $aEmpresa=$oEmpresa->getEmpresasExterno();
+    }
+}
+if(!empty($_SESSION["idEmpresa"])){
+  // $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  $idEmpresa=$_SESSION['idEmpresa'];
+
+  $oExogenas=new Exogenas();
+  $cuentasExogenas=$oExogenas->getCuentasMovimientoAnual(array("idEmpresa"=>$idEmpresa));
+  unset($oExogenas);
+
+  // print_r($cuentasExogenas);
+}
+
+?>
+
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i data-feather="home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Exogenas</li>
+
+          <li class="breadcrumb-item">Configurar</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Asistente medios magenticos</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped table-bordered mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <!-- <th class="text-center">#</th> -->
+
+                            <th>Cuenta Contable</th>
+
+                            <th>Formato</th>
+
+                            <th>Concepto</th>
+
+                            <th>Categoria</th>
+
+                            <th>Tipo suma</th>
+
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php 
+                          foreach($cuentasExogenas as $index => $exogenas){ 
+
+
+
+                            // $digito=$iEmpresa["tipoPersona"]==1?"":"-".$iEmpresa["digitoVerificador"]; 
+
+
+
+                            // $aEncript['cadena']=$iEmpresa['idEmpresa'];
+
+                            // $id=$oControl->encriptar($aEncript); 
+
+                            ?> 
+
+                            <tr>
+
+                              <!-- <td><?php echo $index+1; ?></td> -->
+
+                              
+                              <td><?php echo $exogenas["codigoCuenta"].' '.$exogenas["nombre"] ?></td>
+                              
+                              <td><select class="form-control select2">
+                                <option value="">Seleccione </option>
+                                <option value="1001">1001</option>
+                                <option value="1002">1002</option>
+                                <option value="1005">1005</option>
+                                <option value="1006">1006</option>
+                                <option value="1007">1007</option>
+                                <option value="1008">1008</option>
+                                <option value="1009">1009</option>
+                                <option value="2276">2276</option>
+                              </select></td>
+                              
+                              <td><select class="form-control select2">
+                                <option value="">Seleccione </option>
+                                <option value="5002">5002</option>
+                                <option value="5003">5003</option>
+                                <option value="5004">5004</option>
+                                <option value="5005">5005</option>
+                                <option value="5006">5006</option>
+                                <option value="5007">5007</option>
+                                <option value="5008">5008</option>
+                                <option value="5009">5009</option>
+                                <option value="5010">5010</option>
+                                <option value="5011">5011</option>
+                                <option value="5012">5012</option>
+                                <option value="5013">5013</option>
+                                <option value="5014">5014</option>
+                                <option value="5015">5015</option>
+                                <option value="5016">5016</option>
+                                <option value="5017">5017</option>
+                                <option value="5018">5018</option>
+                                <option value="5019">5019</option>
+                                <option value="5020">5020</option>
+                                <option value="5021">5021</option>
+                                <option value="5022">5022</option>
+                                <option value="5023">5023</option>
+                                <option value="5024">5024</option>
+                                <option value="5025">5025</option>
+                                <option value="5026">5026</option>
+                                <option value="5027">5027</option>
+                                <option value="5028">5028</option>
+                                <option value="5029">5029</option>
+                                <option value="5030">5030</option>
+                                <option value="5031">5031</option>
+                                <option value="5032">5032</option>
+                                <option value="5033">5033</option>
+                                <option value="5034">5034</option>
+                                <option value="5035">5035</option>
+                                <option value="5036">5036</option>
+                                <option value="5037">5037</option>
+                                <option value="5038">5038</option>
+                                <option value="5039">5039</option>
+                                <option value="5040">5040</option>
+                                <option value="5041">5041</option>
+                                <option value="5042">5042</option>
+                                <option value="5043">5043</option>
+                                <option value="5044">5044</option>
+                                <option value="5045">5045</option>
+                                <option value="5046">5046</option>
+                                <option value="5047">5047</option>
+                                <option value="5048">5048</option>
+                                <option value="5049">5049</option>
+                                <option value="5050">5050</option>
+                                <option value="5051">5051</option>
+                                <option value="5052">5052</option>
+                                <option value="5053">5053</option>
+                                <option value="5054">5054</option>
+                                <option value="5055">5055</option>
+                                <option value="5056">5056</option>
+                                <option value="5057">5057</option>
+                                <option value="5058">5058</option>
+                                <option value="5059">5059</option>
+                                <option value="5060">5060</option>
+                                <option value="5061">5061</option>
+                                <option value="5062">5062</option>
+                                <option value="5063">5063</option>
+                                <option value="5064">5064</option>
+                                <option value="5065">5065</option>
+                                <option value="5066">5066</option>
+                                <option value="5067">5067</option>
+                                <option value="5068">5068</option>
+                                <option value="5069">5069</option>
+                                <option value="5070">5070</option>
+                                <option value="5071">5071</option>
+                                <option value="5072">5072</option>
+                                <option value="5073">5073</option>
+                                <option value="5074">5074</option>
+                                <option value="5075">5075</option>
+                                <option value="5076">5076</option>
+                                <option value="5077">5077</option>
+                                <option value="5078">5078</option>
+                                <option value="5079">5079</option>
+                                <option value="5080">5080</option>
+                                <option value="5081">5081</option>
+                                <option value="5082">5082</option>
+                                <option value="5083">5083</option>
+                                <option value="5084">5084</option>
+                                <option value="5085">5085</option>
+                              </select></td>
+                              
+                              
+                              <td><select class="form-control select2">
+                                <option value="">Seleccione </option>
+                                <option value="1070">Pago o abono en cuenta deducible </option>
+                                <option value="1070">Pago o abono en cuenta NO deducible </option>
+                                <option value="1070">IVA mayor valor del costo o gasto deducible </option>
+                                <option value="1070">IVA mayor valor del costo o gasto no deducible</option>
+                                <option value="1070">Retención en la fuente practicada Renta </option>
+                                <option value="1070">Retención en la fuente asumida Renta </option>
+                                <option value="1070">Retención en la fuente practicada IVA Régimen común </option>
+                                <option value="1070">Retención en la fuente practicada IVA no domiciliados</option>
+                              </select></td>
+
+                              
+
+                              <td><select class="form-control select2">
+                                <option value="">Seleccione </option>
+                                <option value="1">DEBITOS</option>
+                                <option value="2">CREDITOS</option>
+                                <option value="3">DEBITO-CREDITO</option>
+                                <option value="4">SALDO FINAL</option>
+                              </select></td>
+
+                              <td class="centrar">
+
+                                <!-- <a href="<?php  echo $URL; ?>listartercerosempresa/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver terceros"><i class="fas fa-eye" style="color: #3BCCFF;font-size: 20px;"></i></a> -->
+                             
+                                <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 18px;" data-toggle="tooltip" data-placement="top" title="Eliminar"></i></a>
+                                </td>
+                            </tr>
+
+                          <?php 
+                        } 
+                        ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+                  <div class="card-footer text-right">
+                      <a class="btn btn-primary mr-1" id="btnGuardar">GENERAR</a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+

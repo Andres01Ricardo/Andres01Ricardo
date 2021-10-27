@@ -22,41 +22,14 @@ $filtroCuenta=$_POST["filtroCuenta"];
 $oBalanceComprobacion=new Informes(); 
 $oBalanceComprobacionT=new Informes(); 
 
-
 // $aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"hasta"=>$hasta));
 $aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
 $g=0;
 
+if ($filtroCuenta==1) {
+  $g=1;
+}
 
-
-// switch ($filtroCuenta) {
-// 	case 1:
-// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionG(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
-// 		$g=1;
-// 		$tipoB='GRUPO';
-// 		break;
-// 	case 2:
-// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
-// 		$tipoB='CUENTA';
-// 		break;
-// 	case 4:
-// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoSC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
-// 		$tipoB='SUBCUENTA';
-// 		break;
-// 	case 4:
-// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
-// 		$tipoB='AUXILIAR';
-// 		break;
-// 	case 5:
-// 		$aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoSA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
-// 		$tipoB='SUBAUXILIAR';
-// 		break;
-	
-	
-// 	default:
-// 		# code...
-// 		break;
-// }
 
 $oBalanceComprobacionG=new Informes(); 
 $aBalanceComprobacionG=$oBalanceComprobacionG->getBalanceComprobacionGrupoAcumulado(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta));
@@ -90,8 +63,8 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
       <table style="font-size: 14px;font-family: Arial;" class="table">
         <tbody >
           <tr>
-            <th>AS-SmartBuss</th>
-            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="140" height="100">    <?php echo $aEmpresa['razonSocial'];?></th>
+            <th>SmartBuss</th>
+            <th ><img src="<?php echo $URL.$aEmpresa['logo'];?>" width="60" height="60">    <?php echo $aEmpresa['razonSocial'];?></th>
             <th></th>
             <th><?php echo date('Y/m/d'); ?></th>
           </tr>
@@ -116,8 +89,8 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
     </div>
     <div class="card-body">
       <div class="row">
-       <div class="col-md-12">
-          <a href="filtrarestadosituacionfinanciera" class="btn btn-info">NUEVO FILTRO</a>
+        <div class="col-md-4">
+          <a href="filtrarestadoresultadosintegral" class="btn btn-info">NUEVO FILTRO</a>
           <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
           <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
           <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
@@ -126,7 +99,7 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
           <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipoB;?>">
           <input type="hidden" name="desde" id="desde" value="<?php echo $desde;?>">
           <input type="hidden" name="hasta" id="hasta" value="<?php echo $hasta;?>">
-       </div>
+        </div>
       </div>
       <br><br>
                   <div class="row">
@@ -269,7 +242,7 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                             ?></td>
                           </tr>
                           <?php 
-
+                          if ($filtroCuenta>2) {
                           $oBalanceComprobacionSC=new Informes();
     $aBalanceComprobacionSC=$oBalanceComprobacionSC->getBalanceComprobacionAcumuladoSC(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta,"cuenta"=>$value["codigoCuenta"]));
 
@@ -324,7 +297,7 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                           </tr>
 
                             <?php
-
+                            if ($filtroCuenta>3) {
                             $oBalanceComprobacionA=new Informes(); 
    $aBalanceComprobacionA=$oBalanceComprobacionA->getBalanceComprobacionAcumuladoA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta,"cuenta"=>$valueSC["codigoCuenta"]));
                           foreach ($aBalanceComprobacionA as $keyA => $valueA) { 
@@ -376,6 +349,7 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                             ?></td>
                           </tr>
                           <?php 
+                          if ($filtroCuenta>4) {
                           $oBalanceComprobacionSA=new Informes(); 
    $aBalanceComprobacionSA=$oBalanceComprobacionSA->getBalanceComprobacionAcumuladoSA(array("idEmpresa"=>$idEmpresa,"resultados"=>'4',"hasta"=>$hasta,"cuenta"=>$valueA["codigoCuenta"]));
 
@@ -435,6 +409,10 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                             }
                             }
                             }
+
+                          }
+                        }
+                      }
                             ?>
                           
 
@@ -448,17 +426,23 @@ $aCostosProduccion=$oCostosProduccion->getCostosProduccionResultado(array("idEmp
                               $cont=0;
                             }
 
-                           }?>
+                           }
+                           $totalEjercicio=$totalIngreso-$totalGasto-$totalCostoVenta-$totalCostoProduccion;
+                           ?>
                            <tr>
                             <td></td>
-                            <td> RESULTADO DEL EJERCICIO</td>
+                            <td><?php
+                            $tipoEjercicio=$totalEjercicio >= 0 ? 'RESULTADO' : 'PERDIDA';
+                            echo $tipoEjercicio.' DEL EJERCICIO';
+                             ?> 
+                            </td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td><?php 
-                            $totalEjercicio=$totalIngreso-$totalGasto-$totalCostoVenta-$totalCostoProduccion;
+                            
                             echo number_format($totalEjercicio,2,".",",");
                             ?></td>
                           </tr>

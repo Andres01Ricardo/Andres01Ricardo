@@ -1,95 +1,48 @@
 
-
 $("body").on("click touchstart","#btnGuardar",function(e){
-
     e.preventDefault();
-
     if($("#excel").val()!=""){
-
       var formu = document.getElementById("frmGuardar");
-
-
-
       var data = new FormData(formu);
-
       $.ajax({
-
       url:URL+"functions/dashboard/leerestadofinanciero.php", 
-
       type:"POST", 
-
       data: data, 
-
       contentType:false, 
-
       processData:false, 
-
       dataType: "json",
-
       cache:false
-
       }).done(function(msg){  
-
         $(".cabecera h4").html(msg.cabecera.titulo); 
-
         $(".fecha").html(msg.cabecera.fecha); 
-
         $("[name='datos[titulo]']").val(msg.cabecera.titulo); 
-
         $("[name='datos[subtitulo]']").val(msg.cabecera.fecha); 
-
         var sHtml=""; 
-
         msg.info.forEach(function(element,index){
-
           var clase=""; 
-
           if(element.utilidad==1){clase="negrita"}
-
           if(element.equivalencia==null){element.equivalencia=0}
-
           var tipo=0; 
         if (element.cuenta=='Ingresos Operacionales' || element.cuenta=='Ingresos No Operacionales') {
           tipo=2;
         }
         if (element.cuenta=='Gastos operacionales de Administracion' || element.cuenta=='Gastos operacionales de Ventas' || element.cuenta=='Gastos No Operacionales') {tipo=3;}
-
           if((index+1)==msg.info.length){tipo=1;}
-
           sHtml+="<tr class='"+clase+"'>"
-
           +"<td class='tddashboard'>"
-
           +"<input type='hidden' name='item["+index+"][cuenta]' id='item["+index+"][cuenta]' value='"+element.cuenta+"'/>"
-
           +"<input type='hidden' name='item["+index+"][valor]' id='item["+index+"][valor]' value='"+element.valor+"'/>"
-
           +"<input type='hidden' name='item["+index+"][porcentaje]' id='item["+index+"][porcentaje]' value='"+element.equivalencia+"'/>"
-
           +"<input type='hidden' name='item["+index+"][tipo]' id='item["+index+"][tipo]' value='"+tipo+"'/>"
-
           +element.cuenta+"</td>"
-
           +"<td class='tddashboard' style='width:15%'>"+element.valor+"</td>"
-
           +"<td class='tddashboard' style='width:10%'>"+parseFloat(element.equivalencia).toFixed(2)+"%</td>"
-
           +"</tr>";
-
         })
-
-
-
         $("#estadoFinanciero tbody").html(sHtml)
-
         $(".estadoFinanciero").removeClass("ocultar");
-
     });
-
     }
-
-    
-
 })
 
 

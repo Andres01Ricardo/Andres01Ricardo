@@ -1,150 +1,84 @@
 <?php 
 
-
-
 require_once("class/empresa.php"); 
+ $oControl=new Control(); 
 
+$idEmpresa=$_SESSION['idEmpresa'];
 
-
-$oEmpresa=new Empresa(); 
-
-
-if($_SESSION["idRol"]==2){
-
-  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
-
-  $valUser=$oItem->getDatos(); 
-
-  unset($oItem);  
-
-
-
-  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
-  
-  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
-  
-}else{
-  
-  $aEmpresas=$oEmpresa->getEmpresas();
+// $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+// $url=$id; 
+if($idEmpresa==""){
+  echo '<script>window.history.back()</script>'; 
 }
 
+// $decrip["cadena"]=$id; 
+// $idEmpresa=$oControl->desencriptar($decrip); 
 
 
 
+$oItem=new Lista("bodega");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$bodega=$oItem->getLista();
+unset($oItem);
 
 
 ?>
 
-<form enctype="multipart/form-data" id="frmGuardar">
 
-<section class="section">
+<section>
+  <form enctype="multipart/form-data" id="frmGuardar">
+    <input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+    <div class="card">
+      <div class="card-body">
+  <div class="card-header">
+        <h3>Bodegas</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped" id="tableProductos" style="text-align:center; table-layout: fixed;">
+          <thead>
+            <tr>
+              <th>CÓDIGO</th>
+              <th>NOMBRE</th>
+              <!-- <th>EN USO</th> -->
+              <!-- <th>ACCIONES</th> -->
+              <!-- <th>INVENTARIO</th>
+              <th>COSTO</th>
+              <th>VENTA</th>
+              <th>DEVOLUCIÓN</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+           
+            foreach ($bodega as $key=> $value){ 
+               
+                
 
-        <ul class="breadcrumb breadcrumb-style ">
+              ?>
+            <tr>
+              <td><?php echo $value['codigo']; ?></td>
+              <td><?php echo $value['nombre']; ?></td>
+              <!-- <td><?php echo $aCentroCosto['codigoCentroCosto'].' '.$aCentroCosto['centroCosto']; ?><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idCentroCostoContable']; ?>" class="eliminarCuenta"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar" ></i></a></td> -->
+              
+              
+            </tr>
+          <?php } ?>
+          <tr>
+            <td><input type="text" name="datos[codigo]" id="codigo" class="form-control"></td>
+            <td><input type="text" name="datos[nombre]" id="nombre" class="form-control"></td>
 
-          <li class="breadcrumb-item">
-
-            <a href="<?php echo $URL; ?>">
-
-              <i class="fas fa-home"></i></a>
-
-          </li>
-
-          <li class="breadcrumb-item">Inventario</li>
-
-          <li class="breadcrumb-item">Crear bodega</li>
-
-        </ul>
-
-        <div class="section-body">
-
-          <div class="row">
-
-            <div class="col-md-12 col-lg-12">
-
-              <div class="card">
-
-                <div class="card-header">
-
-                  <h4>Información General</h4>
-
-                </div>
-
-                <div class="card-body">
-
-                  <div class="row">
-                    <?php if (empty($_SESSION['idEmpresa'])) { ?>
-
-                    <div class="col-md-3">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Empresa<span class="requerido">*</span>:</label>
-
-                        <select class="form-control" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
-
-                          <option value="">Seleccione una opción</option>
-
-                          <?php foreach($aEmpresas as $iEmpresa){ ?>
-
-                            <option value="<?php echo $iEmpresa["idEmpresa"]; ?>"><?php echo $iEmpresa["razonSocial"]; ?></option>
-
-                          <?php } ?>
-
-                        </select>
-
-                      </div>
-
-                    </div>
-                    <?php } if (!empty($_SESSION['idEmpresa'])) { ?>
-                      <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
-                    <?php } ?>
-
-                  
-
-                    <div class="col-md-6">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Codigo<span class="requerido">*</span>:</label>
-
-                        <input type="text" class="form-control " name="datos[codigoBodega]" id="codigoBodega" required>
-
-                      </div>
-
-                    </div>
-
-                    <div class="col-md-6">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Nombre<span class="requerido">*</span>:</label>
-
-                        <input type="text" class="form-control " name="datos[nombreBodega]" id="nombreBodega" required>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-
-                  </div>
-
-                  <div class="card-footer text-right">
-
-                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
-
-                  </div>
-
-                </div>
-
-            </div>
-
+            <!-- <td><select class="select2 form-control" name="datos[idCuentaInventario]" id="idCuentaInventario" required> </select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaCosto]" id="idCuentaCosto" required></select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaVenta]" id="idCuentaVenta" required></select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaDevolucion]" id="idCuentaDevolucion" required> </select></td> -->
+          </tr>
+          </tbody>
+        </table>
+        <div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
         </div>
-
+      </div>
     </div>
-
+    </div>
+  </form>
 </section>
-
-</form>
-

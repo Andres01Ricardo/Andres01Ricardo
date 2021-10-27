@@ -37,7 +37,55 @@ $(document).ready(function(){
             titleAttr: 'EXCEL',
             exportOptions: { orthogonal: 'export',
             modifier: { page: 'all'},
-                    
+            excelStyles:{
+                cells: "sG",                        // (s) Smart row reference, All data rows in column F
+                condition: {                        // Add this style conditionally
+                    type: 'cellIs',                 // Use the 'cellIs' condition type
+                    operator: 'between',            // Use the 'between' operator
+                    formula: [-1000000000,0], 
+                },
+                style: {                            // The style block
+                    font: {
+                        bold: true,
+                        color:'FF0303'
+                    },
+                    // fill: {
+                    //     pattern: {
+                    //         bgColor: "green",      // NOTE: An excel quirk is that conditional solid fills need 
+                    //                                 // the bgColor set, not the fgColor as for normal fills. 
+                    //     }
+                    // }
+                }
+                
+            },
+
+
+
+            // excelStyles: {                          // Add an excelStyles definition
+            //     cells: "sG",                        // (s) Smart row reference, All data rows in column F
+            //     condition: {                        // Add this style conditionally
+            //         type: 'cellIs',                 // Use the 'cellIs' condition type
+            //         operator: 'between',            // Use the 'between' operator
+            //         formula: [150000,200000],   // Add the two numbers to match between
+            //     },
+            //     style: {                            // The style block
+            //         font: {
+            //             bold: true,
+            //         },
+            //         fill: {
+            //             pattern: {
+            //                 bgColor: "457B9D",      // NOTE: An excel quirk is that conditional solid fills need 
+            //                                         // the bgColor set, not the fgColor as for normal fills. 
+            //             }
+            //         }
+            //     }
+            // },
+
+            // rowCallback: function(row, data, index){ 
+            //     if(data[6]<0) { $(row).find('td:eq(6)').css('color', 'red'); }
+            //      // else if(data[3]=='completed'){ $(row).find('td:eq(2)').css('background-color', 'green'); } 
+            //      // else if(data[3]=='success'){ $(row).find('td:eq(2)').css('background-color', 'green'); } 
+            //  },
 
             // format: {
             //             header: function ( data, columnIdx ) {

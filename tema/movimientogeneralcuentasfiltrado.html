@@ -105,6 +105,7 @@ $aEmpresa=$oItem->getDatos();
                           <?php 
                           $totalDebitosGeneral=0;
                           $totalCreditosGeneral=0;
+                          $totalSaldoGeneral=0;
                           foreach($aCuentaContableGeneral as $keyG=> $valueG){ 
                             $oCuentaContableGeneralAcumulado=new Informes(); 
                           $aCuentaContableGeneralAcumulado=$oCuentaContableGeneralAcumulado->getCuentaContableGeneralAcumulado(array("idEmpresa"=>$idEmpresa,"fecha"=>$desde,"cuenta"=>$valueG["codigoCuenta"]));
@@ -201,13 +202,17 @@ $aEmpresa=$oItem->getDatos();
 
 
                         <?php }
-                        if ($valueG["naturaleza"]=='debito') {
-                          $totalCuenta=$saldoM+$totalDebitos-$totalCreditos;
-                        }
-                        if ($valueG["naturaleza"]=='credito') {
-                          $totalCuenta=$saldoM-$totalDebitos+$totalCreditos;
-                        }
-
+                        
+                                                // if ($valueG["naturaleza"]=='debito') {
+                        //   $totalCuenta=$saldoM+$totalDebitos-$totalCreditos;
+                        // }
+                        // if ($valueG["naturaleza"]=='credito') {
+                        //   $totalCuenta=$saldoM-$totalDebitos+$totalCreditos;
+                        // }
+                        
+                        
+                          $totalCuenta=floatval($saldoM)+floatval($totalDebitos)-floatval($totalCreditos);
+                          
 
                         ?>
 
@@ -216,7 +221,8 @@ $aEmpresa=$oItem->getDatos();
                             <td></td>
                             <td><strong>TOTAL </strong></td>
                             <td></td>
-                            <td><strong><?php echo number_format($totalBase,2,".",","); ?></strong></td>
+                            <!-- <td><strong><?php echo number_format($totalBase,2,".",","); ?></strong></td> -->
+                            <td><strong></strong></td>
                             <td><strong><?php echo number_format($totalDebitos,2,".",","); ?></strong></td>
                             <td><strong><?php echo number_format($totalCreditos,2,".",","); ?></strong></td>
                             <td><strong><?php echo number_format($totalCuenta,2,".",","); ?></strong></td>
@@ -225,17 +231,21 @@ $aEmpresa=$oItem->getDatos();
                         $totalCreditosGeneral=$totalCreditosGeneral+$totalCreditos;
                         $totalDebitosGeneral=$totalDebitosGeneral+$totalDebitos;
                         $totalBaseGeneral=$totalBaseGeneral+$totalBase;
+
+                        
+                        $totalSaldoGeneral=$totalSaldoGeneral+$totalCuenta;
                       } ?>
                         <tr>
                             <td ></td>
                             <td></td>
                             <td><strong><h5>TOTAL GENERAL</h5></strong> </td>
                             <td></td>
-                            <td><?php echo number_format($totalBaseGeneral,2,".",","); ?></td>
+                            <!-- <td><?php echo number_format($totalBaseGeneral,2,".",","); ?></td> -->
+                            <td></td>
                             <td><?php echo number_format($totalDebitosGeneral,2,".",","); ?></td>
                             <td><?php echo number_format($totalCreditosGeneral,2,".",","); ?></td>
                             <!-- <td><?php echo "$".number_format($value["credito"],2,",","."); ?></td> -->
-                            <td></td>
+                            <td><?php echo number_format($totalSaldoGeneral,2,".",","); ?></td>
                           </tr>
 
                         </tbody>

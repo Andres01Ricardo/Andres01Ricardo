@@ -80,38 +80,28 @@ $("body").on("click touchstart",".finalizar",function(e){
 
 	var valor=$(this).parents("tr").find("td").eq(3).html();
 	// var empresa=$(this).parents("tr").find("td").eq(5).html();
-	$("[name='datos[idNomina]']").val(id); 
+	$("[name='datos[idNomina]']").val(idNomina); 
   $("[name='datos[idEmpresa]']").val(idEmpresa); 
 	// $("#titulo").html(periodo+" / "+empresa)
   $("#valorNomina").val(valor);
-  
+  // alert(idEmpresa)
+
   e.preventDefault();
 
-        $.ajax({
-            url:URL+"functions/nomina/cargarcuentabancaria.php", 
-            type:"POST",
-            data: {"idEmpresa":idEmpresa},
-            dataType: "json",
-            }).done(function(msg){  
-              
-              if(msg.length!=0){
-
-                  console.log('aca');
-                  console.log(msg);
-                  var sHtml=""; 
-                  msg.forEach(function(element,index){
-                    sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
-                  })
-                  $("#cuentaContableTotal").html(sHtml);
-
-                  if(msg.length>1){
-                    $("#divCuentaContableTotal").removeClass('ocultar');
-                  }
-              }
-          }); 
-
-        
-
+  $.ajax({
+      url:URL+"functions/nomina/cargarcuentabancaria.php", 
+      type:"POST",
+      data: {"idEmpresa":idEmpresa},
+      dataType: "json",
+      }).done(function(msg){  
+        console.log('aca');
+        console.log(msg);
+        var sHtml=""; 
+        msg.forEach(function(element,index){
+          sHtml+="<option value='"+element.idCuentaBancaria+"'>"+element.numeroCuenta+' '+element.nombreCuenta.toUpperCase()+"</option>"; 
+        })
+        $("#cuentaBancaria").html(sHtml);
+    });
 })
 
 
@@ -121,7 +111,7 @@ $("body").on("click touchstart","#btnGuardar",function(e){
         e.preventDefault();
         Swal.fire({
           title: 'Está seguro?',
-          text: 'Está a punto de finalizar la realización de esta nomina!',
+          text: 'Está a punto de pagar esta nómina!',
           icon: 'warning', 
           showCancelButton: true,
           showLoaderOnConfirm: true,
@@ -129,12 +119,18 @@ $("body").on("click touchstart","#btnGuardar",function(e){
           cancelButtonText:'Cancelar',
           preConfirm: function(result) {
           return new Promise(function(resolve) {
+
+            var formu = document.getElementById("frmFinalizar");
+            var data = new FormData(formu);
             
             $.ajax({
             url:URL+"functions/nomina/finalizarnomina.php", 
             type:"POST",
-            data: {"idNomina":idNomina},
+            data:data,
             dataType: "json",
+            contentType:false, 
+            processData:false, 
+            cache:false 
             }).done(function(msg){  
               if(msg.msg){
                 Swal.fire({

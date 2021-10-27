@@ -4,8 +4,16 @@ $aProductos=include_once ("functions/productosservicios/listarservicios.php");
 
 $oControl=new Control(); 
 
-// print_r($aProductos);
+if (empty($_SESSION['idEmpresa'])) {
+  $idEmpresa=$_POST["empresa"];
+}
+if (!empty($_SESSION['idEmpresa'])) {
+  $idEmpresa=$_SESSION['idEmpresa'];
+}
 
+// print_r($aProductos);
+$oItem=new Data("empresa","idEmpresa",$idEmpresa);
+$aEmpresa=$oItem->getDatos();
 ?>
 
 <section class="section">
@@ -17,6 +25,13 @@ $oControl=new Control();
             <a href="<?php echo $URL; ?>">
 
               <i class="fas fa-home"></i></a>
+
+              <input type="hidden" name="empresa" id="empresa" value="<?php echo $aEmpresa['razonSocial'];?>">
+              <input type="hidden" name="nitEmpresa" id="nitEmpresa" value="<?php echo $aEmpresa['nit'];?>">
+              <input type="hidden" name="logo" id="logo" value="<?php echo $aEmpresa['logo'];?>">
+              <input type="hidden" name="digitoVerificador" id="digitoVerificador" value="<?php echo $aEmpresa['digitoVerificador'];?>">
+              <input type="hidden" name="url" id="url" value="<?php echo $URL;?>">
+              
 
           </li>
 

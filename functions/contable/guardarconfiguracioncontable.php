@@ -22,7 +22,7 @@ if(!isset($_SESSION)){ session_start(); }
     $impuestosFacturaCompra["tipoImpuesto"]=$datos['tipoDeduccion'];
     $impuestosFacturaCompra["idEmpresa"]=$datos["idEmpresa"];
     $impuestosFacturaCompra["idEmpresaCuenta"]=$datos["idCuentaContable"];
-    $impuestosFacturaCompra["tipoDocumento"]=$datos["tipoDocumento"];
+    // $impuestosFacturaCompra["tipoDocumento"]=$datos["tipoDocumento"];
 
     $impuestosFacturaCompra["tipoFactura"]=$datos["tipoFactura"];
     if ($datos['tipoDeduccion']==3) {

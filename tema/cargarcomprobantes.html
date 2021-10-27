@@ -27,9 +27,10 @@ else{
 }
 </style>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
 <form enctype="multipart/form-data" id="frmGuardar">
-<input type="hidden" name="datos[titulo]" id="datos[titulo]">
-<input type="hidden" name="datos[subtitulo]" id="datos[subtitulo]">
+<!-- <input type="hidden" name="datos[titulo]" id="datos[titulo]"> -->
+
 
 <section class="section"  ondragstart="return false" onselectstart="return false">
         <ul class="breadcrumb breadcrumb-style ">
@@ -49,67 +50,83 @@ else{
                   <h4>Información General</h4>
                 </div>
                 <div class="card-body">
+                  <!-- <div class="row">
+                    <div class="col-md-2">
+                      <select name="format" onchange="setfmt()">
+                      <option value="csv" selected> CSV</option>
+                      <option value="json"> JSON</option>
+                      <option value="form"> FORMULAE</option>
+                      <option value="html"> HTML</option>
+                      </select><br />
+                      
+
+                    </div>
+                    <div class="col-md-6">
+                      <div id="drop">Drop a spreadsheet file here to see sheet data</div>
+                      <input type="file" class="custom-file-input" name="xlfile" id="xlf" />
+                      <label class="custom-file-label" for="xlf">Seleccionar archivo</label>
+                    </div>
+                    
+                  </div> -->
                   <div class="row">
+                    <div class="col-md-12">
+                      <pre id="out"></pre>
+                      <div id="htmlout"></div>  
+                    </div>
+                  </div>
+                  <div class="row">
+                     <?php if (empty($_SESSION['idEmpresa'])) {
+                      
+                     ?>
                     <div class=" col-md-4 ">
                       <div class="form-group">
                           <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
                           <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
                           <option value="">Seleccione una opción</option>
                           <?php foreach($aEmpresas as $iItem){ ?>
-                          <option value="<?php echo $iItem["idEmpresa"]; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+                          <option value="<?php echo $iItem['idEmpresa']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
                         <?php } ?>
                         </select>
                       </div>
                     </div>
+                      <?php }if (!empty($_SESSION['idEmpresa'])){ ?>
+                        <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                      <?php } ?>
                     <div class="col-md-4">
                       <div class="form-group">
                         <label class="negrita">Archivo excel Comprobantes<span class="requerido">*</span>:</label>
                         <div class="custom-file">
-                          <input type="file" class="custom-file-input" id="excel" name="excel" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+                          <input type="file" class="custom-file-input" id="excel" name="excel"  accept=".xls,.xlsx">
                           <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="alert alert-info">
-                        Para cargar los comprobantes con el excel, es importante que no modifique el orden en que se encuentra el archivo original
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                  <div class="card-footer text-right">
-                    <a class="btn btn-info mr-1" id="btnGuardar" href="javascript:void(0)">Cargar</a>
-                  </div>
-                  <div class="ocultar estadoFinanciero">
-                   <div class=" card-header">
+                  
+
+              
+                  
+                  <div class="divComprobante">
+                   <div class="card-header">
                       <h4>Comprobante</h4>
                     </div>
-                    <div class="card-body">
-                      <div class="row centrar">
-                      <table class="table table-striped mayusculas tablaestado" id="estadoFinanciero">
-                          <thead>
-                            <tr>
-                              <td class="text-center cabecera negrita" colspan="3"><h4></h4><span class="text-center fecha negrita" style="display: block;"></span></td>
-                            </tr>
-                          </thead>
-                          <tbody>
-                          </tbody>
-                      </table>
+                    <div class="card-body" >
+                      <div class="row" id="divEncabezado"></div>
+                      <div class="row" id="divComprobanteCargado">
+                        
+                      </div>
                     </div>
-                  </div>
+
                   <div class="card-footer text-right">
-                    <a class="btn btn-primary mr-1" id="btnGuardarInfo" href="javascript:void(0)">Guardar</a>
+                    <a class="btn btn-primary mr-1 ocultar" id="btnGuardarInfo" href="javascript:void(0)">Guardar</a>
                   </div>
                   </div>
                 </div>
+              </div>
             </div>
         </div>
     </div>
 </section>
 </form>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+
 

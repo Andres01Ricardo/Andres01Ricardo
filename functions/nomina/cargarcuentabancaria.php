@@ -17,7 +17,7 @@ $idEmpresa  = (isset($_REQUEST['idEmpresa'] ) ? $_REQUEST['idEmpresa'] : "" );
 
 
 $oLista = new Lista('cuenta_bancaria');
-$oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
 $aCuentas=$oLista->getLista();
 unset($oLista);
 

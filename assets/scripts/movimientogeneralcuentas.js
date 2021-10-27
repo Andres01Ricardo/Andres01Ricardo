@@ -11,53 +11,33 @@ $(document).ready(function(e){
     overlay.classList.add('active');
     popup.classList.add('active');
 
-    
-
-
     if ($("#empresa").val()!=""){
-  aDatos=[]; 
-  var idEmpresa=$("#empresa").val();
-  // alert(idEmpresa);
-  $.ajax({
-
-      url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
-
-      type:"POST", 
-
-      data: {"idEmpresa":idEmpresa}, 
-
-      dataType: "json",
-
-      }).done(function(msg){  
-
-        msg.forEach(function(element,index){
-
-          aDatos.push({
-
-              value: element.idCuentaContable,
-
-              label: element.codigoCuentaContable+" - "+element.nombre,
-
-              naturaleza: element.naturaleza,
-
-              // tercero:element.tercero,
-
-              centroCosto:element.centroCosto,
-
+      aDatos=[]; 
+      var idEmpresa=$("#empresa").val();
+      // alert(idEmpresa);
+      $.ajax({
+          url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+          type:"POST", 
+          data: {"idEmpresa":idEmpresa}, 
+          dataType: "json",
+          }).done(function(msg){  
+              var sHtml='<option value="">Seleccione una opción</option>';
+            msg.forEach(function(element,index){
+              sHtml+="<option value='"+element.idCuentaContable+"'>"+element.codigoCuentaContable+" - "+element.nombre+"</option>";
+              aDatos.push({
+                  value: element.idCuentaContable,
+                  label: element.codigoCuentaContable+" - "+element.nombre,
+              
+                })
             })
-
-        })
-        console.log(aDatos);
-        autocomplete(); 
-
-
-    }); 
-
-  }
-
-
-
-
+            console.log('select');
+            console.log(sHtml);
+            $("#cuentaPrimeraSelect").html(sHtml);
+            console.log('input');
+            console.log(aDatos);
+            autocomplete(); 
+        }); 
+      }
 });
 
 
@@ -84,24 +64,22 @@ $("body").on("change","#empresa",function(e){
       dataType: "json",
 
       }).done(function(msg){  
-
+        // var sHtml='<option value="">Seleccione una opción</option>';
         msg.forEach(function(element,index){
-
+          // sHtml+="<option value='"+element.idCuentaContable+"'>"+element.codigoCuentaContable+" - "+element.nombre+"</option>";
+          
           aDatos.push({
 
               value: element.idCuentaContable,
-
               label: element.codigoCuentaContable+" - "+element.nombre,
-
-              naturaleza: element.naturaleza,
-
-              // tercero:element.tercero,
-
-              centroCosto:element.centroCosto,
 
             })
 
         })
+        // console.log('select');
+        // console.log(sHtml);
+        // $("#cuentaPrimeraSelect").html(sHtml);
+        // console.log('input');
         console.log(aDatos);
         autocomplete(); 
 
@@ -131,9 +109,6 @@ autocomplete=function(){
         // $( ".idCuentaContable" ).eq(index).val( ui.item.value );
 
         // $( ".naturaleza" ).eq(index).val( ui.item.naturaleza );
-
-       
-
 
         return false;
 
@@ -175,5 +150,13 @@ autocomplete=function(){
       }
 
     })
+
+
+  $.ui.autocomplete.filter = function (array, term) {
+        var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
+        return $.grep(array, function (value) {
+            return matcher.test(value.label || value.value || value);
+        });
+    };
 
 }

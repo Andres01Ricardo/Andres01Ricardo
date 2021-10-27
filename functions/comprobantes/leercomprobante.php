@@ -79,9 +79,13 @@ try {
             $letra=$tipoC[0];
             $comprobante=intval($tipoC[1]);
 
-            // $oItem=new Data("tipos_documento_contable","letra",$letra);
-            // $idTipoD=$oItem->getDatos();
-            // unset($oItem);
+            $oItem=new Data("tipos_documento_contable","letra",$letra);
+            $idTipoD=$oItem->getDatos();
+            unset($oItem);
+            
+            $oItem=new Data("tipos_documento_contable","letra",$letra);
+            $idTipoD=$oItem->getDatos();
+            unset($oItem);
 
             $aArray["tipo"]=$letra;
             $aArray["comprobante"]=$comprobante;

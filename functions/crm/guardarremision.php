@@ -32,20 +32,19 @@ if(!isset($_SESSION)){ session_start(); }
 
 $aDatos["fecha"]=date("Y-m-d");
 
-// $aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+$aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
 
 $aDatos["idEmpresa"]=$datos["idEmpresa"]; 
 
-$aDatos["sucursalCliente"]=$datos["sucursalCliente"]; 
+// $aDatos["idU"]=$datos["sucursalCliente"]; 
 
 $aDatos["bodega"]=$datos["bodega"];
 
-$aDatos["idCliente"]=$datos["cliente"]; 
+$aDatos["idCliente"]=$datos["idCliente"]; 
 
 $aDatos["numero"]=$datos["numero"]; 
 
 $aDatos["observaciones"]=$datos["observaciones"]; 
-
 
 $aDatos["estado"]=1; 
 
@@ -98,81 +97,6 @@ foreach ($item as $key => $value) {
     unset($oItem);
 
 }
-
-// $cLista = new Lista('usuario');
-
-// $cLista->setFiltro("idRol","=",'2');
-
-// $colista=$cLista->getLista();
-
-// foreach ($colista as $key => $contador) {
-
-    // $cmensaje="<p>Estimado ".$contador["nombreUsuario"]." ".$contador["apellidoUsuario"]." <br>
- // El usuario ".$_SESSION["nombreUsuario"]." ".$_SESSION["apellidoUsuario"]." ha enviado una factura de venta <br><br> </p>"; 
-    // $cEmail["correo"]=$contador["correo"]; 
-    // $cEmail["asunto"]="Factura de venta enviada"; 
-    // $cEmail["mensaje"]=$cmensaje; 
-   // $cControl=new Control();
-    // $cControl->enviarCorreo($cEmail);
-    // unset($cControl);
-    // $dDatos["fechaNotificacion"]=date("Y-m-d H:m:s");
-    // $dDatos["idUsuarioRegistra"] = $_SESSION["idUsuario"];
-    // $dDatos["idUsuarioNotificado"] =$contador["idUsuario"];
-//     // $dDatos["notificacion"] =  "El usuario ".$_SESSION["nombreUsuario"]." ".$_SESSION["apellidoUsuario"]." ha enviado una factura de venta";
-    
-
-//     $oItem=new Data("notificacion","idNotificacion"); 
-//     foreach($dDatos  as $key => $value){
-//     $oItem->$key=$value; 
-//     }
-//     $oItem->guardar(); 
-//     unset($oItem);
-// }
-
-
-
-
-// $sLista = new Lista('usuario');
-
-// $sLista->setFiltro("idRol","=",'1');
-
-// $solista=$sLista->getLista();
-
-// foreach ($solista as $key => $super) {
-
-    // $smensaje="<p>Estimado ".$super["nombreUsuario"]." ".$super["apellidoUsuario"]." <br>
-
-    // El usuario ".$_SESSION["nombreUsuario"]." ".$_SESSION["apellidoUsuario"]." ha enviado una factura de venta <br><br> </p>"; 
-
-
-
-
-    // $sEmail["correo"]=$super["correo"]; 
-    
-
-    // $sEmail["asunto"]="Factura de venta enviada"; 
-
-    // $sEmail["mensaje"]=$smensaje; 
-
-    // $sControl=new Control();
-
-    // $cControl->enviarCorreo($sEmail);
-    // unset($sControl);
-
-    // $sDatos["fechaNotificacion"]=date("Y-m-d H:m:s");
-    // $sDatos["idUsuarioRegistra"] = $_SESSION["idUsuario"];
-    // $sDatos["idUsuarioNotificado"] =$super["idUsuario"];
-    // $sDatos["notificacion"] =  "El usuario ".$_SESSION["nombreUsuario"]." ".$_SESSION["apellidoUsuario"]." ha enviado una factura de venta";
-    
-
-    // $oItem=new Data("notificacion","idNotificacion"); 
-    // foreach($sDatos  as $key => $svalue){
-    // $oItem->$key=$svalue; 
-    // }
-    // $oItem->guardar(); 
-    // unset($oItem);
-
-
 
 
 

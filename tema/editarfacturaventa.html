@@ -26,76 +26,56 @@ $decrip["cadena"]=$id;
 
 $id=$oControl->desencriptar($decrip); 
 
-
-
 $oItem=new Data("factura_venta","idFacturaVenta",$id); 
-
 $aDatos=$oItem->getDatos(); 
-
 unset($oItem); 
 
-
-
 $oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
-
 $aEmpresa=$oItem->getDatos(); 
-
 unset($oItem); 
 
 
 
 $oItem=new Data("tercero","idTercero",$aDatos["idCliente"]); 
-
 $aCliente=$oItem->getDatos(); 
-
 unset($oItem); 
 
 
 
 $oLista = new Lista('factura_venta_item');
-
 $oLista->setFiltro("idFacturaVenta","=",$id);
-
 $aItems=$oLista->getLista();
-
 unset($oLista);
 
 
 $oLista = new Lista('factura_venta_deduccion');
-
 $oLista->setFiltro("idFacturaVenta","=",$id);
-
 $aDeduccion=$oLista->getLista();
-
 unset($oLista);
 
 
 $oLista = new Data('factura_venta_gestion',"idFacturaVenta",$id);
-
 $aGestion=$oLista->getDatos();
-
 unset($oLista);
 
 $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos["idEmpresa"]));
 
+$oLista=new Lista("centro_costo");
+$oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
+$aCentroCosto=$oLista->getLista();
+unset($oLista);
+
 ?>
 
 <style type="text/css">
-
   input[readonly]{
-
     background-color: #FFFF !important;
-
     text-transform: uppercase;
-
   }
 
   .no-producto{
-
     width: calc(100% - 18px) !important;
-
     display: inline-block;
-
   }
 
 </style>
@@ -204,6 +184,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
                       <div class="form-group">
 
                           <label class="negrita">Cliente:</label>
+                          
 
                           <!-- <input type="text" class="form-control mayusculas" name="datos[idCliente]" id="datos[idCliente]" value="<?php echo $aCliente['razonSocial']; ?>" required readonly> -->
                           <select class="form-control select2 mayusculas" name="datos[idCliente]" id="datos[idCliente]" required>
@@ -292,11 +273,15 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                           <tr>
 
-                            <th class="text-center">#</th>
+                            <!-- <th class="text-center">#</th> -->
 
                             <th>Productos</th>
 
                             <th>Descripción</th>
+
+                            <th>CC</th>
+
+                            <th>SC</th>
 
                             <th>Cantidad</th>
 
@@ -330,11 +315,24 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                             <tr class="filaItem">
 
-                              <td><?php echo $index+1; ?></td>
+                              <!-- <td><?php echo $index+1; ?></td> -->
 
-                              <td><?php echo $item["detalleProducto"]; ?></td>
+                              <td><?php echo $item["detalleProducto"]; ?><input type="hidden" name="item[<?php echo $index; ?>][idProducto]" id="item[<?php echo $index; ?>][idProducto]" class="form-control idProducto" value="<?php echo $item['idProductoServicio'] ?>"></td>
 
                               <td><?php echo $item["descripcion"]; ?></td>
+                              <td><select name="item[<?php echo $index; ?>][centroCosto]" id="item[<?php echo $index; ?>][centroCosto]" class="form-control select2 centroCosto" numeroC="<?php echo $index; ?>" >
+                                <option>Seleccione</option>
+                                <?php foreach ($aCentroCosto as $keyCC => $valueCC) {
+                                  
+                               ?>
+                                <option value="<?php echo $valueCC["idCentroCosto"] ?>"><?php echo $valueCC["codigoCentroCosto"].' '.$valueCC["centroCosto"] ?></option>
+                               <?php } ?>
+
+                              </select></td>
+
+                              <td><select name="item[<?php echo $index; ?>][subcentroCosto]" id="item[<?php echo $index; ?>][subcentroCosto]" class="form-control select2 subcentroCosto">
+                                <option value="">Seleccione</option>
+                              </select></td>
 
                               <td><?php echo $item["cantidad"]; ?></td>
 
@@ -366,7 +364,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                           <tr>
 
-                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">SUBTOTAL:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[subtotal]" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["subtotal"],2,",","."); ?>" readonly ></td>
 
@@ -374,7 +372,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                           <tr>
 
-                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">DESCUENTO:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["descuento"],2,",","."); ?>' readonly ></td>
 
@@ -382,7 +380,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                           <tr>
 
-                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">IVA:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["iva"],2,",","."); ?>' readonly ></td>
 
@@ -390,7 +388,7 @@ $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos
 
                           <tr>
 
-                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
+                            <td colspan="9" style="text-align: right;" class="negrita">TOTAL:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[totalFactura]" id="totalFactura" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["total"],2,",","."); ?>' readonly ></td>
 

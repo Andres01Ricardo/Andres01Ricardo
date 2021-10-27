@@ -218,10 +218,23 @@ $aDatos["iva"]=str_replace("$", "", str_replace(".", "", $datos["iva"]));
 
 $aDatos["total"]=str_replace("$", "", str_replace(".", "", $datos["total"])); 
 
-$aDatos["estado"]=1; 
+
+$oLista=new Lista("banco_cuenta_contable");
+$oLista->setFiltro("idBancoCuentaContable","=",$datos["formaPagoFactura"]);
+$oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+$aFormaPago=$oLista->getLista();
+
+if ($aFormaPago[0]["idCuentaBancaria"]!=0) {
+    $aDatos["estado"]=3; 
+    $aDatos["saldo"]=0;
+}
+if ($aFormaPago[0]["idCuentaBancaria"]==0) {
+    $aDatos["estado"]=1; 
+    $aDatos["saldo"]=str_replace("$", "", str_replace(".", "", $datos["total"]));
+}
+
 
 $aDatos["fechaVencimiento"]=$datos["fechaVencimientoFactura"];
-$aDatos["saldo"]=str_replace("$", "", str_replace(".", "", $datos["total"]));
 
 
 $oItem=new Data("factura_venta","idFacturaVenta"); 
@@ -261,19 +274,45 @@ foreach ($item as $key => $value) {
 
     $aItem["total"]=str_replace("$", "", str_replace(".", "", $value["total"]));
 
-
-
     $oItem=new Data("factura_venta_item","idFacturaVentaItem"); 
-
-    foreach($aItem  as $key => $value){
-
-        $oItem->$key=$value; 
-
+    foreach($aItem  as $key => $valueFVI){
+        $oItem->$key=$valueFVI; 
     }
-
     $oItem->guardar(); 
-
     unset($oItem);
+
+
+
+
+    $oLista=new Lista("producto_servicio");
+    $oLista->setFiltro("idProductoServicio","=",$value["idProducto"]);
+    $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+    $aProductoCuenta=$oLista->getLista();
+
+    if (!empty($aProductoCuenta)) {
+        
+        if ($aProductoCuenta[0]["inventario"]==1) {
+            $moverInventario["tipoMovimiento"]=2;
+            $moverInventario["fechaRegistro"]=date('Y-m-d H:i:s');
+            $moverInventario["ingreso"]=0;
+            $moverInventario["egreso"]=$value["cantidad"];
+            $moverInventario["idUsuarioRegistra"]=$_SESSION["idUsuario"];
+            $moverInventario["idProducto"]=$value["idProducto"];
+            $moverInventario["idEmpresa"]=$datos["idEmpresa"];
+            $moverInventario["observaciones"]="Factura Nro ".$datos["nroFactura"];
+            $moverInventario["idBodega"]=$value["idBodega"];
+
+
+
+            $oItem=new Data("inventario_productos_movimientos","idInventarioProductosMovimientos"); 
+            foreach($moverInventario  as $keyMovInv => $valueMovInv){
+                $oItem->$keyMovInv=$valueMovInv; 
+            }
+            $oItem->guardar();  
+            unset($oItem);
+
+        }
+    }
 
 }
 
@@ -417,9 +456,6 @@ foreach ($solista as $key => $super) {
 
 
 
-
-
-
     // $oLista=new Lista("compra_cuenta_contable");
     // $oLista->setFiltro("concepto","=",'TotalPagar');
     // $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
@@ -437,15 +473,12 @@ $comp=true;
 
 if (!empty($aCC)) {
 
-        
 
     $oLista=new Lista("parametros_documentos");
-    $oLista->setFiltro("idParametrosDocumentos","=",$aCC[0]['tipoDocumento']);
+    $oLista->setFiltro("idParametrosDocumentos","=",$datos['tipoDocumento']);
     $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
     $aNumero=$oLista->getLista();
     unset($oLista);
-
-
 
     $numeroComprobante=intval($aNumero[0]["numeracionActual"]);
 
@@ -484,10 +517,9 @@ if (!empty($aCC)) {
 
 
         foreach ($item as $key => $value) {
-            $oLista=new Lista("producto_cuenta_contable");
-            $oLista->setFiltro("idProducto","=",$value["idProducto"]);
+            $oLista=new Lista("producto_servicio");
+            $oLista->setFiltro("idProductoServicio","=",$value["idProducto"]);
             $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-            $oLista->setFiltro("tipoFactura","=",'venta');
             $aProductoCuenta=$oLista->getLista();
 
             if (empty($aProductoCuenta)) {
@@ -495,23 +527,14 @@ if (!empty($aCC)) {
             }
             if ($comp==true) {
                 
-            
-                $oItem=new Data("cuenta_contable","idCuentaContable",$aProductoCuenta[0]["idEmpresaCuenta"]);
-                $aCuentaContable=$oItem->getDatos();
+                $oItem=new Data("grupo_inventario","idGrupoInventario",$aProductoCuenta[0]["idGrupo"]);
+                $aGrupo=$oItem->getDatos();
                 unset($oItem);
-
-            
                 
                 $aItem["idComprobante"]=$idComprobante; 
-
-                $aItem["idCuentaContable"]=$aProductoCuenta[0]["idEmpresaCuenta"];
-                if ($value["idCentroCosto"]=="") {
-                    $aItem["idCentroCosto"]=" ";
-                }
-                if ($value["idCentroCosto"]!="") {
-                    $aItem["idCentroCosto"]=$value["idCentroCosto"];
-                    
-                }
+                $aItem["idCuentaContable"]=$aGrupo["venta"];
+                $aItem["idCentroCosto"]=" ";
+                $aItem["idSubcentroCosto"]=" ";
                 $aItem["idTercero"]=$idT;
                 $aItem["descripcion"]=$value["descripcion"];
                 $aItem["naturaleza"]='credito';
@@ -528,6 +551,53 @@ if (!empty($aCC)) {
                 }
                 $oItem->guardar(); 
                 unset($oItem);
+
+
+                if ($aProductoCuenta[0]["inventario"]==1) {
+                    
+                    $aItemInv["idComprobante"]=$idComprobante; 
+                    $aItemInv["idCuentaContable"]=$aGrupo["inventario"];
+                    $aItemInv["idCentroCosto"]=" ";
+                    $aItemInv["idSubcentroCosto"]=" ";
+                    $aItemInv["idTercero"]=$idT;
+                    $aItemInv["descripcion"]=$value["descripcion"].': descuenta '.$value["cantidad"].' unidades';
+                    $aItemInv["naturaleza"]='credito';
+                    $aItemInv["tipoTercero"]='c';
+                    $aItemInv["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+                    $aItemInv["fecha"]=$datos["fechaFactura"]; 
+                    $aItemInv["saldoDebito"]=0;
+                    $aItemInv["saldoCredito"]=0;
+                    $aItemInv["base"]=0;
+                
+                    $oItem=new Data("comprobante_items","idComprobanteItem"); 
+                    foreach($aItemInv  as $keyInv => $valueInv){
+                        $oItem->$keyInv=$valueInv; 
+                    }
+                    $oItem->guardar(); 
+                    unset($oItem);
+
+
+
+                    // $moverInventario["tipoMovimiento"]=2;
+                    // $moverInventario["fechaRegistro"]=date('Y-m-d H:i:s');
+                    // $moverInventario["ingreso"]=0;
+                    // $moverInventario["egreso"]=$value["cantidad"];
+                    // $moverInventario["idUsuarioRegistra"]=$_SESSION["idUsuario"];
+                    // $moverInventario["idProducto"]=$value["idProducto"];
+                    // $moverInventario["idEmpresa"]=$datos["idEmpresa"];
+                    // $moverInventario["observaciones"]="Factura Nro ".$datos["nroFactura"];
+                    // $moverInventario["idBodega"]=$value["idBodega"];
+
+
+
+                    // $oItem=new Data("inventario_productos_movimientos","idInventarioProductosMovimientos"); 
+                    // foreach($moverInventario  as $keyMovInv => $valueMovInv){
+                    //     $oItem->$keyMovInv=$valueMovInv; 
+                    // }
+                    // $oItem->guardar(); 
+                    // unset($oItem);
+
+                }
             }
 
         }
@@ -540,6 +610,7 @@ if (!empty($aCC)) {
         $aIVA["idComprobante"]=$idComprobante; 
         $aIVA["idCuentaContable"]=$aCC[0]["idEmpresaCuenta"];
         $aIVA["idCentroCosto"]=" ";
+        $aIVA["idSubcentroCosto"]=" ";
         $aIVA["idTercero"]=$idT;
         $aIVA["descripcion"]=$value["descripcion"];
         $aIVA["naturaleza"]='credito';
@@ -597,8 +668,9 @@ if (!empty($aCC)) {
                             $aImpuesto["idComprobante"]=$idComprobante; 
                             $aImpuesto["idCuentaContable"]=$aCuentaImpuesto["idCuentaContable"];
                             $aImpuesto["idCentroCosto"]=" ";
+                            $aImpuesto["idSubcentroCosto"]=" ";
                             $aImpuesto["idTercero"]=$idT;
-                            $aImpuesto["descripcion"]=$value["descripcion"];
+                            $aImpuesto["descripcion"]='Fact No. '.$datos["nroFactura"];
                             $aImpuesto["naturaleza"]='debito';
                             $aImpuesto["tipoTercero"]='c';
                             $aImpuesto["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
@@ -630,8 +702,9 @@ if (!empty($aCC)) {
                                 $aImpuesto["idComprobante"]=$idComprobante; 
                                 $aImpuesto["idCuentaContable"]=$aImpuestoCuenta[0]["idEmpresaCuenta"];
                                 $aImpuesto["idCentroCosto"]=" ";
+                                $aImpuesto["idSubcentroCosto"]=" ";
                                 $aImpuesto["idTercero"]=$idT;
-                                $aImpuesto["descripcion"]=$value["descripcion"];
+                                $aImpuesto["descripcion"]='Fact No. '.$datos["nroFactura"];
                                 $aImpuesto["naturaleza"]=$aCuentaImpuestoP["naturaleza"];
                                 $aImpuesto["tipoTercero"]='c';
                                 $aImpuesto["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
@@ -657,8 +730,9 @@ if (!empty($aCC)) {
                                 $aImpuesto["idComprobante"]=$idComprobante; 
                                 $aImpuesto["idCuentaContable"]=$aImpuestoCuenta[1]["idEmpresaCuenta"];
                                 $aImpuesto["idCentroCosto"]=" ";
+                                $aImpuesto["idSubcentroCosto"]=" ";
                                 $aImpuesto["idTercero"]=$idT;
-                                $aImpuesto["descripcion"]=$value["descripcion"];
+                                $aImpuesto["descripcion"]='Fact No. '.$datos["nroFactura"];
                                 $aImpuesto["naturaleza"]=$aCuentaImpuestoS["naturaleza"];
                                 $aImpuesto["tipoTercero"]='c';
                                 $aImpuesto["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
@@ -691,8 +765,9 @@ if (!empty($aCC)) {
                                 $aImpuesto["idComprobante"]=$idComprobante; 
                                 $aImpuesto["idCuentaContable"]=$aImpuestoCuenta[0]["idEmpresaCuenta"];
                                 $aImpuesto["idCentroCosto"]=" ";
+                                $aImpuesto["idSubcentroCosto"]=" ";
                                 $aImpuesto["idTercero"]=$idT;
-                                $aImpuesto["descripcion"]=$value["descripcion"];
+                                $aImpuesto["descripcion"]='Fact No. '.$datos["nroFactura"];
                                 $aImpuesto["naturaleza"]='debito';
                                 $aImpuesto["tipoTercero"]='c';
                                 $aImpuesto["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
@@ -722,16 +797,9 @@ if (!empty($aCC)) {
 
                 // }
                 
-
-                
-
-                
-
-
-
-                $oLista=new Lista("compra_cuenta_contable");
-                $oLista->setFiltro("concepto","=",'1');
-                $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+                $oLista=new Lista("banco_cuenta_contable");
+                $oLista->setFiltro("idBancoCuentaContable","=",$datos["formaPagoFactura"]);
+                $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
                 $aCompraCuenta=$oLista->getLista(); 
                 unset($oLista);   
 
@@ -748,13 +816,14 @@ if (!empty($aCC)) {
                 }
 
                 if ($comp==true) {
-                    $saldoTotalFactura=floatval(str_replace(",", ".",str_replace("$", "", str_replace(".", "",$datos["total"]))))-$totalDeduccionesFactura;
+                $saldoTotalFactura=floatval(str_replace(",", ".",str_replace("$", "", str_replace(".", "",$datos["total"]))))-$totalDeduccionesFactura;
                     
                     $aCompra["idComprobante"]=$idComprobante; 
-                    $aCompra["idCuentaContable"]=$cuent;
+                    $aCompra["idCuentaContable"]=$aCompraCuenta[0]["idEmpresaCuenta"];
                     $aCompra["idCentroCosto"]=" ";
+                    $aCompra["idSubcentroCosto"]=" ";
                     $aCompra["idTercero"]=$idT;
-                    $aCompra["descripcion"]=$value["descripcion"];
+                    $aCompra["descripcion"]='Fact No. '.$datos["nroFactura"];
                     $aCompra["naturaleza"]='debito';
                     $aCompra["tipoTercero"]='c';
                     $aCompra["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
@@ -769,9 +838,6 @@ if (!empty($aCC)) {
                         }
                         $oItem->guardar(); 
                         unset($oItem);
-
-
-
 
                     $estado=1;
 
@@ -795,7 +861,7 @@ if (!empty($aCC)) {
                     unset($oLista);
                     foreach ($comEliminar as $keym => $valuem) {
                         $oItem=new Data("comprobante","idComprobante",$valuem["idComprobante"]);
-                        $oItem->eliminar();
+                        // $oItem->eliminar();
                         unset($oItem);
                     }
 
@@ -805,7 +871,7 @@ if (!empty($aCC)) {
                     unset($oLista);
                     foreach ($comprobanteItemsEliminar as $keym => $valuem) {
                         $oItem=new Data("comprobante_items","idComprobanteItem",$valuem["idComprobanteItem"]);
-                        $oItem->eliminar();
+                        // $oItem->eliminar();
                         unset($oItem);
                     }
                 }

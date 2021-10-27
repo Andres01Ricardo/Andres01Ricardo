@@ -63,20 +63,16 @@ $(document).ready(function(){
                 },
             {
             extend: 'print',
+            text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
+            autoPrint: true,
+            titleAttr: 'IMPRIMIR',
+            title:'<table class="table"><thead><tr><th style="float:left;">AS-SmartBuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >MOVIMIENTO CUENTAS GENERAL </th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead></table>',
             customize: function ( win ) {
                     // $(win.document.body).find( '.derecha' ).css( 'text-align', 'right' );
                      $(win.document.body).find('td').css('font-size', '18pt');
                      $(win.document.body).find('th').css('font-size', '25pt');
                 },
-            text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
-            autoPrint: true,
-            titleAttr: 'IMPRIMIR',
-            title:'<table class="table"><thead><tr><th style="float:left;">AS-SmartBuss</th><th ><img src="'+url+logo+'" width="60" height="60">    '+empresa+'</th><th></th><th>'+hoy+'</th></tr><tr><th> </th><th>Nit: '+nit+'-'+digitoVerificador+'</th><th> </th><th> </th></tr> <tr><th></th><th >MOVIMIENTO CUENTAS GENERAL </th><th> </th></tr><tr><th></th><th >DESDE:  '+desde+' HASTA: '+hasta+'</th><th> </th></tr></thead></table>',
-
-            
-
             }
-            
         ]
         
     });

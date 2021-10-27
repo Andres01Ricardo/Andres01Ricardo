@@ -133,8 +133,8 @@ unset($oItem);
                         <thead>
                           <tr>
                             <th>CÓDIGO</th>
-                            <th>PRODUCTO</th>
                             <th>CATEGORIA</th>
+                            <th>PRODUCTO</th>
                             <th>UNIDAD</th>
                             <th>EXISTENCIA</th>
                             <th>STOCK MÍNIMO</th>
@@ -162,10 +162,10 @@ unset($oItem);
                            ?>
                             <tr>
                               <td><?php echo $producto["codigo"];?></td>
-                              <td><?php echo $producto["nombre"];?></td>
                               <td>
                                 <?php echo $categoria["nombre"];?>
                               </td>
+                              <td><?php echo $producto["nombre"];?></td>
                               <td> <?php echo $unidad["nombre"]; ?> </td>
                                 <td><?php echo $value["existencia"]; ?></td>
                                 <td><?php echo $value["stockMinimo"]; ?></td>

@@ -5,36 +5,20 @@ require_once("class/empresa.php");
 
 $oControl=new Control(); 
 
-
-
-
-
-
-
 $validarIngreso=1; 
 
 if($_SESSION["idRol"]==2){
-
   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
-
   $valUser=$oItem->getDatos(); 
-
   unset($oItem);  
-
-
-
   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
 
 }
 
-$oEmpresa=new Empresa(); 
-
-
-
+$oEmpresa=new Empresa();
 $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
 
 ?>
-
 <section class="section">
         <ul class="breadcrumb breadcrumb-style ">
           <li class="breadcrumb-item">
@@ -96,14 +80,14 @@ $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso))
 
                               <td class="centrar">
 
-                                <a href="<?php  echo $URL; ?>configurarproducto/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR PRODUCTOS"><i class="fas fa-list-ol" style="color: #8BEFFF;font-size: 20px;"></i></a>
-                                <a href="<?php  echo $URL; ?>configurarcontable/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR IMPUESTOS "><i class="fas fa-tools" style="color: #FF8D0C;font-size: 20px;"></i></a>
+                                <!-- <a href="<?php  echo $URL; ?>configurarproducto/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR PRODUCTOS"><i class="fas fa-list-ol" style="color: #8BEFFF;font-size: 20px;"></i></a> -->
+                                <a href="<?php  echo $URL; ?>configurarcontable/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="IMPUESTOS "><i class="fas fa-tools" style="color: #2d27e8;font-size: 20px;"></i></a>
 
-                                <a href="<?php  echo $URL; ?>configurarcontablebanco/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR BANCOS "><i class="fas fa-university" style="color: #006B90;font-size: 20px;"></i></a>
+                                <a href="<?php  echo $URL; ?>configurarcontablebanco/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="FORMAR DE PAGO "><i class="fas fa-university" style="color: #C75555;font-size: 20px;"></i></a>
 
-                                <a href="<?php  echo $URL; ?>configurarcontablegestion/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR FACTURA"><i class="fas fa-paste" style="color: #009D56;font-size: 20px;"></i></a>
+                                <!-- <a href="<?php  echo $URL; ?>configurarcontablegestion/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR FACTURA"><i class="fas fa-paste" style="color: #009D56;font-size: 20px;"></i></a> -->
 
-                                <a href="<?php  echo $URL; ?>configurarcontablecentrocosto/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR CENTRO DE COSTO"><i class="fas fa-toolbox" style="color: #D3AEEC;font-size: 20px;"></i></a>
+                                <!-- <a href="<?php  echo $URL; ?>configurarcontablecentrocosto/<?php echo $id; ?>" name="<?php echo $id; ?>"  data-toggle="tooltip" data-placement="top" title="PARAMETRIZAR CENTRO DE COSTO"><i class="fas fa-toolbox" style="color: #D3AEEC;font-size: 20px;"></i></a> -->
                             </tr>
                           <?php } ?>
                         </tbody>

@@ -26,7 +26,7 @@ if(!isset($_SESSION)){ session_start(); }
 
         $aItem["idUsuario"]=$_SESSION["idUsuario"];
         $aItem["fechaRegistro"]= date("Y-m-d");
-        // $aItem["idBienes"]=" ";
+        
         $aItem["codigo"]=$datos["codigoProducto"];
         $aItem["nombre"]=$datos["producto"];
         $aItem["tipo"]='1';

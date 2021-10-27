@@ -1,0 +1,72 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+
+$idEmpresa=$_SESSION['idEmpresa'];
+
+// $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+// $url=$id; 
+if($idEmpresa==""){
+  echo '<script>window.history.back()</script>'; 
+}
+
+// $decrip["cadena"]=$id; 
+// $idEmpresa=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Lista("linea_inventario");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$linea=$oItem->getLista();
+unset($oItem);
+
+
+?>
+
+
+<section>
+  <form enctype="multipart/form-data" id="frmGuardar">
+    <input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+    <div class="card">
+      <div class="card-body">
+  <div class="card-header">
+        <h3>LINEAS</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped" id="tableProductos" style="text-align:center; table-layout: fixed;">
+          <thead>
+            <tr>
+              <th>CÓDIGO</th>
+              <th>LINEA</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+           
+            foreach ($linea as $key=> $value){ 
+              ?>
+            <tr>
+              <td><?php echo $value['codigo']; ?></td>
+              <td><?php echo $value['nombre']; ?></td>
+              
+              
+              
+            </tr>
+          <?php } ?>
+          <tr>
+            <td><input type="text" name="datos[codigo]" id="codigo" class="form-control"></td>
+            <td><input type="text" name="datos[nombre]" id="nombre" class="form-control"></td>
+
+          </tr>
+          </tbody>
+        </table>
+        <div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
+      </div>
+    </div>
+    </div>
+  </form>
+</section>

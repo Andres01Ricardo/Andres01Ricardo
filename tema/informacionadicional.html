@@ -69,7 +69,7 @@ if (!empty($aNegocio)) {
 <div class="row">
   <div class="col-6 " >
         
-          <div class=" card l-bg-purple  topcard ">
+          <div class=" card   topcard ">
             
             <?php $nombre = $rows['nombre'];
             $apellidos =  $rows['apellidos'];
@@ -96,27 +96,26 @@ if (!empty($aNegocio)) {
           </div>   
       </div>
       <div class="col-6 ">
-        <div class="card bg-cyan aclarar topcard">
-          
-            <div class="card-statistic-3 p-4   ">
-              <div class="card-icon card-icon-large">
-                <i class="fas fa-grip-lines-vertical"></i>
-              </div>
-            <div class="mb-4">
-              <h2>TIMELINE</h2>        
+        <div class="card topcard">
+          <div class="card-statistic-3 p-4   ">
+            <div class="card-icon card-icon-large">
+              <i class="fas fa-grip-lines-vertical"></i>
             </div>
+          <div class="mb-4">
+            <h2>TIMELINE</h2>        
+          </div>
       </div>
     </div>
       <?php foreach($actividades as $index => $rowsa){ ?>
 
-      <div class="card bg-cyan aclarar">
+      <div class="card  aclarar">
           <div class="card-body">
               <div class="activities">
                 <ul>
                   <li class="sinpunto">
                     <div class="activity">
-                      <div class="activity-icon bg-primary text-white">  
-                      <i class="<?php echo $rowsa['icono'];?>" ></i></div>
+                      <div class="activity-icon ">  
+                      <i class="<?php echo $rowsa['icono'];?>" style="font-size: 35px;"></i></div>
                       <ul>
                         <li><h3><?php echo strtoupper($rowsa['tipo']);?></h3></li>
                         <li><h5>Fecha: <?php echo $rowsa['fechaCreacion'];?> Hora: <?php echo $rowsa['horaCreacion'];?></h5></li>

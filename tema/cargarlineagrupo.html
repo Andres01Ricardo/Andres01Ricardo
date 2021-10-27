@@ -1,0 +1,146 @@
+<?php 
+require_once("class/empresa.php"); 
+$oEmpresa=new Empresa(); 
+if($_SESSION["idRol"]==2){
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+  $valUser=$oItem->getDatos(); 
+  unset($oItem);  
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+}
+else{
+  $aEmpresas=$oEmpresa->getEmpresas();
+}
+?>
+<style type="text/css">
+  input[readonly]{
+    background-color: #FFFF !important;
+    text-transform: uppercase;
+  }
+  .tddashboard{
+    height: 30px !important; 
+  }
+  .tablaestado{
+    width: 60%;
+    text-align: left;
+    margin: 0 auto;
+}
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+<form enctype="multipart/form-data" id="frmGuardar">
+<!-- <input type="hidden" name="datos[titulo]" id="datos[titulo]"> -->
+
+
+
+<section class="section"  ondragstart="return false" onselectstart="return false">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">ERP</li>
+          <li class="breadcrumb-item">Inventario</li>
+          <li class="breadcrumb-item">Cargar Lineas grupos</li>
+        </ul>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <!-- <div class="row">
+                    <div class="col-md-2">
+                      <select name="format" onchange="setfmt()">
+                      <option value="csv" selected> CSV</option>
+                      <option value="json"> JSON</option>
+                      <option value="form"> FORMULAE</option>
+                      <option value="html"> HTML</option>
+                      </select><br />
+                      
+
+                    </div>
+                    <div class="col-md-6">
+                      <div id="drop">Drop a spreadsheet file here to see sheet data</div>
+                      <input type="file" class="custom-file-input" name="xlfile" id="xlf" />
+                      <label class="custom-file-label" for="xlf">Seleccionar archivo</label>
+                    </div>
+                    
+                  </div> -->
+                  <div class="row">
+                    <div class="col-md-12">
+                      <pre id="out"></pre>
+                      <div id="htmlout"></div>  
+                    </div>
+                  </div>
+                  <div class="row">
+                     <?php if (empty($_SESSION['idEmpresa'])) {
+                      
+                     ?>
+                    <div class=" col-md-4 ">
+                      <div class="form-group">
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aEmpresas as $iItem){ ?>
+                          <option value="<?php echo $iItem['idEmpresa']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                      <?php }if (!empty($_SESSION['idEmpresa'])){ ?>
+                        <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+                      <?php } ?>
+                       <!-- <div class="row"> -->
+
+                    <div class="col-md-12">
+
+                      <div class="alert alert-info">
+
+                        Para cargar las lineas y los grupos debe ser con la siguiente plantilla: <a href="<?php echo $URL.'assets/bundles/LineasGruposCargar.xlsx'; ?>" class="negrita">Plantilla.xlsx</a><br><br>
+                        <strong>IMPORTANTE: se permiten hasta 300 registros por cada archivo a importar</strong>
+
+                      </div>
+
+                    </div>
+
+                  <!-- </div> -->
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">Archivo excel lineas y grupos<span class="requerido">*</span>:</label>
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="excel" name="excel"  accept=".xls,.xlsx">
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="divComprobante">
+                   <div class="card-header">
+                      <h4>LINEAS Y GRUPOS</h4>
+                    </div>
+                    <div class="card-body" >
+                      <div class="row" id="divEncabezado"></div>
+                      <div class="row" id="divComprobanteCargado">
+                        
+                      </div>
+                    </div>
+
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1 ocultar" id="btnGuardarInfo" href="javascript:void(0)">Guardar</a>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</section>
+</form>
+
+

@@ -35,7 +35,6 @@ if($proveedor ==0){
 
 ?>
 
-
       <div class="section-body">
 
           <div class="row">
@@ -46,7 +45,7 @@ if($proveedor ==0){
 
                 <div class="card-header">
 
-                  <h4>Información General</h4>
+                  <h4>Cuentas por pagar</h4>
 
                 </div>
 
@@ -56,7 +55,7 @@ if($proveedor ==0){
 
                     <div class="col-md-12 col-lg-12">
 
-                      <table class="table table-striped mayusculas" id="tableEnterprise">
+                      <table class="table table-hover mayusculas" id="tableEnterprise" style="text-align:center;">
 
                         <thead>
 
@@ -64,7 +63,7 @@ if($proveedor ==0){
 
                             <th class="text-center">#</th>
                             
-                            
+                            <th>Nro factura</th>
 
                             <th>Proveedor</th>
 
@@ -82,11 +81,13 @@ if($proveedor ==0){
 
                         <tbody>
 
-                          <?php foreach($aFactura as $index => $iFactura){ 
+                          <?php 
+                          $total=0;
+                          foreach($aFactura as $index => $iFactura){ 
 
 
 
-                          $oItem=new Data("proveedor","idProveedor", $iFactura["idProveedor"]); 
+                          $oItem=new Data("tercero","idTercero", $iFactura["idProveedor"]); 
 
                           $aProveedor=$oItem->getDatos(); 
 
@@ -99,6 +100,7 @@ if($proveedor ==0){
                               <td><?php echo $index+1; ?></td>
 
                             
+                              <td><?php echo $iFactura["nroFactura"]; ?></td>
 
                               <td><?php echo $aProveedor["razonSocial"]; ?></td>
 
@@ -109,9 +111,11 @@ if($proveedor ==0){
                               <td><?php 
                                 if($iFactura["saldo"]!=0){
                                 echo "$".number_format($iFactura["saldo"],2,",",".");
+                                $total=$total+$iFactura["saldo"];
                               }
                               if($iFactura["saldo"]==0){
                               echo "$".number_format($iFactura["total"],2,",",".");
+                              $total=$total+$iFactura["total"];
                             }
 
                                ?></td>
@@ -123,6 +127,14 @@ if($proveedor ==0){
                             </tr>
 
                           <?php } ?>
+                          <tr>
+                            <td class="negrita">TOTAL</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="negrita"><?php echo "$".number_format($total,2,",","."); ?></td>
+                          </tr>
 
                         </tbody>
 

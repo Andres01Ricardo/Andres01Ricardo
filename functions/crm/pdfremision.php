@@ -46,7 +46,8 @@ $aCliente=$oLista->getDatos();
 
 unset($oLista);
 
-
+$nombreImagen = "../../".$aEmpresa['logo'];
+$imagenBase64 = "data:image/png;base64," . base64_encode(file_get_contents($nombreImagen));
 ?>
 
 <html>
@@ -57,11 +58,11 @@ unset($oLista);
 	</head>
 	<body>
 		<div class="card" id="muestra">
-			<table >
+			<!-- <table >
 			  <thead >
 			    <tr style="text-align: center; ">
 			      <th scope="col"><img width="70" height="70" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
-			      <!-- <th scope="col"><span>Razon social: </span></th> -->
+			      
 			      <th scope="col"><?php echo $aEmpresa['razonSocial'] ?></th>
 			      <th></th>
 			      <th scope="col" style="font-size: 20px;">Cotizacion</th>
@@ -79,8 +80,42 @@ unset($oLista);
 			   	<th></th>
 			   	  <td><span>Direccion: </span></td>
 			   	  <td><?php echo $aEmpresa['direccion'] ?></td>
-			   	  <!-- <td></td>
-			   	  <td>Fecha venc.: <?php echo $aCotizacionTotal['fechaVencimientoCotizacion'] ?></td> -->
+			   	  
+			   </tr>
+			  </tbody>
+		</table> -->
+
+		<table style="width: 90%;max-width: 90%">
+			  <thead >
+			    <tr style="text-align: center; ">
+			      <th scope="col"><img src="<?php echo $imagenBase64;?>" width="70" height="70" alt="image" ></th>
+			      <th scope="col"><span> </span></th>
+			      <th scope="col"><?php echo $aEmpresa['razonSocial'] ?></th>
+			      <th scope="col" style="font-size: 20px;">Remisión <?php echo $aCotizacionTotal['numero']; ?></th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    
+
+			   <tr style="text-align: center;">
+			      <th scope="row"></th>
+			      <td></td>
+			   	  <td>NIT:  <?php echo $aEmpresa['nit'] ?></td>
+			   	  <td> <?php echo $aCotizacionTotal['fecha'] ?></td>
+			    </tr>
+			    <tr style="text-align: center;">
+			   	  <td scope="row" colspan="2"><span>Direccion:  <?php echo $aEmpresa['direccion'] ?> </span></td>
+			   	  <!-- <td ><?php echo $aEmpresa['direccion'] ?></td> -->
+			      <td></td>
+			   	  <td></td>
+
+			    </tr>
+			   <tr style="text-align: center;">
+			   		
+			      <td scope="row"><span>Telefono: </span></td>
+			   	  <td><?php echo $aEmpresa['telefono']; ?></td>
+			      <td><span>Email: </span> <?php echo $aEmpresa['email'] ?></td>
+			   	  <td></td>
 			   </tr>
 			  </tbody>
 		</table>
@@ -133,12 +168,16 @@ unset($oLista);
 </html>
 
 <?php
-require_once "dompdf/autoload.inc.php";
+
 use Dompdf\Dompdf;
+use Dompdf\Options;
+require_once "dompdf/autoload.inc.php";
 
-$pdf = new Dompdf(array('enable_remote' => true));
+$pdfOptions = new Options();
+$pdfOptions->setIsRemoteEnabled(true);
+$pdf = new Dompdf($pdfOptions);
 
-$pdf->load_html(utf8_decode(ob_get_clean()));
+$pdf->load_html(utf8_decode((utf8_encode(ob_get_clean()))));
 $pdf->render();
 $filename = "ejemplo.pdf";
 

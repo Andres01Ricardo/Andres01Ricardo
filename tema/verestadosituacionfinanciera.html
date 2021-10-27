@@ -17,12 +17,14 @@ if (empty($_SESSION['idEmpresa'])) {
 }
 $desde=$_POST["desde"];
 $hasta=$_POST["hasta"];
-// $filtroCuenta=$_POST["filtroCuenta"];
+$filtroCuenta=$_POST["filtroCuenta"];
 
 $oBalanceComprobacion=new Informes(); 
 $oBalanceComprobacionT=new Informes(); 
 $g=0;
-
+if ($filtroCuenta==1) {
+  $g=1;
+}
     $aBalanceComprobacion=$oBalanceComprobacion->getBalanceComprobacionAcumuladoC(array("idEmpresa"=>$idEmpresa,"hasta"=>$hasta));
 
 
@@ -39,7 +41,7 @@ $g=0;
         
       }
       if (substr($valueP["codigoCuenta"], 0,1)==5 || substr($valueP["codigoCuenta"], 0,1)==6 || substr($valueP["codigoCuenta"], 0,1)==7) {
-        $valorRestar=$valueP["saldoCredito"]-$valueP["debito"];
+        $valorRestar=$valueP["credito"]-$valueP["debito"];
         $perdidaAcumulada=$perdidaAcumulada-$valorRestar;
         
       }
@@ -176,6 +178,7 @@ $aEmpresa=$oItem->getDatos();
                       		$CueTControl=substr($aBalanceComprobacion[0]['codigoCuenta'], 0,4);
                           $app=1;
                           $cont=1;
+                          $controlPasivo=0;
                       		foreach($aBalanceComprobacionG as $keyG=> $valueG){ 
                       		  // if (substr($aBalanceComprobacionG[$keyG+1]["codigoCuenta"],0,1)!=substr($valueG["codigoCuenta"], 0,1)) {
                             switch ($app) {
@@ -211,38 +214,19 @@ $aEmpresa=$oItem->getDatos();
                                 echo $tipoAPP;
                               switch ($app) {
                                 case 1:
-                                  
-                                  // $imprimir=1;
-                                  
-                                  // if ($aActivo[0]["saldoCredito"] < 0) {
-                                  //   $saldoMayor=$aActivo[0]["saldoDebito"]+$aActivo[0]["saldoCredito"];  
-                                    
-                                  // }
-                                  // if ($aActivo[0]["saldoCredito"] >= 0) {
                                     $saldoMayor=$aActivo[0]["saldoDebito"]-$aActivo[0]["saldoCredito"];  
                                     
-                                  // }
-                                  
-                                  // $saldo=0;
                                   break;
                                 case 2:
-                                  
-                                  // $imprimir=1;
                                   $saldoMayor=$aPasivo[0]["saldoDebito"]-$aPasivo[0]["saldoCredito"];
                                   $saldoPasivo=$saldoMayor;
-                                  // $saldo=0;
+                                  
                                   break;
                                 case 3:
-                                  
-                                  // $imprimir=1;
-                                  // $saldoMayor=$aPatrimonio[0]["saldoCredito"]-$aPatrimonio[0]["saldoDebito"]-$perdidaAcumulada;
+
                                   $saldoMayor=$aPatrimonio[0]["saldoDebito"]-$aPatrimonio[0]["saldoCredito"]+$perdidaAcumulada;
                                   $saldoPatrimonio=$saldoMayor;
-                                  // $saldoPatrimonio=$saldoMayor-$perdidaAcumulada;
-                                  // $saldo=0;
                                   break;
-                                
-                                
                                 default:
                                   $imprimir=0;
                                   break;
@@ -265,17 +249,15 @@ $aEmpresa=$oItem->getDatos();
                                   $saldo=$aActivoCorriente[0]["saldoDebito"]-$aActivoCorriente[0]["saldoCredito"];
                                   // $saldo=0;
                                   break;
-                                case 14:
-                                  $tipoGrupo='ACTIVO NO CORRIENTE';
-                                  $imprimir=1;
-                                  $saldo=$aActivoNoCorriente[0]["saldoDebito"]-$aActivoNoCorriente[0]["saldoCredito"];
-                                  // $saldo=0;
-                                  break;
+                                // case 14:
+                                //   $tipoGrupo='ACTIVO NO CORRIENTE';
+                                //   $imprimir=1;
+                                //   $saldo=$aActivoNoCorriente[0]["saldoDebito"]-$aActivoNoCorriente[0]["saldoCredito"];
+                                //   // $saldo=0;
+                                //   break;
                                 case 15:
                                   $tipoGrupo='ACTIVO FIJO';
                                   $imprimir=1;
-                                  
-
 
                                   if ($aActivoFijo[0]["saldoCredito"] < 0) {
                                     $saldo=$aActivoFijo[0]["saldoDebito"]+$aActivoFijo[0]["saldoCredito"];  
@@ -287,19 +269,57 @@ $aEmpresa=$oItem->getDatos();
                                     $probando='credito positivo';
                                   }
                                   
-
-
-                                  // $saldo=0;
                                   break;
                                 case 21:
                                   $tipoGrupo='PASIVO CORRIENTE';
                                   $imprimir=1;
-                                  $saldo=$aPasivoCorriente[0]["saldoCredito"]-$aPasivoCorriente[0]["saldoDebito"];
+                                  $controlPasivo=1;
+                                  $saldo=$aPasivoCorriente[0]["saldoDebito"]-$aPasivoCorriente[0]["saldoCredito"];
+                                  break;
+                                // case 22:
+
+                                //   if ($controlPasivo==0) {
+                                //     $tipoGrupo='PASIVO CORRIENTE';
+                                //     $imprimir=1;
+                                //     $controlPasivo=1;
+                                //     $saldo=$aPasivoCorriente[0]["saldoCredito"]-$aPasivoCorriente[0]["saldoDebito"];
+                                //   }else{
+                                //     $controlPasivo=0;
+                                //   }
+                                //   break;
+                                case 23:
+                                  if ($controlPasivo==0) {
+                                    $tipoGrupo='PASIVO CORRIENTE';
+                                    $imprimir=1;
+                                    $controlPasivo=1;
+                                    $saldo=$aPasivoCorriente[0]["saldoDebito"]-$aPasivoCorriente[0]["saldoCredito"];
+                                  }else{
+                                    $controlPasivo=0;
+                                  }
+                                  break;
+                                // case 24:
+                                //   if ($controlPasivo==0) {
+                                //     $tipoGrupo='PASIVO CORRIENTE';
+                                //     $imprimir=1;
+                                //     $controlPasivo=1;
+                                //     $saldo=$aPasivoCorriente[0]["saldoCredito"]-$aPasivoCorriente[0]["saldoDebito"];
+                                //   }else{
+                                //     $controlPasivo=0;
+                                //   }
+                                //   break;
+                                // case 25:
+                                //   if ($controlPasivo==0) {
+                                //     $tipoGrupo='PASIVO CORRIENTE';
+                                //     $imprimir=1;
+                                //     $saldo=$aPasivoCorriente[0]["saldoCredito"]-$aPasivoCorriente[0]["saldoDebito"];
+                                //   }else{
+                                //     $controlPasivo=0;
+                                //   }
                                   break;
                                 case 28:
                                   $tipoGrupo='TOTAL OTROS PASIVOS';
                                   $imprimir=1;
-                                  $saldo=$aOtrosPasivos[0]["saldoCredito"]-$aOtrosPasivos[0]["saldoDebito"];
+                                  $saldo=$aOtrosPasivos[0]["saldoDebito"]-$aOtrosPasivos[0]["saldoCredito"];
                                   break;
                                 
                                 default:
@@ -308,7 +328,7 @@ $aEmpresa=$oItem->getDatos();
                               }
 
                               if ($imprimir==1) {
-                                # code...
+                                
                               
                           ?>
                         <tr>
@@ -327,7 +347,13 @@ $aEmpresa=$oItem->getDatos();
                             <td></td>
                             <td><?php echo number_format($saldo,2,".",","); ?> </td>
                           </tr>
-                           <?php } ?>
+                           <?php } 
+                           if ($valueG['codigoCuenta']==36) {
+                              $saldoNuevoG=$valueG["debito"]-$valueG["credito"]; 
+                              $sumarSiguiente=$saldoNuevoG;
+                           }
+                           if ($valueG['codigoCuenta']!=36) {
+                           ?>
                       		<tr>
                       			<td class="<?php if(strlen($valueG['codigoCuenta']) ==2){echo 'negrita';}else{ echo 'cuenta';} ?>"><?php echo $valueG["codigoCuenta"];?></td>
                             <td></td>
@@ -337,31 +363,19 @@ $aEmpresa=$oItem->getDatos();
                       			<td><?php echo $valueG["denominacion"];?></td>
                       			<td></td>
                       			<td></td>
+                      			<!-- <td></td> -->
                       			<td></td>
-                      			<td></td>
+                            <td></td>
                       			<td><?php 
                             
-                            // if (substr($valueG["codigoCuenta"],0,1)==1) {
-                              // if (substr($valueG["codigoCuenta"], 0,2) =='15' && $aActivo[0]["saldoCredito"] < 0) {
-                                    
-                              //       $saldoNuevoG=$valueG["debito"]+$valueG["credito"];
-                              //       $probando='ingreso';
-                              //     }
-                                  // if (substr($valueG["codigoCuenta"], 0,2) =='15' && $aActivo[0]["saldoCredito"] >= 0) {
-                                  //   $saldoNuevoG=$valueG["debito"]-$valueG["credito"];
-                                  //   $probando='credito positivo';
-                                  // }
-                                  // if (substr($valueG["codigoCuenta"], 0,2) !='15') {
-                                    // $saldoMayor=$aActivo[0]["saldoDebito"]-$aActivo[0]["saldoCredito"]; 
-                                    $saldoNuevoG=$valueG["debito"]-$valueG["credito"]; 
-                                    $probando='diferente';
-                                  // }
-
-                                
-                              // }
-                              // if (substr($valueG["codigoCuenta"],0,1)==2 || substr( $valueG["codigoCuenta"],0,1)==3) {
-                              //   $saldoNuevoG=$valueG["credito"]-$valueG["debito"];
-                              // }
+                            
+                            $saldoNuevoG=$valueG["debito"]-$valueG["credito"]; 
+                            $probando='diferente';
+                            if ($valueG['codigoCuenta']==37) {
+                              
+                              $saldoNuevoG=$saldoNuevoG+$perdidaAcumulada+$sumarSiguiente;
+                            }
+                            
                             echo number_format($saldoNuevoG,2,".",",");
                             
                             ?>
@@ -370,29 +384,18 @@ $aEmpresa=$oItem->getDatos();
                             <td></td>
                       		</tr>
                       		
-                      		<?php 
+                      		<?php }
                       		if ($g==0) {
                       			
                       		foreach($aBalanceComprobacion as $key=> $value){ 
 
 
                       			$CuenControl=substr($value['codigoCuenta'], 0,4);
-                            // print_r($valueG['codigoCuenta']);
-                            // print_r('->');
-                            // print_r(substr($value['codigoCuenta'], 0,2));
+                            
                       			if ($valueG['codigoCuenta']==substr($value['codigoCuenta'], 0,2)) {
-                              // print_r(substr(string, $value["codigoCuenta"],0,1));
-                      				// if (substr( $value["codigoCuenta"],0,1)==1) {
-                                $saldoNuevoC=$value["debito"]-$value["credito"];
-                              // }
-                              // if (substr( $value["codigoCuenta"],0,1)==2 || substr($value["codigoCuenta"],0,1)==3) {
-                              //   $saldoNuevoC=$value["credito"]-$value["debito"];
-                              // }
                               
-                              // if (substr( $value["codigoCuenta"],0,4)=='1592') {
-                              //   $saldoNuevoC=$saldoNuevoC * (-1);
-                              // }
-
+                                $saldoNuevoC=$value["debito"]-$value["credito"];
+                             
                                 $oGrupo=new Data("grupo_contable","codigo",substr($value['codigoCuenta'], 0,2));
                                 $aGrupo=$oGrupo->getDatos();
 
@@ -426,25 +429,19 @@ $aEmpresa=$oItem->getDatos();
                             // echo number_format($value["saldoNuevo".,2,",",".");
                             ?></td>
                       		</tr>
-                      		
                           <?php
+                      		if ($filtroCuenta>2) {
+
+
                           $oBalanceComprobacionSC=new Informes();
                           $aBalanceComprobacionSC=$oBalanceComprobacionSC->getBalanceComprobacionAcumuladoSC(array("idEmpresa"=>$idEmpresa,"hasta"=>$hasta,"cuenta"=>$value["codigoCuenta"]));
 
                           foreach ($aBalanceComprobacionSC as $keySC => $valueSC) { 
 
-                            // print_r($valueSC["credito"]);
-                            // if (substr( $valueSC["codigoCuenta"],0,1)==1) {
+                            
                                 $saldoNuevoSC=$valueSC["debito"]-$valueSC["credito"];
-                              // }
-                              // if (substr( $valueSC["codigoCuenta"],0,1)==2 || substr($valueSC["codigoCuenta"],0,1)==3) {
-                              //   $saldoNuevoSC=$valueSC["credito"]-$valueSC["debito"];
-                              // }
+                            
                               if (strlen($valueSC["codigoCuenta"])==6) {
-
-                              //   if (substr( $valueSC["codigoCuenta"],0,4)=='1592') {
-                              //   $saldoNuevoSC=$saldoNuevoSC * (-1);
-                              // }
                            ?>
                           <tr>
                             <td><?php echo substr($valueSC["codigoCuenta"], 0,2);?></td>
@@ -468,7 +465,7 @@ $aEmpresa=$oItem->getDatos();
                             ?></td>
                           </tr>
                         <?php 
-
+                        if ($filtroCuenta>3) {
                         $oBalanceComprobacionA=new Informes();
                         $aBalanceComprobacionA=$oBalanceComprobacionA->getBalanceComprobacionAcumuladoA(array("idEmpresa"=>$idEmpresa,"hasta"=>$hasta,"cuenta"=>$valueSC["codigoCuenta"]));
                         foreach ($aBalanceComprobacionA as $keyA => $valueA) { 
@@ -507,30 +504,17 @@ $aEmpresa=$oItem->getDatos();
                             ?></td>
                           </tr>
                            <?php 
-
+                           if ($filtroCuenta>4) {
                         $oBalanceComprobacionSAX=new Informes();
                         $aBalanceComprobacionSAX=$oBalanceComprobacionSAX->getBalanceComprobacionAcumuladoSA(array("idEmpresa"=>$idEmpresa,"hasta"=>$hasta,"cuenta"=>$valueA["codigoCuenta"]));
-                        // print_r($aBalanceComprobacionA);
+                        
                         foreach ($aBalanceComprobacionSAX as $keySAX => $valueSAX) { 
-                          // print_r($valueSAX);
-
-                          // if (substr( $valueSAX["codigoCuenta"],0,1)==1) {
+                          
                                 $saldoNuevoSAX=$valueSAX["debito"]-$valueSAX["credito"];
-                              // }
-                              // if (substr( $valueSAX["codigoCuenta"],0,1)==2 || substr( $valueSAX["codigoCuenta"],0,1)==3) {
-                              //   $saldoNuevoSAX=$valueSAX["credito"]-$valueSAX["debito"];
-                              // }
+                              
 
                               if (strlen($valueSAX["codigoCuenta"])==10) {
                                 
-                                // if (substr( $valueSAX["codigoCuenta"],0,4)=='1592') {
-                                //   if ($saldoNuevoSAX >= 0) {
-                                //     $saldoNuevoSAX=$saldoNuevoSAX * (-1);
-                                //   }
-                                //   if ($saldoNuevoSAX < 0) {
-                                //     $saldoNuevoSAX=$saldoNuevoSAX * (1);
-                                //   }
-                                // }
                             ?>
 
                           <tr>
@@ -557,16 +541,16 @@ $aEmpresa=$oItem->getDatos();
 
 
                 <?php     
+                        }
                           }
                           }
                           }
                           }
                           }
-                          } ?>
-                          
-                          
-
-
+                          }
+                          }
+                        }
+                           ?>
                          <?php } } ?>
                       		
 
@@ -581,7 +565,7 @@ $aEmpresa=$oItem->getDatos();
                             }
 
                            }?>
-                           <tr>
+                         <!--   <tr>
                             
                             
                             <td></td>
@@ -599,7 +583,7 @@ $aEmpresa=$oItem->getDatos();
                             echo number_format($perdidaAcumulada,2,".",",");
                             ?></td>
                             <td></td>
-                          </tr>
+                          </tr> -->
 
                            <tr>
                             

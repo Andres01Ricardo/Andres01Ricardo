@@ -1,0 +1,122 @@
+<?php 
+
+// require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$id; 
+
+// $decrip["cadena"]=$id; 
+// $idEmpresa=$oControl->desencriptar($decrip); 
+
+$idEmpresa=$_SESSION['idEmpresa'];
+$oItem=new Lista("cuenta_bancaria");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aBancos=$oItem->getLista();
+unset($oItem);
+
+
+
+$oItem=new Lista("bodega");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$bodegas=$oItem->getLista();
+unset($oItem);
+
+
+$oItem=new Lista("producto");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$producto=$oItem->getLista();
+unset($oItem);
+// print_r($bodegas);
+?>
+
+
+<section>
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+				
+	
+<div class="card">
+	
+	<div class="card-header">
+      	<h3>Traslado de inventario entre bodegas</h3>
+      </div>
+      <div class="card-body">
+      	<div class="row">
+      		<div class="col-md-2">
+      			<label>Fecha:</label>
+      			<input type="date" class="form-control" name="datos[fecha]" value="<?php echo date("Y-m-d");?>">
+      		</div>
+      	</div>
+      	<br>
+      	<br>
+      	<table class="table table-striped" id="tableProductos" style="text-align:center;">
+      		<thead>
+      			<tr>
+      				<!-- <th>#</th> -->
+      				<th>PRODUCTO</th>
+      				<th>DESCRIPCIÓN</th>
+      				<th>Sale de</th>
+      				<th>Entra a</th>
+      				<th>Cantidad</th>
+      			</tr>
+      		</thead>
+      		<tbody>
+      			<tr>
+      				<td><select class="select2 form-control" >
+      					<option>Seleccione</option>
+      					<?php foreach ($producto as $keyP => $valueP) {
+      					?>
+      					<option value="<?php echo $valueP["idProducto"]; ?>"><?php echo $valueP["codigo"].' '.$valueP["nombre"]; ?></option>
+      					<?php } ?>
+      				</select></td>
+      				<td><input type="text" class="form-control" name=""></td>
+      				<td><select class="select2 form-control" >
+      					<option>Seleccione</option>
+      					<?php foreach ($bodegas as $key => $value) {
+      					?>
+      					<option value="<?php echo $value["idBodega"]; ?>"><?php echo $value["nombre"]; ?></option>
+      					<?php } ?>
+      				</select></td>
+      				<td><select class="select2 form-control" >
+      					<option>Seleccione</option>
+      					<?php foreach ($bodegas as $key => $value) {
+      					?>
+      					<option value="<?php echo $value["idBodega"]; ?>"><?php echo $value["nombre"]; ?></option>
+      					<?php } ?>
+      				</select></td>
+      				<td><input type="text" class="form-control" name=""></td>
+      			</tr>
+      		</tbody>
+      	</table>
+
+      	<br>
+      	<div class="row">
+      		<div class="col-md-8">
+	      			<label>Observaciones</label>
+      			<div class="form-group">
+	      			<textarea style="height:100px;width: 250px;"></textarea>
+	      		</div>
+      		</div>
+      	</div>
+
+      	<div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
+      </div>
+</div>
+
+</form>
+</section>
+
+
+
+
+
+
+
+
+				
+			
+
+
+

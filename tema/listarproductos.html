@@ -6,6 +6,13 @@ $oControl=new Control();
 
 // print_r($aProductos);
 
+
+
+// $oLista = new Lista("producto_servicio");
+// $oLista->setFiltro("idEmpresa","=",$_SESSION['idEmpresa']);
+// $aProductos=$oLista->getLista();
+// unset($oLista);
+
 ?>
 
 <section class="section">
@@ -53,8 +60,11 @@ $oControl=new Control();
                           <tr>
 
                             <th class="text-center">#</th>
+                            <th>Línea</th>
+                            <th>Grupo</th>
 
                             <th>Código</th>
+
                             <th>Producto</th>
 
                             <th>Empresa</th>
@@ -69,17 +79,50 @@ $oControl=new Control();
 
                         <tbody>
 
-                          <?php foreach($aProductos as $index => $iProducto){ 
-
+                          <?php foreach($aProductos as $index => $iProducto){  
                           $aEncript['cadena']=$iProducto['idProductoServicio'];
-
                           $id=$oControl->encriptar($aEncript); 
+                          // print_r($iProducto["idGrupo"]);
+                          // print_r($iProducto);
+                          $lineaI=' - ';
+                          if ($iProducto["idGrupo"]!=0) {
+                          
+                            $oItem=new Data("grupo_inventario","idGrupoInventario",$iProducto["idGrupo"]);
+                            $grupoProducto=$oItem->getDatos();
+                            unset($oItem);
+                          
+
+
+                            $grupo=$grupoProducto["codigo"].' - '.$grupoProducto["nombre"];
+
+                            $oItem=new Data("linea_inventario","idLineaInventario",$grupoProducto["idLineaInventario"]);
+                            $linea=$oItem->getDatos();
+                            unset($oItem);
+
+                            if (!empty($linea)) {
+                              $lineaI=$linea["codigo"].' - '.$linea["nombre"];
+                            }
+
+                            if (empty($linea)) {
+                              $lineaI=' - ';
+                            }
+                          }
+                          if ($iProducto["idGrupo"]==0) {
+                            $grupo=' - ';
+                          }
+
+
+
 
                             ?>
 
                             <tr>
 
                               <td><?php echo $index+1; ?></td>
+
+                              <td><?php echo $lineaI;  ?></td>
+
+                              <td><?php echo $grupo  ?></td> 
 
                               <td><?php echo $iProducto["codigo"]; ?></td>
 

@@ -249,12 +249,16 @@ class Inventario extends Sql{
 			$condicion.=" AND ipm.idProducto=".$aDatos["idProducto"]; 
 		}
 
-		$sql="SELECT ipm.tipoMovimiento,sum(ipm.ingreso) as ingreso,sum(ipm.egreso) as egreso,ipm.fechaRegistro,u.nombreUsuario,u.apellidoUsuario,ps.nombre,ps.idProductoServicio,ipm.observaciones
+		if($aDatos["idBodega"]!=""){
+			$condicion.=" AND ipm.idBodega=".$aDatos["idBodega"]; 
+		}
+
+		$sql="SELECT ipm.tipoMovimiento,sum(ipm.ingreso) as ingreso,sum(ipm.egreso) as egreso,ipm.fechaRegistro,u.nombreUsuario,u.apellidoUsuario,ps.nombre,ps.idProductoServicio,ipm.observaciones,ipm.idBodega
 			from inventario_productos_movimientos ipm
 			inner join producto_servicio ps on ps.idProductoServicio=ipm.idProducto
 			INNER JOIN usuario u on u.idUsuario=ipm.idUsuarioRegistra
 			WHERE 0=0 ".$condicion." 
-			GROUP BY ipm.idProducto";
+			GROUP BY ipm.idProducto , ipm.idBodega";
 
 
 

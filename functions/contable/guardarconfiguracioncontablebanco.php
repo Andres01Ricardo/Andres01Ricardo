@@ -23,6 +23,7 @@ if(!isset($_SESSION)){ session_start(); }
     $bancoC["idCuentaBancaria"]=$datos["idCuentaBancaria"];
     $bancoC["idEmpresa"]=$datos["idEmpresa"];
     $bancoC["idEmpresaCuenta"]=$datos["idCuentaContable"];
+    $bancoC["nombre"]=$datos["nombre"];
      $oItem=new Data("banco_cuenta_contable","idBancoCuentaContable"); 
     foreach($bancoC  as $keyEC => $valueEC){
         $oItem->$keyEC=$valueEC; 

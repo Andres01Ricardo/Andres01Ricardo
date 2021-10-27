@@ -431,6 +431,35 @@
                         </div>
 
                       </div>
+                      <div class="col-md-4">
+
+                          <div class="form-group">
+
+                              <label class="negrita">Total a Pagar:</label>
+
+                              <input type="text" class="form-control mayusculas moneda" name="datos[totalPago]" id="datos[totalPago]" value='<?php echo "$".number_format(0,2,",","."); ?>' readonly required>
+
+                          </div>
+
+                          </div>
+                          <?php 
+                          $oItem=new Lista("banco_cuenta_contable");
+                          $oItem->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+                          $aBancos=$oItem->getLista();
+                          unset($oItem); 
+                          ?>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="negrita">Forma de pago:</label>
+                                <select class="form-control" name="datos[formaPago]" id="formaPago">
+                                  <?php foreach ($aBancos as $key=> $value){  ?>
+                                    <option><?php echo $value["nombre"]; ?></option>
+                                  <?php } ?>
+                              </select>
+
+                            </div>
+
+                          </div>
                   </div>
               </div>
 

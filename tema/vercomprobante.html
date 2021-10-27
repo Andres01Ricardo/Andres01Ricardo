@@ -90,10 +90,10 @@ $idC=$oControl->encriptar($aEncript);
                         <th> <?php echo date('Y-m-d');?> </th>
                       </tr>
                       <tr>
-                        <th> </th>
+                        <th> No. <?php echo $aTipo['letra'].$aComprobante['comprobante'].$aComprobante['numero'];?></th>
                         <th>Nit: <?php echo $aEmpresa['nit'];?>-<?php echo $aEmpresa['digitoVerificador'];?></th>
                         <!-- <th> </th> -->
-                        <th> No. <?php echo $aTipo['letra'].$aComprobante['comprobante'].$aComprobante['numero'];?></th>
+                        <th>Fecha: <?php echo $aComprobante['fecha'] ?> </th>
                         </tr> 
                     </tbody>
                   </table>
@@ -152,7 +152,12 @@ $idC=$oControl->encriptar($aEncript);
                             <td><?php echo $iComprobante["descripcion"]; ?></td>
                             <td>
                               <?php if ($iComprobante["base"]!='0') {
-                                echo "$".number_format($iComprobante["base"],2,",",".");
+                                if (is_numeric($iComprobante["base"])) {
+                                  echo "$".number_format($iComprobante["base"],2,",",".");
+                                }else{
+                                  echo $iComprobante["base"];
+                                }
+                                
                               }?>
                             </td>
                             <td>

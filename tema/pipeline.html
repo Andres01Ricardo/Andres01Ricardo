@@ -44,7 +44,10 @@ unset($oItem);
         </ul>
 
   <?php $rol= $_SESSION["idRol"];
-  if(empty($_SESSION["idEmpresa"])): ?>
+  if($rol==1 || $rol==2): ?>
+    <?php if (empty($_SESSION['idEmpresa'])) {
+      // code...
+     ?>
   <div class="card card-body">
       <form method="POST" action="./functions/crm/cargarCrm.php">
       <div class="form-row align-items-center">
@@ -70,17 +73,17 @@ unset($oItem);
     onlogin="checkLoginState();">
   </fb:login-button> -->
   
-  <div class="fb-login-button" data-width="80" data-size="large" data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState();">></div>
+  <!-- <div class="fb-login-button" data-width="80" data-size="large" data-button-type="continue_with" data-layout="rounded" data-auto-logout-link="false" data-use-continue-as="false" onlogin="checkLoginState();">></div> -->
 
-
+<?php } ?>
   
 <?php endif;  ?>
 
-<div>
+<!-- <div>
   <div class="card-body">
     <center><h2><?php echo $rows['razonSocial']; ?></h2></center>
   </div>
-</div>  
+</div>   -->
 
 
 <div class="card" >
@@ -92,9 +95,9 @@ unset($oItem);
           <?php
             foreach($etapas as $index => $rows){                   
           ?>
-            <div class="tercero" id="prueba" style="background-color: <?php echo $rows['color'];?>  ;">
+            <div class="tercero" id="prueba" style="background-color: <?php echo $rows['color'];?> ">
               <div class="texto-div" style="background-color: <?php echo $rows['color'];?>;">
-                <label id='nombre-etapa' class="nombre-etapa" ><?php echo $rows['nombreEtapa']; ?></label>
+                <label id='nombre-etapa' class="nombre-etapa" style="color:white; font-weight: bold;font-size: 90%"><?php echo $rows['nombreEtapa']; ?></label>
 
               </div>
             </div>
@@ -110,6 +113,56 @@ unset($oItem);
               <input type="color" value="#FFFED5" name="color" id="color" >
       
             </div>
+            <!-- <div style="background-color:#A4A4EC; width: 100px; height: 100px;"></div>
+            <div style="background-color:#8383FD; width: 100px; height: 100px;"></div>
+            <div style="background-color:#6363D5; width: 100px; height: 100px;"></div>
+            <div style="background-color:#B3B3B5; width: 100px; height: 100px;"></div>
+            <div style="background-color:#9C9CA5; width: 100px; height: 100px;"></div> 
+            <div style="background-color:#DDD5D5; width: 100px; height: 100px;"></div> 
+
+
+
+            Azules
+  
+            #ADAEDC
+            #A2A3F3
+            #8485CA
+            #9394C5
+            #8587DB
+            #888AEE
+
+
+            #A4A4EC
+            #8383FD
+            #6363D5
+
+
+
+
+            #ACBFFF
+            #9FB5FF
+            #8EA8FF
+            #84A0FF
+            #6E8FFF
+            #5C81FF
+
+
+            81A4FF
+            7D9FF9
+            799BF5
+            7698F0
+            7293E8
+            7190E1
+
+
+            BBCBF2
+            C9D4F0
+            95ADE8
+            A2B7EC
+            86A1E4
+            7D9AE1
+
+          -->
       
           </div >
         </form>
@@ -128,17 +181,18 @@ unset($oItem);
           foreach($etapas as $index => $rowse){                        
         ?>
       <table class="table table-hover">
-        <div class="navbar-expand-lg navbar-nav" style="background-color: <?php echo $rowse['color'];?>">   
+        <div class="navbar-expand-lg navbar-nav" style="background-color: <?php echo $rowse['color']; ?> ; ">   
           <?php $codigoEtapa= $rowse['codigo'];
             $colorEtapa= $rowse['color'];
             $nombreEtapa=$rowse['nombreEtapa'];
            ?>
           <div>
-            <button class="btn" id="btnCambiarColorEtapa" onclick="return abrirpopupetapa(<?php echo $codigoEtapa ?>,'<?php echo $colorEtapa ?>','<?php echo $nombreEtapa ?>'),coloretapacambiar();"><i class="fas fa-palette"></i>
-            </button>
+            <!-- <button class="btn" id="btnCambiarColorEtapa" onclick="return abrirpopupetapa(<?php echo $codigoEtapa ?>,'<?php echo $colorEtapa ?>','<?php echo $nombreEtapa ?>'),coloretapacambiar();"><i class="fas fa-palette"></i>
+            </button> -->
+            <!-- <button  class="btn" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap"  title="CAMBIAR COLOR"><i class="fas fa-palette" style="font-size:24px;"></i></button> -->
           </div>
-              <div id="tituloetapa" >
-                <h2 class="nombre-etapa-tabla"><?php echo $rowse['nombreEtapa']; ?></h2>  
+              <div id="tituloetapa"  >
+                <h2 class="nombre-etapa-tabla" style="color:white;"><?php echo $rowse['nombreEtapa']; ?></h2>  
               </div>
               <div id="btneliminaretapa">  
                 <a  onclick="return abrirpopupeliminaretapa(<?php echo $codigoEtapa ?>,'<?php echo $nombreEtapa ?>')" class="btn btn-danger" >X</a>
@@ -280,13 +334,47 @@ unset($oItem);
             <input type="color" name="coloretapacambiar" id="coloretapacambiar" ></div>
             <input type="text" name="codigoEtapaCambiar" id="codigoEtapaCambiar" class="form-control ocultar">
             </div>
-
+            <br>
+            <br>
             <div class="swal-footer">
               <button type="submit" class="btn btn-primary"><i class="fas fa-exchange-alt">CAMBIAR</i></button>
             </div>
         </form>
   </div>
 </div>
+
+<!-- ---------------------------------------------------------------------------------------------------------------------------- -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cambiar color y nombre de etapa</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Nombre:</label>
+            <div><input type="text" class="form-control" name="nombreEtapaCambiar" id="nombreEtapaCambiar" onkeyup="aMayusculas(this.value,this.id);" placeholder="Nombre etapa" >
+          </div>
+          <div class="form-group">
+            <input type="color" name="coloretapacambiar" id="coloretapacambiar" class="form-control"></div>
+            <input type="text" name="codigoEtapaCambiar" id="codigoEtapaCambiar" class="form-control ocultar">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">CAMBIAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 
 <div class="swal-overlay swal-overlay--show-modal" id="overlayeliminaretapa">

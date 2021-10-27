@@ -46,7 +46,7 @@ class Informes extends Sql{
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -100,7 +100,7 @@ class Informes extends Sql{
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -153,7 +153,7 @@ class Informes extends Sql{
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -202,7 +202,7 @@ public function getBalanceComprobacionAcumuladoA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,8) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,8) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -256,7 +256,7 @@ public function getBalanceComprobacionA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,8) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,8) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -310,7 +310,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,8) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,8) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -361,7 +361,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,6) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,6) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -415,7 +415,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,6) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,6) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -469,7 +469,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,6) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,6) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -513,7 +513,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 	
 
-		$sql="SELECT  MIN(cc.nombre) as nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  MIN(cc.nombre) as nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,4) ORDER BY cc.codigoCuenta ASC";
@@ -563,7 +563,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -612,7 +612,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -716,7 +716,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 
 		
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,2) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,2) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -764,7 +764,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT gc.denominacion,substring(cc.codigoCuenta,1,2) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT gc.denominacion,substring(cc.codigoCuenta,1,2) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -819,7 +819,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT gc.denominacion,substring(cc.codigoCuenta,1,2) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza
+		$sql="SELECT gc.denominacion,substring(cc.codigoCuenta,1,2) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -873,7 +873,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -938,7 +938,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -1001,7 +1001,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 
 
-		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero
+		$sql="SELECT  cc.nombre,substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -1047,7 +1047,8 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 		if($aDatos["corriente"]!=""){ 
 
-			$condicion.=" AND substring(cc.codigoCuenta,1,2) <=13";
+			$condicion.=" AND substring(cc.codigoCuenta,1,2) <=14";
+			$condicion.=" AND substring(cc.codigoCuenta,1,2) >0 ";
 
 		}
 
@@ -1297,6 +1298,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		if($aDatos["corriente"]!=""){ 
 
 			$condicion.=" AND substring(cc.codigoCuenta,1,2) <20 ";
+			$condicion.=" AND substring(cc.codigoCuenta,1,2) >0 ";
 
 		}
 
@@ -1654,13 +1656,14 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 		
 
-		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
+		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN tercero t on ccm.idTercero = t.idTercero
 			WHERE 0=0  ".$condicion."
-			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero, ccm.tipoTercero
-			ORDER BY ccm.idTercero asc,cc.codigoCuenta ASC";
+			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero
+			ORDER BY t.nit ASC,cc.codigoCuenta ASC";
 
 
 	    $aBalanceComprobacion=$this->ejecutarSql($sql); 
@@ -1707,13 +1710,14 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 		
 
-		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
+		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN tercero t on ccm.idTercero = t.idTercero
 			WHERE 0=0  ".$condicion."
-			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero, ccm.tipoTercero
-			ORDER BY ccm.idTercero asc,cc.codigoCuenta ASC";
+			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero
+			ORDER BY t.nit ASC,cc.codigoCuenta ASC";
 
 
 	    $aBalanceComprobacion=$this->ejecutarSql($sql); 
@@ -1766,15 +1770,14 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		
-
-		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
+		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante,cc.idCuentaContable
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN tercero t on ccm.idTercero = t.idTercero
 			WHERE 0=0  ".$condicion."
-			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero, ccm.tipoTercero,ccm.idComprobante
-			ORDER BY ccm.idTercero asc,cc.codigoCuenta ASC";
+			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero,ccm.idComprobante,ccm.saldoCredito
+			ORDER BY t.nit ASC,cc.codigoCuenta ASC";
 
 
 	    $aBalanceComprobacion=$this->ejecutarSql($sql); 
@@ -1882,7 +1885,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 
 		}
 
-		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
+		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -1927,13 +1930,14 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 			$condicion.="  AND ccm.tipoTercero='".$aDatos["tipoTercero"]."'";
 		}
 
-		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante,ccm.base,ccm.descripcion
+		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante,ccm.base,ccm.descripcion
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 			WHERE 0=0  ".$condicion."
-			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idComprobante,ccm.descripcion,ccm.idTercero
-			ORDER BY cc.codigoCuenta ASC,ccm.fecha ASC";
+			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idComprobante,ccm.descripcion,ccm.idTercero,ccm.idComprobanteItem
+			ORDER BY cc.codigoCuenta ASC,ccm.fecha ASC,c.comprobante ASC,c.numero ASC";
 
 
 	    $aBalanceComprobacion=$this->ejecutarSql($sql); 
@@ -1985,7 +1989,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		// }
 		
 
-		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,ccm.fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
+		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
@@ -2184,6 +2188,33 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 	    // print_r('+++');
 	    return $aCentroCosto; 
 	}
+
+	
+	public function getComprobantesCierreMes($aDatos=array()){
+
+
+
+		$condicion=""; 
+
+		if(!isset($_SESSION)){ session_start(); }
+
+		if($aDatos["idEmpresa"]!=""){ 
+			$condicion.=" AND c.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		
+
+		$sql="SELECT SUM(ci.saldoDebito) as debito,SUM(ci.saldoCredito) as credito,YEAR(c.fecha) as anio,MONTH(c.fecha) as mes, c.idEmpresa
+		FROM comprobante_items ci INNER JOIN comprobante c on c.idComprobante=ci.idComprobante 
+			WHERE 0=0  ".$condicion."
+			GROUP BY YEAR(c.fecha),MONTH(c.fecha)			
+			ORDER BY c.fecha ASC";
+
+	    $aBalanceComprobacion=$this->ejecutarSql($sql); 
+
+	    return $aBalanceComprobacion; 
+
+	}
+
 }
 
 ?>

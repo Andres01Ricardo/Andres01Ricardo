@@ -74,149 +74,169 @@ if( isset($_FILES['excel']) && $_FILES['excel'] != 'undefined')
 
 if(!isset($_SESSION)){ session_start(); }
 
+
 $periodo=explode("-",$datos["periodo"]); 
 
-$aDatos["idEmpresa"]=$datos["idEmpresa"]; 
+$oLista=new Lista("balance_general");
+$oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+$oLista->setFiltro("periodoMes","=",$periodo[0]);
+$oLista->setFiltro("periodoAnio","=",$periodo[1]);
+$balanceGeneral=$oLista->getLista();
+unset($oLista);
 
-$aDatos["periodoMes"]=$periodo[0]; 
+        if (!empty($balanceGeneral)) {
 
-$aDatos["periodoAnio"]=$periodo[1]; 
-
-$aDatos["anexo"]=$sBalance; 
-
-$aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
-
-$aDatos["titulo"]=$datos["titulo"]; 
-
-$aDatos["subtitulo"]=$datos["subtitulo"]; 
-
-$aDatos["fechaRegistro"]=date("Y-m-d H:i:s"); 
-
-
-
-$oItem=new Data("balance_general","idBalanceGeneral"); 
-
-foreach($aDatos  as $key => $value){
-
-    $oItem->$key=$value; 
-
-}
-
-$oItem->guardar(); 
-
-$idBalance=$oItem->ultimoId(); 
-
-unset($oItem);
-
-
-
-$padre=0;
-
-foreach($item  as $pos => $valor){
-
-    if($valor["tipo"]==1){
-
-        $padre=0;
-
-    }
-
-   $aItem["total"]=$valor["total"]==""?0:$oControl->eliminarMoneda($valor["total"]); 
-
-   $aItem["idBalanceGeneral"]=$idBalance; 
-
-   $aItem["titulo"]=$valor["nombre"]; 
-
-   $aItem["porcentaje"]=$valor["porcentaje"]==""?0:substr($valor["porcentaje"],0,8); 
-
-   $aItem["tipo"]=$valor["tipo"]; 
-
-   $aItem["idItemPadre"]=$padre;
-
-   
-
-    $oItem=new Data("balance_general_item","idBalanceGeneralItem"); 
-
-    foreach($aItem  as $key => $value){
-
-        $oItem->$key=$value; 
-
-    }
-
-    $oItem->guardar(); 
-
-    if($valor["tipo"]==1){
-
-        $padre=$oItem->ultimoId();
-
-    }else{
-
-        $iAgrupador=$oItem->ultimoId(); 
-
-    }
-
-    unset($oItem);
-
-
-
-    foreach($cuenta[$pos]  as $iCuenta){
-
+            $msg=false;
+        }
+        if (empty($balanceGeneral)) {
+            
         
 
-           $aCuenta["valor"]=$oControl->eliminarMoneda($iCuenta["total"]); 
 
-           $aCuenta["idBalanceGeneralItem"]=$iAgrupador; 
+            $aDatos["idEmpresa"]=$datos["idEmpresa"]; 
 
-           $aCuenta["numeroCuenta"]=$iCuenta["nroCuenta"]; 
+            $aDatos["periodoMes"]=$periodo[0]; 
 
-           $aCuenta["nombreCuenta"]=$iCuenta["cuenta"]; 
+            $aDatos["periodoAnio"]=$periodo[1]; 
 
-           $aCuenta["porcentaje"]=$iCuenta["porcentaje"]==""?0:substr($iCuenta["porcentaje"],0,8); 
+            $aDatos["anexo"]=$sBalance; 
 
-           $aCuenta["tipo"]=$iCuenta["tipo"];
+            $aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
 
-           
+            $aDatos["titulo"]=$datos["titulo"]; 
 
-           //var_dump($aCuenta);   
+            $aDatos["subtitulo"]=$datos["subtitulo"]; 
 
-            $oItem=new Data("balance_general_cuenta","idBalanceGeneralCuenta"); 
+            $aDatos["fechaRegistro"]=date("Y-m-d H:i:s"); 
 
-            foreach($aCuenta  as $key2 => $value2){
 
-                $oItem->$key2=$value2; 
+
+            $oItem=new Data("balance_general","idBalanceGeneral"); 
+
+            foreach($aDatos  as $key => $value){
+
+                $oItem->$key=$value; 
 
             }
 
             $oItem->guardar(); 
 
+            $idBalance=$oItem->ultimoId(); 
+
             unset($oItem);
 
-        
 
+
+            $padre=0;
+
+            foreach($item  as $pos => $valor){
+
+                if($valor["tipo"]==1){
+
+                    $padre=0;
+
+                }
+
+               $aItem["total"]=$valor["total"]==""?0:$oControl->eliminarMoneda($valor["total"]); 
+
+               $aItem["idBalanceGeneral"]=$idBalance; 
+
+               $aItem["titulo"]=$valor["nombre"]; 
+
+               $aItem["porcentaje"]=$valor["porcentaje"]==""?0:substr($valor["porcentaje"],0,8); 
+
+               $aItem["tipo"]=$valor["tipo"]; 
+
+               $aItem["idItemPadre"]=$padre;
+
+               
+
+                $oItem=new Data("balance_general_item","idBalanceGeneralItem"); 
+
+                foreach($aItem  as $key => $value){
+
+                    $oItem->$key=$value; 
+
+                }
+
+                $oItem->guardar(); 
+
+                if($valor["tipo"]==1){
+
+                    $padre=$oItem->ultimoId();
+
+                }else{
+
+                    $iAgrupador=$oItem->ultimoId(); 
+
+                }
+
+                unset($oItem);
+
+
+
+                foreach($cuenta[$pos]  as $iCuenta){
+
+                    
+
+                       $aCuenta["valor"]=$oControl->eliminarMoneda($iCuenta["total"]); 
+
+                       $aCuenta["idBalanceGeneralItem"]=$iAgrupador; 
+
+                       $aCuenta["numeroCuenta"]=$iCuenta["nroCuenta"]; 
+
+                       $aCuenta["nombreCuenta"]=$iCuenta["cuenta"]; 
+
+                       $aCuenta["porcentaje"]=$iCuenta["porcentaje"]==""?0:substr($iCuenta["porcentaje"],0,8); 
+
+                       $aCuenta["tipo"]=$iCuenta["tipo"];
+
+                       
+
+                       //var_dump($aCuenta);   
+
+                        $oItem=new Data("balance_general_cuenta","idBalanceGeneralCuenta"); 
+
+                        foreach($aCuenta  as $key2 => $value2){
+
+                            $oItem->$key2=$value2; 
+
+                        }
+
+                        $oItem->guardar(); 
+
+                        unset($oItem);
+
+                    
+
+                }
+
+            }
+
+              $oItem=new Data("empresa_acceso","idEmpresa",$datos["idEmpresa"]); 
+
+                $aUser=$oItem->getDatos();
+
+                unset($oItem); 
+
+
+                $sDatos["fechaNotificacion"]=date("Y-m-d H:m:s");
+                $sDatos["idUsuarioRegistra"] = $_SESSION["idUsuario"];
+                $sDatos["idUsuarioNotificado"] =$aUser["idUsuario"];
+                $sDatos["notificacion"] =  "El usuario ".$_SESSION["nombreUsuario"]." ".$_SESSION["apellidoUsuario"]." ha cargado el balance general";
+                
+
+                $oItem=new Data("notificacion","idNotificacion"); 
+                foreach($sDatos  as $key => $svalue){
+                $oItem->$key=$svalue; 
+                }
+                $oItem->guardar(); 
+                unset($oItem);
+
+                $msg=true;
     }
 
-}
-
-  $oItem=new Data("empresa_acceso","idEmpresa",$datos["idEmpresa"]); 
-
-    $aUser=$oItem->getDatos();
-
-    unset($oItem); 
-
-
-    $sDatos["fechaNotificacion"]=date("Y-m-d H:m:s");
-    $sDatos["idUsuarioRegistra"] = $_SESSION["idUsuario"];
-    $sDatos["idUsuarioNotificado"] =$aUser["idUsuario"];
-    $sDatos["notificacion"] =  "El usuario ".$_SESSION["nombreUsuario"]." ".$_SESSION["apellidoUsuario"]." ha cargado el balance general";
-    
-
-    $oItem=new Data("notificacion","idNotificacion"); 
-    foreach($sDatos  as $key => $svalue){
-    $oItem->$key=$svalue; 
-    }
-    $oItem->guardar(); 
-    unset($oItem);
-
-echo json_encode(array("msg"=>true)); 
+echo json_encode(array("msg"=>$msg)); 
 
 
 

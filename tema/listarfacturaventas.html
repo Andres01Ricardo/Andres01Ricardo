@@ -102,11 +102,12 @@ if(empty($_SESSION["idEmpresa"])){
 
                             <th class="text-center">#</th>
 
-                            <th>Fecha registro</th>
 
                             <th>Cliente</th>
 
                             <th>N° Factura</th>
+
+                            <th>Fecha vencimiento</th>
 
                             <th>Fecha Factura</th>
 
@@ -120,21 +121,19 @@ if(empty($_SESSION["idEmpresa"])){
 
                             <?php } ?>
                             <th>Saldo</th>
-
                             <th>Acciones</th>
                             <th class="ocultar">ID Empresa</th>
-
                           </tr>
-
                         </thead>
-
                         <tbody>
-
                           <?php foreach($aFacturas as $index => $iFactura){ 
-
                             $aEncript['cadena']=$iFactura['idFacturaVenta'];
-
                             $id=$oControl->encriptar($aEncript);
+                            $oLista = new Lista('factura_venta_deduccion');
+                            $oLista->setFiltro("idFacturaVenta","=",$iFactura['idFacturaVenta']);
+                            $aDeduccion=$oLista->getLista();
+                            unset($oLista);
+
 
                             ?> 
 
@@ -142,12 +141,13 @@ if(empty($_SESSION["idEmpresa"])){
 
                               <td><?php echo $index+1; ?> </td>
 
-                              <td><?php echo $iFactura["fechaRegistro"]; ?></td>
 
                               <td><?php echo $iFactura["razonSocial"]; ?></td>
 
                               <td><?php echo $iFactura["nroFactura"]; ?></td>
 
+                              <td><?php echo $iFactura["fechaVencimiento"]; ?></td>
+                            
                               <td><?php echo $iFactura["fechaFactura"]; ?></td>
 
                               <td><?php echo "$".number_format($iFactura["total"],2,",","."); ?></td>
@@ -160,15 +160,39 @@ if(empty($_SESSION["idEmpresa"])){
                               <td><?php echo $iFactura["empresa"]; ?></td>
 
                               <?php } ?>
-                              <td><?php echo "$".number_format($iFactura["saldo"],2,",",".");?></td>
+                              <td><?php 
+
+                              if (empty($aDeduccion)) {
+                                echo "$".number_format($iFactura["saldo"],2,",",".");
+                              }
+                              if (!empty($aDeduccion)) {
+                                if ($iFactura["estado"]==4) {
+                                  echo "$".number_format($iFactura["saldo"],2,",",".");
+                                }
+                                elseif ($iFactura["estado"]==1 || $iFactura["estado"]==2) {
+                                  $retencion=0;
+                                  foreach ($aDeduccion as $keyde => $valuede) {
+                                    $retencion=$retencion+$valuede["valor"];
+                                  }
+                                  echo "$".number_format($iFactura["total"]-$retencion,2,",",".");  
+                                }else{
+                                  echo "$".number_format($iFactura["saldo"],2,",",".");   
+                                }
+                              }
+                                ?>
+                                </td>
+
 
                               <td class="centrar">
                                 <div>
                                   <!-- <form enctype="multipart/form-data" id="frmEliminar"> -->
                                   <a href="<?php echo $URL; ?>verfacturaventa/<?php echo $id ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Ver Detalles"><i class="fas fa-briefcase" style="color: #0B08FF;font-size: 19px;"></i></a>
-                                  <?php if($iFactura["estado"]==1 or $iFactura["estado"]==2){ ?>
+                                  <?php if($iFactura["estado"]==1 or $iFactura["estado"]==2){
+                                    if($_SESSION['idRol']==2 || $_SESSION['idRol']==1){
+                                     ?>
+                                    
                                   <a href="<?php echo $URL; ?>editarfacturaventa/<?php echo $id ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFFC49;font-size: 15px;"></i></a>
-                                   <?php } ?>
+                                   <?php }} ?>
                                   <a href="<?php echo $URL.$iFactura['archivo']; ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 19px;"></i></a>
                                 
                                 <?php if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){  ?>
@@ -180,12 +204,17 @@ if(empty($_SESSION["idEmpresa"])){
                                   <a href="javascript:void(0)" id="<?php echo $iFactura['idFacturaVenta']; ?>" class="comprobante" data-toggle="modal" data-target="#modal" ><i class="fas fa-donate" data-toggle="tooltip" data-placement="top" title="Marcar pagada" style="color: #65E572;font-size: 19px;"></i></a> 
 
                                   <?php }} ?>
+
+                                  <?php if($iFactura["estado"]!=3){ ?>
                                   <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
                                   
                                   <input type="hidden" name="idFacturaVentaEliminar[idFacturaVentaEliminar]" id="idFacturaVentaEliminar[<?php echo $index?>][idFacturaVentaEliminar]" class="ocultar" value="<?php echo $iFactura['idFacturaVenta']; ?>">
-                                  <?php if($iFactura["estado"]==1 or $iFactura["estado"]==2){ ?>
-                                  <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
                                   <?php } ?>
+
+                                  <?php if($iFactura["estado"]==1 or $iFactura["estado"]==2){ 
+                                    if($_SESSION['idRol']==2 || $_SESSION['idRol']==1){?>
+                                  <a href="javascript:void(0)" id="btnAnular" name="btnAnular[<?php echo $index?>]" ><i class="fas fa-ban" style="color: #DF81FF;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Anular factura"  ></i></a>
+                                  <?php }} ?>
                                 <!-- </form> -->
                                 </div>
                               </td>
@@ -193,6 +222,21 @@ if(empty($_SESSION["idEmpresa"])){
                             </tr>
 
                           <?php } ?>
+
+                          <tr>
+                            <td></td>
+                            <td>Total</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="bg-teals-active color-palette text-center">
+                            <strong id="monto">0</strong></td>
+                            <td></td>
+                            <!-- <td></td> -->
+                            <td class="bg-teals-active color-palette text-center">
+                            <strong id="monto2">0</strong></td>
+                            <td></td>
+                          </tr>
 
                         </tbody>
 

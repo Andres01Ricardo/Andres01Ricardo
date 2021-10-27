@@ -70,6 +70,8 @@ unset($oLista);
 
 		$oLista->setFiltro("tipo","=",4);
 
+		$oLista->setOrden("numeroCuenta","ASC");
+
 		$aCuentas=$oLista->getLista();
 
 		unset($oLista);
@@ -84,17 +86,26 @@ unset($oLista);
 			// 	$iArray[$pos]["numeroCuenta"]='-';
 			// }
 			if ($iCuenta["numeroCuenta"]!="") {
-				$iArray[$pos]["numeroCuenta"]=$iCuenta["numeroCuenta"];
-				$iArray[$pos]["tipo"]=$iCuenta["tipo"];
+
+				if ($iCuenta["numeroCuenta"]==$iArray[$pos-1]["numeroCuenta"]) {
+					
+					$iArray[$pos]["numeroCuenta"]=$iCuenta["numeroCuenta"];
+					$iArray[$pos]["tipo"]=$iCuenta["tipo"];
+					$iArray[$pos]["nombreCuenta"]=$iCuenta["nombreCuenta"];
+				}
+
+				if ($iCuenta["numeroCuenta"]!=$iArray[$pos-1]["numeroCuenta"]) {
+					
+					$iArray[$pos]["numeroCuenta"]=$iCuenta["numeroCuenta"];
+					$iArray[$pos]["tipo"]=$iCuenta["tipo"];
+					$iArray[$pos]["nombreCuenta"]=$iCuenta["nombreCuenta"];
+				}
 
 			}
 			// if ($iCuenta["numeroCuenta"]=="") {
 			// 	$iArray[$pos]["nombreCuenta"]='-';
 			// }
-			if ($iCuenta["numeroCuenta"]!="") {
-				$iArray[$pos]["nombreCuenta"]=$iCuenta["nombreCuenta"];
-
-			}
+			
 			if (empty($aBalance)) {
 				$iArray[$pos][$i]["valor"]="-";
 		

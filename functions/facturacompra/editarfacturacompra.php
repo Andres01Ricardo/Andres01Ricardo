@@ -186,6 +186,7 @@ foreach ($deduccionesNuevas as $keydn => $valuedn) {
     // print_r($_SESSION["idUsuario"]);
     
 
+// se consulta si esta parametrizado el total de la factura
     $oLista=new Lista("compra_cuenta_contable");
     $oLista->setFiltro("concepto","=",'1');
     $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
@@ -196,14 +197,15 @@ foreach ($deduccionesNuevas as $keydn => $valuedn) {
 
 if (!empty($aCC)) {
 
+    // se verifica si ya existe un comprobante de esta factura
     $oLista=new Lista("factura_compra_comprobante");
     $oLista->setFiltro("idFacturaCompra","=",$id);
     $facturaCompraComprobante=$oLista->getLista();
     unset($oLista);
     
-
+// si no existe se crea el comprobante
 if (empty($facturaCompraComprobante)) {
-    // print_r('vacio');
+    
 
     if (!empty($datos["cuentaContableTotal"])) {
         $oLista=new Lista("compra_cuenta_contable");
@@ -217,7 +219,7 @@ if (empty($facturaCompraComprobante)) {
     }
     if (empty($datos["cuentaContableTotal"])) {
         
-        // $idCuentaContableTotal=$aCC[0]["idEmpresaCuenta"];
+    
         $tipoDocumentoTotal=$aCC[0]['tipoDocumento'];
     }
 
@@ -255,7 +257,7 @@ if (empty($facturaCompraComprobante)) {
     $oItem->guardar(); 
     unset($oItem);
 }
-
+// si existe se toma el id del comprobante para modificarlo
 if (!empty($facturaCompraComprobante)) {
     $existe=1;
     // print_r($_SESSION["idUsuario"]);
@@ -266,48 +268,70 @@ if (!empty($facturaCompraComprobante)) {
     $oComprobante=$oItem->getLista();
     unset($oItem);
 
+    // se eliminan los items del comprobante existente para reemplazarlos con los nuevos items despues de editado el comprobante
     foreach ($oComprobante as $keyCom => $valueCom) {
         $oItem=new Data("comprobante_items","idComprobanteItem",$valueCom["idComprobanteItem"]);
         $oItem->eliminar();
         unset($oItem);
     }
-    
 }
-
+    
+    // se itera por cada uno de los productos para guardar en cada una de las filas del comprobante
     foreach ($item as $key => $value) {
-        // print_r($value);
-        $oLista=new Lista("producto_cuenta_contable");
-        $oLista->setFiltro("idProducto","=",$value["idProducto"]);
-        $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-        $oLista->setFiltro("tipoFactura","like",'compra');
-        $aProductoCuenta=$oLista->getLista();
-        // print_r($aProductoCuenta);
-        if (empty($aProductoCuenta)) {
-            // code...
-        }
-        $oItem=new Data("cuenta_contable","idCuentaContable",$aProductoCuenta[0]["idEmpresaCuenta"]);
-        $aCuentaContable=$oItem->getDatos();
-        unset($oItem);
-
-        $aItem["idComprobante"]=$idComprobante; 
-        $aItem["idCuentaContable"]=$aProductoCuenta[0]["idEmpresaCuenta"];
-        $aItem["idCentroCosto"]=" ";
-        $aItem["idTercero"]=$datos["idTercero"];
-        $aItem["descripcion"]=$value["descripcion"];
-        $aItem["naturaleza"]='debito';
-        $aItem["tipoTercero"]='p';
-        $aItem["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
-        $aItem["fecha"]=$datos["fechaRecibido"]; 
-        $aItem["saldoDebito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$value["subtotal"])));
-        $aItem["saldoCredito"]=0;
-        $aItem["base"]=0;
-
-         $oItem=new Data("comprobante_items","idComprobanteItem"); 
-            foreach($aItem  as $keycc => $valuecc){
-                $oItem->$keycc=$valuecc; 
+        // se verifica si esta parametrizado el producto con la cuenta contable
+            $oLista=new Lista("producto_cuenta_contable");
+            $oLista->setFiltro("idProducto","=",$value["idProducto"]);
+            $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+            $oLista->setFiltro("tipoFactura","like",'compra');
+            $aProductoCuenta=$oLista->getLista();
+            unset($oLista);
+            // print_r($aProductoCuenta);
+            if (empty($aProductoCuenta)) {
+                $comp=false;
             }
-            $oItem->guardar(); 
-            unset($oItem);
+
+            if (!empty($aProductoCuenta)) {
+                if (empty($value["centroCosto"])) {
+                        $aItem["idComprobante"]=$idComprobante; 
+                        $aItem["idCuentaContable"]=$aProductoCuenta[0]["idEmpresaCuenta"];
+                        $aItem["idCentroCosto"]=" ";
+                        $aItem["idTercero"]=$datos["idTercero"];
+                        $aItem["descripcion"]=$value["descripcion"];
+                        $aItem["naturaleza"]='debito';
+                        $aItem["tipoTercero"]='p';
+                        $aItem["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
+                        $aItem["fecha"]=$datos["fechaRecibido"]; 
+                        $aItem["saldoDebito"]=str_replace(",", ".",str_replace("$", "", str_replace(".", "",$value["subtotal"])));
+                        $aItem["saldoCredito"]=0;
+                        $aItem["base"]=0;
+
+                        $oItem=new Data("comprobante_items","idComprobanteItem"); 
+                        foreach($aItem  as $keycc => $valuecc){
+                            $oItem->$keycc=$valuecc; 
+                        }
+                        $oItem->guardar(); 
+                        unset($oItem);
+                    }      
+               }   
+
+
+            //se evalu si el centro de costo se selecciono para buscar a cuenta contable parametrizada
+            if (!empty($value["centroCosto"])) {
+
+                $oLista=new Lista("centro_costo_contable");
+                $oLista->setFiltro("idProducto","=",$value["idProducto"]);
+                $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
+                $oLista->setFiltro("tipoFactura","=",'1');
+                $oLista->setFiltro("idCentroCosto","=",$value["centroCosto"]);
+                $oLista->setFiltro("idSubcentroCosto","=",$value["subcentroCosto"]);
+                $aCentroCostoCuenta=$oLista->getLista();
+                unset($oLista);
+
+                if (!empty($aCentroCostoCuenta)) {
+                    
+                }
+            }
+        
         }
 
         $oLista=new Lista("impuesto_cuenta_contable");

@@ -43,7 +43,7 @@ class ProductoServicio extends Sql{
 
 		    INNER JOIN empresa as e ON(e.idEmpresa=p.idEmpresa)
 
-		    WHERE 0=0 ".$condicion." ORDER BY p.nombre ASC";
+		    WHERE 0=0 ".$condicion." ORDER BY p.codigo ASC";
 
 	    $aProductos=$this->ejecutarSql($sql); 
 

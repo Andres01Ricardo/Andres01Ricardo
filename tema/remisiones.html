@@ -6,6 +6,7 @@ require_once("class/consultarremision.php");
 $oRemision=new Remision(); 
 $aRemision=$oRemision->getRemision($_SESSION["idEmpresa"]);
 unset($oRemision);
+// print_r($aRemision);
 ?>
 
 <a href="crearremision" class="btn btn-info">Nueva remision</a>
@@ -15,7 +16,7 @@ unset($oRemision);
 	<table class="table-striped">
 	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
 	    <tr style="height: 50px;">
-	      <th scope="col"># cotización</th>
+	      <th scope="col"># remisión</th>
 	        <th scope="col">estado</th>
 	      <th scope="col">Fecha remision</th>
 	      <th scope="col">Sucursal Cliente</th>

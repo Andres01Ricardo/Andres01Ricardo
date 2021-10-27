@@ -274,9 +274,9 @@ $("body").on("click touchstart","#btnGuardarInfo",function(e){
 
                  Swal.fire(
 
-                  'Algo ha salido mal!',
+                  'El balance que esta cargando ya se encuentra en el sistema!',
 
-                  'Verifique su conexión a internet',
+                  'Verifique que sea el mes y año correcto',
 
                   'error'
 

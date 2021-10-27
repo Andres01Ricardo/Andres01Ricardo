@@ -1,5 +1,6 @@
 $(document).ready(function(e){
   sumar_columnas();
+  
 })
 
 
@@ -102,7 +103,31 @@ $("body").on("click","#btnGuardar",function(e){
 
   })
 
+$("body").on("change",".centroCosto",function(e){
+  // var texto = $(this).find('option:selected').text();
+  var idCentroCosto = $(this).find('option:selected').val();
+  var idItemCentroCosto=$(this).attr("id");
+  var numeroC=$(this).attr("numeroC");
+  // alert(idCentroCosto);
+  // alert(idItemCentroCosto);
+  // alert(numeroC);
 
+
+  $.ajax({
+    url:URL+"functions/centrocosto/cargarsubcentrocosto.php", 
+    type:"POST", 
+    data: {"idCentroCosto":idCentroCosto},
+    dataType: "json",
+    }).done(function(msg){ 
+      console.log(msg);
+      var sHtml="<option value=''>Seleccione</option>"; 
+          msg.forEach(function(element,index){
+            sHtml+="<option value='"+element.idSubcentroCosto+"'>"+element.codigoSubcentroCosto+" "+element.subcentroCosto  +"</option>"; 
+          })
+          var subcentro="item["+numeroC+"][subcentroCosto]";
+          $("[name='"+subcentro+"']").html(sHtml);
+  });
+});
 
 $("body").on("change",".conceptoSelect",function(e){
   var texto = $(this).find('option:selected').text();

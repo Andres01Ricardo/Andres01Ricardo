@@ -1,0 +1,107 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+
+$idEmpresa=$_SESSION['idEmpresa'];
+
+// $id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+// $url=$id; 
+if($idEmpresa==""){
+  echo '<script>window.history.back()</script>'; 
+}
+
+// $decrip["cadena"]=$id; 
+// $idEmpresa=$oControl->desencriptar($decrip); 
+
+
+
+$oLista = new Lista('grupo_inventario');
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+$grupoInventario=$oLista->getLista();
+unset($oLista);
+
+//print_r($grupoInventario);
+?>
+
+
+<section>
+  <form enctype="multipart/form-data" id="frmGuardar">
+    <input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+    <div class="card">
+      <div class="card-body">
+  <div class="card-header">
+        <h3>Grupos</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped" id="tableProductos" style="text-align:center; table-layout: fixed;">
+          <thead>
+            <tr>
+              <!-- <th>#</th> -->
+              <th>LINEA</th>
+              <th>CÓDIGO</th>
+              <th>NOMBRE</th>
+              <th>INVENTARIO</th>
+              <th>COSTO</th>
+              <th>VENTA</th>
+              <th>DEVOLUCIÓN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+           
+            foreach ($grupoInventario as $key=> $value){ 
+               
+               
+                $oItem=new Data("cuenta_contable","idCuentaContable",$value["inventario"]);
+                $aInventario=$oItem->getDatos();
+                unset($oItem);
+
+                $oItem=new Data("cuenta_contable","idCuentaContable",$value["costo"]);
+                $aCosto=$oItem->getDatos();
+                unset($oItem);
+
+                $oItem=new Data("cuenta_contable","idCuentaContable",$value["venta"]);
+                $aVenta=$oItem->getDatos();
+                unset($oItem);
+
+                $oItem=new Data("cuenta_contable","idCuentaContable",$value["devolucion"]);
+                $aDevolucion=$oItem->getDatos();
+                unset($oItem);
+
+                $oItem=new Data("linea_inventario","idLineaInventario",$value["idLineaInventario"]);
+                $aLinea=$oItem->getDatos();
+                unset($oItem);
+              ?>
+            <tr>
+              <td><?php echo $aLinea['codigo'].' - '.$aLinea['nombre']; ?></td>
+              <td><?php echo $value['codigo']; ?></td>
+              <td><?php echo $value['nombre']; ?></td>
+              <td><?php echo $aInventario['codigoCuenta'].' '.$aInventario['nombre']; ?></td>
+              <td><?php echo $aCosto['codigoCuenta'].' '.$aCosto['nombre']; ?></td>
+              
+              <td><?php echo $aVenta['codigoCuenta'].' '.$aVenta['nombre']; ?></td>
+              <td><?php echo $aDevolucion['codigoCuenta'].' '.$aDevolucion['nombre']; ?></td>
+              <!-- <td><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idCentroCostoContable']; ?>" class="eliminarCuenta"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td> -->
+            </tr>
+          <?php } ?>
+          <tr>
+            <td><select class="select2 form-control" name="datos[idLineaInventario]" id="idLineaInventario" required> </select></td>
+            
+            <td><input type="text" name="datos[codigo]" id="codigo" class="form-control"></td>
+            <td><input type="text" name="datos[nombre]" id="nombre" class="form-control"></td>
+            <td><select class="select2 form-control" name="datos[idCuentaInventario]" id="idCuentaInventario" required> </select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaCosto]" id="idCuentaCosto" required></select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaVenta]" id="idCuentaVenta" required></select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaDevolucion]" id="idCuentaDevolucion" required> </select></td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="card-footer text-right">
+          <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+        </div>
+      </div>
+    </div>
+    </div>
+  </form>
+</section>

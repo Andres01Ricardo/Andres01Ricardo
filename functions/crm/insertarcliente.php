@@ -56,6 +56,7 @@ if (empty($aCliente)) {
         $aDatos["fechaCreacion"]=date("Y-m-d");
         $aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"];  
         $aDatos["idEmpresa"]=$_SESSION["idEmpresa"]; 
+        $aDatos["empresa"]=$datos["empresa"]; 
 
 
 

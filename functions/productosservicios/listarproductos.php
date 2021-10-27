@@ -21,7 +21,7 @@ if(!empty($_SESSION["idEmpresa"])){
 
 $oLista = new Lista();
 
-$sql="SELECT p.idProductoServicio, p.nombre, p.codigo, e.razonSocial
+$sql="SELECT p.idProductoServicio, p.nombre, p.codigo, e.razonSocial,p.idGrupo
 
     FROM producto_servicio as p 
 
