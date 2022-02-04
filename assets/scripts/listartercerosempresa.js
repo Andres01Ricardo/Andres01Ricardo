@@ -42,3 +42,53 @@ $(document).ready(function() {
 } );
 
 $('[data-toggle="tooltip"]').tooltip();
+
+
+
+$("body").on("click",".eliminar",function(e){
+
+  e.preventDefault();
+  var idEliminar=$(this).attr('value');
+  var idEmpresa=$("#idEmpresa").val();
+  
+        Swal.fire({
+        title: '¿Está seguro?',
+        text: 'Está a punto de eliminar este tercero!',
+        icon: 'warning', 
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonText: `Si, Eliminar!`,
+        cancelButtonText:'Cancelar',
+        preConfirm: function(result) {
+          return new Promise(function(resolve) {
+            // var formu = document.getElementById("frmEliminar");
+            // var data = new FormData(formu);
+            $.ajax({
+            url:URL+"functions/terceros/eliminartercero.php", 
+            type:"POST", 
+            data:  {"idEliminar":idEliminar,"idEmpresa":idEmpresa},
+            dataType: "json"
+            }).done(function(msg){  
+              if(msg.msg){
+                Swal.fire(
+                 {icon: 'success',
+                  title: 'Tercero eliminada!',
+                  text: 'con exito',
+                  closeOnConfirm: true,
+                }
+                ).then((result) => {
+                 location.reload(); 
+                })
+              }else{
+                 Swal.fire(
+                  'No se pudo eliminar el tercero!',
+                  'porque tiene movimiento',
+                  'error'
+                ).then((result) => {
+                })
+              }
+          });
+          });
+        }
+      })
+})

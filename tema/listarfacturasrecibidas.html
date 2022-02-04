@@ -183,7 +183,12 @@ if(!empty($_SESSION["idEmpresa"])){
                                     <?php } ?>
 
                                     <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 12px;"></i></a>
-                                    
+
+                                    <?php if (!empty($iFactura['archivo2'])) {
+                                      
+                                    ?>
+                                    <a href="<?php echo $URL.$iFactura['archivo2'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver segundo archivo" ><i class="fas fa-file" style="color: #FFAE30;font-size: 12px;"></i></a>
+                                    <?php } ?>
                                     <?php if($iFactura["estado"]!=3 ){ ?>
                                     <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 12px;" data-toggle="tooltip" data-placement="top" title="Eliminar"></i></a>
                                     

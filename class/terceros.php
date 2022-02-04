@@ -255,6 +255,30 @@ class Terceros extends Sql{
 	    return $aArray; 
 	}
 
+
+
+	public function getMovimientoTerceroEmpresa($aDatos=array()){
+
+		$condicion=""; 
+		if(!isset($_SESSION)){ session_start(); }
+		
+		if($aDatos["idEmpresa"]!=""){
+			$condicion.=" AND c.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+
+		if($aDatos["idTercero"]!=""){
+			$condicion.=" AND ci.idTercero=".$aDatos["idTercero"]; 
+		}
+		
+		$sql="SELECT c.idComprobante,c.idEmpresa
+		FROM comprobante_items ci
+		INNER JOIN comprobante c on c.idComprobante=ci.idComprobante
+		WHERE 0=0 ".$condicion." ";
+		
+	    $aArray=$this->ejecutarSql($sql); 
+	    return $aArray; 
+	}
+
 }
 
 ?>

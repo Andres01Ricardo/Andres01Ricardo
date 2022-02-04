@@ -248,8 +248,8 @@ $("body").on("click touchstart","#btnGuardarProducto",function(e){
                 })
               }else{
                  Swal.fire(
-                  'Algo ha salido mal!',
-                  'Verifique su conexión a internet',
+                  'El codigo de producto ya existe!',
+                  'verifique que sea el codigo correcto',
                   'error'
                 )
 

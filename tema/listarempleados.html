@@ -12,11 +12,11 @@ $oControl=new Control();
 
 $aData["idEmpresa"]=$_SESSION["idEmpresa"]; 
 
-if($_SESSION["idRol"]==2){
+// if($_SESSION["idRol"]==2){
 
-  $aData["idUsuario"]=$_SESSION["idUsuario"]; 
+//   $aData["idUsuario"]=$_SESSION["idUsuario"]; 
 
-}
+// }
 
 $aEmpleados=$oEmpleado->getEmpleadosEmpresa($aData);
 

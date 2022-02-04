@@ -1,0 +1,127 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+if(!isset($_SESSION)){ session_start(); }
+
+$oLista = new Data('producto_servicio',"idProductoServicio",$id);
+$grupoInventario=$oLista->getDatos();
+unset($oLista);
+
+// print_r($_SESSION["idEmpresa"]);
+
+// $oLista = new Lista('linea_inventario');
+// $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+// $linea=$oLista->getLista();
+// unset($oLista);
+
+
+
+$oLista = new Lista('cuenta_contable');
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+$cuentaContable=$oLista->getLista();
+unset($oLista);
+
+// print_r($cuentaContable);
+?>
+
+<style type="text/css">
+  input[readonly]{
+    background-color: #FFFF !important;
+    text-transform: uppercase;
+  }
+</style>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="datos[id]" id="id" value="<?php echo $id; ?>">
+
+
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Productos y servicios</li>
+          <li class="breadcrumb-item">Editar producto</li>
+          <!-- <li class="breadcrumb-item">Editar grupo</li> -->
+        </ul>
+
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+              <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+                      <!-- <div class="form-group"> -->
+                        <label class="negrita">Codigo<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[codigo]" id="codigo" value="<?php echo $grupoInventario["codigo"]; ?>" required readonly>
+                        <!-- <input type="text" class="form-control" readonly value="<?php echo $aDatos["codigo"]; ?>"> -->
+                      <!-- </div> -->
+                    </div>
+                    <div class="col-md-3">
+                      <!-- <div class="form-group"> -->
+                        <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[nombre]" id="nombre" value="<?php echo $grupoInventario["nombre"]; ?>" required>
+                        <!-- <input type="text" class="form-control" name="datos[nombre]" id="datos[nombre]" value="<?php echo $aDatos["nombre"]; ?>" required> -->
+                      <!-- </div> -->
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="negrita">COSTO:</label>
+                        <select class="select2 form-control" name="datos[idCuentaCosto]" id="idCuentaCosto" >
+                            <option value="0">Seleccione</option>
+                            <?php foreach ($cuentaContable as $key => $valueC) {
+                              
+                            ?>
+                            <option value="<?php echo $valueC['idCuentaContable'] ?>" <?php if ($valueC["idCuentaContable"]==$grupoInventario["costo"]) {
+                                echo 'selected';
+                              } ?>><?php echo $valueC["codigoCuenta"].' - '.$valueC["nombre"] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="negrita">VENTA:</label>
+                        <select class="select2 form-control" name="datos[idCuentaVenta]" id="idCuentaVenta" >
+                          <option value="0">Seleccione</option>
+                          <?php foreach ($cuentaContable as $key => $valueC) {
+                            
+                          ?>
+                          <option value="<?php echo $valueC['idCuentaContable'] ?>"  <?php if ($valueC["idCuentaContable"]==$grupoInventario["venta"]) {
+                              echo 'selected';
+                            } ?>><?php echo $valueC["codigoCuenta"].' - '.$valueC["nombre"] ?></option>
+                          <?php } ?>
+                        </select>
+                    </div>
+
+                  </div>
+                  
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

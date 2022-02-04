@@ -1,0 +1,529 @@
+<div class="card">
+	<div class="card-body">
+<form enctype="multipart/form-data" id="frmCargar">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="form-group">
+					<label>cargar xml</label>
+					<input type="file" name="xml" id="xml" accept="text/xml" class="form-control">
+					
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="form-group">
+					<label>Click en cargar para obtener información</label>
+					<a  name="btnCargar" id="btnCargar" class="btn btn-info">CARGAR</a>
+				</div>
+			</div>
+		</div>
+		
+	</form>
+
+
+<form enctype="multipart/form-data" id="frmGuardar">
+	<?php if(!empty($_SESSION['idEmpresa'])) { ?>
+
+<input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>" required>
+<input type="hidden" name="datos[tipoProdcutos]" id="tipoProdcutos" >
+
+<?php }else{ ?>
+
+<input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>" required>
+
+<?php } ?>
+	<div class="row">
+		<?php
+		$oLista=new Lista("parametros_documentos");
+    $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+    $oLista->setFiltro("tipo","=",6);
+    $parametros=$oLista->getLista();
+    unset($oLista);
+    ?>
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="negrita">Tipo documento<span class="requerido">*</span>:</label>
+        <select class="form-control select2" name="datos[tipoDocumento]" id="tipoDocumento" required>
+          <option value="">Seleccione una opción</option>
+          <?php foreach($parametros as $iParametro){ ?>
+          <option value="<?php echo $iParametro['idParametrosDocumentos']; ?>"  numeracion="<?php echo $iParametro['numeracionActual']; ?>"><?php echo 'F-'.$iParametro["comprobante"].'-'.$iParametro["descripcion"]; ?></option>
+        <?php } ?>
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="negrita">Número comprobante<span class="requerido">*</span>:</label>
+        <input type="text" class="form-control " name="datos[numeroComprobante]" id="numeroComprobante" required >
+      </div>
+    </div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Numero Factura:</label>
+				<input type="text" name="datos[nroFactura]" id="numeroFactura" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Fecha Factura:</label>
+				<input type="text" name="datos[fechaFactura]" id="fechaFactura" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Fecha vencimiento factura:</label>
+				<input type="text" name="datos[fechaVencimientoFactura]" id="fechaVencimientoFactura" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-3">
+
+          <div class="form-group">
+
+            <label class="negrita">Pdf de la Factura:</label>
+
+            <div class="custom-file">
+
+              <input type="file" class="custom-file-input" id="file" name="file" >
+
+              <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+            </div>
+
+          </div>
+
+        </div>
+        <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Archivo 2:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file2" name="file2" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+		<!-- <div class="col-md-2">
+			<div class="form-group">
+				<label>Direccion:</label>
+				<input type="text" name="direccionEmisor" id="direccionEmisor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
+				<label>Email:</label>
+				<input type="text" name="emailEmisor" id="emailEmisor" class="form-control">
+			</div>
+		</div> -->
+	</div>
+		<fieldset class="border p-2">
+			 <legend  class="w-auto">Cliente</legend>
+			 <input type="hidden" name="datos[idCliente]" id="idCliente" >
+			 <input type="hidden" name="datos[digitoVerificador]" id="digitoVerificadorEmisor" >
+			<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Nit:</label>
+				<input type="text" name="datos[nit]" id="nitReceptor" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Nombre / Razón social:</label>
+				<input type="text" name="datos[razonSocial]" id="receptor" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
+				<label>telefono:</label>
+				<input type="text" name="datos[telefono]" id="telefonoReceptor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Ciudad:</label>
+				<input type="text" name="datos[ciudad]" id="ciudadReceptor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Direccion:</label>
+				<input type="text" name="datos[direccion]" id="direccionReceptor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Email:</label>
+				<input type="text" name="datos[email]" id="emailReceptor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Responsabilidad fiscal:</label>
+				<input type="text" name="datos[responsabilidadFiscalReceptor]" id="responsabilidadFiscalReceptor" class="form-control">
+			</div>
+		</div>
+	</div>
+		</fieldset>
+		<br><br>
+		<fieldset class="border p-2">
+			<legend  class="w-auto">Emisor de la factura</legend>
+			<div class="row">
+
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Nit:</label>
+				<input type="text" name="datos[nitEmisor]" id="nitEmisor" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Nombre / Razón social:</label>
+				<input type="text" name="datos[razonSocialEmisor]" id="emisor" class="form-control" required>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
+				<label>telefono:</label>
+				<input type="text" name="datos[telefonoEmisor]" id="telefonoEmisor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Ciudad:</label>
+				<input type="text" name="datos[ciudadEmisor]" id="ciudadEmisor" class="form-control">
+				<input type="hidden" name="datos[idCiudad]" id="idCiudad">
+				<input type="hidden" name="datos[idDepartamento]" id="idDepartamento">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Direccion:</label>
+				<input type="text" name="datos[direccionEmisor]" id="direccionEmisor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Email:</label>
+				<input type="text" name="datos[emailEmisor]" id="emailEmisor" class="form-control">
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label>Responsabilidad fiscal:</label>
+				<input type="text" name="datos[responsabilidadFiscalEmisor]" id="responsabilidadFiscalEmisor" class="form-control">
+			</div>
+		</div>
+	</div>
+			 
+	
+</fieldset>
+<br><br>
+	<div class="row">
+		<div class="col-md-12 col-lg-12 table-responsive">
+			<table class="table  mayusculas" id="tableProductos">
+				<thead>
+					<tr>
+						<th class="text-center">#</th>
+						<th>Producto</th>
+
+                        <th>Descripción</th>
+
+                        <th>Cantidad</th>
+
+                        <!-- <th>Unidad</th> -->
+
+                        <th>Valor Unit.</th>
+
+                        <th>Subtotal</th>
+                        <th>Iva(%)</th>
+
+
+
+                        <th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+				<tfoot>
+
+                          <tr>
+
+                            <td colspan="7" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+
+                            <td><input type="text" class="form-control decimales subtotalFactura" name="datos[subtotal]" id="subtotalFactura" placeholder="SUBTOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="7" style="text-align: right;" class="negrita">DESCUENTO:</td>
+
+                            <td><input type="text" class="form-control decimales decuentoFactura" name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value=0></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="7" style="text-align: right;" class="negrita">IVA:</td>
+
+                            <td><input type="text" class="form-control decimales ivaFactura" name="datos[iva]" id="ivaFactura" placeholder="IVA" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                          <tr>
+
+                            <td colspan="7" style="text-align: right;" class="negrita">TOTAL:</td>
+
+                            <td><input type="text" class="form-control decimales totalFactura" name="datos[total]" id="totalFactura" placeholder="TOTAL" readonly></td>
+
+                            <td></td>
+
+                          </tr>
+
+                        </tfoot>
+			</table>
+
+			<!-- <div class="form-group">
+				<label>Producto:</label>
+				
+			</div> -->
+		</div>
+		<!-- <div class="col-md-3">
+			<div class="form-group">
+				<label>Precio:</label>
+				
+			</div>
+		</div> -->
+		<!-- <div class="col-md-2">
+			<div class="form-group">
+				<label>Cantidad:</label>
+				
+			</div>
+		</div> -->
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-3">
+			<label>Observaciones:</label>
+			<textarea id="observaciones" name="datos[observaciones]" cols="60" rows="5"></textarea>
+		</div>
+		
+	</div>
+
+	<div class="card-header">
+
+                    <h4>Impuestos</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <div class=" col-md-3 ">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Tipo deducción<span class="requerido">*</span>:</label>
+
+                            <select class="form-control mayusculas" id="tipoDeduccion">
+
+                            <option value="">Seleccione una opción</option>
+
+                            <option value="3">ARL</option>
+
+                            <option value="4">Otros descuentos autorizados</option>
+
+                            <option value="2">RETE ICA</option>
+
+                            <option value="1">Retención</option>
+
+                            <option value="5">Retención salarios</option>
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3 ocultar concepto-select">
+
+                        <div class="form-group">
+
+                            <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+
+                            <select class="form-control" name="conceptoSelect" id="conceptoSelect">
+
+                            <option value="">Seleccione una opción</option>
+
+                            
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 concepto-texto">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Concepto<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="conceptoText" id="conceptoText" >
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-2 ocultar baseimpuestos">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Base Impuestos<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control monedaD decimales " name="baseImpuestos" id="baseImpuestos">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 valor">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Valor<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda  " name="valor" id="valor">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 boton-agregar">
+
+                        <div class="form-group text-right">
+
+                            <label class="negrita d-block">&nbsp;</label>
+
+                            <a class="btn btn-success mr-1" id="btnAgregar">Agregar</a>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-12 col-lg-12">
+
+                        <table class="table table-striped mayusculas" id="tableDeducciones">
+
+                          <thead>
+
+                            <tr>
+
+                              <th>Tipo Deducción</th>
+
+                              <th>Descripción</th>
+
+                              <th>Valor</th>
+
+                              <th class="text-center" style="width: 50px">-</th>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total Deducciones:</label>
+
+                            <input type="text" class="form-control moneda decimales totalDeduccion" name="datos[totalDeduccion]" id="datos[totalDeduccion]" value="0" readonly>
+
+                        </div>
+
+                      </div>
+                      <div class="col-md-4">
+
+                          <div class="form-group">
+
+                              <label class="negrita">Total a Pagar:</label>
+
+                              <input type="text" class="form-control mayusculas moneda" name="datos[totalPago]" id="datos[totalPago]" value='<?php echo "$".number_format(0,2,",","."); ?>' readonly required>
+
+                          </div>
+
+                          </div>
+                          <?php 
+                          $oItem=new Lista("banco_cuenta_contable");
+                          $oItem->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+                          $aBancos=$oItem->getLista();
+                          unset($oItem); 
+                          ?>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="negrita">Forma de pago:</label>
+                                <!-- <select class="form-control" name="datos[formaPago]" id="formaPago">
+                                  <?php foreach ($aBancos as $key=> $value){  ?>
+                                    <option><?php echo $value["nombre"]; ?></option>
+                                  <?php } ?>
+                              </select> -->
+
+                              <select class="form-control select2 dropup" name="datos[formaPagoFactura]" id="formaPagoFactura">
+                                  <!-- <optgroup label="Crear forma de pago">
+                                    <option value="">Seleccione</option>
+                                    <option value="0"><i class="fas fa-plus-circle" >+ NUEVO</i></option>
+                                    
+                                  </optgroup> -->
+                                  <optgroup label="Formas de pago existentes:">
+                                    <?php foreach ($aBancos as $key=> $value){  ?>
+                                      <option value="<?php echo $value["idBancoCuentaContable"]; ?>"><?php echo $value["nombre"]; ?></option>
+                                    <?php } ?>
+                                  </optgroup>
+                              </select>
+
+
+                            </div>
+
+                          </div>
+                  </div>
+              </div>
+
+		<div class="card-footer text-right">
+
+            <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+    	</div>
+	</div>
+</div>
+</form>

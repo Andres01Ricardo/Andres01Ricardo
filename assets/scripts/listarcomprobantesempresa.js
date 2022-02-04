@@ -87,6 +87,7 @@ $("body").on("click touchstart","#btnEliminar",function(e){
     e.preventDefault();
 
       var idEliminar=$(this).attr("value");
+      var idEmpresa=$(this).attr("idEmpresa");
       
 
     // alert(idEliminar);
@@ -124,7 +125,7 @@ $("body").on("click touchstart","#btnEliminar",function(e){
 
             type:"POST", 
 
-            data:  {"idEliminar":idEliminar},
+            data:  {"idEliminar":idEliminar,"idEmpresa":idEmpresa},
 
             dataType: "json"
 
@@ -232,5 +233,105 @@ $("body").on("click touchstart","#btnAnular",function(e){
         }
       })
   })
+
+
+$("body").on("click touchstart",".comprobante",function(e){
+    $("#frmGuardar")[0].reset(); 
+    var factura=$(this).parents("tr").find("td").eq(3).html();
+    var total=$(this).parents("tr").find("td").eq(5).html();
+    var idEmpresaSesion = $("#idEmpresaSesion").val();
+    if (idEmpresaSesion!="0") {
+        var saldo=$(this).parents("tr").find("td").eq(7).html();
+        var idEmpresa=$(this).parents("tr").find("td").eq(9).html();
+    }
+    if (idEmpresaSesion=="0") {
+        var saldo=$(this).parents("tr").find("td").eq(8).html();
+        var idEmpresa=$(this).parents("tr").find("td").eq(10).html();
+    }
+    var id=$(this).attr("id"); 
+    if (saldo!='$0,00') {
+        $("#total").val(saldo); 
+        $("#totalSaldo").val(saldo); 
+      }
+    if (saldo=='$0,00') {
+        $("#total").val(total); 
+        $("#totalSaldo").val(total);  
+      }
+    $("[name='datos[idFacturaVenta]']").val(id); 
+    $("#nroFactura").val(factura); 
+  $.ajax({
+      url:URL+"functions/facturacompra/consultarcuentatotal.php", 
+      type:"POST", 
+      data: {"empresa":idEmpresa,"tipoFactura":'venta'}, 
+      dataType: "json",
+      }).done(function(msg){  
+
+          if(msg.length!=0){
+
+              console.log('este:');
+              console.log(msg);
+              var sHtml=""; 
+              msg.forEach(function(element,index){
+                sHtml+="<option value='"+element.idEmpresaCuenta+"'>"+element.codigoCuenta+'-'+element.nombre+"</option>"; 
+              })
+              $("#cuentaContableTotal").html(sHtml);
+
+              if(msg.length>1){
+                $("#divCuentaContableTotal").removeClass('ocultar');
+              }
+          }
+          if(msg.length==0){
+          }
+        })
+    })
+
+$("body").on("click touchstart","#btnGuardar",function(e){
+    e.preventDefault();
+      if(true === $("#frmGuardar").parsley().validate()){
+        Swal.fire({
+        title: '¿Está seguro?',
+        text: 'Está a punto de marcar como pagada esta factura!',
+        icon: 'warning', 
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonText: `Si, Guardar!`,
+        cancelButtonText:'Cancelar',
+        preConfirm: function(result) {
+          return new Promise(function(resolve) {
+            var formu = document.getElementById("frmGuardar");
+            var data = new FormData(formu);
+            $.ajax({
+            url:URL+"functions/facturaventa/guardarcomprobanteingreso.php", 
+            type:"POST", 
+            data: data,
+            contentType:false, 
+            processData:false, 
+            dataType: "json",
+            cache:false 
+            }).done(function(msg){  
+              if(msg.msg){
+                Swal.fire(
+                 {icon: 'success',
+                  title: 'Pago realizado!',
+                  text: 'con exito',
+                  closeOnConfirm: true,
+                }
+                ).then((result) => {
+                 location.reload(); 
+                })
+              }else{
+                 Swal.fire(
+                  'Algo ha salido mal!',
+                  'Verifique su conexión a internet',
+                  'error'
+                )
+              }
+          });
+          });
+        }
+      })
+      }
+  })
+
 
 $('[data-toggle="tooltip"]').tooltip();

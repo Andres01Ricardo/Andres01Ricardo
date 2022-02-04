@@ -50,6 +50,7 @@ class Informes extends Sql{
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,10) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -104,6 +105,7 @@ class Informes extends Sql{
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,10) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -157,6 +159,7 @@ class Informes extends Sql{
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,10) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -206,6 +209,7 @@ public function getBalanceComprobacionAcumuladoA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,8) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -260,6 +264,7 @@ public function getBalanceComprobacionA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,8) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -314,6 +319,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,8) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -365,6 +371,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,6) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -419,6 +426,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,6) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -473,6 +481,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,6) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -516,6 +525,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		$sql="SELECT  MIN(cc.nombre) as nombre,substring(cc.codigoCuenta,1,4) as codigoCuenta,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza
 		FROM cuenta_contable cc
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,4) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -567,6 +577,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,4) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -616,6 +627,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,4) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -665,6 +677,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,2) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -720,6 +733,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,2) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -768,6 +782,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		INNER JOIN grupo_contable gc on gc.codigo=substring(cc.codigoCuenta,1,2)
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,2) ORDER BY cc.codigoCuenta ASC";
 
@@ -823,6 +838,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		INNER JOIN grupo_contable gc on gc.codigo=substring(cc.codigoCuenta,1,2)
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,2) ORDER BY cc.codigoCuenta ASC";
 
@@ -877,8 +893,9 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." 
-		GROUP BY cc.codigoCuenta,ccm.idTercero, ccm.tipoTercero
+		GROUP BY cc.codigoCuenta,ccm.idTercero
 		ORDER BY cc.codigoCuenta ASC";
 
 
@@ -942,8 +959,9 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." 
-		GROUP BY cc.codigoCuenta,ccm.idTercero, ccm.tipoTercero
+		GROUP BY cc.codigoCuenta,ccm.idTercero
 		ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1005,8 +1023,9 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." 
-		GROUP BY cc.codigoCuenta,ccm.idTercero, ccm.tipoTercero
+		GROUP BY cc.codigoCuenta,ccm.idTercero
 		ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1056,6 +1075,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1104,6 +1124,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1154,6 +1175,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1204,6 +1226,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1253,6 +1276,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1306,6 +1330,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1353,6 +1378,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1400,6 +1426,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1451,6 +1478,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1502,6 +1530,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1554,6 +1583,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1605,6 +1635,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		FROM cuenta_contable cc
 		
 		INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+		INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 		WHERE 0=0 ".$condicion." GROUP BY substring(cc.codigoCuenta,1,1) ORDER BY cc.codigoCuenta ASC";
 
 
@@ -1660,6 +1691,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 			INNER JOIN tercero t on ccm.idTercero = t.idTercero
 			WHERE 0=0  ".$condicion."
 			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero
@@ -1714,6 +1746,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 			INNER JOIN tercero t on ccm.idTercero = t.idTercero
 			WHERE 0=0  ".$condicion."
 			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero
@@ -1774,6 +1807,7 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 			FROM cuenta_contable cc
 			
 			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 			INNER JOIN tercero t on ccm.idTercero = t.idTercero
 			WHERE 0=0  ".$condicion."
 			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idTercero,ccm.idComprobante,ccm.saldoCredito
@@ -1886,9 +1920,9 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 
 		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
-			FROM cuenta_contable cc
+			FROM comprobante_items ccm
 			
-			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN cuenta_contable cc on ccm.idCuentaContable=cc.idCuentaContable
 			WHERE 0=0  ".$condicion."
 			GROUP BY substring(cc.codigoCuenta,1,10)
 			ORDER BY cc.codigoCuenta ASC";
@@ -1931,9 +1965,9 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		}
 
 		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante,ccm.base,ccm.descripcion
-			FROM cuenta_contable cc
+			FROM comprobante_items ccm
 			
-			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN cuenta_contable cc on ccm.idCuentaContable=cc.idCuentaContable
 			INNER JOIN comprobante c on c.idComprobante=ccm.idComprobante
 			WHERE 0=0  ".$condicion."
 			GROUP BY substring(cc.codigoCuenta,1,10),ccm.idComprobante,ccm.descripcion,ccm.idTercero,ccm.idComprobanteItem
@@ -1990,9 +2024,9 @@ public function getBalanceComprobacionAnteriorA($aDatos=array()){
 		
 
 		$sql="SELECT substring(cc.codigoCuenta,1,10) as codigoCuenta,cc.nombre,cc.idEmpresa,sum(ccm.saldoDebito) as debito,sum(ccm.saldoCredito) as credito,MAX(ccm.fecha) as fecha,cc.naturaleza,ccm.tipoTercero,ccm.idTercero,ccm.idComprobante
-			FROM cuenta_contable cc
+			FROM comprobante_items ccm
 			
-			INNER JOIN comprobante_items ccm on ccm.idCuentaContable=cc.idCuentaContable
+			INNER JOIN cuenta_contable cc  on ccm.idCuentaContable=cc.idCuentaContable
 			WHERE 0=0  ".$condicion."
 			GROUP BY substring(cc.codigoCuenta,1,10)
 			ORDER BY cc.codigoCuenta ASC";

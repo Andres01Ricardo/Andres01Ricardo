@@ -25,15 +25,11 @@ if(!isset($_SESSION)){ session_start(); }
         $aItem["idUsuarioRegistra"]=$_SESSION["idUsuario"];
         $aItem["fechaRegistro"]= date("Y-m-d H:i:s");
 
-        
         $oItem=new Data("bodega","idBodega"); 
         foreach($aItem  as $key => $value){
-            // print_r($value);
             $oItem->$key=$value; 
-            
         }
-            $oItem->guardar(); 
-        
+            $oItem->guardar();
            unset($oItem);
 
 $msg=true; 

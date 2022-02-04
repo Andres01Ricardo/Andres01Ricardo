@@ -127,14 +127,14 @@ $("body").on("click touchstart","#btnGuardar",function(e){
   });
 
 
-$("body").on("click touchstart",".eliminarCuenta",function(e){
+$("body").on("click touchstart",".eliminar",function(e){
     e.preventDefault();
     var idEliminar=$(this).attr("value");
     // alert(idEliminar);
       // if(true === $("#frmGuardar").parsley().validate()){
          Swal.fire({
         title: '¿Está seguro?',
-        text: 'Está a punto de eliminar la parametrización contable de este centro de costo!',
+        text: 'Está a punto de eliminar este grupo!',
         icon: 'warning', 
         showCancelButton: true,
         showLoaderOnConfirm: true,
@@ -145,7 +145,7 @@ $("body").on("click touchstart",".eliminarCuenta",function(e){
             var formu = document.getElementById("frmGuardar");
             var data = new FormData(formu);
             $.ajax({
-            url:URL+"functions/contable/eliminarcentrocosto.php", 
+            url:URL+"functions/inventario/eliminargrupo.php", 
             type:"POST", 
             data: {"idEliminar":idEliminar},
             dataType: "json",
@@ -155,7 +155,7 @@ $("body").on("click touchstart",".eliminarCuenta",function(e){
                 Swal.fire(
                   {
                     icon: 'success',
-                    title: 'parametrización eliminada!',
+                    title: 'grupo eliminado!',
                     text: 'con exito',
                     closeOnConfirm: true,
                   }
@@ -165,8 +165,8 @@ $("body").on("click touchstart",".eliminarCuenta",function(e){
                 })
               }else{
                  Swal.fire(
-                  'Algo ha salido mal!',
-                  'Verifique su conexión a internet',
+                  'No se pudo eliminar el grupo!',
+                  'hay productos creados con este grupo',
                   'error'
                 )
               }

@@ -95,7 +95,7 @@ unset($oItem);
 </div>
 
 <?php $rol= $_SESSION["idRol"];
-  if(!empty($_SESSION['idEmpresa'])): ?>
+  if($rol==1 || $rol==2): ?>
   <div class="card card-body">
       <form method="POST" action="./functions/crm/cargarCotizaciones.php">
       <div class="form-row align-items-center">

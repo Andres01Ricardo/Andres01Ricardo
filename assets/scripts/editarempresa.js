@@ -40,102 +40,69 @@ $("body").on("change","[name='datos[idDepartamento]']",function(e){
 
 })
 
+$("body").on("change",".asociar",function(e){
+  if ($("#checkCliente").prop("checked")) {
 
+    $("#asociarEmpresas").css("display","block");
+    // $(".btnAsociar").css("display","none");
+    $(".btnAsociar").addClass("ocultar");
+
+  }else if ($("#checkProveedor").prop("checked")) {
+    $("#asociarEmpresas").css("display","block");
+    // $(".btnAsociar").css("display","none");
+    $(".btnAsociar").addClass("ocultar");
+  }else{
+    
+    $("#asociarEmpresas").css("display","none");
+    // $(".btnAsociar").css("display","block");
+    $(".btnAsociar").removeClass("ocultar");
+  }
+})
 
 $("body").on("click touchstart","#btnGuardar",function(e){
-
     e.preventDefault();
-
       if(true === $("#frmGuardar").parsley().validate()){
-
           Swal.fire({
-
           title: 'Está seguro?',
-
           text: 'Está a punto de editar los datos de esta empresa!',
-
           icon: 'warning', 
-
           showCancelButton: true,
-
           showLoaderOnConfirm: true,
-
           confirmButtonText: `Si, Continuar!`,
-
           cancelButtonText:'Cancelar',
-
           preConfirm: function(result) {
-
           return new Promise(function(resolve) {
-
             var formu = document.getElementById("frmGuardar");
-
-        
-
             var data = new FormData(formu);
-
             $.ajax({
-
             url:URL+"functions/empresa/editarempresa.php", 
-
             type:"POST", 
-
             data: data,
-
             contentType:false, 
-
             processData:false, 
-
             dataType: "json",
-
             cache:false 
-
             }).done(function(msg){  
-
               if(msg.msg){
-
                 Swal.fire(
-
                   {
-
                   icon: 'success',
-
                   title: "Información actualizada!",
-
                   text: 'con exito',
-
                   closeOnConfirm: true,
-
                 }
-
                 ).then((result) => {
-
                  window.history.back(); 
-
                 })
-
               }else{
-
                  Swal.fire(
-
                   'Algo ha salido mal!',
-
                   'Verifique su conexión a internet',
-
                   'error'
-
                 ).then((result) => {
-
-                  
-
                 })
-
               }
-
-            
-
           });
-
           });
 
         }

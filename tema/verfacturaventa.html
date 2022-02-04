@@ -58,11 +58,8 @@ unset($oLista);
 
 
 $oLista = new Lista('factura_venta_deduccion');
-
 $oLista->setFiltro("idFacturaVenta","=",$id);
-
 $aDeduccion=$oLista->getLista();
-
 unset($oLista);
 
 
@@ -440,7 +437,14 @@ unset($oLista);
                               <td><?php echo "$".number_format($deduccion["valor"],2,",","."); ?></td>
                               
                             </tr>
-                            <?php $totalDeduccion+=$deduccion["valor"]; } ?>
+                            <?php 
+                            
+                            if ($deduccion["restar"]==0) {
+                              $totalDeduccion+=$deduccion["valor"];
+                            }
+
+                          } 
+                            ?>
 
                           </tbody>
 

@@ -167,9 +167,11 @@ unset($oItem);
           </div >
         </form>
       </div>
-
+<?php if (!empty($_SESSION['idEmpresa'])) { ?>
       <button class="btn btn-info" id="agregaretapa" title="AGREGAR ETAPA" onclick="agregaretapa('visible','agregar'),colornuevo();"><i class="fas fa-plus"></i></button>
       <button class="btn btn-danger" id="cancelaretapa" title="CANCELAR" onclick="agregaretapa('collapse','cancelar');" style="visibility: collapse;"><i class="fas fa-minus-circle"></i></button>
+
+    <?php } ?>
     </div>
   </div>
      

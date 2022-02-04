@@ -7,7 +7,7 @@ date_default_timezone_set("America/Bogota");
 //   echo '<script>window.history.back()</script>'; 
 
 // }
-if(!isset($_SESSION)){ session_start(); }
+// if(!isset($_SESSION)){ session_start(); }
 
 $oLista = new Lista('libranza');
 
@@ -96,7 +96,10 @@ unset($oLista);
 
                               <td class="centrar">
 
-                                <a href="creditolibranza/<?php echo $iLibranza["idLibranza"]; ?>" name="" class="btn btn-icon btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Ver detalles"><i class="fas fa-info-circle"></i></a>
+                                <!-- <a href="" name="" class="btn btn-icon btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="Ver detalles"><i class=""></i></a> -->
+
+
+                                <a href="creditolibranza/<?php echo $iLibranza["idLibranza"]; ?>"  data-toggle="tooltip" data-placement="top" title="Ver detalles" ><i class="fas fa-info-circle" style="color: #0298BD;font-size: 18px;"></i></a>
                               </td>
                             </tr>
 

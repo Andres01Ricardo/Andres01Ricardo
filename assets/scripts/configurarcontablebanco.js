@@ -182,14 +182,16 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 
 
 
+
 $("body").on("click touchstart",".eliminarImpuesto",function(e){
+
     e.preventDefault();
-    var idEliminar=$(this).attr("value");
-    // alert(idEliminar);
-      // if(true === $("#frmGuardar").parsley().validate()){
-         Swal.fire({
+
+      var idEliminar=$(this).attr('value');
+// alert(idEliminar);
+        Swal.fire({
         title: '¿Está seguro?',
-        text: 'Está a punto de eliminar la parametrización contable de esta cuenta bancaria / caja!',
+        text: 'Está a punto de eliminar esta forma de pago!',
         icon: 'warning', 
         showCancelButton: true,
         showLoaderOnConfirm: true,
@@ -197,37 +199,34 @@ $("body").on("click touchstart",".eliminarImpuesto",function(e){
         cancelButtonText:'Cancelar',
         preConfirm: function(result) {
           return new Promise(function(resolve) {
-            var formu = document.getElementById("frmGuardar");
-            var data = new FormData(formu);
+            // var formu = document.getElementById("frmEliminar");
+            // var data = new FormData(formu);
             $.ajax({
             url:URL+"functions/contable/eliminarbanco.php", 
             type:"POST", 
-            data: {"idEliminar":idEliminar},
-            dataType: "json",
-            cache:false 
+            data:  {"idEliminar":idEliminar},
+            dataType: "json"
             }).done(function(msg){  
               if(msg.msg){
                 Swal.fire(
-                  {
-                  icon: 'success',
-                  title: 'parametrización eliminada!',
+                 {icon: 'success',
+                  title: 'Forma de pago eliminada!',
                   text: 'con exito',
                   closeOnConfirm: true,
                 }
                 ).then((result) => {
-                 // window.history.back();
-                  location.reload(); 
+                 location.reload(); 
                 })
               }else{
                  Swal.fire(
                   'Algo ha salido mal!',
                   'Verifique su conexión a internet',
                   'error'
-                )
+                ).then((result) => {
+                })
               }
-            });
+          });
           });
         }
       })
-      // }
-  });
+  })

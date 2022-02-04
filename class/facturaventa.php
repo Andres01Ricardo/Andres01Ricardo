@@ -44,7 +44,7 @@ class FacturaVenta extends Sql{
 
 		$sql="SELECT fv.idFacturaVenta, fv.fechaRegistro, fv.fechaFactura,fv.fechaVencimiento, c.razonSocial, u.nombreUsuario, u.apellidoUsuario, fv.subtotal,
 
-			fv.total, fv.estado, e.razonSocial as empresa, fv.nroFactura, fv.archivo,fv.saldo,e.idEmpresa
+			fv.total, fv.estado, e.razonSocial as empresa, fv.nroFactura, fv.archivo, fv.archivo2,fv.saldo,e.idEmpresa
 
 			FROM factura_venta as fv 
 
@@ -91,13 +91,14 @@ class FacturaVenta extends Sql{
 
 	}
 
-	public function getCuentasCobrar($empresa,$desde,$hasta){
+	public function getCuentasCobrar($empresa){
 
 
 
 		$sql="SELECT * 
 			from factura_venta
-			WHERE estado != '3' and estado!=5 and fechaFactura >= '$desde' and fechaFactura <= '$hasta' and idEmpresa = $empresa";
+			WHERE (estado = '2' OR estado = '1' OR estado = '4') and idEmpresa = $empresa
+			ORDER BY idCliente ASC";
 
 	    $aCuentasCobrar=$this->ejecutarSql($sql); 
 	    return $aCuentasCobrar; 

@@ -676,34 +676,6 @@ cargarProducto=function(){
           }); 
 
 
-          var idEmpresa=$("[name='datos[idEmpresa]'").val();
-      $.ajax({
-        url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
-        type:"POST", 
-        data: {"idEmpresa":idEmpresa}, 
-        dataType: "json",
-        }).done(function(msg){  
-          // var $aDatos=[];
-          console.log(msg);
-          if (msg.length==0) {
-            $(".cuentaContable").val('No hay cuentas contables creadas');
-            $(".cuentaContable").attr('disabled','disabled');
-
-          }
-          if (msg.length!=0) {
-            var sHtml='<option value="">Seleccione</option>';
-
-          msg.forEach(function(element,index){
-            sHtml+='<option value="'+element.idCuentaContable+'">'+element.codigoCuentaContable+' - '+element.nombre+'</option>';
-            
-          })
-          $("#formaPagoCuenta").html(sHtml);
-          
-          // autocomplete(); 
-        }
-        }); 
-
-
           $.ajax({
           url:URL+"functions/facturacompra/consultarcuentatotal.php", 
           type:"POST", 
@@ -994,7 +966,7 @@ $("body").on("change","#baseImpuestos",function(e){
 
     var valor=base*(porcentaje/100); 
 
-    $("#valor").val(valor).trigger("change"); 
+    $("#valor").val(Math.round(valor)).trigger("change"); 
 
   }
 
@@ -1162,80 +1134,3 @@ $("body").on("click touchstart","#btnGuardarProducto",function(e){
       }
 
   });
-
-
-
-$("body").on("change","[name='datos[formaPagoFactura]']",function(e){
-  if ($(this).val()==0) {
-    $("#modalFormaPago").modal('show');
-  }
-})
-
-$("body").on("click touchstart","#btnGuardarFormaPago",function(e){
-    e.preventDefault();
-      if(true === $("#frmGuardarFormaPago").parsley().validate()){
-         Swal.fire({
-        title: '¿Está seguro?',
-        text: 'Está a punto de crear una nueva forma de pago!',
-        icon: 'warning', 
-        showCancelButton: true,
-        showLoaderOnConfirm: true,
-        confirmButtonText: `Si, Guardar!`,
-        cancelButtonText:'Cancelar',
-        preConfirm: function(result) {
-          return new Promise(function(resolve) {
-            var formu = document.getElementById("frmGuardarFormaPago");
-            var data = new FormData(formu);
-            $.ajax({
-            url:URL+"functions/contable/guardarconfiguracioncontablebanco.php", 
-            type:"POST", 
-            data: data,
-            contentType:false, 
-            processData:false, 
-            dataType: "json",
-            cache:false 
-            }).done(function(msg){  
-              if(msg.msg){
-                Swal.fire(
-                  {
-                  icon: 'success',
-                  title: 'Forma pago creada!',
-                  text: 'con exito',
-                  closeOnConfirm: true,
-                }
-
-                ).then((result) => {
-                 var idEmpresa = $("[name='datos[idEmpresa]'").val();
-                  console.log(idEmpresa);
-                  $.ajax({
-                    url:URL+"functions/facturaventa/cargarformapago.php", 
-                    type:"POST", 
-                    data: {"idEmpresa":idEmpresa}, 
-                    dataType: "json",
-                    }).done(function(msg){  
-                      console.log(msg);
-
-                      var  sHtmlC="<optgroup label='Crear forma de pago'><option value=''>Seleccione</option><option value='0'><i class='fas fa-plus-circle' >+ NUEVO</i></option></optgroup><optgroup label='Formas de pago existentes:'>"; 
-                      msg.forEach(function(element,index){
-                        sHtmlC+="<option value='"+element.idBancoCuentaContable+"'>"+element.nombre+"</option>"; 
-                      })
-                        sHtmlC+="</optgroup>"; 
-                      $("#formaPagoFactura").html(sHtmlC);
-                      $("#modalFormaPago").modal('hide');
-                  });
-                })
-              }else{
-                 Swal.fire(
-                  'Algo ha salido mal!',
-                  'Verifique su conexión a internet',
-                  'error'
-                ).then((result) => {
-                })
-              }
-          });
-          });
-        }
-      })
-      }
-  })
-

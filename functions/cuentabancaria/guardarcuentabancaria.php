@@ -50,10 +50,23 @@ foreach($datos  as $key => $value){
 }
 
 $oItem->guardar(); 
+$idCuenta=$oItem->ultimoId();
 
 unset($oItem);
 
 
+
+
+$bancoC["idCuentaBancaria"]=$idCuenta;
+$bancoC["idEmpresa"]=$datos["idEmpresa"];
+$bancoC["idEmpresaCuenta"]=$datos["cuentaContable"];
+$bancoC["nombre"]=$datos["nombreCuenta"];
+ $oItem=new Data("banco_cuenta_contable","idBancoCuentaContable"); 
+foreach($bancoC  as $keyEC => $valueEC){
+    $oItem->$keyEC=$valueEC; 
+}
+$oItem->guardar(); 
+unset($oItem);
 
 $msg=true; 
 

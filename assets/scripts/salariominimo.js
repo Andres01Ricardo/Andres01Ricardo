@@ -7,10 +7,21 @@ $("body").on("click touchstart","#btnGuardar",function(e){
             var formu = document.getElementById("frmGuardar");
 
             
+            Swal.fire({
 
-            var data = new FormData(formu);
+              title: 'Está seguro?',
+              text: 'Está a punto de enviar está factura para su gestión!',
+              icon: 'warning', 
+              showCancelButton: true,
+              showLoaderOnConfirm: true,
+              confirmButtonText: `Si, Continuar!`,
+              cancelButtonText:'Cancelar',
+              preConfirm: function(result) {
+              return new Promise(function(resolve) {
+                var formu = document.getElementById("frmGuardar");
+                var data = new FormData(formu);
 
-            $.ajax({
+                $.ajax({
 
             url:URL+"functions/configuracion/guardarsalariominimo.php", 
 
@@ -79,6 +90,12 @@ $("body").on("click touchstart","#btnGuardar",function(e){
             
 
           });
+              }
+              )}
+            })
+
+
+            
 
        
 

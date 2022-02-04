@@ -26,25 +26,38 @@ $decrip["cadena"]=$id;
 
 $id=$oControl->desencriptar($decrip); 
 
+
+
 $oItem=new Data("factura_venta","idFacturaVenta",$id); 
+
 $aDatos=$oItem->getDatos(); 
+
 unset($oItem); 
 
+
+
 $oItem=new Data("empresa","idEmpresa",$aDatos["idEmpresa"]); 
+
 $aEmpresa=$oItem->getDatos(); 
+
 unset($oItem); 
 
 
 
 $oItem=new Data("tercero","idTercero",$aDatos["idCliente"]); 
+
 $aCliente=$oItem->getDatos(); 
+
 unset($oItem); 
 
 
 
 $oLista = new Lista('factura_venta_item');
+
 $oLista->setFiltro("idFacturaVenta","=",$id);
+
 $aItems=$oLista->getLista();
+
 unset($oLista);
 
 
@@ -55,27 +68,39 @@ unset($oLista);
 
 
 $oLista = new Data('factura_venta_gestion',"idFacturaVenta",$id);
+
 $aGestion=$oLista->getDatos();
+
 unset($oLista);
 
 $aClientes=$oClientes->getClientesEmpresa(array("estado"=>1,"idEmpresa"=>$aDatos["idEmpresa"]));
 
-$oLista=new Lista("centro_costo");
+
+
+
+$oLista = new Lista('producto_servicio');
 $oLista->setFiltro("idEmpresa","=",$aDatos["idEmpresa"]);
-$aCentroCosto=$oLista->getLista();
+$aProducto=$oLista->getLista();
 unset($oLista);
 
 ?>
 
 <style type="text/css">
+
   input[readonly]{
+
     background-color: #FFFF !important;
+
     text-transform: uppercase;
+
   }
 
   .no-producto{
+
     width: calc(100% - 18px) !important;
+
     display: inline-block;
+
   }
 
 </style>
@@ -184,7 +209,6 @@ unset($oLista);
                       <div class="form-group">
 
                           <label class="negrita">Cliente:</label>
-                          
 
                           <!-- <input type="text" class="form-control mayusculas" name="datos[idCliente]" id="datos[idCliente]" value="<?php echo $aCliente['razonSocial']; ?>" required readonly> -->
                           <select class="form-control select2 mayusculas" name="datos[idCliente]" id="datos[idCliente]" required>
@@ -273,15 +297,11 @@ unset($oLista);
 
                           <tr>
 
-                            <!-- <th class="text-center">#</th> -->
+                            <th class="text-center">#</th>
 
                             <th>Productos</th>
 
                             <th>Descripción</th>
-
-                            <th>CC</th>
-
-                            <th>SC</th>
 
                             <th>Cantidad</th>
 
@@ -315,28 +335,39 @@ unset($oLista);
 
                             <tr class="filaItem">
 
-                              <!-- <td><?php echo $index+1; ?></td> -->
+                              <td><?php echo $index+1; ?></td>
 
-                              <td><?php echo $item["detalleProducto"]; ?><input type="hidden" name="item[<?php echo $index; ?>][idProducto]" id="item[<?php echo $index; ?>][idProducto]" class="form-control idProducto" value="<?php echo $item['idProductoServicio'] ?>"></td>
+                              <td>
+                                <select class="form-control select2" name="item[<?php echo $index; ?>][idProducto]">
+                                  <?php if ($item['idProductoServicio']==0) { ?>
+                                    <optgroup label="Producto no creado">
+                                      <option value="<?php echo '0'.$item["detalleProducto"]; ?>"><?php echo $item["detalleProducto"]; ?></option>
+                                    </optgroup>
+                                  <?php } ?>
+                                    <optgroup label="Productos creados">
+                                  <?php foreach ($aProducto as $keyP => $valueP) { ?>
+                                      <option value="<?php echo $valueP['idProductoServicio'].'-'.$valueP['codigo'].'-'.$valueP['nombre']; ?>" <?php if ($valueP["idProductoServicio"]==$item['idProductoServicio']) {
+                                        echo 'selected';
+                                      } ?> > <?php echo $valueP['codigo'].' '.$valueP['nombre']; ?></option>
+                                    
+                                  <?php } ?>
+                                    </optgroup>
+                                </select>
+                                
+                              </td>
 
-                              <td><?php echo $item["descripcion"]; ?></td>
-                              <td><select name="item[<?php echo $index; ?>][centroCosto]" id="item[<?php echo $index; ?>][centroCosto]" class="form-control select2 centroCosto" numeroC="<?php echo $index; ?>" >
-                                <option>Seleccione</option>
-                                <?php foreach ($aCentroCosto as $keyCC => $valueCC) {
-                                  
-                               ?>
-                                <option value="<?php echo $valueCC["idCentroCosto"] ?>"><?php echo $valueCC["codigoCentroCosto"].' '.$valueCC["centroCosto"] ?></option>
-                               <?php } ?>
+                              <td><input type="text" name="item[<?php echo $index; ?>][descripcion]" class="form-control" value="<?php echo $item["descripcion"]; ?>" readonly></td>
 
-                              </select></td>
+                              <td><input type="text" name="item[<?php echo $index; ?>][cantidad]" class="form-control" value="<?php echo $item["cantidad"]; ?>" readonly></td>
+                              
+                              <td>
+                                <input type="text" name="item[<?php echo $index; ?>][unidad]" class="form-control" value="<?php echo $aUnidad["nombre"]; ?>" readonly>
+                                <input type="hidden" name="item[<?php echo $index; ?>][idUnidad]" class="form-control" value="<?php echo $item["idUnidad"]; ?>" readonly>
+                              </td>
 
-                              <td><select name="item[<?php echo $index; ?>][subcentroCosto]" id="item[<?php echo $index; ?>][subcentroCosto]" class="form-control select2 subcentroCosto">
-                                <option value="">Seleccione</option>
-                              </select></td>
+                              
 
-                              <td><?php echo $item["cantidad"]; ?></td>
-
-                              <td><?php echo $aUnidad["nombre"]; ?></td>
+                              <!-- <td></td> -->
 
                              <!--  <td style="text-align: right;"><?php echo "$".number_format($item["valorUnitario"],0,".",","); ?></td>
 
@@ -346,13 +377,19 @@ unset($oLista);
 
                               <td style="text-align: right;"><?php echo "$".number_format($item["total"],0,".",","); ?></td> -->
 
-                               <td style="text-align: right;"><?php echo "$".number_format($item["valorUnitario"],2,",","."); ?></td>
+                              <td><input type="text" name="item[<?php echo $index; ?>][valorUnitario]" class="form-control" value="<?php echo "$".number_format($item["valorUnitario"],2,",","."); ?>" readonly></td>
+                               <!-- <td style="text-align: right;"></td> -->
 
-                              <td style="text-align: right;"><?php echo "$".number_format($item["subtotal"],2,",","."); ?></td>
+                               <td><input type="text" name="item[<?php echo $index; ?>][subtotal]" class="form-control" value="<?php echo "$".number_format($item["subtotal"],2,",","."); ?>" readonly></td>
 
-                              <td style="text-align: right;"><?php echo $item["iva"]."%"; ?></td>
+                              <!-- <td style="text-align: right;"></td> -->
 
-                              <td style="text-align: right;"><?php echo "$".number_format($item["total"],2,",","."); ?></td>
+                              <td><input type="text" name="item[<?php echo $index; ?>][iva]" class="form-control" value="<?php echo $item["iva"]; ?>" readonly></td>
+
+                              <!-- <td style="text-align: right;"></td> -->
+                              <td><input type="text" name="item[<?php echo $index; ?>][total]" class="form-control" value="<?php echo "$".number_format($item["total"],2,",","."); ?>" readonly></td>
+
+                              <!-- <td style="text-align: right;"></td> -->
 
                             </tr>
 
@@ -364,7 +401,7 @@ unset($oLista);
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[subtotal]" class="form-control mayusculas" value="<?php echo "$".number_format($aDatos["subtotal"],2,",","."); ?>" readonly ></td>
 
@@ -372,7 +409,7 @@ unset($oLista);
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">DESCUENTO:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["descuento"],2,",","."); ?>' readonly ></td>
 
@@ -380,7 +417,7 @@ unset($oLista);
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">IVA:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["iva"],2,",","."); ?>' readonly ></td>
 
@@ -388,7 +425,7 @@ unset($oLista);
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">TOTAL:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
 
                             <td style="width: 200px;"><input type="text" style="text-align: right;" name="datos[totalFactura]" id="totalFactura" class="form-control mayusculas" value='<?php echo "$".number_format($aDatos["total"],2,",","."); ?>' readonly ></td>
 
@@ -614,6 +651,8 @@ unset($oLista);
                         </div></td>
                               <td><input type="text" name="baseImpuestos[<?php echo $key?>][baseImpuestos]" id="baseImpuestos[<?php echo $key?>]" class="form-control moneda decimales baseImpuestos" value='<?php echo "$".number_format($deduccion["baseImpuestos"],2,",","."); ?>' </td>
                               <td><input type="text" name="baseImpuestos[<?php echo $key?>][valorDeduccion]" id="valor[<?php echo $key?>]" class="form-control moneda valorDeduccion valorSumar" value='<?php echo "$".number_format($deduccion["valor"],2,",","."); ?>' readonly></td>
+
+                              <td><a href='javascript:void(0)' data-toggle='tooltip' id='eliminar' data-placement='top' title='Eliminar' class='btnEliminar btn btn-icon btn-sm btn-danger'><i class='fas fa-trash'></i></a></td>
                               
                             </tr>
                             <?php } ?>

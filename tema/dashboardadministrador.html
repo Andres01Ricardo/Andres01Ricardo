@@ -322,7 +322,7 @@ $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso))
 
                             <th>Telefono</th>
 
-                            <th>Acciones</th>
+                            <!-- <th>Acciones</th> -->
 
                           </tr>
 
@@ -360,26 +360,26 @@ $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso))
 
                               <td><?php echo $iEmpresa["telefono"]; ?></td>
 
-                              <td class="centrar">
+                              <!-- <td class="centrar"> -->
 
-                                <a href="<?php  echo $URL; ?>verempresa/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
+                                <!-- <a href="<?php  echo $URL; ?>verempresa/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a> -->
 
-                                <a href="<?php echo $URL; ?>editarempresa/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 20px;"></i></a>
+                                <!-- <a href="<?php echo $URL; ?>editarempresa/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 20px;"></i></a> -->
 
                                 <?php if($iEmpresa["estado"]==1){ ?>
 
-                                <a href="javascript:void(0)" class="activar" data-toggle="tooltip" data-placement="top" title="Bloquear" accion="1" name="<?php echo $iEmpresa['idEmpresa']; ?>"><i class="fas fa-lock" style="color: #FF5D5D;font-size: 20px;"></i></a>
+                                <!-- <a href="javascript:void(0)" class="activar" data-toggle="tooltip" data-placement="top" title="Bloquear" accion="1" name="<?php echo $iEmpresa['idEmpresa']; ?>"><i class="fas fa-lock" style="color: #FF5D5D;font-size: 20px;"></i></a> -->
 
                                 <?php }else{ ?>
 
-                                <a href="javascript:void(0)"  accion="2" name="<?php echo $iEmpresa['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Desbloquear"><i class="fas fa-lock-open" style="color: #65E572;font-size: 20px;"></i></a>
+                                <!-- <a href="javascript:void(0)"  accion="2" name="<?php echo $iEmpresa['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Desbloquear"><i class="fas fa-lock-open" style="color: #65E572;font-size: 20px;"></i></a> -->
 
                                 <?php } ?>
 
                                  <?php if($validarIngreso==1){ ?>
 
-                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a empresa" ><i class="fas fa-arrow-circle-right" style="color: #A2D7FF;font-size: 20px;"></i></a>
-
+                                <!-- <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a empresa" ><i class="fas fa-arrow-circle-right" style="color: #A2D7FF;font-size: 20px;"></i></a>
+ -->
                                 <?php } ?>
 
                             </tr>

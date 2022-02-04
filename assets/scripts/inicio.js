@@ -2,8 +2,6 @@ $(document).ready(function(e){
 	$('.select2').select2(); 
 	$('.datatooltip').tooltip(); 
 	$( ".datepicker" ).datepicker({ dateFormat:'yy-mm-dd' });
-	
-
 
 
 	function changeNumber() {
@@ -23,13 +21,7 @@ $(document).ready(function(e){
         
     }
 	setInterval(changeNumber, 120000);
-	// setInterval(changeNumber, 5000);
 })
-
-
-    
-    
-
 function dataTable($elemento){
 	$($elemento).dataTable({
 	  "columnDefs": [
@@ -52,14 +44,11 @@ $("body").on(" change",".moneda",function(e){
 
 
 
-
 $("body").on(" change",".monedaComaPunto",function(e){
 
 	$(this).formatCurrency({decimalSymbol:'.',digitGroupSymbol:','});
 
 })
-
-
 
 $("body").on("keyup",".numero",function(e){
 	this.value = this.value.replace(/[^0-9]/g,'');

@@ -471,6 +471,7 @@ autocompleteC=function(){
         if(ui.item==null){
 
           $( ".idCentroCosto" ).eq(index).val('');
+          
 
         }
 
@@ -715,11 +716,12 @@ var restarDebito=0;
     // }
     // if (restarDebito >= 0) {
     // }
-      var totalD=sumDebito;
+    var totalD=sumDebito;
     $('#totalDebito').val(totalD.toFixed(2));
     $('#totalCredito').val(sumCredito.toFixed(2));
     var diferencia=totalD - sumCredito;
-    $('#totalDiferencia').val(diferencia.toFixed(2));
+    console.log(diferencia); 
+    $('#totalDiferencia').val(Math.abs(diferencia.toFixed(2)));
 
 }
 
@@ -801,6 +803,7 @@ $("body").on("click","#agregar",function(e){
   // $("#tableProductos tbody tr:last").find(".sucursal").attr("id","item["+cant+"][sucursal]").attr("name","item["+cant+"][sucursal]").val(''); 
   $("#tableProductos tbody tr:last").find(".descripcion").attr("id","item["+cant+"][descripcion]").attr("name","item["+cant+"][descripcion]").val(""); 
   $("#tableProductos tbody tr:last").find(".naturaleza").attr("id","item["+cant+"][naturaleza]").attr("name","item["+cant+"][naturaleza]").val(''); 
+  $("#tableProductos tbody tr:last").find(".base").attr("id","item["+cant+"][base]").attr("name","item["+cant+"][base]").val('');
   $("#tableProductos tbody tr:last").find(".debito").removeAttr("disabled").attr("id","item["+cant+"][debito]").attr("name","item["+cant+"][debito]").val('');
   $("#tableProductos tbody tr:last").find(".credito").removeAttr("disabled").attr("id","item["+cant+"][credito]").attr("name","item["+cant+"][credito]").val('');
 
@@ -836,6 +839,7 @@ $("body").on("click",".eliminar",function(e){
   // $(element).find(".sucursal").attr("id","item["+index+"][sucursal]").attr("name","item["+index+"][sucursal]"); 
   $(element).find(".descripcion").attr("id","item["+index+"][descripcion]").attr("name","item["+index+"][descripcion]"); 
   $(element).find(".naturaleza").attr("id","item["+index+"][naturaleza]").attr("name","item["+index+"][naturaleza]"); 
+  $(element).find(".base").attr("id","item["+index+"][base]").attr("name","item["+index+"][base]");
   $(element).find(".debito").removeAttr("disabled").attr("id","item["+index+"][debito]").attr("name","item["+index+"][debito]");
   $(element).find(".credito").removeAttr("disabled").attr("id","item["+index+"][credito]").attr("name","item["+index+"][credito]");
 
@@ -996,92 +1000,49 @@ $("body").on("click","#btnGuardar",function(e){
         if (verificar_id_tercero()) {
 
           if(true === $("#frmGuardar").parsley().validate()){
-
              Swal.fire({
-
             title: '¿Está seguro?',
-
             text: 'Está a punto de editar este comprobante!',
-
             icon: 'warning', 
-
             showCancelButton: true,
-
             showLoaderOnConfirm: true,
-
             confirmButtonText: `Si, Guardar!`,
-
             cancelButtonText:'Cancelar',
-
             preConfirm: function(result) {
-
               return new Promise(function(resolve) {
-
                 var formu = document.getElementById("frmGuardar");
-                
                 var data = new FormData(formu);
-
                 $.ajax({
-
                 url:URL+"functions/comprobantes/editarcomprobante.php", 
-
                 type:"POST", 
-
                 data: data,
-
                 contentType:false, 
-
                 processData:false, 
-
                 dataType: "json",
-
                 cache:false 
-
                 }).done(function(msg){  
-
                   if(msg.msg){
-
                     Swal.fire(
-
                       {
-
                       icon: 'success',
-
                       title: 'comprobante editado!',
-
                       text: 'con exito',
-
                       closeOnConfirm: true,
-
                     }
-
                     ).then((result) => {
-
                      location.reload(); 
-
                     })
-
                   }else{
-
                      Swal.fire(
-
                       'Algo ha salido mal!',
-
                       'Verifique su conexión a internet',
-
                       'error'
-
                     )
-
                   }
                 });
-
               });
-
             }
-
           })
-
           } //aca
         }else{
           Swal.fire(

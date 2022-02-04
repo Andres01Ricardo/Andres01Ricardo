@@ -269,6 +269,39 @@ class Inventario extends Sql{
 	}
 
 
+	public function getInventarioProductosContable($aDatos=array()){
+
+
+
+		$condicion=""; 
+
+		if($aDatos["idEmpresa"]!=""){
+			$condicion.=" AND ipm.idEmpresa=".$aDatos["idEmpresa"]; 
+		}
+		if($aDatos["idProducto"]!=""){
+			$condicion.=" AND ipm.idProducto=".$aDatos["idProducto"]; 
+		}
+
+		if($aDatos["idBodega"]!=""){
+			$condicion.=" AND ipm.idBodega=".$aDatos["idBodega"]; 
+		}
+
+		$sql="SELECT ipm.tipoMovimiento,sum(ipm.ingreso) as ingreso,sum(ipm.egreso) as egreso,ipm.fechaRegistro,u.nombreUsuario,u.apellidoUsuario,ps.nombre,ps.idProductoContable,ipm.observaciones,ipm.idBodega
+			from inventario_productos_movimientos ipm
+			inner join producto_contable ps on ps.idProductoContable=ipm.idProducto
+			INNER JOIN usuario u on u.idUsuario=ipm.idUsuarioRegistra
+			WHERE 0=0 ".$condicion." 
+			GROUP BY ipm.idProducto , ipm.idBodega";
+
+
+
+	    $aArray=$this->ejecutarSql($sql); 
+
+	    return $aArray; 
+
+	}
+
+
 
 
 	public function getHistorialInventarioTerminado($aDatos=array()){

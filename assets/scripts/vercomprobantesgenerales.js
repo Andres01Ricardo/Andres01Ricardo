@@ -44,8 +44,7 @@ $(document).ready(function(){
                             return data;
                             }
                         }
-                    },
-                
+                    }
             },
             // customize: function ( xlsx ){
             //   var sheet = xlsx.xl.worksheets['sheet1.xml'];

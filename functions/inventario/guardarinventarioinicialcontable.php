@@ -39,6 +39,7 @@ unset($oLista);
         $aItem["idEmpresa"]=$datos['idEmpresa'];
         $aItem["stockMinimo"]=$datos['minimo'];
         $aItem["idBodega"]=$datos['bodega'];
+        $aItem["costoInicial"]=str_replace(",",".",str_replace("$", "", str_replace(".", "", $datos['costo'])));
 
         $oItem=new Data("inventario_inicial","idInventarioInicial"); 
         foreach($aItem  as $key => $value){

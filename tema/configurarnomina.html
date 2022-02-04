@@ -1,0 +1,131 @@
+<?php 
+
+require_once("class/empresa.php"); 
+ $oControl=new Control(); 
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+$url=$id; 
+if($id==""){
+  echo '<script>window.history.back()</script>'; 
+}
+
+$decrip["cadena"]=$id; 
+$idEmpresa=$oControl->desencriptar($decrip); 
+
+
+?>
+
+
+<section>
+	<form enctype="multipart/form-data" id="frmGuardar">
+		<input type="hidden" name="datos[idEmpresa]" id="idEmpresaConfigurar" value="<?php echo $idEmpresa; ?>">
+		<div class="card">
+			<div class="card-body">
+				<div class="card-header">PARAMETRIZAR NÓMINA</div>
+					<div class="row">
+						<div class=" col-md-3 ">
+			              <div class="form-group">
+			                  <label class="negrita">Tipo parametro<span class="requerido">*</span>:</label>
+			                  <select class="form-control mayusculas" id="idConcepto" name="datos[idConcepto]">
+			                  <option value="">Seleccione una opción</option>
+				                 <optgroup label="Empleado">
+				                 	<option value="1">Salario base</option>
+				                  <option value="2">Auxilio transporte</option>
+				                  <option value="3">Salud empleado</option>
+				                  <option value="4">Pensión emplado</option>
+				                 	<option value="5">Salario por pagar</option>
+				                 </optgroup>
+				                 <optgroup label="Empleador">
+				                 	<option value="6">ARL</option>
+				                  <option value="7">Caja compensación</option>
+				                  <option value="8">Pensión empleador</option>
+				                  <!-- <option value="9">Salud empleador</option> -->
+				                 </optgroup>
+				                 <optgroup label="Provisiones">
+				                 	<option value="10">Cesantias</option>
+				                  <option value="11">Intereses cesantias</option>
+				                  <option value="12">Prima</option>
+				                  <option value="13">Vacaciones</option>
+				                 </optgroup>
+			                </select>
+			              </div>
+			            </div>
+			            
+						<div class=" col-md-3 ">
+							<div class="form-group">
+				        <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+								<input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" >
+								<input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
+								<!-- <input type="hidden" class="form-control naturaleza" name="datos[naturalezaIvaVenta]" id="cuentaContableIvaVenta">                 -->
+			          		</div>
+						</div>		
+						<!-- <div class=" col-md-3 ">
+							<div class="form-group">
+					             <label class="negrita d-block">Tipo factura<span class="requerido">*</span>:</label>
+								<select class="form-control" name="datos[tipoFactura]" id="tipoFactura" >
+									<option value="compra">COMPRA</option>
+									<option value="venta">VENTA</option>
+								</select>              
+				            </div>
+						</div> -->
+					</div>
+
+	
+			<div class="card-footer text-right">
+	        	<a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+	        </div>
+			
+		  
+			</div>
+	</form>
+
+	<div class="card-header">
+      	<h3>Parametrización nómina</h3>
+      </div>
+      <div class="card-body">
+      	<table class="table table-striped" id="tableProductos" style="text-align:center;">
+      		<thead>
+      			<tr>
+      				<!-- <th>#</th> -->
+      				<th>Concepto	</th>
+      				<!-- <th>Impuesto</th> -->
+      				<th>Cuenta contable</th>
+      				
+      				<!-- <th>Tipo factura</th> -->
+      				<th>Acciones</th>
+      			</tr>
+      		</thead>
+      		<tbody>
+      			<?php 
+      			$oItem=new Lista("nomina_cuenta_contable");
+						$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+						$aNomina=$oItem->getLista();
+						unset($oItem);
+      		
+      		foreach ($aNomina as $key=> $value){ 
+      				
+					
+					$oLista=new Data("cuenta_contable","idCuentaContable",$value["idEmpresaCuenta"]);						
+					$cuentaC=$oLista->getDatos();
+					unset($oLista); 
+
+
+					
+      				?>
+      			<tr>
+
+      				<td>
+      					<?php	 echo $value["concepto"];   					?>
+      				</td>
+
+      				
+      				<td><?php echo $cuentaC['codigoCuenta'].' '.$cuentaC['nombre']; ?></td>
+      				<!-- <td><?php echo $value['tipoFactura']; ?></td> -->
+      				<td><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idNominaCuentaContable']; ?>" class="eliminar"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
+      			</tr>
+      		<?php } ?>
+      		</tbody>
+      	</table>
+      </div>
+	</div>
+
+</section>

@@ -1,0 +1,1 @@
+SELECT * FROM `balance_general` bg INNER JOIN balance_general_item bgi on bg.idBalanceGeneral = bgi.idBalanceGeneral INNER JOIN balance_general_cuenta bgc on bgi.idBalanceGeneralItem=bgc.idBalanceGeneralItem WHERE bg.periodoAnio ='2021' AND bg.idEmpresa=21 AND bgc.tipo=4 ORDER BY bg.idEmpresa ASC,bg.periodoAnio ASC,bgc.numeroCuenta ASC,bg.periodoMes ASC;

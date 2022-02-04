@@ -33,12 +33,12 @@ unset($oLista);
 
 
 <form enctype="multipart/form-data"  id="frmGuardar" >
-	<?php if(!empty($_SESSION['idEmpresa'])){ ?>
+	<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
 	<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
 	<?php } ?>
 		<div class="card">
 			<div class="card-body">
-				<?php if(empty($_SESSION['idEmpresa'])){ ?>
+				<?php if($_SESSION['idRol']==1){ ?>
 					<div class="form-group">
 
                           <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>

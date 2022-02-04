@@ -37,111 +37,51 @@ if($_SESSION["idRol"]!=5 ){
 <section class="section">
 
         <ul class="breadcrumb breadcrumb-style ">
-
           <li class="breadcrumb-item">
-
             <a href="<?php echo $URL; ?>">
-
               <i class="fas fa-home"></i></a>
-
           </li>
-
           <li class="breadcrumb-item">Terceros</li>
-
           <li class="breadcrumb-item">Crear terceros</li>
-
         </ul>
 
-        
-
           <div class="row">
-
             <div class="col-md-12 col-lg-12">
-
               <div class="card">
-
                 <div class="card-header">
-
                   <h4>Información General</h4>
-
                 </div>
 
                 <div class="card-body">
                 <fieldset class="border p-4">
                   <h4>Datos básicos</h4>
-                <!-- <div class="card card-body"> -->
-                  <label class="negrita">Clasificación<span class="requerido">*</span>:</label>
+                
                   <div class="row">
-                    <!-- <div class="col-md-6"> -->
-                      <!-- <div class="form-group"> -->
-                        <div class="col-md-2">
-                        <div class="form-group">
-                          <input  type="checkbox" name="datos[checkCliente]" id="checkCliente" value="1">
-                          <label class="form-check-label" for="checkCliente">CLIENTE</label>
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="form-group">
-                          <input class="form-check-input menu" type="checkbox" name="datos[checkProveedor]" id="checkProveedor" value="1">
-                          <label class="form-check-label" for="checkProveedor">PROVEEDOR</label>
-                        </div>
-                      </div>
-                      <div class="col-md-2">
-                        <div class="form-group">
-                          <input class="form-check-input menu" type="checkbox" name="datos[checkOtro]" id="checkOtro" value="1">
-                          <label class="form-check-label" for="checkOtro">OTRO</label>
-                        </div>
-                      </div>
-                    </div>
-                  <!-- </div> -->
-                  <div class="row">
-
                     <div class="col-md-3">
-
                       <div class="form-group">
-
                         <label class="negrita">Tipo Persona<span class="requerido">*</span>:</label>
-
                         <select class="form-control" name="datos[tipoPersona]" id="datos[tipoPersona]" required>
-
                           <option value="">Seleccione una opción</option>
-
                           <option value="1">Persona Natural</option>
-
                           <option value="2">Persona Juridica</option>
-
                         </select>
-
                       </div>
-
                     </div>
-
                     <div class="col-md-3">
-
                       <div class="form-group">
-
                         <label class="negrita">Nit<span class="requerido">*</span>:</label>
-
                         <input type="text" class="form-control numero" name="datos[nit]" id="datos[nit]" required>
-
                       </div>
-
                     </div>
                     
-
-                    <div class="col-md-3">
-
+                    <div class="col-md-2">
                       <div class="form-group">
-
                         <label class="negrita">Digito Verificador<span class="requerido">*</span>:</label>
-
                         <input type="text" class="form-control" maxlength="1" name="datos[digitoVerificador]" id="datos[digitoVerificador]" required>
-
                       </div>
-
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
 
                       <div class="form-group">
 
@@ -160,12 +100,9 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-
                   </div>
-
                   <div class="row">
-
-                    <div class="col-md-4">
+                    <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -176,36 +113,9 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-                    <div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Nombre comercial<span class="requerido">*</span>:</label>
-
-                        <input type="text" class="form-control" name="datos[nombreComercial]" id="datos[nombreComercial]" required>
-
-                      </div>
-
-                    </div>
-                    <div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Contacto<span class="requerido">*</span>:</label>
-
-                        <input type="text" class="form-control" name="datos[contacto]" id="datos[contacto]" required>
-
-                      </div>
-
-                    </div>
-
-
                     
 
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -216,7 +126,7 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-                  	<div class="col-md-4">
+                  	<div class="col-md-3">
 
                       <div class="form-group">
 
@@ -227,22 +137,10 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-                    <div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Celular<span class="requerido">*</span>:</label>
-
-                        <input type="text" class="form-control numero" name="datos[celular]" id="datos[celular]" required>
-
-                      </div>
-
-                    </div>
 
 
-                  </div>
-                  <div class="row">
-                  	<div class="col-md-4">
+                  
+                  	<div class="col-md-3">
 
                       <div class="form-group">
 
@@ -253,7 +151,10 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-                    <div class="col-md-4">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -274,7 +175,7 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-					          <div class="col-md-4">
+					          <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -291,29 +192,7 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
 
                     </div>
-                  </div>
-                  <div class="row">
-                  	<div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Genero<span class="requerido">*</span>:</label>
-
-                        <select class="form-control" name="datos[genero]" id="datos[genero]" required>
-
-                          <option value="e">Empresa</option>
-                          <option value="m">Masculino</option>
-                          <option value="f">Femenino</option>
-
-                          
-
-                        </select>
-
-                      </div>
-
-                    </div>
-                    
-                    <div class="col-md-4">
+                    <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -325,13 +204,15 @@ if($_SESSION["idRol"]!=5 ){
 
                     </div>
                   </div>
+                    
+                    
               </fieldset>
             <!-- </div> -->
             <br>
               
-                  <fieldset class="border p-4">
+                  <!-- <fieldset class="border p-4">
                     <h4>Datos facturación y envío</h4>
-                  <!-- <div class="card card-body"> -->
+                  
                   	<div class="row">
                   	<div class="col-md-6">
 
@@ -369,47 +250,47 @@ if($_SESSION["idRol"]!=5 ){
                         <label class="negrita">Responsabilidad fiscal<span class="requerido">*</span>:</label>
                         	<ul class="list-group list-group-flush">
 							    <li class="list-group-item">
-							      <!-- Default checked -->
+							      
 							      <div class="custom-control custom-checkbox">
 							        <input type="checkbox" class="custom-control-input" id="check1"  name="responsabilidad[1][check]" value="1">
-                      <!-- <input type="text" name="responsabilidad[1][responsabilidadFiscal]" value="Gran contribuyente">
-                      <input type="text" name="responsabilidad[1][codigo]" value="0-13"> -->
+                      
+                      
 							        <label class="custom-control-label" for="check1">0-13   Gran contribuyente</label>
 							      </div>
 							    </li>
 							    <li class="list-group-item">
-							      <!-- Default checked -->
+							      
 							      <div class="custom-control custom-checkbox">
 							        <input type="checkbox" class="custom-control-input" id="check2" name="responsabilidad[2][check]" value="1">
-                      <!-- <input type="text" name="responsabilidad[2][responsabilidadFiscal]" value="Autorretenedor">
-                      <input type="text" name="responsabilidad[2][codigo]" value="0-15"> -->
+                      
+                      
 							        <label class="custom-control-label" for="check2">0-15   Autorretenedor</label>
 							      </div>
 							    </li>
 							    <li class="list-group-item">
-							      <!-- Default checked -->
+							      
 							      <div class="custom-control custom-checkbox">
 							        <input type="checkbox" class="custom-control-input" id="check3"  name="responsabilidad[3][check]" value="1">
-                      <!-- <input type="text" name="responsabilidad[3][responsabilidadFiscal]" value="Agente de retención IVA">
-                      <input type="text" name="responsabilidad[3][codigo]" value="0-23"> -->
+                      
+                      
 							        <label class="custom-control-label" for="check3">0-23   Agente de retención IVA</label>
 							      </div>
 							    </li>
 							    <li class="list-group-item">
-							      <!-- Default checked -->
+							      
 							      <div class="custom-control custom-checkbox">
 							        <input type="checkbox" class="custom-control-input" id="check4"  name="responsabilidad[4][check]" value="1">
-                      <!-- <input type="text" name="responsabilidad[4][responsabilidadFiscal]" value="Régimen simple de tributación">
-                      <input type="text" name="responsabilidad[4][codigo]" value="0-47"> -->
+                      
+                      
 							        <label class="custom-control-label" for="check4">0-47   Régimen simple de tributación</label>
 							      </div>
 							    </li>
 							    <li class="list-group-item">
-							      <!-- Default checked -->
+							      
 							      <div class="custom-control custom-checkbox">
 							        <input type="checkbox" class="custom-control-input" id="check5" name="responsabilidad[5][check]" value="1">
-                      <!-- <input type="text" name="responsabilidad[5][responsabilidadFiscal]" value="No responsable">
-                      <input type="text" name="responsabilidad[5][codigo]" value="R-99-PN"> -->
+                      
+                      
 							        <label class="custom-control-label" for="check5">R-99-PN   No responsable</label>
 							      </div>
 							    </li>
@@ -417,141 +298,15 @@ if($_SESSION["idRol"]!=5 ){
                       </div>
                     </div>
                   </div>
-                  </fieldset>
-                <!-- </div> -->
-                <br>
-                  <fieldset class="border p-2">
-                      <h4>Contactos</h4>
-                      <div class="row">
-                        <div class="col-md-4">
-                          
-                          <div class="form-group">
-                          <label class="negrita">Nombre contacto:</label>
-
-                          <input type="text" class="form-control" name="datos[nombreContactoOtro]" id="datos[nombreContactoOtro]" >
-
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label class="negrita">Apellidos contacto:</label>
-
-                            <input type="text" class="form-control" name="datos[apellidosContactoOtro]" id="datos[apellidosContactoOtro]" >
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-
-                           
-                            <label class="negrita">Telefono contacto:</label>
-
-                            <input type="text" class="form-control" name="datos[telefonoContactoOtro]" id="datos[telefonoContactoOtro]" >
-
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-4">
-                          <div class="form-group">
-
-                           
-                            <label class="negrita">Email contacto:</label>
-
-                            <input type="text" class="form-control" name="datos[emailContactoOtro]" id="datos[emailContactoOtro]" >
-
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-
-                           
-                            <label class="negrita">Cargo contacto:</label>
-
-                            <input type="text" class="form-control" name="datos[cargoContactoOtro]" id="datos[cargoContactoOtro]" >
-
-                          </div>
-                        </div>
-                    </div>
-
-
-                    
-
-                  </fieldset>
+                  </fieldset> -->
+                
+                
                   <br>
-                  <fieldset class="border p-2">
-                    <div class="form-group">
-                      <h4>Observaciones</h4>
-                          <textarea class="form-control" name="datos[obsevaciones]" id="datos[obsevaciones]" ></textarea>
-
-
-                    </div>
-
-                  </fieldset>
-                  <br>
-                  <fieldset class="border p-2">
-                      <h4>Vendedor y cobrador</h4>
-                      <div class="row">
-                        <div class="col-md-4">
-                          
-                          <div class="form-group">
-                          <label class="negrita">Vendedor:</label>
-
-                          <input type="text" class="form-control" name="datos[vendedor]" id="datos[vendedor]" >
-
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label class="negrita">Cobrador:</label>
-
-                            <input type="text" class="form-control" name="datos[cobrador]" id="datos[cobrador]" >
-                          </div>
-                        </div>
-                      </div>
-                  </fieldset>
-                  <br>
-                  <fieldset class="border p-2">
-                    <h4>Campos personalizados</h4>
-                    
-                  <div class="row">
-	               	
-	               	<div class="col-md-4">
-
-	                    <div class="form-group">
-
-	                    	<label class="negrita">Actividad económica<span class="requerido">*</span>:</label>
-
-	                        <input type="text" class="form-control" name="datos[actividadEconomica]" id="datos[actividadEconomica]" required>
-	                    </div>
-
-	               	</div>
-                  <div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Producto<span class="requerido">*</span>:</label>
-
-                          <input type="text" class="form-control" name="datos[producto]" id="datos[producto]" required>
-                      </div>
-
-                  </div>
-                  <!-- <div class="col-md-4">
-
-                      <div class="form-group">
-
-                        <label class="negrita">Fecha nacimiento:</label>
-                          <input type="date" class="form-control" name="datos[fechaNacimiento]" id="datos[fechaNacimiento]" >
-                      </div>
-
-                  </div> -->
-                </div>
                   
-              </div>
-            </fieldset> 
-             <br>
-                  </div> 
+                  <!-- </div>  -->
+                </div>
 
-                  <div class="card card-body">
+                  <div class="card-body">
                   <?php if(empty($_SESSION["idEmpresa"]) ) {?>
                   <div class="card-header">
 
@@ -613,7 +368,7 @@ if($_SESSION["idRol"]!=5 ){
 
                   <input type="hidden" value="1" name="item[0][estado]">
 
-                  <input type="hidden" value="<?php echo $_SESSION['idEmpresa']; ?>" id="item[0][idEmpresa]" name="item[0][idEmpresa]">
+                  <input type="hidden" value="<?php echo $_SESSION['idEmpresa']; ?>" id="idEmpresa" name="item[0][idEmpresa]">
                 <?php } ?>
            
 

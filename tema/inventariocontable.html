@@ -1,4 +1,4 @@
-
+  
 <?php 
 
 include("functions/inventario/listarinventario.php") ; 
@@ -101,9 +101,13 @@ unset($oItem);
 
                           <?php foreach($inicial as $index => $iInventario){  
 
-                              $oItem=new Data("producto_servicio","idProductoServicio",$iInventario["idProducto"]);
+                              // $oItem=new Data("producto_servicio","idProductoServicio",$iInventario["idProducto"]);
+                              // $producto=$oItem->getDatos();
+                              // unset($oItem);
+
+                              $oItem = new Data("producto_servicio","idProductoServicio",$iInventario["idProducto"]);
                               $producto=$oItem->getDatos();
-                              unset($oItem);
+                              unset($oLista);
 
                               $oItem=new Data("unidad","idUnidad",$iInventario["idUnidad"]);
                               $unidad=$oItem->getDatos();
@@ -112,6 +116,10 @@ unset($oItem);
                               $oInventarios = new Inventario();
                               $aInventario =$oInventarios->getInventarioProductosTerminados(array("idEmpresa"=>$idEmpresa,"idProducto"=>$iInventario["idProducto"],"idBodega"=>$iInventario["idBodega"]));
                               unset($oInventarios);
+
+                            // print_r($aInventario);
+                            // print_r('>>>');
+
 
                               $oItem = new Data("bodega","idBodega",$iInventario["idBodega"]);
                             $bodegaProducto=$oItem->getDatos();
@@ -152,9 +160,9 @@ unset($oItem);
 
                               <td class="centrar">
 
-                                <a href="javascript:void(0)" id="<?php echo $iInventario['idProducto']; ?>" class="sumarInsumo"  data-toggle="modal" data-target="#modal"   data-placement="top" bodega="<?php echo $iInventario["idBodega"]; ?>" ><i class="fas fa-plus" style="color: #A2D7FF;font-size: 22px;" data-toggle="tooltip" title="Agregar unidades al inventario"></i></a>
+                                <!-- <a href="javascript:void(0)" id="<?php echo $iInventario['idProducto']; ?>" class="sumarInsumo"  data-toggle="modal" data-target="#modal"   data-placement="top" bodega="<?php echo $iInventario["idBodega"]; ?>" ><i class="fas fa-plus" style="color: #A2D7FF;font-size: 22px;" data-toggle="tooltip" title="Agregar unidades al inventario"></i></a> -->
 
-                                <a href="javascript:void(0)" id="<?php echo $iInventario['idProducto']; ?>" class="restarInsumo" data-placement="top" data-toggle="modal" data-target="#modalR" bodega="<?php echo $iInventario["idBodega"]; ?>" ><i class="fas fa-minus-circle" data-toggle="tooltip" title="Descontar unidades del inventario" style="color: #FFB2A3;font-size: 22px;"></i></a></i>
+                                <!-- <a href="javascript:void(0)" id="<?php echo $iInventario['idProducto']; ?>" class="restarInsumo" data-placement="top" data-toggle="modal" data-target="#modalR" bodega="<?php echo $iInventario["idBodega"]; ?>" ><i class="fas fa-minus-circle" data-toggle="tooltip" title="Descontar unidades del inventario" style="color: #FFB2A3;font-size: 22px;"></i></a></i> -->
 
                                 <a href="../historialinventarioterminado/<?php echo $idEmpresa ?>&producto=<?php echo $iInventario['idProducto']; ?>"  ><i class="fas fa-book" style="color: #A8D173;font-size: 22px;" data-toggle="tooltip" title="Ver historial movimientos"></i></a>
                               </td>

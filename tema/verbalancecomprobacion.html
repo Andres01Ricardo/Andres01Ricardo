@@ -121,8 +121,8 @@ $aEmpresa=$oItem->getDatos();
       </div>
       <br><br>
                   <div class="row">
-                    <div class="col-md-12 col-lg-12 table-responsive">
-                      <table class="table-hover mayusculas " id="tablecomprobacion" style="font-size: 18px;font-family: 'Arial'; width: 100%;" >
+                    <div class="col-md-12 col-lg-12 ">
+                      <table class="table table-hover table-bordered mayusculas table-responsive" id="tablecomprobacion" style="font-size: 12px;font-family: 'Arial'; width: 100%;" >
                         <thead>
                           <tr>
                             <th>CU</th>
@@ -483,9 +483,9 @@ $aEmpresa=$oItem->getDatos();
                                     $oBalanceComprobacionSAT=new Informes();
                                     $oBalanceComprobacionAnteriorT=new Informes(); 
 
-                                    $aBalanceComprobacionSAT=$oBalanceComprobacionSAT->getBalanceComprobacionT(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuenta"=>$cuentaT,"tercero"=>$valueT["idTercero"],"tipoTercero"=>$valueT["tipoTercero"]));
+                                    $aBalanceComprobacionSAT=$oBalanceComprobacionSAT->getBalanceComprobacionT(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuenta"=>$cuentaT,"tercero"=>$valueT["idTercero"],"tipoTercero"=>'p'));
                                     
-                                    $aBalanceComprobacionAnteriorT=$oBalanceComprobacionAnteriorT->getBalanceComprobacionTAnterior(array("idEmpresa"=>$idEmpresa,"fecha"=>$fechaFinal,"cuenta"=>$cuentaBuscar,"tercero"=>$valueT["idTercero"],"tipoTercero"=>$valueT["tipoTercero"]));
+                                    $aBalanceComprobacionAnteriorT=$oBalanceComprobacionAnteriorT->getBalanceComprobacionTAnterior(array("idEmpresa"=>$idEmpresa,"fecha"=>$fechaFinal,"cuenta"=>$cuentaBuscar,"tercero"=>$valueT["idTercero"],"tipoTercero"=>'p'));
 
                                     unset($oBalanceComprobacionSAT);
                                     $oItem=new Data("tercero","idTercero",$valueT["idTercero"]);

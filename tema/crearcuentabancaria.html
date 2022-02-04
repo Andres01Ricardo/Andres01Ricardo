@@ -37,6 +37,14 @@ $aBancos=$oLista->getLista();
 unset($oLista);
 
 
+if (!empty($_SESSION['idEmpresa'])) {
+  
+  $oItem=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]);
+  $empresa=$oItem->getDatos();
+  unset($oItem);
+
+}
+
 
 ?>
 
@@ -44,9 +52,9 @@ unset($oLista);
 
 <form enctype="multipart/form-data" id="frmGuardar">
 
-<?php if(!empty($_SESSION['idEmpresa'])) { ?>
+<?php if(!empty($_SESSION['idEmpresa'])){ ?>
 
-<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+<input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
 
 <?php } ?>
 
@@ -272,6 +280,20 @@ unset($oLista);
                       </div>
 
                     </div>
+                    <?php if ($empresa["manejaContabilidad"]==1) { ?>
+
+                    <div class="col-md-4" >
+                      <div class="form-group">
+                          <label class="negrita">Cuenta contable<span class="requerido">*</span>:</label>
+                          <select class="form-control select2" name="datos[cuentaContable]" id="cuentaContable" <?php if ($empresa["manejaContabilidad"]==1) {
+                            echo "required";
+                          }?> >
+
+                          </select>
+                          <!-- <input type="text" class="form-control mayusculas" name="datos[numeroCuenta]" id="inputNumeroCuenta" placeholder="Numero Cuenta" required> -->
+                      </div>
+                    </div>
+                    <?php } ?>
 
                   </div>
 

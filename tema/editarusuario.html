@@ -274,7 +274,7 @@ unset($oLista);
 
                           <?php foreach($aRoles as $item){ 
 
-                          if(empty($_SESSION['idEmpresa'])){ ?>
+                          if($item["idRol"] != 3 &&$item["idRol"] != 4 ){ ?>
 
                           <option <?php if($aDatos["idRol"]==$item["idRol"]){ echo 'selected'; } ?> value='<?php echo $item["idRol"]; ?>'><?php echo $item["nombre"]; ?></option>
 

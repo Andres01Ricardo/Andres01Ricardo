@@ -154,9 +154,7 @@ if($_SESSION["idRol"]==2){
                     </div>
 
                   </div>
-                  <?php if ($_SESSION['idRol']==2 || $_SESSION["idRol"]==1) {
-                    // code...
-                 ?>
+
                   <div class="row">
 
                    <div class="col-md-3">
@@ -171,6 +169,8 @@ if($_SESSION["idRol"]==2){
 
                       </div>
                     </div>
+
+                
                     <div class=" col-md-3 ">
                       <label class="negrita d-block">Tipo documento compra:</label>
                           <select class="form-control" name="datos[tipoDocumentoProductoCompra]" id="tipoDocumentoProducto">
@@ -193,10 +193,13 @@ if($_SESSION["idRol"]==2){
                       <label class="negrita d-block">Tipo documento venta:</label>
                           <select class="form-control" name="datos[tipoDocumentoProductoVenta]" id="tipoDocumentoProductoVenta" >
                           </select>
+
                     </div>
+                    
+
                   </div>
 
-                  <?php } ?>
+
                   <div class="row">
 
                     
@@ -222,50 +225,12 @@ if($_SESSION["idRol"]==2){
 
                           </div>
                     </div>
-                    <div class="col-md-3">
-                      <label class="negrita">Agrupación de inventario<span class="requerido">*</span>:</label>
-                      <!-- <select class="form-control" id="datos[agrupacionInventario]" name="datos[agrupacionInventario]">
-                        <option>seleccione</option>
-                        <option><a href="#exampleModal" class="dropdown-item" data-toggle="modal" data-target="#exampleModal">Abrir</a></option>
-                      </select> -->
-                      <div class="dropdown form-control">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">Choose Product <span class="caret"></span></button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                          <li><a href="#exampleModal" data-toggle="modal" data-target="#exampleModal">Open modal 1</a></li>
-                          <li><a href="#" data-toggle="modal" data-target="#exampleModal">Open modal 2</a></li>
-                        </ul>
-                      </div>
-                      </div>
-
-                      <div class="col-md-3">
-                        <div class="form-group">
-
-                          <label class="negrita">Agrupación de inventario<span class="requerido">*</span>:</label>
-
-                          <select class="form-control select2 mayusculas" name="datos[idTercero]" id="datos[idTercero]" required>
-
-                            <option value="">Seleccione una opción</option>
-
-                            <option ><a href="#exampleModal" data-toggle="modal" data-target="#exampleModal">Open modal 1</a></option>
-
-                          </select>
-
-                        </div>
-                      </div>
-
-                    
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Codigo<span class="requerido">*</span>:</label>
-                        <input type="text" class="form-control " name="datos[codigoProducto]" id="codigoProducto" required>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Referencia<span class="requerido">*</span>:</label>
-                        <input type="text" class="form-control " name="datos[referenciaProducto]" id="referenciaProducto" placeholder="talla/tamaño/etc" required>
-                      </div>
-                    </div>
+                    <!-- <div class="col-md-3">
+                      <label class="negrita">Insumo/producto<span class="requerido">*</span>:</label>
+                      <select class="form-control" id="datos[idInventario]" name="datos[idInventario]">
+                        
+                      </select>
+                    </div> -->
 
                   </div>
 
@@ -288,37 +253,4 @@ if($_SESSION["idRol"]==2){
 </section>
 
 </form>
-
-
-
-
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
-      </div>
-    </div>
-  </div>
-</div>
 

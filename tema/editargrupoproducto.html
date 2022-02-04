@@ -1,0 +1,119 @@
+<?php 
+
+
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+
+
+
+
+$oLista = new Data('grupo_inventario',"idGrupoInventario",$id);
+$grupoInventario=$oLista->getDatos();
+unset($oLista);
+
+
+$oLista = new Lista('linea_inventario');
+$oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+$linea=$oLista->getLista();
+unset($oLista);
+
+
+
+?>
+
+<style type="text/css">
+  input[readonly]{
+    background-color: #FFFF !important;
+    text-transform: uppercase;
+  }
+</style>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<input type="hidden" name="id" id="id" value="<?php echo $id; ?>">
+<input type="hidden" id="tipo" value="<?php echo $aDatos['tipo']; ?>">
+
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Productos y servicios</li>
+          <li class="breadcrumb-item">Grupo</li>
+          <li class="breadcrumb-item">Editar grupo</li>
+        </ul>
+
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+              <div class="card-body">
+
+                <div class="row">
+                  <div class="col-md-3">
+                        <label class="negrita">Linea<span class="requerido">*</span>:</label>
+                        <select class="select2 form-control" name="datos[idLineaInventario]" id="idLineaInventario" required>
+                          <option value="">Seleccione</option>
+                          <?php foreach ($linea as $key => $value) { ?>
+                            <option value="<?php echo $value["idLineaInventario"]; ?>" <?php if ($value["idLineaInventario"]==$grupoInventario["idLineaInventario"]) {
+                              echo 'selected';
+                            } ?> ><?php echo $value["nombre"].' - '.$value["nombre"]; ?></option>
+                          <?php } ?>
+                        </select>
+                      
+                    </div>
+                    <div class="col-md-3">
+                      <!-- <div class="form-group"> -->
+                        <label class="negrita">Codigo<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[codigo]" id="codigo" value="<?php echo $grupoInventario["codigo"]; ?>" required readonly>
+                        <!-- <input type="text" class="form-control" readonly value="<?php echo $aDatos["codigo"]; ?>"> -->
+                      <!-- </div> -->
+                    </div>
+                    <div class="col-md-3">
+                      <!-- <div class="form-group"> -->
+                        <label class="negrita">Nombre<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[nombre]" id="nombre" value="<?php echo $grupoInventario["nombre"]; ?>" required>
+                        <!-- <input type="text" class="form-control" name="datos[nombre]" id="datos[nombre]" value="<?php echo $aDatos["nombre"]; ?>" required> -->
+                      <!-- </div> -->
+                    </div>
+                    <div class="col-md-3">
+                        <label class="negrita">INVENTARIO:</label>
+                        <select class="select2 form-control" name="datos[idCuentaInventario]" id="idCuentaInventario" > </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="negrita">COSTO:</label>
+                        <select class="select2 form-control" name="datos[idCuentaCosto]" id="idCuentaCosto" ></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="negrita">VENTA:</label>
+                        <select class="select2 form-control" name="datos[idCuentaVenta]" id="idCuentaVenta" ></select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="negrita">DEVOLUCIÓN:</label>
+                        <select class="select2 form-control" name="datos[idCuentaDevolucion]" id="idCuentaDevolucion" > </select>
+                    </div>
+                  </div>
+                  
+                  </div>
+                  <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

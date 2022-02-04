@@ -65,6 +65,11 @@ unset($oLista);
 
 
 ?>
+<!-- <style type="text/css">
+  .row{
+    width: 95%;
+  }
+</style> -->
 
 <form enctype="multipart/form-data" id="frmGuardar">
 
@@ -104,7 +109,7 @@ unset($oLista);
 
                 </div>
 
-                <div class="card-body">
+                <div class="modal-body">
 
                   <div class="row">
 
@@ -301,6 +306,20 @@ unset($oLista);
                     </div>
 
                   </div>
+                   <div class="row">
+                       <div class="col-md-2">
+                        <div class="form-group">
+                                <input  type="checkbox" name="datos[inventario]" id="datos[inventario]" value="1">
+                                <label class="form-check-label" for="defaultCheck1">¿MANEJA INVENTARIO?</label>
+                              </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                                <input class="form-check-input menu" type="checkbox" name="datos[contabilidad]" id="datos[contabilidad]" value="1">
+                                <label class="form-check-label" for="defaultCheck1">¿MANEJA CONTABILIDAD SMARTBUSS?</label>
+                              </div>
+                      </div>
+                  </div>
 
                   </div>
 
@@ -310,7 +329,7 @@ unset($oLista);
 
                   </div>
 
-                  <div class="card-body">
+                  <div class="modal-body">
 
                     <div class="row">
 
@@ -420,24 +439,26 @@ unset($oLista);
                   <?php if ($_SESSION['idRol']!=5) {
                     
                   ?>
-                  <div class="row">
-                    <label>¿Registrar la empresa como cliente o proveedor de otras empresas?</label>
+                 <!--  <div class="row">
+                    <div class="col-md-6">
+                      <label>¿Registrar la empresa como cliente o proveedor de otras empresas?</label>
+                    </div>
                   </div>
 
                   <div class="row">
                     <div class="col-md-2">
                       <div class="form-group">
-                              <input  type="checkbox" name="datos[checkCliente]" id="datos[checkCliente]" value="1">
-                              <label class="form-check-label" for="defaultCheck1">CLIENTE</label>
-                            </div>
+                        <input class="asociar" type="checkbox" name="datos[checkCliente]" id="checkCliente" value="1">
+                        <label class="form-check-label" for="defaultCheck1">CLIENTE</label>
+                      </div>
                     </div>
                     <div class="col-md-2">
                       <div class="form-group">
-                              <input class="form-check-input menu" type="checkbox" name="datos[checkProveedor]" id="datos[checkProveedor]" value="1">
-                              <label class="form-check-label" for="defaultCheck1">PROVEEDOR</label>
-                            </div>
+                        <input class="form-check-input menu asociar" type="checkbox" name="datos[checkProveedor]" id="checkProveedor" value="1">
+                        <label class="form-check-label" for="defaultCheck1">PROVEEDOR</label>
+                      </div>
                     </div>
-                  </div>
+                  </div> -->
 
                   <?php } ?>
                   </div>
@@ -445,7 +466,7 @@ unset($oLista);
 
                   <div class="card-footer text-right">
 
-                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                    <a class="btn btn-primary mr-1 btnAsociar" id="btnGuardar">Guardar</a>
 
                   </div>
 
@@ -458,6 +479,90 @@ unset($oLista);
     </div>
 
 </section>
+
+<!-- </form> -->
+
+
+
+
+
+
+<?php 
+
+// print_r($aDatos['nit']);
+$oItem=new Data("tercero","nit",$aDatos['nit']); 
+$terceroAsociar=$oItem->getDatos(); 
+unset($oItem);
+
+// print_r('>>>');
+// print_r($terceroAsociar);
+
+
+$oLista=new Lista("tercero_empresa"); 
+$oLista->setFiltro("idTercero","=",$terceroAsociar["idTercero"]); 
+$aLista=$oLista->getLista(); 
+unset($oLista);
+
+// print_r('***');
+// print_r($aLista);
+
+$oLista = new Lista('empresa');
+$oLista->setFiltro("estado","=",1);
+$oLista->setOrden("razonSocial","ASC");
+$aEmpresa=$oLista->getLista();
+unset($oLista);
+
+// print_r('+++');
+// print_r($aEmpresa);
+
+?>
+<!-- <form enctype="multipart/form-data" id="frmGuardar"> -->
+<!-- <input type="hidden" name="asociar[id]" id="id" value="<?php echo $terceroAsociar["idTercero"]; ?>">
+<input type="hidden" name="asociar[url]" id="url" value="<?php echo $url; ?>">
+
+          <div class="row" id="asociarEmpresas" class="ocultar" style="display: none;">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                  <div class="card-header">
+                    <h4>Asociar Empresas <span class="mayusculas negrita"><?php echo $terceroAsociar["razonSocial"]; ?></span></h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <?php foreach($aEmpresa as $index=> $iEmpresa){
+                        $seleccionado=""; 
+                        foreach($aLista as $iSeleccionado){
+                          if($iSeleccionado["idEmpresa"]==$iEmpresa["idEmpresa"]){
+                            $seleccionado="checked"; 
+                          }
+                        }
+                        $logo="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
+                        if($iEmpresa["logo"]!=""){
+                            $logo=$URL.$iEmpresa["logo"]; 
+                        }
+                       ?>
+                      <div class="col-md-12">
+                        <input type="hidden" value="0" name="item[<?php echo $index; ?>][estado]">
+                        <input type="hidden" value="<?php echo $iEmpresa["idEmpresa"]; ?>" id="item[<?php echo $index; ?>][idEmpresa]" name="item[<?php echo $index; ?>][idEmpresa]">
+                        <div class="form-group">
+                          <div class="form-check">
+                            <div class="custom-checkbox">
+                              <input class="form-check-input" type="checkbox" <?php echo $seleccionado; ?> value="1" id="item[<?php echo $index; ?>][estado]" name="item[<?php echo $index; ?>][estado]">
+                              <label class="form-check-label" for="item[<?php echo $index; ?>][estado]">
+                               <div class="tabla"><div class="columna foto-mini-empresa" style="background-image: url(<?php echo $logo; ?>)"></div><div class="columna" style="padding-left: 5px;"><?php echo $iEmpresa["razonSocial"]; ?></div></div>
+                              </label>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  <?php } ?>
+                  </div>
+                </div>
+                <div class="card-footer text-right">
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+                  </div>
+            </div>
+        </div>
+    </div> -->
 
 </form>
 

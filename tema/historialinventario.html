@@ -5,7 +5,7 @@ include("functions/inventario/listarinventario.php") ;
 
 
 
-if(empty($_SESSION["idEmpresa"])){
+if($_SESSION["idRol"]==1 || $_SESSION["idRol"]==2){
   
 
 
@@ -15,7 +15,7 @@ if(empty($_SESSION["idEmpresa"])){
       echo '<script>window.history.back()</script>'; 
 
     }
-  }else if(!empty($_SESSION["idEmpresa"])){
+  }else if($_SESSION["idRol"]==3 || $_SESSION["idRol"]==4){
 
   $idEmpresa= $_SESSION["idEmpresa"];
 

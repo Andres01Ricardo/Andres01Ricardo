@@ -40,58 +40,136 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 
 $("body").on("click touchstart","#btnGuardarInfo",function(e){
     e.preventDefault();
+    var controlTotal=0;
+    $('.totalDebito ').each(function() {
+      if ($(this).attr('total')==1) {
+        controlTotal=1;
+      }
+      
+    }); 
+    if (controlTotal==0) {
+
       if(true === $("#frmGuardar").parsley().validate()){
+
          Swal.fire({
-        title: '¿Está seguro?',
-        text: 'Está a punto de cargar estos comprobantes a la contabilidad!',
-        icon: 'warning', 
-        showCancelButton: true,
-        showLoaderOnConfirm: true,
-        confirmButtonText: `Si, Guardar!`,
-        cancelButtonText:'Cancelar',
-        preConfirm: function(result) {
-          return new Promise(function(resolve) {
-            var formu = document.getElementById("frmGuardar");
-            var data = new FormData(formu);
-            $.ajax({
-            url:URL+"functions/comprobantes/guardarcomprobantecargado.php", 
-            type:"POST", 
-            data: data,
-            contentType:false, 
-            processData:false, 
-            dataType: "json",
-            cache:false 
-            }).done(function(msg){  
-              if(msg.msg){
-                Swal.fire(
-                  {
-                  icon: 'success',
-                  title: 'Comprobantes cargados!',
-                  text: 'con exito',
-                  closeOnConfirm: true,
+          title: '¿Está seguro?',
+          text: 'Está a punto de cargar estos comprobantes a la contabilidad!',
+          icon: 'warning', 
+          showCancelButton: true,
+          showLoaderOnConfirm: true,
+          confirmButtonText: `Si, Guardar!`,
+          cancelButtonText:'Cancelar',
+          preConfirm: function(result) {
+            return new Promise(function(resolve) {
+              var formu = document.getElementById("frmGuardar");
+              var data = new FormData(formu);
+              $.ajax({
+              url:URL+"functions/comprobantes/guardarcomprobantecargado.php", 
+              type:"POST", 
+              data: data,
+              contentType:false, 
+              processData:false, 
+              dataType: "json",
+              cache:false 
+              }).done(function(msg){  
+                if(msg.msg){
+                  if (msg.fallos.length==0) {
+                    Swal.fire(
+                      {
+                      icon: 'success',
+                      title: 'Comprobantes cargados!',
+                      text: 'con exito',
+                      closeOnConfirm: true,
+                    }
+                    ).then((result) => {
+                     location.reload(); 
+                    })
+                  }
+                  if (msg.fallos.length!=0) {
+                    var codigosFallos='';
+                     msg.fallos.forEach(function(element,index){
+                      codigosFallos+=element+', ';
+                    })
+                    Swal.fire(
+                      {
+                      icon: 'success',
+                      title: 'Los comprobantes'+codigosFallos+' no se cargaron porque no existe el tercero!',
+                      text: 'por favor verifique los terceros',
+                      closeOnConfirm: true,
+                    }
+                    ).then((result) => {
+                     location.reload(); 
+                    })
+                  }
+                }else{
+                   Swal.fire(
+                    'Algo ha salido mal!',
+                    'Verifique su conexión a internet',
+                    'error'
+                  ).then((result) => {
+                  })
                 }
-                ).then((result) => {
-                 location.reload(); 
-                })
-              }else{
-                 Swal.fire(
-                  'Algo ha salido mal!',
-                  'Verifique su conexión a internet',
-                  'error'
-                ).then((result) => {
-                })
-              }
-          });
+            });
           });
         }
       })
+      
       }
+    }else{
+      Swal.fire(
+        {
+        icon: 'error',
+        title: 'Hay comprobantes con debitos y creditos que no coinciden!',
+        text: 'por favor reviselos y cargue nuevamento el documento',
+        closeOnConfirm: true,
+      }
+      ).then((result) => {
+       // location.reload(); 
+      })
+    }
   })
 
 
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------
 
+  function decimalAdjust(type, value, exp) {
+    // Si el exp no está definido o es cero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // Si el valor no es un número o el exp no es un entero...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
+
+  // Decimal round
+  if (!Math.round10) {
+    Math.round10 = function(value, exp) {
+      return decimalAdjust('round', value, exp);
+    };
+  }
+  // Decimal floor
+  if (!Math.floor10) {
+    Math.floor10 = function(value, exp) {
+      return decimalAdjust('floor', value, exp);
+    };
+  }
+  // Decimal ceil
+  if (!Math.ceil10) {
+    Math.ceil10 = function(value, exp) {
+      return decimalAdjust('ceil', value, exp);
+    };
+  }
 
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -126,6 +204,18 @@ $("#excel").change(function(e){
     var control=1;
     var fecha='';
     var corrido=0;
+
+    var totalDebitos=0.00;
+    var totalCreditos=0.00;
+
+    var debitos=0.00;
+    var creditos=0.00;
+
+
+
+    if (numeroFilas<=308) {
+
+
     for (var i = 8; i <= numeroFilas; i++) {
         if (wb.Sheets[nameS]['A'+i] != undefined) {
           if (control==1) {
@@ -234,35 +324,33 @@ $("#excel").change(function(e){
             if (wb.Sheets[nameS]['H'+i]==undefined) {
               var centroCosto='';
             }
+
+
+            if (wb.Sheets[nameS]['M'+i].w!=undefined) {
+              var detalle = wb.Sheets[nameS]['M'+i].w.trim();
+            }
+            if (wb.Sheets[nameS]['M'+i]==undefined) {
+              var detalle = '';
+            }
+
+            if (wb.Sheets[nameS]['J'+i]==undefined) {
+              var base = '';
+            }
+            if (wb.Sheets[nameS]['J'+i]!=undefined) {
+
+              if (wb.Sheets[nameS]['J'+i].w!=undefined) {
+                var base = wb.Sheets[nameS]['J'+i].w.trim();
+              }else{
+                var base='';
+              }
+            
+            }
+
             var subcentroCosto=wb.Sheets[nameS]['I'+i].w.trim(); 
-            var detalle = wb.Sheets[nameS]['M'+i].w.trim();
-            var base = wb.Sheets[nameS]['J'+i].w.trim();
+            
           }
           var letreroCC=0;
-          // if (centroCosto!="") {
-          //   $.ajax({
-          //     url:URL+"functions/comprobantes/verificarcentrocosto.php", 
-          //     type:"POST", 
-          //     data: {"centroCosto":centroCosto,"subcentroCosto":subcentroCosto,"idEmpresa":$("#idEmpresa").val()},             
-          //     dataType: "json",
-          //     }).done(function(msg){  
-          //       console.log(msg);
-          //       console.log('****');
-          //       if (msg.msg==0) {
-          //         letreroCC=1;
-          //         $("[name='item["+tabla+"]["+cont+"][letreroCentroCosto]']").removeClass("ocultar");
-                  
-          //         console.log('ingreso');
-          //         console.log(tabla);
-          //         console.log(cont);
-          //       }
-          //       if (msg.msg==2 || msg.msg==1 || msg.msg==3) {
-          //         letreroCC=0;
-          //       }
-
-          //   });  
-          // }
-        
+       
         
         
       
@@ -275,11 +363,48 @@ $("#excel").change(function(e){
         sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][subcentroCosto]" id="item['+tabla+']['+cont+'][subcentroCosto]" class="form-control subcentroCosto mayusculas"  placeholder="Subcentro costo" value="'+subcentroCosto+'" readonly></td>';
         sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][tercero]" id="item['+tabla+']['+cont+'][tercero]" class="form-control mayusculas"  placeholder="tercero" value="'+tercero+'" readonly></td>';
         sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][descripcion]" id="item['+tabla+']['+cont+'][descripcion]" class="form-control descripcion mayusculas"  placeholder="Descripción" value="'+detalle+'" readonly></td>';
-        sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][base]" id="item['+tabla+']['+cont+'][base]" class="form-control base mayusculas moneda"  placeholder="base" value="'+base+'" readonly></td>';
-        sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][debito]" id="item['+tabla+']['+cont+'][debito]" class="form-control debito mayusculas moneda"  placeholder="debito" value="'+debito+'" readonly></td>';
-        sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][credito]" id="item['+tabla+']['+cont+'][credito]" class="form-control credito mayusculas moneda"  placeholder="credito" value="'+credito+'" readonly></td>';
+        sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][base]" id="item['+tabla+']['+cont+'][base]" class="form-control base mayusculas monedaComaPunto"  placeholder="base" value="'+base+'" readonly></td>';
+        sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][debito]" id="item['+tabla+']['+cont+'][debito]" class="form-control debito mayusculas monedaComaPunto"  placeholder="debito" value="'+debito+'" ></td>';
+        sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][credito]" id="item['+tabla+']['+cont+'][credito]" class="form-control credito mayusculas monedaComaPunto"  placeholder="credito" value="'+credito+'" ></td>';
 
-        
+        if (debito!='' && credito!='') {
+          
+
+          // console.log('debito=>');
+          // console.log(debito);
+
+          // console.log('credito=>');
+          // console.log(credito);
+
+
+          debitos=parseFloat(eliminarMoneda(debito.toString(),",",""));
+          creditos=parseFloat(eliminarMoneda(credito.toString(),",",""));
+          // console.log('credito=>');
+          // console.log(credito);
+          if (numero=='2107062') {
+
+            console.log('creditos:');
+            console.log(creditos);
+
+            console.log('debitos=>');
+            console.log(debitos);
+          }
+
+          // console.log('debitosAntes=>');
+          // console.log(totalDebitos);
+
+          totalDebitos=totalDebitos+parseFloat(Math.round((debitos)*100)/100);
+          totalCreditos=totalCreditos+parseFloat(Math.round((creditos)*100)/100);
+          // totalDebitos=totalDebitos+parseFloat((debitos));
+          // totalCreditos=totalCreditos+parseFloat(creditos);
+          if (numero=='2107062') {
+
+            console.log('debitosTotal=>');
+            console.log(totalDebitos);
+            console.log('creditosTotal=>:');
+            console.log(totalCreditos);
+          }
+        }
         // if (wb.Sheets[nameS]['N'+i].w==undefined) {
         //   console.log(wb.Sheets[nameS]['N'+i].v);
         // }
@@ -294,11 +419,24 @@ $("#excel").change(function(e){
       }
       if (wb.Sheets[nameS]['A'+i] == undefined) {
         if(sHtml!=''){
+
+          if (totalDebitos.toFixed(2)!=totalCreditos.toFixed(2)) {
+
+            sHtml+='<tr><td class="negrita">TOTAL</td><td></td><td></td><td></td><td></td><td></td><td><input type="text"  id="totalDebito['+tabla+']" class="form-control totalDebito mayusculas moneda"  placeholder="total debito" style="color:red;" total="1" value="'+totalDebitos.toFixed(2)+'" readonly></td><td><input type="text" id="totalCredito['+tabla+']" class="form-control totalCredito mayusculas moneda"  placeholder="total creditos" style="color:red;" value="'+totalCreditos.toFixed(2)+'" readonly></td></tr>';
+          }else{
+            sHtml+='<tr><td class="negrita">TOTAL</td><td></td><td></td><td></td><td></td><td></td><td><input type="text"  id="totalDebito['+tabla+']" class="form-control totalDebito mayusculas moneda"  placeholder="total debito" total="0" value="'+totalDebitos.toFixed(2)+'" readonly></td><td><input type="text" id="totalCredito['+tabla+']" class="form-control totalCredito mayusculas moneda"  placeholder="total creditos" value="'+totalCreditos.toFixed(2)+'" readonly></td></tr>';
+
+          }
+          
+          
+
           sHtml+='</tbody></table></div>';
           $("#divComprobanteCargado").append(sHtml);
           // $(".base").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
           // $(".debito").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
           // $(".credito").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
+          totalDebitos=0.0;
+          totalCreditos=0.0;
           $("#btnGuardarInfo").removeClass('ocultar');
         }
         j=i+1;
@@ -312,6 +450,16 @@ $("#excel").change(function(e){
        }
       }
     }
+
+   }else{
+      $("#btnGuardarInfo").css("display","none");
+      Swal.fire(
+        'El archivo super el limite de filas!',
+        'Por favor verifique que el archivo contenga maximo 300 filas',
+        'error'
+      )
+
+   } //aca toca cerrar el if del numero de filas
     // recorrer();
     
 
@@ -325,293 +473,102 @@ $("#excel").change(function(e){
 
 
 
+// $("body").on("change","[name='item[0][3][debito]']",function(e){
+
+// })
+
+$("#tableProductos").on("input", "input", function() {
+  var input = $(this).val();
+  console.log(input);
+  // var columns = input.closest("tr").children();
+  // var dc = columns.eq(7).text();
+  // var calculated = input.val() * price;
+  // columns.eq(5).text(calculated.toFixed(2));
+  
+  // sumar_columnas();
+  
+  
+});
 
 
 
+function sumar_columnas(){
+var sumDebito=0;
+var sumCredito=0;
+var cont=0;
+var contC=0;
+var restarDebito=0;
 
-
-
-
-
-
-
-
-
-
-  /*jshint browser:true */
-/* eslint-env browser */
-/*global Uint8Array */
-/*global XLSX */
-/* exported b64it, setfmt */
-/* eslint no-use-before-define:0 */
-// var X = XLSX;
-// var XW = {
-//   /* worker message */
-//   msg: 'xlsx',
-//   /* worker scripts */
-//   worker: './../bundles/sheetjs/xlsxworker.js'
-// };
-
-
-// var global_wb;
-
-// var process_wb = (function() {
-//   var OUT = document.getElementById('out');
-//   var HTMLOUT = document.getElementById('htmlout');
-
-//   var get_format = (function() {
-//     var radios = document.getElementsByName( "format" );
-//     return function() {
-//       for(var i = 0; i < radios.length; ++i) if(radios[i].checked || radios.length === 1) return radios[i].value;
-//     };
-//   })();
-
-//   var to_json = function to_json(workbook) {
-//     var result = {};
-//     workbook.SheetNames.forEach(function(sheetName) {
-//       var roa = X.utils.sheet_to_json(workbook.Sheets[sheetName], {header:1});
-//       if(roa.length) result[sheetName] = roa;
-//     });
-//     console.log(result);
-//     return JSON.stringify(result, 2, 2);
-//   };
-
-//   var to_csv = function to_csv(workbook) {
-//     var result = [];
-//     workbook.SheetNames.forEach(function(sheetName) {
-//       var csv = X.utils.sheet_to_csv(workbook.Sheets[sheetName]);
-//       if(csv.length){
-//         result.push("SHEET: " + sheetName);
-//         result.push("");
-//         result.push(csv);
-//       }
-//     });
-//     return result.join("\n");
-//   };
-
-//   var to_fmla = function to_fmla(workbook) {
-//     var result = [];
-//     workbook.SheetNames.forEach(function(sheetName) {
-//       var formulae = X.utils.get_formulae(workbook.Sheets[sheetName]);
-//       if(formulae.length){
-//         result.push("SHEET: " + sheetName);
-//         result.push("");
-//         result.push(formulae.join("\n"));
-//       }
-//     });
-//     return result.join("\n");
-//   };
-
-//   var to_html = function to_html(workbook) {
-//     HTMLOUT.innerHTML = ""; 
-//     console.log(workbook.SheetNames);
-//     workbook.SheetNames.forEach(function(sheetName) {
-//       var htmlstr = X.write(workbook, {sheet:sheetName, type:'string', bookType:'html'});
-//       HTMLOUT.innerHTML += htmlstr;
-//       console.log(htmlstr);
-//     });
-//     return "";
-//   };
-
-//   return function process_wb(wb) {
-//     global_wb = wb;
-//     var output = "";
-//     switch(get_format()) {
-//       case "form": output = to_fmla(wb); break;
-//       case "html": output = to_html(wb); break;
-//       case "json": output = to_json(wb); break;
-//       default: output = to_csv(wb);
-//     }
-//     if(OUT.innerText === undefined) OUT.textContent = output;
-//     else OUT.innerText = output;
-//     if(typeof console !== 'undefined') console.log("output", new Date());
-//   };
-// })();
-
-// var setfmt = window.setfmt = function setfmt() { if(global_wb) process_wb(global_wb); };
-
-// var b64it = window.b64it = (function() {
-//   var tarea = document.getElementById('b64data');
-//   return function b64it() {
-//     if(typeof console !== 'undefined') console.log("onload", new Date());
-//     var wb = X.read(tarea.value, {type:'base64', WTF:false});
-//     process_wb(wb);
-//   };
-// })();
-
-// var do_file = (function() {
-//   var rABS = typeof FileReader !== "undefined" && (FileReader.prototype||{}).readAsBinaryString;
-//   // var domrabs = document.getElementsByName("userabs")[0];
-//   // if(!rABS) domrabs.disabled = !(domrabs.checked = false);
-
-//   // var use_worker = typeof Worker !== 'undefined';
-//   var domwork = document.getElementsByName("useworker")[0];
-//   // if(!use_worker) domwork.disabled = !(domwork.checked = false);
-
-//   var xw = function xw(data, cb) {
-//     var worker = new Worker(XW.worker);
-//     worker.onmessage = function(e) {
-//       switch(e.data.t) {
-//         case 'ready': break;
-//         case 'e': console.error(e.data.d); break;
-//         case XW.msg: cb(JSON.parse(e.data.d)); break;
-//       }
-//     };
-//     worker.postMessage({d:data,b:rABS?'binary':'array'});
-//   };
-
-//   return function do_file(files) {
-//     // rABS = domrabs.checked;
-//     // use_worker = domwork.checked;
-//     var f = files[0];
-//     var reader = new FileReader();
-//     reader.onload = function(e) {
-//       // if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
-//       var data = e.target.result;
-//       if(!rABS) data = new Uint8Array(data);
-//       // if(use_worker) xw(data, process_wb);
-//       else process_wb(X.read(data, {type: rABS ? 'binary' : 'array'}));
-//     };
-//     if(rABS) reader.readAsBinaryString(f);
-//     else reader.readAsArrayBuffer(f);
-//   };
-// })();
-
-// (function() {
-//   var drop = document.getElementById('drop');
-//   if(!drop.addEventListener) return;
-
-//   function handleDrop(e) {
-//     e.stopPropagation();
-//     e.preventDefault();
-//     do_file(e.dataTransfer.files);
-//   }
-
-//   function handleDragover(e) {
-//     e.stopPropagation();
-//     e.preventDefault();
-//     e.dataTransfer.dropEffect = 'copy';
-//   }
-
-//   drop.addEventListener('dragenter', handleDragover, false);
-//   drop.addEventListener('dragover', handleDragover, false);
-//   drop.addEventListener('drop', handleDrop, false);
-// })();
-
-// (function() {
-//   var xlf = document.getElementById('xlf');
-//   if(!xlf.addEventListener) return;
-//   function handleFile(e) { do_file(e.target.files); }
-//   xlf.addEventListener('change', handleFile, false);
-// })();
-//   var _gaq = _gaq || [];
-//   _gaq.push(['_setAccount', 'UA-36810333-1']);
-//   _gaq.push(['_trackPageview']);
-
-//   (function() {
-//     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-//     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-//     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-//   })();
-
-
-// var wb; // lee los datos completos
-// var rABS = false; // Si leer el archivo como una cadena binaria
-
-// function importf (obj) {// import
-//   console.log('en la funcion');
-//   console.log(obj);
-//                 if(!obj.files) {
-//                   console.log('retorno vacio');
-//                     return;
-//                 }
-//                 var f = obj.files[0];
-//                 var reader = new FileReader();
-//                 reader.onload = function(e) {
-//                     var data = e.target.result;
-//                     console.log(data);
-//                     if(rABS) {
-//                                                  wb = XLSX.read (btoa (fixdata (data)), {// conversión manual
-//                             type: 'base64'
-//                         });
-//                     } else {
-//                         wb = XLSX.read(data, {
-//                             type: 'binary'
-//                         });
-//                     }
-//                                          //wb.SheetNames[0] es el nombre de la primera hoja en Obtener hojas
-//                                          //wb.Sheets[Sheet name] Obtenga los datos de la primera Hoja
-//                    console.log('ingreso');
-//                    console.log(wb.Sheets[wb.SheetNames[0]]);
-//                     document.getElementById("wrapper").innerHTML= JSON.stringify( XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]) );
-//                 };
-//                 if(rABS) {
-//                     reader.readAsArrayBuffer(f);
-//                 } else {
-//                     reader.readAsBinaryString(f);
-//                 }
-//             }
- 
-//               function fixdata (data) {// Transferencia de archivos BinaryString
-//                 var o = "",
-//                     l = 0,
-//                     w = 10240;
-//                 for(; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
-//                 o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
-//                 return o;
-//             }
-
-
-
-// var excelFile;
-//     // lee el contenido del archivo
-//     function showfile(obj) {
-//       if(!obj.files) {
-//         return;
-//       }
-//       var f = obj.files[0];
-//       var reader = new FileReader();
-//       reader.readAsBinaryString(f);
-//       reader.onload = function(e) {
-//         var data = e.target.result;
-//         excelFile = XLSX.read(data, {
-//           type: 'binary'
-//         });
-
-        // Mostrar todas las tablas
-        // for(var i=0;i<excelFile.SheetNames.length;i++){
-        //  　document.getElementById("excelFile").innerHTML +=excelFile.SheetNames[i]+"="+JSON.stringify(XLSX.utils.sheet_to_json(excelFile.Sheets[excelFile.SheetNames[i]]))+"<br/>";
-        // 　　　　　　}
-
-        // var dataTable1 = "";
-        // Mostrar solo la primera tabla
-        // var headers = new Array();
-        // var str = XLSX.utils.sheet_to_json(excelFile.Sheets[excelFile.SheetNames[0]])
-        // console.log(str);
-        // dataTable1+= "<table border='1'><tr>"
-        // for(var key in str[0]){
-          // headers.push(key)  // Obtener el encabezado
-          // dataTable1 += "<th>" + key + "</th>"
-        // }
-        // dataTable1 += "</tr>"
-        // console.log(headers)
+    //itera cada input de clase .subtotal y la suma
+    $('.debito').each(function() { 
+      // var naturaleza=document.getElementById("item["+cont+"][naturaleza]").value;
+      var debito=document.getElementById("item["+cont+"][debito]");
+      var credito=document.getElementById("item["+cont+"][credito]");
+      var cuentaContable=document.getElementById("item["+cont+"][cuentaContable]");
+      var valorDebito=(eliminarMoneda(eliminarMoneda(eliminarMoneda($(this).val(),"$",""),".",""),",","."));
+      if (valorDebito=="" || valorDebito==null) {
+        valorDebito=0;
         
-        // Las primeras cinco líneas se muestran aquí
-        // for(var i=0;i<5;i++){
-        //   // var json = JSON.stringify(str[i])
-        //   dataTable1 += "<tr>"
-        //   var json = str[i]
-        //   for( var j=0;j<headers.length;j++){
-        //     dataTable1 += "<td>" + json[headers[j]] + "</td>";
-        //   }
-        //   dataTable1 += "</tr><br/>";
-        // }
+      }
+      if (debito.value !="" && credito.value =="") {
+        credito.disabled=true;
+      }
+      if (debito.value =="" && credito.value !="") {
+        debito.disabled=true;
+      }
+      if (debito.value =="" && credito.value =="") {
+        credito.disabled=false;
+        debito.disabled=false;
+      }   
+      
+        sumDebito +=parseFloat(valorDebito);
+            cont++;                    
+    }); 
+      $('.credito').each(function() { 
+      var valorCredito=(eliminarMoneda(eliminarMoneda(eliminarMoneda($(this).val(),"$",""),".",""),",","."));
+      var cuentaContable=document.getElementById("item["+contC+"][cuentaContable]");
+      if (valorCredito=="" || valorCredito==null) {
+        valorCredito=0;  
+      } 
+      
+      var valorCuentaContable=cuentaContable.value;
+        sumCredito +=parseFloat(valorCredito); 
+        contC++; 
+    }); 
+    //cambia valor del total y lo redondea a la segunda decimal
+    var totalD=sumDebito-restarDebito;
+    // var totalC=
+    $('#totalDebito').val(totalD.toFixed(2));
+    $('#totalCredito').val(sumCredito.toFixed(2));
+    var diferencia=totalD - sumCredito;
+    $('#totalDiferencia').val(diferencia.toFixed(2));
 
-        // dataTable1 += "</table>"
-        // document.getElementById("excelFile").innerHTML = dataTable1
-// 
-      // }
-    // }
+}
+
+
+
+
+function verificarTotal(){
+  var cuenta=0;
+    var estado=true;
+    $('.idCuentaContable').each(function() { 
+
+        var cuentaContable=document.getElementById('item['+cuenta+'][cuentaContable]');
+        var idCuentaContable=document.getElementById('item['+cuenta+'][idCuentaContable]');
+        var letreroCuentaContable=document.getElementById('item['+cuenta+'][letreroCuentaContable]');
+
+        if ($(this).val()=='') {
+          letreroCuentaContable.classList.remove("ocultar");
+          estado= false;
+        }
+
+
+        cuenta++;
+    });
+    return estado;
+}
+
+
 
 
 
@@ -652,11 +609,11 @@ $("#excel").change(function(e){
 //                  location.reload(); 
 //                 })
 //               }else{
-//                  Swal.fire(
-//                   'Algo ha salido mal!',
-//                   'Verifique su conexión a internet',
-//                   'error'
-//                 )
+                //  Swal.fire(
+                //   'Algo ha salido mal!',
+                //   'Verifique su conexión a internet',
+                //   'error'
+                // )
 //               }
 //           }); 
 //           });

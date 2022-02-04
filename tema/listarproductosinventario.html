@@ -7,7 +7,6 @@
 // print_r($aProductos);
 $oLista = new Lista("producto_servicio");
 $oLista->setFiltro("idEmpresa","=",$_SESSION['idEmpresa']);
-$oLista->setFiltro("idGtupo","is","NULL");
 $aProductos=$oLista->getLista();
 unset($oLista);
 
@@ -103,7 +102,7 @@ unset($oLista);
 
                                 <a href="<?php echo $URL; ?>editarproducto/<?php echo $productoS['idProductoServicio']; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 22px;"></i></a>
 
-                                 <a href="javascript:void(0)" id="btnEliminar" name="btnEliminarSubcentro[<?php echo $indexS?>]" value="<?php echo $productoS['idProductoServicio'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 22px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
+                                 <!-- <a href="javascript:void(0)" id="btnEliminar" name="btnEliminarSubcentro[<?php echo $indexS?>]" value="<?php echo $productoS['idProductoServicio'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 22px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a> -->
 
                               </td>
 

@@ -137,3 +137,48 @@ $("body").on("change","[name='datos[tipoCuenta]']",function(e){
       $("#aplicaCuatroMilNo").attr("checked","checked");
     }
 })
+
+
+
+
+
+
+
+
+
+$( window ).on( "load", function() {
+
+
+ var idEmpresa=$("[name='datos[idEmpresa]'").val();
+ console.log(idEmpresa);
+
+    $.ajax({
+      url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+      type:"POST", 
+      data: {"idEmpresa":idEmpresa}, 
+      dataType: "json",
+      }).done(function(msg){  
+        // var $aDatos=[];
+        console.log(msg);
+        if (msg.length==0) {
+          $(".cuentaContable").val('No hay cuentas contables creadas');
+          $(".cuentaContable").attr('disabled','disabled');
+
+        }
+        if (msg.length!=0) {
+          var sHtml='<option value="">Seleccione</option>';
+
+        msg.forEach(function(element,index){
+          sHtml+='<option value="'+element.idCuentaContable+'">'+element.codigoCuentaContable+' - '+element.nombre+'</option>';
+          // datos.push({
+          //     value: element.idCuentaContable,
+          //     label: element.codigoCuentaContable+" - "+element.nombre,
+              
+          //   })
+        })
+        $("#cuentaContable").html(sHtml);
+        
+      }
+    }); 
+
+});

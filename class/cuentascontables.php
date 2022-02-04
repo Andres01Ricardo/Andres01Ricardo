@@ -24,11 +24,16 @@ class CuentasContables extends Sql{
 		}
 
 
-		$sql="SELECT  cc.nombre,cc.idCuentaContable,cc.codigoCuenta as codigoCuentaContable,cc.naturaleza,cc.centroCosto,cc.detalle,cc.tercero,cc.porcentajeRetencion
+		$sql="SELECT  cc.nombre,cc.idCuentaContable,cc.codigoCuenta as codigoCuentaContable,cc.naturaleza,cc.centroCosto,cc.detalle,cc.tercero,cc.porcentajeRetencion,cc.idEmpresa
+
 			FROM cuenta_contable cc
-			WHERE 0=0 ".$condicion."
+			WHERE 0=0 ".$condicion." AND cc.codigoCuenta not like '000%'
 			ORDER BY cc.codigoCuenta ASC";
+
+		
+
 	    $aCuentaContable=$this->ejecutarSql($sql); 
+
 	    return $aCuentaContable; 
 
 	}

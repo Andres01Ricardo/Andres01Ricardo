@@ -1,6 +1,5 @@
 $(document).ready(function(e){
   sumar_columnas();
-  
 })
 
 
@@ -103,31 +102,7 @@ $("body").on("click","#btnGuardar",function(e){
 
   })
 
-$("body").on("change",".centroCosto",function(e){
-  // var texto = $(this).find('option:selected').text();
-  var idCentroCosto = $(this).find('option:selected').val();
-  var idItemCentroCosto=$(this).attr("id");
-  var numeroC=$(this).attr("numeroC");
-  // alert(idCentroCosto);
-  // alert(idItemCentroCosto);
-  // alert(numeroC);
 
-
-  $.ajax({
-    url:URL+"functions/centrocosto/cargarsubcentrocosto.php", 
-    type:"POST", 
-    data: {"idCentroCosto":idCentroCosto},
-    dataType: "json",
-    }).done(function(msg){ 
-      console.log(msg);
-      var sHtml="<option value=''>Seleccione</option>"; 
-          msg.forEach(function(element,index){
-            sHtml+="<option value='"+element.idSubcentroCosto+"'>"+element.codigoSubcentroCosto+" "+element.subcentroCosto  +"</option>"; 
-          })
-          var subcentro="item["+numeroC+"][subcentroCosto]";
-          $("[name='"+subcentro+"']").html(sHtml);
-  });
-});
 
 $("body").on("change",".conceptoSelect",function(e){
   var texto = $(this).find('option:selected').text();
@@ -324,7 +299,37 @@ $("body").on("change",".tipoDeduccion",function(e){
 })
 
 
+$("body").on("click touchstart",".btnEliminar",function(e){
 
+  $(this).parents("tr").css("background-color","#f0d0d0"); 
+
+  var elemento=this; 
+
+  setTimeout(function(){
+
+    $(elemento).parents("tr").remove();
+
+    $("#tableDeducciones tbody tr").each(function(index,element){
+
+      $(element).find(".tipoDeduccion").attr("id","item["+index+"][tipoDeduccion]").attr("name","item["+index+"][tipoDeduccion]")
+
+      $(element).find(".concepto").attr("id","item["+index+"][concepto]").attr("name","item["+index+"][concepto]")
+
+      $(element).find(".idConcepto").attr("id","item["+index+"][idConcepto]").attr("name","item["+index+"][idConcepto]")
+
+      $(element).find(".baseImpuestos").attr("id","item["+index+"][baseImpuestos]").attr("name","item["+index+"][baseImpuestos]")
+
+      $(element).find(".valor").attr("id","item["+index+"][valor]").attr("name","item["+index+"][valor]")
+
+    })
+
+    
+
+    calcularDeduccion(); 
+
+  },500)
+
+})
 
 $("body").on("click","#btnAgregar",function(e){
 

@@ -28,6 +28,8 @@ $oCuentaContableGeneral=new Informes();
 $aCuentaContableGeneral=$oCuentaContableGeneral->getCuentaContableGeneral(array("idEmpresa"=>$idEmpresa,"desde"=>$desde,"hasta"=>$hasta,"cuentaPrimera"=>$cuentaPrimera,"cuentaSegunda"=>$cuentaSegunda));
 
 
+//print_r($aCuentaContableGeneral);
+
 $oItem=new Data("empresa","idEmpresa",$idEmpresa);
 $aEmpresa=$oItem->getDatos();
 

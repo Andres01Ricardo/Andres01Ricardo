@@ -42,6 +42,7 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
   $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
 }
 
+// print_r($aEmpresa); 
 
 ?>
 
@@ -77,11 +78,11 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 
                 </div>
 
+                  <!-- <div style="padding: 1;"> -->
                 <div class="card-body">
-
                   <div class="row">
 
-                    <div class="col-md-12 col-lg-12 table-responsive">
+                    <div class="col-xs-11 col-md-12 col-lg-12 table-responsive">
 
                       <table class="table table-striped mayusculas" style="font-size: 11px;" id="tableEnterprise">
 
@@ -102,6 +103,7 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
                             <th>Dirección</th>
 
                             <th>Telefono</th>
+                            <th>Contabilidad Smartbuss</th>
 
                             <th>Acciones</th>
 
@@ -141,35 +143,40 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 
                               <td><?php echo $iEmpresa["telefono"]; ?></td>
 
-                              <td class="centrar">
+                              <td><?php 
+                              
+                              $conta=$iEmpresa["manejaInventario"]==1?'SI':'NO';
+                              echo $conta; ?></td>
 
-                                <a href="<?php  echo $URL; ?>verempresa/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 20px;"></i></a>
+                              <td class="centrar" style="display: flex; align-items: center;">
 
-                                <a href="<?php echo $URL; ?>editarempresa/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 20px;"></i></a>
+                                <a href="<?php  echo $URL; ?>verempresa/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>"  data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-eye" style="color: #8A96FF;font-size: 16px;"></i></a>
+
+                                <a href="<?php echo $URL; ?>editarempresa/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 16px;"></i></a>
 
                                 <?php if($iEmpresa["estado"]==1){ ?>
 
                                 <?php if ($_SESSION['idRol']!=5) {
                                   // code...
                                   ?>
-                                <a href="javascript:void(0)" class="activar" data-toggle="tooltip" data-placement="top" title="Bloquear" accion="1" name="<?php echo $iEmpresa['idEmpresa']; ?>"><i class="fas fa-lock" style="color: #FF5D5D;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" class="activar" data-toggle="tooltip" data-placement="top" title="Bloquear" accion="1" name="<?php echo $iEmpresa['idEmpresa']; ?>"><i class="fas fa-lock" style="color: #FF5D5D;font-size: 16px;"></i></a>
 
                                 <?php }}else{ ?>
 
                                 <?php if ($_SESSION['idRol']!=5) {
                                   // code...
                                   ?>
-                                <a href="javascript:void(0)"  accion="2" name="<?php echo $iEmpresa['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Desbloquear"><i class="fas fa-lock-open" style="color: #65E572;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)"  accion="2" name="<?php echo $iEmpresa['idEmpresa']; ?>" data-toggle="tooltip" data-placement="top" title="Desbloquear"><i class="fas fa-lock-open" style="color: #65E572;font-size: 16px;"></i></a>
 
                                 <?php }} ?>
                                 
                                  <?php if($_SESSION['idRol']==1 || $_SESSION['idRol']==2){ ?>
 
-                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresarRol" data-toggle="tooltip"  data-placement="top" title="Cambiar al perfil de la empresa" ><i class="fas fa-arrow-circle-right" style="color: #09D2A4;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresarRol" data-toggle="tooltip"  data-placement="top" title="Cambiar al perfil de la empresa" ><i class="fas fa-arrow-circle-right" style="color: #09D2A4;font-size: 16px;"></i></a>
 
-                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a trabajar en la empresa" ><i class="fas fa-arrow-alt-circle-up" style="color: #A2D7FF;font-size: 20px;"></i></a>
+                                <a href="javascript:void(0)" id="<?php echo $id; ?>" class="ingresar" data-toggle="tooltip"  data-placement="top" title="Ingresar a trabajar en la empresa" ><i class="fas fa-arrow-alt-circle-up" style="color: #7001AC;font-size: 16px;"></i></a>
                                 <?php } ?>
-                                
+                                </td>
                             </tr>
 
                           <?php } ?>
@@ -181,8 +188,8 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
                     </div>
 
                   </div>
-
-                  </div>
+                   </div>
+                  <!-- </div> -->
 
                 </div>
 

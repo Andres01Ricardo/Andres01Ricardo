@@ -26,7 +26,7 @@ class FacturaCompra extends Sql{
 
 			  INNER JOIN tercero as p ON(p.idTercero=pe.idTercero)
 
-			  WHERE 0=0 ".$condicion." AND (p.tipoTercero=2 or p.tipoTercero=4 or p.tipoTercero=6 or p.tipoTercero=7) GROUP BY p.idTercero ORDER BY p.razonSocial ASC";
+			  WHERE 0=0 ".$condicion."  GROUP BY p.idTercero ORDER BY p.razonSocial ASC";
 
 
 
@@ -82,7 +82,7 @@ class FacturaCompra extends Sql{
 
 			  fc.fechaRegistro, fc.fechaRecibido, fc.fechaPago, fc.nroFactura, fc.archivo, 
 
-			  fc.total, fc.estado, fc.subtotal ,fc.saldo
+			  fc.total, fc.estado, fc.subtotal ,fc.saldo,fc.archivo2
 
 			  FROM factura_compra as fc 
 
@@ -105,14 +105,14 @@ class FacturaCompra extends Sql{
 	}
 
 
-	public function getCuentasPagar($empresa,$desde,$hasta){
+	public function getCuentasPagar($empresa){
 
 
 
 		$sql="SELECT * 
 			from factura_compra
-			WHERE (estado = '2' OR estado = '1' OR estado = '4') and fechaRecibido >= '$desde' and fechaRecibido <= '$hasta' and idEmpresa = $empresa";
-
+			WHERE (estado = '2' OR estado = '1' OR estado = '4') and idEmpresa = $empresa
+			ORDER BY idProveedor ASC";
 	    $aCuentasPagar=$this->ejecutarSql($sql); 
 	    return $aCuentasPagar; 
 

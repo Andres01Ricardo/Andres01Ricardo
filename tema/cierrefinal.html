@@ -1,0 +1,132 @@
+<?php 
+require_once("./class/parametrosdocumentos.php");
+
+$idEmpresa=$_SESSION['idEmpresa'];
+
+$oParametro=new ParametrosDocumentos(); 
+$aParametro=$oParametro->getParametrosDocumentos($idEmpresa);
+
+print_r($aParametro);
+
+$oLista = new Lista('tipos_documento_contable');
+$tiposDocumento=$oLista->getLista();
+unset($oLista);
+
+
+$oLista = new Lista('cuenta_contable');
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+$oLista->setFiltro("codigoCuenta","!=","0000000000");
+$oLista->setOrden("codigoCuenta","ASC");
+$cuentaC=$oLista->getLista();
+unset($oLista);
+
+
+?>
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Cierre anual</li>
+
+          <li class="breadcrumb-item">Cierre definitivo</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <!-- <h4>Cerrar cuentas de resultados</h4>
+                   -->
+                  <h5>Esta opción permite dejar en ceros de forma automática las cuentas de resultados</h5>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="negrita">CC/NIT<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control numero" name="datos[nit]" id="datos[nit]" required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+                        <label class="negrita">Comprobante<span class="requerido">*</span>:</label>
+                        <select class="custom-select select2 form-control" name="datos[tipoDocumento]" id="tipoDocumento"   required>
+                          <option value="">Seleccione una opción</option>
+
+                                <?php foreach($aParametro as $iParametro){ ?>
+                                  <option value='<?php echo $iParametro['idParametrosDocumentos']; ?>' ><?php echo $iParametro["letra"].' - '.$iParametro["comprobante"].'    '.$iParametro["descripcionParametro"]; ?></option>
+                            <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+
+                  
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Cuenta de utilidad<span class="requerido">*</span>:</label>
+                        <select class="form-control select2" name="datos[idCuentaContable]" id="idCuentaContable" required>
+                          <option value="">Seleccione </option>
+                          <?php foreach($cuentaC as $index => $cuentaCont){ ?>
+                          <option value="<?php echo $cuentaCont["idCuentaContable"] ?>"><?php echo $cuentaCont["codigoCuenta"].' '.$cuentaCont["nombre"] ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Cuenta de perdida<span class="requerido">*</span>:</label>
+                        <select class="form-control select2" name="datos[idCuentaContable]" id="idCuentaContable" required>
+                          <option value="">Seleccione </option>
+                          <?php foreach($cuentaC as $index => $cuentaCont){ ?>
+                          <option value="<?php echo $cuentaCont["idCuentaContable"] ?>"><?php echo $cuentaCont["codigoCuenta"].' '.$cuentaCont["nombre"] ?></option>
+                          <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                  
+                  </div>
+                
+                </div>
+
+            <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</form>
+

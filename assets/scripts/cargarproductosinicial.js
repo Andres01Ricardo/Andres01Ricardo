@@ -43,18 +43,18 @@ $("body").on("click touchstart","#btnGuardarInfo",function(e){
       if(true === $("#frmGuardar").parsley().validate()){
          Swal.fire({
         title: '¿Está seguro?',
-        text: 'Está a punto de cargar los productos del inventario inicial!',
+        text: 'Está a punto de crear estos productos cargados!',
         icon: 'warning', 
         showCancelButton: true,
         showLoaderOnConfirm: true,
         confirmButtonText: `Si, Guardar!`,
         cancelButtonText:'Cancelar',
         preConfirm: function(result) {
-          return new Promise(function(resolve) {
+          return new Promise(function(resolve) { 
             var formu = document.getElementById("frmGuardar");
             var data = new FormData(formu);
             $.ajax({
-            url:URL+"functions/inventario/guardarproductosinventarioinicialcargado.php", 
+            url:URL+"functions/inventario/guardarproductoscargados.php", 
             type:"POST", 
             data: data,
             contentType:false, 
@@ -72,7 +72,7 @@ $("body").on("click touchstart","#btnGuardarInfo",function(e){
                       {
                         icon: 'success',
                         title: 'Los productos '+codigosFallos+ 'no se puedieron crear',
-                        text: 'La línea o el grupo no existe',
+                        text: 'El grupo no existe o el producto ya existe',
                         closeOnConfirm: true,
                       }
                     ).then((result) => {
@@ -83,7 +83,7 @@ $("body").on("click touchstart","#btnGuardarInfo",function(e){
                   Swal.fire(
                     {
                     icon: 'success',
-                    title: 'Productos inventario inicial cargados!',
+                    title: 'Productos creados!',
                     text: 'con exito',
                     closeOnConfirm: true,
                   }
@@ -168,100 +168,165 @@ $("#excel").change(function(e){
       alert('solo se pueden cargar 300 items por archivo');
     }
 
-    var sHtml='<div class="col-md-12"><table class="table table-striped mayusculas centrar" id="tableLineasGrupos"><thead><th>Código Línea</th><th>Código Grupo</th><th>Referencia</th><th>Descripción</th><th>Saldo</th><th>Stock mínimo</th></thead><tbody>';
+    var sHtml='<div class="col-md-12"><table class="table table-striped mayusculas centrar" id="tableLineasGrupos"><thead><th>Cód Grupo</th><th>Cód producto</th><th>Descripción</th><th>IVA</th><th>Costo promedio</th><th>Tarifa</th><th>Precio1</th><th>Precio2</th><th>Precio3</th><th>Precio4</th></thead><tbody>';
 
     for (var i = 6; i <= numeroFilas; i++) {
         if (wb.Sheets[nameS]['A'+i] != undefined) {
           // if (control==1) {
 
 
+            // if (wb.Sheets[nameS]['A'+i].w==undefined) {
+            //   var codigoLinea=wb.Sheets[nameS]['A'+i].v.trim();
+            // }
+            // if (wb.Sheets[nameS]['A'+i].w!=undefined) {
+            //   var codigoLinea=wb.Sheets[nameS]['A'+i].w.trim();
+            // }
+
+
             if (wb.Sheets[nameS]['A'+i].w==undefined) {
-              var codigoLinea=wb.Sheets[nameS]['A'+i].v.trim();
+              var codigoGrupo=wb.Sheets[nameS]['A'+i].v.trim();
             }
+
             if (wb.Sheets[nameS]['A'+i].w!=undefined) {
-              var codigoLinea=wb.Sheets[nameS]['A'+i].w.trim();
+              var codigoGrupo=wb.Sheets[nameS]['A'+i].w.trim();
             }
 
 
             if (wb.Sheets[nameS]['B'+i].w==undefined) {
-              var linea=wb.Sheets[nameS]['B'+i].v.trim();
+              var codigoProducto=wb.Sheets[nameS]['B'+i].v.trim();
             }
-
             if (wb.Sheets[nameS]['B'+i].w!=undefined) {
-              var linea=wb.Sheets[nameS]['B'+i].w.trim();
+              var codigoProducto=wb.Sheets[nameS]['B'+i].w.trim();
             }
 
 
             if (wb.Sheets[nameS]['C'+i].w==undefined) {
-              var codigoGrupo=wb.Sheets[nameS]['C'+i].v.trim();
+              var producto=wb.Sheets[nameS]['C'+i].v.trim();
             }
             if (wb.Sheets[nameS]['C'+i].w!=undefined) {
-              var codigoGrupo=wb.Sheets[nameS]['C'+i].w.trim();
+              var producto=wb.Sheets[nameS]['C'+i].w.trim();
             }
+
+
 
 
             if (wb.Sheets[nameS]['D'+i].w==undefined) {
-              var grupo=wb.Sheets[nameS]['D'+i].v.trim();
+              var iva=wb.Sheets[nameS]['D'+i].v.trim();
             }
             if (wb.Sheets[nameS]['D'+i].w!=undefined) {
-              var grupo=wb.Sheets[nameS]['D'+i].w.trim();
+              var iva=wb.Sheets[nameS]['D'+i].w.trim();
             }
 
 
 
 
             if (wb.Sheets[nameS]['E'+i].w==undefined) {
-              var inventario=wb.Sheets[nameS]['E'+i].v.trim();
+              var costoPromedio=wb.Sheets[nameS]['E'+i].v.trim();
             }
             if (wb.Sheets[nameS]['E'+i].w!=undefined) {
-              var inventario=wb.Sheets[nameS]['E'+i].w.trim();
+              var costoPromedio=wb.Sheets[nameS]['E'+i].w.trim();
             }
-
-
-
 
             if (wb.Sheets[nameS]['F'+i].w==undefined) {
-              var costo=wb.Sheets[nameS]['F'+i].v.trim();
+              var tarifa=wb.Sheets[nameS]['F'+i].v.trim();
             }
             if (wb.Sheets[nameS]['F'+i].w!=undefined) {
-              var costo=wb.Sheets[nameS]['F'+i].w.trim();
+              var tarifa=wb.Sheets[nameS]['F'+i].w.trim();
             }
 
 
+            if(wb.Sheets[nameS]['G'+i]!=undefined){
+                if (wb.Sheets[nameS]['G'+i].w==undefined) {
+                  if (wb.Sheets[nameS]['G'+i].v!=undefined) {
+  
+                  var precio1=wb.Sheets[nameS]['G'+i].v.trim();
+                  }
+                  if (wb.Sheets[nameS]['G'+i].v==undefined) {
+                    var precio1='';
+                  }
+                }
+                if (wb.Sheets[nameS]['G'+i].w!=undefined) {
+                  var precio1=wb.Sheets[nameS]['G'+i].w.trim();
+                }
+              }
+              if(wb.Sheets[nameS]['G'+i]==undefined){
+                var precio1='';
+              }
 
 
-            // if (wb.Sheets[nameS]['G'+i].w==undefined) {
-            //   var venta=wb.Sheets[nameS]['G'+i].v.trim();
-            // }
-            // if (wb.Sheets[nameS]['G'+i].w!=undefined) {
-            //   var venta=wb.Sheets[nameS]['G'+i].w.trim();
-            // }
+            if(wb.Sheets[nameS]['H'+i]!=undefined){
+                if (wb.Sheets[nameS]['H'+i].w==undefined) {
+                  if (wb.Sheets[nameS]['H'+i].v!=undefined) {
+  
+                  var precioDos=wb.Sheets[nameS]['H'+i].v.trim();
+                  }
+                  if (wb.Sheets[nameS]['H'+i].v==undefined) {
+                    var precioDos='';
+                  }
+                }
+                if (wb.Sheets[nameS]['H'+i].w!=undefined) {
+                  var precioDos=wb.Sheets[nameS]['H'+i].w.trim();
+                }
+              }
+              if(wb.Sheets[nameS]['H'+i]==undefined){
+                var precioDos='';
+              }
 
 
+              if(wb.Sheets[nameS]['I'+i]!=undefined){
+                if (wb.Sheets[nameS]['I'+i].w==undefined) {
+                  if (wb.Sheets[nameS]['I'+i].v!=undefined) {
+  
+                  var precioTres=wb.Sheets[nameS]['I'+i].v.trim();
+                  }
+                  if (wb.Sheets[nameS]['I'+i].v==undefined) {
+                    var precioTres='';
+                  }
+                }
+                if (wb.Sheets[nameS]['I'+i].w!=undefined) {
+                  var precioTres=wb.Sheets[nameS]['I'+i].w.trim();
+                }
+              }
+              if(wb.Sheets[nameS]['I'+i]==undefined){
+                var precioTres='';
+              }
+            
+            if(wb.Sheets[nameS]['J'+i]!=undefined){
+                if (wb.Sheets[nameS]['J'+i].w==undefined) {
+                  if (wb.Sheets[nameS]['J'+i].v!=undefined) {
+  
+                  var precioCuatro=wb.Sheets[nameS]['J'+i].v.trim();
+                  }
+                  if (wb.Sheets[nameS]['J'+i].v==undefined) {
+                    var precioCuatro='';
+                  }
+                }
+                if (wb.Sheets[nameS]['J'+i].w!=undefined) {
+                  var precioCuatro=wb.Sheets[nameS]['J'+i].w.trim();
+                }
+              }
+              if(wb.Sheets[nameS]['J'+i]==undefined){
+                var precioCuatro='';
+              }
+            
+            var index=i-6;
 
-
-            // if (wb.Sheets[nameS]['H'+i].w==undefined) {
-            //   var devolucion=wb.Sheets[nameS]['H'+i].v.trim();
-            // }
-            // if (wb.Sheets[nameS]['H'+i].w!=undefined) {
-            //   var devolucion=wb.Sheets[nameS]['H'+i].w.trim();
-            // }
-
-
-
- 
             sHtml+='<tr>';
-              sHtml+='<td><input type="text" name="item['+i+'][codigoLinea]" id="item['+i+'][codigoLinea]" class="form-control mayusculas centrar"  placeholder="credito" value="'+codigoLinea+'" readonly></td>';
-              sHtml+='<td><input type="text" name="item['+i+'][codigoGrupo]" id="item['+i+'][codigoGrupo]" class="form-control mayusculas centrar"  placeholder="credito" value="'+linea+'" readonly></td>';
-              sHtml+='<td><input type="text" name="item['+i+'][referencia]" id="item['+i+'][referencia]" class="form-control mayusculas centrar"  placeholder="credito" value="'+codigoGrupo+'" readonly></td>';
-              sHtml+='<td><input type="text" name="item['+i+'][descripcion]" id="item['+i+'][descripcion]" class="form-control mayusculas centrar"  placeholder="credito" value="'+grupo+'" readonly></td>';
-              sHtml+='<td><input type="text" name="item['+i+'][saldo]" id="item['+i+'][saldo]" class="form-control mayusculas centrar"  placeholder="credito" value="'+inventario+'" readonly></td>';
-              sHtml+='<td><input type="text" name="item['+i+'][stockMinimo]" id="item['+i+'][stockMinimo]" class="form-control mayusculas centrar"  placeholder="credito" value="'+costo+'" readonly></td>';
-              // sHtml+='<td><input type="text" name="item['+i+'][venta]" id="item['+i+'][venta]" class="form-control mayusculas centrar"  placeholder="credito" value="'+venta+'" readonly></td>';
-              // sHtml+='<td><input type="text" name="item['+i+'][devolucion]" id="item['+i+'][devolucion]" class="form-control mayusculas centrar"  placeholder="credito" value="'+devolucion+'" readonly></td>';
-
-            sHtml+='</tr>';
-
+              // sHtml+='<td><input type="text" name="item['+i+'][codigoLinea]" id="item['+i+'][codigoLinea]" class="form-control mayusculas centrar"  placeholder="credito" value="'+codigoLinea+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][grupo]" id="item['+index+'][grupo]" class="form-control mayusculas centrar"  placeholder="" value="'+codigoGrupo+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][codigo]" id="item['+index+'][codigo]" class="form-control mayusculas centrar"  placeholder="" value="'+codigoProducto+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][nombre]" id="item['+index+'][nombre]" class="form-control mayusculas centrar"  placeholder="" value="'+producto+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][iva]" id="item['+index+'][iva]" class="form-control mayusculas centrar"  placeholder="" value="'+iva+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][costoPromedio]" id="item['+index+'][costoPromedio]" class="form-control mayusculas centrar"  placeholder="" value="'+costoPromedio+'" readonly></td>';
+              
+              sHtml+='<td><input type="text" name="item['+index+'][tarifa]" id="item['+index+'][tarifa]" class="form-control mayusculas centrar"  placeholder="" value="'+tarifa+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][precioUno]" id="item['+index+'][precioUno]" class="form-control mayusculas centrar"  placeholder="" value="'+precio1+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][precioDos]" id="item['+index+'][precioDos]" class="form-control mayusculas centrar"  placeholder="" value="'+precioDos+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][precioTres]" id="item['+index+'][precioTres]" class="form-control mayusculas centrar"  placeholder="" value="'+precioTres+'" readonly></td>';
+              sHtml+='<td><input type="text" name="item['+index+'][precioCuatro]" id="item['+index+'][precioCuatro]" class="form-control mayusculas centrar"  placeholder="" value="'+precioCuatro+'" readonly></td>';
+              
+            sHtml+='</tr>';                                                                                                                              
+                                                                                                                              
       }
 
     }

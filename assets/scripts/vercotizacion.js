@@ -121,37 +121,3 @@ $("body").on("click touchstart","#btnGuardar",function(e){
     }
 
   })
-
-
-$(document).ready(function(){
-  var table= $('#tablamuestra').DataTable( {
-        paging: true,
-        ordering: false,
-        dom: 'Bt',
-        buttons: [
-                       
-            {
-            extend: 'pdfHtml5',
-            text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 26px;"></i>',
-            // messageTop:'<br><div>'+'nit: '+nit+'</div>'+'<div>  email: '+email+'</div><div>   telefono: '+telefono+'</div>',
-            // messageTop:'nit: '+nit+'  email: '+email+'   telefono: '+telefono,
-            // title: '<table class="table"><thead style="text-aling:left;"><tr style="text-aling:left;"><th rowspan="2"><img src="'+url+logo+'" width="60" height="60"></th><th>'+empresa+'</th><th>No. '+tipo+'-'+comprobante+'-'+numero+'</th></tr><tr><th>Nit: '+nit+'</th><th>fecha: '+fecha+'</th></tr></thead></table>',
-            // title:empresa,
-            titleAttr: 'PDF',
-            customize: function(doc) {
-                doc.pageMargins = [ 10, 10, 10, 10 ]
-            },
-            
-            },
-            {
-            extend: 'print',
-            text: '<i class="fas fa-print" style="color: #fff;font-size: 26px;"></i>',
-            autoPrint: true,
-            // messageTop:'<br><div>'+'nit: '+nit+'</div>'+'<div>  email: '+email+'</div><div>   telefono: '+telefono+'</div>',
-            // title: '<table class="table"><thead style="text-aling:left;"><tr style="text-aling:left;"><th rowspan="2"><img src="'+url+logo+'" width="60" height="60"></th><th>'+empresa+'</th><th>No. '+tipo+'-'+comprobante+'-'+numero+'</th></tr><tr><th>Nit: '+nit+'</th><th>fecha: '+fecha+'</th></tr></thead></table>',
-            titleAttr: 'IMPRIMIR'
-            }
-            
-        ]
-    } );
-})

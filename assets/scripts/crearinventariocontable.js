@@ -51,7 +51,7 @@ $(document).ready(function(e){
 	$.ajax({
 	    url:URL+"functions/inventario/cargarproductoscontable.php", 
 	    type:"POST", 
-	    data: {"idEmpresa":idEmpresa}, 
+	    data: {"idEmpresa":idEmpresa,"contable":1}, 
 	    dataType: "json",
 	    }).done(function(msg){  
         console.log(msg);
@@ -192,7 +192,7 @@ $("body").on("click touchstart","#btnGuardarProducto",function(e){
             var formu = document.getElementById("frmGuardarProducto");
             var data = new FormData(formu);
             $.ajax({
-            url:URL+"functions/inventario/guardarproductoinventario.php", 
+            url:URL+"functions/inventario/guardarproductocontable.php", 
             type:"POST", 
             data: data,
             contentType:false, 
@@ -214,7 +214,7 @@ $("body").on("click touchstart","#btnGuardarProducto",function(e){
                   $.ajax({
                       url:URL+"functions/inventario/cargarproductosinventario.php", 
                       type:"POST", 
-                      data: {"idEmpresa":idEmpresa}, 
+                      data: {"idEmpresa":idEmpresa,"contable":1}, 
                       dataType: "json",
                       }).done(function(msg){  
                         console.log(msg);

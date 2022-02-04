@@ -1,0 +1,780 @@
+<?php 
+
+require_once("class/empresa.php"); 
+
+require_once("class/clientes.php"); 
+
+
+
+$oClientes=new Clientes(); 
+
+$oEmpresa=new Empresa(); 
+if($_SESSION["idRol"]==1){
+$validarIngreso=1;
+}
+// if($_SESSION["idRol"]==2){
+if(empty($_SESSION["idEmpresa"])){
+
+  $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+  $valUser=$oItem->getDatos(); 
+
+  unset($oItem);  
+
+
+
+  $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+
+$aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+}if(!empty($_SESSION["idEmpresa"])){
+  $aEmpresas=$oEmpresa->getEmpresas();
+}
+
+
+
+
+
+$oLista = new Lista('unidad');
+
+$oLista->setOrden("nombre","ASC");
+
+$aUnidades=$oLista->getLista();
+
+unset($oLista);
+
+
+
+// if($_SESSION["idRol"]!=1&&$_SESSION["idRol"]!=2){
+if(!empty($_SESSION["idEmpresa"])){
+
+  $aClientes=$oClientes->getClientesEmpresa(); 
+
+  $idEmpresa=$_SESSION["idEmpresa"];
+
+}
+
+
+
+?>
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<form enctype="multipart/form-data" id="frmGuardar">
+
+<?php if(!empty($_SESSION['idEmpresa'])){ ?>
+
+<input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $_SESSION['idEmpresa']; ?>">
+<input type="hidden" name="datos[tipoProdcutos]" id="tipoProdcutos" >
+
+<?php } ?>
+<section class="section">
+        <ul class="breadcrumb breadcrumb-style ">
+          <li class="breadcrumb-item">
+            <a href="<?php echo $URL; ?>">
+              <i class="fas fa-home"></i></a>
+          </li>
+          <li class="breadcrumb-item">Factura de venta</li>
+          <li class="breadcrumb-item">Crear Factura</li>
+        </ul>
+        <div class="section-body">
+          <div class="card">
+            <?php if(empty($_SESSION['idEmpresa'])){ ?>
+            <div class="row">
+              <div class="card-header">
+                  <h4>No se encuentra en una empresa, por favor ingrese a la empresa en la que va a trabajar</h4>
+                </div>
+            </div>
+          <?php } ?>
+            <?php if(!empty($_SESSION['idEmpresa'])){ ?>
+            <div class="row">
+              <div class="card-header">
+                  <h4>Crear Factura con xml</h4>
+                   <a href="cargarxmlventac" class="btn btn-success">XML</a>
+                </div>
+            </div>
+          <?php } ?>
+          </div>
+          <?php if(!empty($_SESSION['idEmpresa'])){ ?>
+          <div class="row">
+            <div class="col-md-12 col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4>Información General</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <?php if(empty($_SESSION['idEmpresa'])){ ?>
+                    <div class=" col-md-4 ">
+                      <div class="form-group">
+                          <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
+                          <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aEmpresas as $iItem){ ?>
+                          <option value="<?php echo $iItem['idEmpresa']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                    <?php }
+                    $oLista=new Lista("parametros_documentos");
+                    $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+                    $oLista->setFiltro("tipo","=",6);
+                    $parametros=$oLista->getLista();
+                    unset($oLista);
+                    ?>
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-2 <?php }else{ ?> col-md-3 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Tipo documento<span class="requerido">*</span>:</label>
+                        <select class="form-control select2" name="datos[tipoDocumento]" id="tipoDocumento" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($parametros as $iParametro){ ?>
+                          <option value="<?php echo $iParametro['idParametrosDocumentos']; ?>"  numeracion="<?php echo $iParametro['numeracionActual']; ?>" ><?php echo 'F-'.$iParametro["comprobante"].'-'.$iParametro["descripcion"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-2 <?php }else{ ?> col-md-3 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Número<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[numeroComprobante]" id="numeroComprobante" required >
+                      </div>
+                    </div>
+
+
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-2 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Fecha factura<span class="requerido">*</span>:</label>
+                        <input type="text" readonly class="form-control datepicker" name="datos[fechaFactura]" id="datos[fechaFactura]" required>
+                      </div>
+                    </div>
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-2 <?php }else{ ?> col-md-4 <?php } ?>">
+                      <div class="form-group">
+                        <label class="negrita">Tercero<span class="requerido">*</span>:</label>
+                        <select class="form-control select2 mayusculas" name="datos[idCliente]" id="datos[idCliente]" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($aClientes as $iCliente){ ?>
+                          <option value="<?php echo $iCliente["idTercero"]; ?>"><?php echo $iCliente["nit"].' - '.$iCliente["razonSocial"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Fecha vencimiento factura<span class="requerido">*</span>:</label>
+                        <input type="text" readonly class="form-control datepicker" name="datos[fechaVencimientoFactura]" id="datos[fechaVencimientoFactura]" required>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="form-group">
+                          <label class="negrita">N° Factura<span class="requerido">*</span>:</label>
+                          <input type="text" class="form-control mayusculas" name="datos[nroFactura]" id="datos[nroFactura]" placeholder="N° Factura" required>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Factura:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file" name="file" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Archivo 2:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file2" name="file2" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Detalles Factura</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <th>Productos</th>
+
+                            <th>Descripción</th>
+
+                            <th>Bodega</th>
+
+                            <th>Cantidad</th>
+
+                            <th>Unidad</th>
+
+                            <th>Valor Unit.</th>
+
+                            <th>Subtotal</th>
+
+                            <th>Iva(%)</th>
+
+                            <th>Total</th>
+
+                            <th class="text-center">
+
+                              <a href="javascript:void(0)" data-toggle="tooltip" id="agregar" data-placement="top" title="Agregar" class="btn btn-icon btn-sm btn-primary"><i class="fas fa-plus"></i></a>
+
+                            </th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                          <?php
+                          $oBodega=new Lista("bodega");
+                          $oBodega->setFiltro("idEmpresa","=",$idEmpresa);
+                          $aBodegas=$oBodega->getLista();
+                          unset($oBodega);
+                           ?>
+                            <tr  class="filaItem">
+
+                              <td>1<span style="margin-right: 2px; color: red;" data-toggle="modal" data-target="#modalProducto" class="registrar ocultar" id="item[0][registrar]" numero='0'><i class="fas fa-star-of-life" data-toggle="tooltip" data-placement="top" title="Debe parametrizar la cuenta contable de este producto"></i></span></td>
+
+                              <td><input type="text" name="item[0][producto]" id="item[0][producto]" class="form-control producto mayusculas" required placeholder="Detalle">
+
+                                <input type="hidden" name="item[0][idProducto]" id="item[0][idProducto]" class="form-control idProducto" ></td>
+
+                              <td><input type="text" class="form-control descripcion mayusculas" name="item[0][descripcion]" id="item[0][descripcion]" placeholder="Descripción" required></td>
+
+                              <td><select class="form-control mayusculas idBodega" name="item[0][idBodega]" id="item[0][idBodega]" >
+
+                                  <option value="">Seleccione una opción</option>
+
+                                  <?php foreach($aBodegas as $iBodegas){ ?>
+
+                                  <option value="<?php echo $iBodegas['idBodega']; ?>"><?php echo $iBodegas["codigo"].' '.$iBodegas["nombre"]; ?></option>
+
+                                  <?php } ?>
+
+                                </select></td>
+
+                              <td><input type="text" class="form-control decimales cantidad" name="item[0][cantidad]" id="item[0][cantidad]" placeholder="Cantidad" required></td>
+
+                              <td><select class="form-control mayusculas idUnidad" name="item[0][idUnidad]" id="item[0][idUnidad]" required>
+
+                                  <option value="">Seleccione una opción</option>
+
+                                  <?php foreach($aUnidades as $iUnidades){ ?>
+
+                                  <option value="<?php echo $iUnidades['idUnidad']; ?>"><?php echo $iUnidades["nombre"]; ?></option>
+
+                                  <?php } ?>
+
+                                </select></td>
+
+                              <td><input type="text" class="form-control moneda decimales valorUnitario " name="item[0][valorUnitario]" id="item[0][valorUnitario]" placeholder="Valor Unitario" required></td>
+
+                              <td><input type="text" class="form-control moneda subtotal " name="item[0][subtotal]" id="item[0][subtotal]" placeholder="Subtotal" required readonly></td>
+
+                              <td><input type="text" class="form-control decimales iva " name="item[0][iva]" id="item[0][iva]" placeholder="IVA" required></td>
+
+                              <td><input type="text" class="form-control moneda total " name="item[0][total]" id="item[0][total]" placeholder="TOTAL" required readonly></td>
+
+                              <td class="centrar">
+
+                                <a href="javascript:void(0)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a>
+
+                              </td>
+
+                            </tr>
+
+                        </tbody>
+
+                        <tfoot>
+                          <tr>
+                            <td colspan="9" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+                            <td><input type="text" class="form-control moneda" name="datos[subtotal]" id="datos[subtotal]" placeholder="SUBTOTAL" readonly></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td colspan="9" style="text-align: right;" class="negrita">DESCUENTO:</td>
+                            <td><input type="text" class="form-control moneda decimales" name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value=0></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td colspan="9" style="text-align: right;" class="negrita">IVA:</td>
+                            <td><input type="text" class="form-control moneda" name="datos[iva]" id="datos[iva]" placeholder="IVA" readonly></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td colspan="9" style="text-align: right;" class="negrita">TOTAL:</td>
+                            <td><input type="text" class="form-control moneda" name="datos[total]" id="datos[total]" placeholder="TOTAL" readonly></td>
+                            <td></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                      <div class="card-header">
+                    <h4>Impuestos</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class=" col-md-3 ">
+                        <div class="form-group">
+                            <label class="negrita">Tipo deducción<span class="requerido">*</span>:</label>
+                            <select class="form-control mayusculas" id="tipoDeduccion">
+                            <option value="">Seleccione una opción</option>
+                            <option value="3">ARL</option>
+                            <option value="4">Otros descuentos autorizados</option>
+                            <option value="2">RETE ICA</option>
+                            <option value="1">Retención</option>
+                            <option value="5">Retención salarios</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-3 ocultar concepto-select">
+                        <div class="form-group">
+                            <label class="negrita d-block">Concepto<span class="requerido">*</span>:</label>
+                            <select class="form-control" name="conceptoSelect" id="conceptoSelect">
+                            <option value="">Seleccione una opción</option>
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 concepto-texto">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Concepto<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control " name="conceptoText" id="conceptoText" >
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-2 ocultar baseimpuestos">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Base Impuestos<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control monedaD decimales " name="baseImpuestos" id="baseImpuestos">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 valor">
+
+                        <div class="form-group">
+
+                            <label class="negrita ">Valor<span class="requerido">*</span>:</label>
+
+                            <input type="text" class="form-control moneda " name="valor" id="valor">
+
+                        </div>
+
+                      </div>
+
+                      <div class=" col-md-3 boton-agregar">
+
+                        <div class="form-group text-right">
+
+                            <label class="negrita d-block">&nbsp;</label>
+
+                            <a class="btn btn-success mr-1" id="btnAgregar">Agregar</a>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-12 col-lg-12">
+
+                        <table class="table table-striped mayusculas" id="tableDeducciones">
+
+                          <thead>
+
+                            <tr>
+
+                              <th>Tipo Deducción</th>
+
+                              <th>Descripción</th>
+
+                              <th>Valor</th>
+
+                              <th class="text-center" style="width: 50px">-</th>
+
+                            </tr>
+
+                          </thead>
+
+                          <tbody>
+
+                          </tbody>
+
+                        </table>
+
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-md-4">
+
+                        <div class="form-group">
+
+                            <label class="negrita">Total Deducciones:</label>
+
+                            <input type="text" class="form-control moneda decimales totalDeduccion" name="datos[totalDeduccion]" id="datos[totalDeduccion]" value="0" readonly>
+
+                        </div>
+
+                      </div>
+
+
+
+                      <div class="col-md-4">
+
+                          <div class="form-group">
+
+                              <label class="negrita">Total a Pagar:</label>
+
+                              <input type="text" class="form-control mayusculas moneda" name="datos[totalPago]" id="datos[totalPago]" value='<?php echo "$".number_format(0,2,",","."); ?>' readonly required>
+
+                          </div>
+
+                          </div>
+
+                           <?php 
+                          $oItem=new Lista("banco_cuenta_contable");
+                          $oItem->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+                          $aBancos=$oItem->getLista();
+                          unset($oItem); 
+                          ?>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="negrita">Forma de pago:</label>
+                                <select class="form-control select2 dropup" name="datos[formaPagoFactura]" id="formaPagoFactura" required>
+                                  <optgroup label="Crear forma de pago">
+                                    <option value="">Seleccione</option>
+                                    <option value="0"><i class="fas fa-plus-circle" >+ NUEVO</i></option>
+                                    
+                                  </optgroup>
+                                  <optgroup label="Formas de pago existentes:">
+                                    <?php foreach ($aBancos as $key=> $value){  
+                                      $oItem=new Data("cuenta_contable","idCuentaContable",$value["idEmpresaCuenta"]);
+                                      $cuenta=$oItem->getDatos();
+                                      unset($oItem);
+                                      ?>
+                                      <option value="<?php echo $value["idBancoCuentaContable"]; ?>"><?php echo $value["nombre"].'   -  '.$cuenta["codigoCuenta"]; ?></option>
+                                    <?php } ?>
+                                  </optgroup>
+                              </select>
+
+                            </div>
+
+                          </div>
+
+
+                  </div>
+              </div>
+
+                      <!-- <div class="col-md-4 ocultar" id="divCuentaContableTotal">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Cuenta contable total a Pagar:</label>
+
+                          <select class="form-control" name="datos[cuentaContableTotal]" id="cuentaContableTotal">
+
+                            
+                        
+                          </select>
+
+                        </div>
+
+                      </div> -->
+
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                  <div class="card-footer text-right">
+
+                    <a class="btn btn-primary mr-1" id="btnGuardar">Guardar</a>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div> <?php } ?>
+
+    </div>
+
+</section>
+
+</form>
+<?php if(!empty($_SESSION['idEmpresa'])){ 
+
+  $idEmpresa=$_SESSION["idEmpresa"];
+
+  $oItem=new Lista("parametros_documentos");
+  $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+  $aParametros=$oItem->getLista();
+  unset($oItem);
+
+
+
+
+
+  $oItem=new Lista("cuenta_bancaria");
+$oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aBancos=$oItem->getLista();
+unset($oItem);
+
+$oItem=new Lista("retencion");
+// $oItem->setFiltro("idEmpresa","=",$idEmpresa);
+$aRetenciones=$oItem->getLista();
+unset($oItem);
+}
+?>
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalFormaPago" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabelFormaPago" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabelFormaPago">CREAR FORMA DE PAGO</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body ui-front">
+
+          <form enctype="multipart/form-data" id="frmGuardarFormaPago">
+
+            <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+          <div class="row">
+          <div class=" col-md-6 ">
+            <div class="form-group">
+
+                <label class="negrita d-block">Nombre<span class="requerido">*</span>:</label>
+                <input type="text" class="form-control nombre" name="datos[nombre]" required>
+            </div>
+          </div>
+
+          <div class=" col-md-6 ">
+            <div class="form-group">
+              <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
+
+                <select class="form-control mayusculas" id="idCuentaBancaria" name="datos[idCuentaBancaria]" required>
+
+                  <option value="">Seleccione una opción</option>
+                  <option value="0">CREDITO</option>
+                  <?php foreach($aBancos as $key=> $value){ ?>
+                  <option value="<?php echo $value['idCuentaBancaria'];?>"><?php echo $value['nombreCuenta'].'-'.$value['numeroCuenta'];?></option>
+                  <?php } ?>
+                </select>
+            </div>
+          </div>
+          <div class=" col-md-12 ml-auto">
+                <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
+            <div class="form-group">
+
+                <!-- <input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" >
+                <input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
+                <input type="hidden" class="form-control naturaleza" name="datos[naturaleza]" id="naturaleza">  -->
+
+                <select class="form-control select2 " style="width:100%;" name="datos[idCuentaContable]" id="formaPagoCuenta" required>
+                  
+                </select>               
+              
+            </div>
+          </div>
+        </div>
+        
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardarFormaPago">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Parametrizar producto</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body ui-front">
+
+          <form enctype="multipart/form-data" id="frmGuardarProducto">
+
+            <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
+
+            <div class="row">
+          <div class=" col-md-3 ">
+            <div class="form-group">
+              <label class="negrita d-block">Producto:</label>
+
+              <input type="text" class="form-control producto" name="item[0][productoCompra]"  required>
+              <input type="hidden" class="form-control idProducto"  name="item[0][idProductoCompra]" required>
+
+            </div>
+          </div>
+          
+          <div class=" col-md-3 ">
+            <div class="form-group">
+              <label class="negrita d-block">Cuenta contable:</label>
+              <input type="text" class="form-control cuentaContable" name="item[0][cuentaContableProductoCompra]"   required>
+              <input type="hidden" class="form-control idCuentaContable" name="item[0][idCuentaContableProductoCompra]"  required>
+              <input type="hidden" class="form-control naturaleza" name="item[0][naturalezaProductoCompra]"   required>
+            </div>
+          </div>
+          <div class=" col-md-3 ">
+             <label class="negrita d-block">Tipo documento:</label>
+            <!-- <div class="form-inline"> -->
+                <div class="form-group">
+                <select class="form-control" name="item[0][tipoDocumentoProductoCompra]" id="tipoDocumento" >
+                  <?php foreach ($aParametros as $keyT => $valueT) {
+                  $oItem=new Data("tipos_documento_contable","idTiposDocumento",$valueT["tipo"]);
+                  $aTipo=$oItem->getDatos();?>
+                  <option value="<?php echo $valueT["idParametrosDocumentos"]; ?>"><?php echo $aTipo['letra'].'-'.$valueT["comprobante"].'-'.$valueT['descripcion'];?></option> 
+                <?php } ?>
+                </select>
+              </div>
+            <!-- </div> -->
+          </div>
+           <div class=" col-md-3  ocultar">
+            <div class="form-group">
+              
+                <input type="hidden" name="item[0][naturalezaNuevaProducto]" value="compra">
+            </div>
+          </div>
+          <?php 
+        // } 
+          ?>
+
+        </div>
+        
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardarProducto">Guardar</a>
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+

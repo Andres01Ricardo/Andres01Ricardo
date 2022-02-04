@@ -50,9 +50,7 @@ $oLista->setFiltro("idEmpresa","=",$idEmpresa);
 $bodegas=$oLista->getLista();
 unset($oLista);
 
-
 ?>
-
 
 
 
@@ -100,6 +98,7 @@ unset($oLista);
                               <th>BODEGA</th>
                               <th>CANTIDAD</th>
                               <th>STOCK MÍNIMO</th>
+                              <th>COSTO TOTAL INICIAL</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -132,6 +131,7 @@ unset($oLista);
 
                                   <td><input type="text" class="form-control numero cantidad centrar" name="datos[cantidad]" id="cantidad" placeholder="Cantidad" required></td>
                                   <td><input type="text" class="form-control numero minimo centrar" name="datos[minimo]" id="minimo" placeholder="Stock mínimo" required></td>
+                                  <td><input type="text" class="form-control numero moneda centrar" name="datos[costo]" id="costo" placeholder="Costo inventario inicial" required></td>
                                 <!-- <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="datos[valorUnitario]" id="valorUnitario" placeholder="Valor Unitario" required ></td>
                                 <td><input type="text" class="form-control moneda total mayusculas" name="datos[total]" id="total" placeholder="TOTAL" required readonly></td> -->
                               </tr>
@@ -165,6 +165,7 @@ unset($oLista);
                             <th>BODEGA</th>
                             <th>EXISTENCIA INICIAL</th>
                             <th>STOCK MÍNIMO</th>
+                            <th>COSTO INICIAL</th>
                             <!-- <th>VALOR UNITARIO</th>
                             <th>TOTAL</th> -->
                           </tr>
@@ -173,6 +174,8 @@ unset($oLista);
                           <?php
 
                           foreach ($aInventario as $key => $value) {
+                            // print_r($value);
+                            // print_r('>>>');
                             
                           
                             $oItem = new Data("producto_servicio","idProductoServicio",$value["idProducto"]);
@@ -202,8 +205,9 @@ unset($oLista);
                               <td><?php echo $producto["nombre"];?></td>
                               <td> <?php echo $unidad["nombre"]; ?> </td>
                               <td> <?php echo $bodegaProducto["nombre"]; ?> </td>
-                                <td><?php echo $value["existencia"]; ?></td>
-                                <td><?php echo $value["stockMinimo"]; ?></td>
+                              <td><?php echo $value["existencia"]; ?></td>
+                              <td><?php echo $value["stockMinimo"]; ?></td>
+                              <td><?php echo "$".number_format($value["costoInicial"],0,",","."); ?></td>
                               <!-- <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="datos[valorUnitario]" id="valorUnitario" placeholder="Valor Unitario" required ></td>
                               <td><input type="text" class="form-control moneda total mayusculas" name="datos[total]" id="total" placeholder="TOTAL" required readonly></td> -->
                             </tr>
@@ -264,11 +268,11 @@ unset($oLista);
       <div class="row">
       <div class="col-md-4">
         <label>CODIGO:</label>
-        <input type="text" name="datos[codigoProducto]" class="form-control" id="codigoProducto" required>
+        <input type="text" name="datos[codigo]" class="form-control" id="codigo" required>
       </div>
       <div class="col-md-6">
         <label>PRODUCTO:</label>
-        <input type="text" name="datos[producto]" class="form-control" id="producto" required>
+        <input type="text" name="datos[nombre]" class="form-control" id="nombre" required>
       </div>
       <div class="col-md-2">
           <label class="negrita">¿Maneja inventario?<span class="requerido">*</span>:</label>

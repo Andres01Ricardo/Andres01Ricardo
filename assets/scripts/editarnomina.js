@@ -58,6 +58,8 @@ $("body").on("change","[name='datos[idEmpresa]']",function(e){
 
     }
 
+    
+
 })
 
 
@@ -478,4 +480,3 @@ $("body").on("click touchstart","#btnEliminar",function(e){
 })
 
 
-$('[data-toggle="tooltip"]').tooltip();

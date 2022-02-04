@@ -325,7 +325,7 @@ $(".total").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
 
       }).done(function(msg){  
 
-	          $("#idEmpresa").val(msg.idEmpresa);
+	          // $("#idEmpresa").val(msg.idEmpresa);
 	          if (msg.idProveedor==null) {
 	          	alert('El proveedor no esta registrado');
 	          	// alert($("#ciudadEmisor").val());

@@ -123,7 +123,6 @@ $("#excel").change(function(e){
     var numero=0;
     var control=1;
     var fecha='';
-    var sc=0;
     for (var i = 8; i <= numeroFilas; i++) {
         if (wb.Sheets[nameS]['A'+i] != undefined) {
           
@@ -168,8 +167,8 @@ $("#excel").change(function(e){
         
       
         sHtml+='<tr>';
-        sHtml+='<td><input type="text" name="item['+cont+'][codigoCentroCosto]" id="item['+cont+'][codigoCentroCosto]" class="form-control codigoCentroCosto mayusculas"  placeholder="Cuenta" value="'+centroCosto+'" readonly required></td>';
-        sHtml+='<td><input type="text" name="item['+cont+'][centroCosto]" id="item['+cont+'][centroCosto]" class="form-control centroCosto mayusculas"  placeholder="centro costo" value="'+nombreCentroCosto+'" readonly required></td>';
+        sHtml+='<td><input type="text" name="item['+cont+'][codigoCentroCosto]" id="item['+cont+'][codigoCentroCosto]" class="form-control codigoCentroCosto mayusculas"  placeholder="Cuenta" value="'+centroCosto+'" readonly></td>';       
+        sHtml+='<td><input type="text" name="item['+cont+'][centroCosto]" id="item['+cont+'][centroCosto]" class="form-control centroCosto mayusculas"  placeholder="centro costo" value="'+nombreCentroCosto+'" readonly></td>';  
         sHtml+='<td><input type="text" name="item['+cont+'][codigoSubcentroCosto]" id="item['+cont+'][codigoSubcentroCosto]" class="form-control codigoSubcentroCosto mayusculas"  placeholder="Subcentro costo" value="'+subcentroCosto+'" readonly></td>';
         sHtml+='<td><input type="text" name="item['+cont+'][subcentroCosto]" id="item['+cont+'][subcentroCosto]" class="form-control subcentroCosto mayusculas"  placeholder="Subcentro costo" value="'+nombreSubcentroCosto+'" readonly></td>';
         // sHtml+='<td><input type="text" name="item['+tabla+']['+cont+'][tercero]" id="item['+tabla+']['+cont+'][tercero]" class="form-control mayusculas"  placeholder="tercero" value="'+wb.Sheets[nameS]['E'+i].w.trim()+'" readonly></td>';

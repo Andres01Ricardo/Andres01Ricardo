@@ -82,9 +82,9 @@ if($_SESSION["idRol"]!=5 && $_SESSION["idRol"]!=2){
 			</tr>
 			<tr>
 				<th><input type="checkbox" name="item[0][checksubcuenta]" id="checksubcuenta" value="1" ><label class="negrita">Subcuenta</label></th>
-				<td style="display: none;" id="tdSubcuenta"><input type="text" class="form-control idSubcuenta mayusculas numero"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="Codigo subcuenta nuevo"></td>
+				<td style="display: none;" id="tdSubcuenta"><!-- <input type="text" class="form-control idSubcuenta mayusculas numero"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="Codigo subcuenta nuevo"> --></td>
 
-				<td ><input type="text" class="form-control subcuenta mayusculas"  name="item[0][subcuenta]" id="subcuenta" placeholder="Subcuenta" ></td>
+				<td ><input type="hidden" class="form-control idSubcuenta"  name="item[0][idSubcuenta]" id="idSubcuenta" placeholder="subcuenta"><input type="text" class="form-control subcuenta mayusculas"  name="item[0][subcuenta]" id="subcuenta" placeholder="Subcuenta" ></td>
 				<td ><input type="text" class="form-control mayusculas"  name="item[0][descripcionSubcuenta]" id="descripcionSubcuenta" placeholder="Descripción" readonly disabled></td>
 			</tr>
 			<tr >

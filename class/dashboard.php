@@ -78,10 +78,10 @@ class Dashboard extends Sql{
 
 				
 
-		$sql="SELECT  sum(valor) as retencion 
+		$sql="SELECT  sum(fvd.valor) as retencion 
 		FROM factura_compra_deduccion fvd
 		INNER JOIN factura_compra fv on fvd.idFacturaCompra=fv.idFacturaCompra
-		WHERE tipoDeduccion=1 AND idEmpresa=$idEmpresa";
+		WHERE fvd.tipoDeduccion=1 AND fv.idEmpresa=$idEmpresa AND fv.estado!='5'";
 
 		
 
@@ -92,8 +92,27 @@ class Dashboard extends Sql{
 	}
 
 
+	public function getAutoRetencion($idEmpresa){
+
+
+		if(!isset($_SESSION)){ session_start(); }
+
+				
+
+		$sql="SELECT  sum(fvd.valor) as retencion 
+		FROM factura_venta_deduccion fvd
+		INNER JOIN factura_venta fv on fvd.idFacturaVenta=fv.idFacturaVenta
+		WHERE fvd.idConcepto=33 AND fv.idEmpresa=$idEmpresa AND fv.estado!='5'";
+
+	    $dRetencion=$this->ejecutarSql($sql); 
+
+	    return $dRetencion; 
+
+	}
+
+
 	public function getIVA($idEmpresa){
-		$dia=date('Y-m').'01';
+		$dia=date('Y-m').'-01';
 
 		if(!isset($_SESSION)){ session_start(); }
 
@@ -101,7 +120,8 @@ class Dashboard extends Sql{
 
 		$sql="SELECT  sum(iva) as iva 
 		FROM factura_venta
-		WHERE idEmpresa=$idEmpresa AND estado!='5' AND fechaFactura<'$dia'";
+		WHERE idEmpresa=$idEmpresa AND estado!='5' ";
+		// WHERE idEmpresa=$idEmpresa AND estado!='5' AND fechaFactura<'$dia'";
 
 
 	    $dIVA=$this->ejecutarSql($sql); 
@@ -111,14 +131,14 @@ class Dashboard extends Sql{
 	}
 	public function getIVAC($idEmpresa){
 
-		$dia=date('Y-m').'01';
+		$dia=date('Y-m').'-01';
 		if(!isset($_SESSION)){ session_start(); }
 
 				
 
 		$sql="SELECT  sum(iva) as iva 
 		FROM factura_compra
-		WHERE idEmpresa=$idEmpresa AND estado!='5' AND fechaFactura<'$dia'";
+		WHERE idEmpresa=$idEmpresa AND estado!='5'";
 
 
 	    $dIVAC=$this->ejecutarSql($sql); 
@@ -127,7 +147,7 @@ class Dashboard extends Sql{
 
 	}
 	public function getReteIVA($idEmpresa){
-		$dia=date('Y-m').'01';
+		$dia=date('Y-m').'-01';
 
 		if(!isset($_SESSION)){ session_start(); }
 
@@ -176,7 +196,8 @@ public function getGastosOperacionalesVentas(){
 		from estado_financiero ef 
 		inner join estado_financiero_item efi on efi.idEstadoFinanciero=ef.idEstadoFinanciero 
 		
-		WHERE ef.idEmpresa=$idEmpresa and efi.cuenta='Gastos operacionales de Ventas'";
+		WHERE ef.idEmpresa=$idEmpresa and efi.cuenta='Gastos operacionales de Ventas'
+		ORDER BY ef.periodoAnio ASC,ef.periodoMes ASC";
 																
 
 
@@ -197,7 +218,8 @@ public function getGastosOperacionalesVentas(){
 		from estado_financiero ef 
 		inner join estado_financiero_item efi on efi.idEstadoFinanciero=ef.idEstadoFinanciero 
 		
-		WHERE ef.idEmpresa=$idEmpresa and efi.cuenta='Gastos operacionales de Administracion'";
+		WHERE ef.idEmpresa=$idEmpresa and efi.cuenta='Gastos operacionales de Administracion'
+		ORDER BY ef.periodoAnio ASC,ef.periodoMes ASC";
 																
 
 
@@ -219,6 +241,7 @@ public function getGastosOperacionalesVentas(){
 		inner join estado_financiero_item efi on efi.idEstadoFinanciero=ef.idEstadoFinanciero 
 		
 		WHERE ef.idEmpresa=$idEmpresa and efi.cuenta='Costos de Ventas'
+		ORDER BY ef.periodoAnio ASC,ef.periodoMes ASC
 ";
 
 
@@ -241,6 +264,7 @@ public function getGastosOperacionalesVentas(){
 		inner join estado_financiero_item efi on efi.idEstadoFinanciero=ef.idEstadoFinanciero 
 		
 		WHERE ef.idEmpresa=$idEmpresa and efi.cuenta='Ingresos Operacionales'
+		ORDER BY ef.periodoAnio ASC,ef.periodoMes ASC
 		";
 		
 

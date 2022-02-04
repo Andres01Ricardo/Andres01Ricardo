@@ -3,7 +3,7 @@
 // });
 $( window ).on( "load", function() {
   var idEmpresa=$("#idEmpresa").val();
-
+  // alert(idEmpresa);
     $.ajax({
       url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
       type:"POST", 
@@ -24,13 +24,39 @@ $( window ).on( "load", function() {
           sHtml+='<option value="'+element.idCuentaContable+'">'+element.codigoCuentaContable+' - '+element.nombre+'</option>';
           
         })
-        $("#idCuentaInventario").html(sHtml);
+        // $("#idCuentaInventario").html(sHtml);
         $("#idCuentaCosto").html(sHtml);
         $("#idCuentaVenta").html(sHtml);
-        $("#idCuentaDevolucion").html(sHtml);
+        // $("#idCuentaDevolucion").html(sHtml);
         // autocomplete(); 
       }
       }); 
+
+
+      // $.ajax({
+      //   url:URL+"functions/inventario/cargarlineainventario.php", 
+      //   type:"POST", 
+      //   data: {"idEmpresa":idEmpresa}, 
+      //   dataType: "json",
+      //   }).done(function(msg){  
+      //     // var $aDatos=[];
+      //     console.log(msg);
+      //     if (msg.length==0) {
+      //       var sHtml='<option value="">No hay lineas creadas</option>';
+
+      //     }
+      //     if (msg.length!=0) {
+      //       var sHtml='<option value="">Seleccione</option>';
+
+      //       msg.forEach(function(element,index){
+      //         sHtml+='<option value="'+element.idLineaInventario+'">'+element.codigo+' - '+element.nombre+'</option>';
+              
+      //       })
+      //       $("#idLineaInventario").html(sHtml);
+            
+      //     // autocomplete(); 
+      //   }
+      // }); 
   })
 
 $("body").on("click touchstart","#btnGuardar",function(e){
@@ -88,6 +114,7 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 $("body").on("click","#btnAgregarCat",function(e){
   $("#modalCat").modal('show');
 })
+
 
 $("body").on("click touchstart","#btnGuardarCategoria",function(e){
     e.preventDefault();

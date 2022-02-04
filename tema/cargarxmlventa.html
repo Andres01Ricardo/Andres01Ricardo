@@ -5,7 +5,7 @@
 			<div class="col-md-3">
 				<div class="form-group">
 					<label>cargar xml</label>
-					<input type="file" name="xml" id="xml" class="form-control">
+					<input type="file" name="xml" id="xml" accept="text/xml" class="form-control">
 					
 				</div>
 			</div>
@@ -21,7 +21,7 @@
 
 
 <form enctype="multipart/form-data" id="frmGuardar">
-	<?php if(!empty($_SESSION['idEmpresa'])) { ?>
+	<?php if($_SESSION['idRol']==3||$_SESSION['idRol']==4){ ?>
 
 <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>" required>
 
@@ -59,6 +59,25 @@
             <div class="custom-file">
 
               <input type="file" class="custom-file-input" id="file" name="file" >
+
+              <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+          <div class="form-group">
+
+            <label class="negrita">Segundo archivo:</label>
+
+            <div class="custom-file">
+
+              <input type="file" class="custom-file-input" id="file2" name="file2" >
 
               <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
 
@@ -431,35 +450,6 @@
                         </div>
 
                       </div>
-                      <div class="col-md-4">
-
-                          <div class="form-group">
-
-                              <label class="negrita">Total a Pagar:</label>
-
-                              <input type="text" class="form-control mayusculas moneda" name="datos[totalPago]" id="datos[totalPago]" value='<?php echo "$".number_format(0,2,",","."); ?>' readonly required>
-
-                          </div>
-
-                          </div>
-                          <?php 
-                          $oItem=new Lista("banco_cuenta_contable");
-                          $oItem->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
-                          $aBancos=$oItem->getLista();
-                          unset($oItem); 
-                          ?>
-                          <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="negrita">Forma de pago:</label>
-                                <select class="form-control" name="datos[formaPago]" id="formaPago">
-                                  <?php foreach ($aBancos as $key=> $value){  ?>
-                                    <option><?php echo $value["nombre"]; ?></option>
-                                  <?php } ?>
-                              </select>
-
-                            </div>
-
-                          </div>
                   </div>
               </div>
 

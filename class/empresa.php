@@ -26,7 +26,7 @@ class Empresa extends Sql{
 		}
 
 
-		$sql="SELECT e.idEmpresa, e.razonSocial ,e.nit, e.direccion, c.nombre as ciudad,e.telefono,e.digitoVerificador,d.nombre as departamento,e.estado
+		$sql="SELECT e.idEmpresa, e.razonSocial ,e.nit, e.direccion, c.nombre as ciudad,e.telefono,e.digitoVerificador,d.nombre as departamento,e.estado,e.manejaInventario,e.manejaContabilidad
 			FROM empresa as e 
 			LEFT JOIN usuario_empresa as ue ON(ue.idEmpresa=e.idEmpresa)
 			INNER JOIN ciudad as c ON(c.idCiudad = e.idCiudad)

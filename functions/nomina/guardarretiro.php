@@ -91,7 +91,7 @@ $lista2=$oLista->getLista();
 unset($oLista);
 
 if(!empty($lista2)){
-    $oItem=new Data("empleado_informacion_laboral","idUsuario",$lista2[0]["idEmpleadoInformacionLaboral"]); 
+    $oItem=new Data("empleado_informacion_laboral","idEmpleadoInformacionLaboral",$lista2[0]["idEmpleadoInformacionLaboral"]); 
     $oItem->estado=2;
     $oItem->guardar(); 
     unset($oItem);

@@ -118,13 +118,32 @@ if($_SESSION["idRol"]==5){
 
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-2">
 
                       <div class="form-group">
 
                         <label class="negrita">Digito Verificador<span class="requerido">*</span>:</label>
 
                         <input type="text" class="form-control numero" maxlength="1" name="datos[digitoVerificador]" id="datos[digitoVerificador]" required>
+
+                      </div>
+
+                    </div>
+                    <div class="col-md-2">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Responsable IVA<span class="requerido">*</span>:</label>
+
+                        <select class="form-control" name="datos[responsableIva]" id="datos[responsableIva]" required>
+
+                          <option value="">Seleccione una opción</option>
+
+                          <option value="1">Si</option>
+
+                          <option value="2">No</option>
+
+                        </select>
 
                       </div>
 
@@ -285,6 +304,22 @@ if($_SESSION["idRol"]==5){
                     </div>
 
                   </div>
+                     <!-- <fieldset> -->
+                  <div class="row">
+                       <div class="col-md-2">
+                        <div class="form-group">
+                                <input  type="checkbox" name="datos[inventario]" id="datos[inventario]" value="1">
+                                <label class="form-check-label" for="defaultCheck1">¿MANEJA INVENTARIO?</label>
+                              </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                                <input class="form-check-input menu" type="checkbox" name="datos[contabilidad]" id="datos[contabilidad]" value="1">
+                                <label class="form-check-label" for="defaultCheck1">¿MANEJA CONTABILIDAD SMARTBUSS?</label>
+                              </div>
+                      </div>
+                  </div>
+                     <!-- </fieldset>  -->
 
                   </div>
 
@@ -404,23 +439,8 @@ if($_SESSION["idRol"]==5){
                   <?php if ($_SESSION['idRol']!=5) {
                     
                   ?>
-                  <div class="row">
-                    <label>¿Desea registrar la empresa adicionalmente como cliente o proveedor de otras empresas?</label>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-2">
-                      <div class="form-group">
-                              <input  type="checkbox" name="datos[checkCliente]" id="datos[checkCliente" value="1">
-                              <label class="form-check-label" for="defaultCheck1">CLIENTE</label>
-                            </div>
-                    </div>
-                    <div class="col-md-2">
-                      <div class="form-group">
-                              <input class="form-check-input menu" type="checkbox" name="datos[checkProveedor]" id="datos[checkProveedor]" value="1">
-                              <label class="form-check-label" for="defaultCheck1">PROVEEDOR</label>
-                            </div>
-                    </div>
-                  </div>
+                  
+                  
                 <?php 
               }
               } ?>

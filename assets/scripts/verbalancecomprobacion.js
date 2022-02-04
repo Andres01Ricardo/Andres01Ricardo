@@ -78,18 +78,18 @@ $(document).ready(function(){
             extend: 'pdf',
             customize: function(doc) {
                 doc.pageMargins = [ 10, 10, 15, 10 ];
-                // doc.defaultStyle.font = 'Arial';
-                // doc.defaultStyle.fontSize = 16;
+                doc.defaultStyle.font = 'Arial';
+                doc.defaultStyle.fontSize = 12;
                 // $(doc.document).css('width', '95%');
             },
             // columns: [ 0, 1, 2, 3,4,5,7,8,9,10,11,12 ],
-            pageSize: 'A3',
+            pageSize: 'A4',
            
             text: '<i class="far fa-file-pdf" style="color: #fff;font-size: 24px;"></i>',
             
             titleAttr: 'PDF',
 
-            title:'AS-Smartbuss--             '+empresa+'                '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n BALANCE COMPROBACION - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,  
+            title:'AS-Smartbuss--       '+empresa+'            '+hoy+'\n Nit: '+nit+'-'+digitoVerificador+'\n BALANCE COMPROBACION - '+tipo+'\n DESDE:  '+desde+' HASTA: '+hasta,  
           
                 },
             {

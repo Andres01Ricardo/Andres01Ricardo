@@ -1,9 +1,4 @@
-
-<?php 
-  ini_set("session.cookie_lifetime","6");
-  ini_set("session.gc_maxlifetime","6");
-  session_start();
-?>
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -84,7 +79,7 @@ $colista=$cLista->getLista();
 
 
 
-<!-- <script>
+<script>
   window.fbAsyncInit = function() {
     FB.init({
       appId      : '233846978142582',
@@ -114,13 +109,14 @@ $colista=$cLista->getLista();
   function checkLoginState() {
       FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
-      });
+      },{scope: 'public_profile,email,pages_manage_ads,leads_retrieval,pages_manage_metadata,pages_read_engagement,pages_show_list'});
     }
  
   function statusChangeCallback(response) {
                 console.log('statusChangeCallback');
                 console.log(response);
                 console.log(response.authResponse);
+
                 // console.log(response.authResponse.accessToken);
                 // The response object is returned with a status field that lets the
                 // app know the current login status of the person.
@@ -140,49 +136,6 @@ $colista=$cLista->getLista();
                       ' en el aplicativo.';
                 }
             }
-</script> -->
-
-<!-- <div id="fb-root"></div> -->
-<!-- <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_ES/sdk.js#xfbml=1&version=v11.0&appId=233846978142582&autoLogAppEvents=1" nonce="V177mSJh"></script> -->
-
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '324516595868813',
-      cookie     : true,
-      xfbml      : true,
-      version    : 'v11.0'
-    });
-      
-    FB.AppEvents.logPageView();   
-      
-  };
-
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-
-
-
-
-FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-});
-
-
-// {
-//     status: 'connected',
-//     authResponse: {
-//         accessToken: '...',
-//         expiresIn:'...',
-//         signedRequest:'...',
-//         userID:'...'
-//     }
-// }
 </script>
 <body>
 
@@ -267,16 +220,15 @@ FB.getLoginStatus(function(response) {
 
               <!-- <a href="timeline.html" class="dropdown-item has-icon"> <i class="fas fa-bolt"></i> Activities </a>  -->
 
-              <?php if($_SESSION['idRol']==1||$_SESSION['idRol']==2){ ?>
+              <?php if($_SESSION[idRol]==1||$_SESSION[idRol]==2){ ?>
 
               <a href="<?php echo $URL ?>configuracion" class="dropdown-item has-icon"> <i class="fas fa-cog"></i> Configuración </a>
 
               <?php } ?>
 
-              <?php if(!empty($_SESSION['idRolPrincipal'])){ ?>
+              <?php if($_SESSION[idRolPrincipal]!=""){ ?>
 
               <a href="<?php echo $URL ?>functions/sesion/retornarsesion.php" class="dropdown-item has-icon"> <i class="fas fa-sign-out-alt"></i> Salir de perfil empresa </a>
-
 
               <?php } ?>
 
@@ -460,7 +412,7 @@ FB.getLoginStatus(function(response) {
 
       <div class="main-content">
 
-        <?php if(!empty($_SESSION[idRolPrincipal])){ 
+        <?php if($_SESSION[idRolPrincipal]!=""){ 
 
         $oItem = new Data('empresa',"idEmpresa", $_SESSION["idEmpresa"]);
 
@@ -550,6 +502,25 @@ FB.getLoginStatus(function(response) {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
 
   <script src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script> 
+
+
+  <script src="https://cdn.jsdelivr.net/npm/datatables-buttons-excel-styles@1.2.0/js/buttons.html5.styles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/datatables-buttons-excel-styles@1.2.0/js/buttons.html5.styles.templates.min.js"></script>
+
+
+<!--Start of Tawk.to Script-->
+<!-- <script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/61709822f7c0440a591f3d0f/1fift4hkf';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script> -->
+<!--End of Tawk.to Script-->
 
 </body>
 

@@ -136,7 +136,11 @@ unset($oLista);
                                 <a href="<?php echo $URL; ?>verfacturacompra/<?php echo $id; ?>" name="<?php echo $iEmpresa['idEmpresa']; ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="fas fa-briefcase" style="color: #0B08FF;font-size: 19px;"></i></a>
 
                                 <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 19px;"></i></a>
-
+                                <?php if (!empty($iFactura['archivo2'])) {
+                                      
+                                    ?>
+                                    <a href="<?php echo $URL.$iFactura['archivo2'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver segundo archivo" ><i class="fas fa-file" style="color: #FFAE30;font-size: 19px;"></i></a>
+                                    <?php } ?>
                             </tr>
 
                           <?php } ?>

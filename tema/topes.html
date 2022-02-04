@@ -1,0 +1,190 @@
+<?php 
+
+  require_once("class/informes.php");
+include_once("class/exogenas.php");
+
+$oControl=new Control(); 
+$validarIngreso=1; 
+// $oEmpresa=new Empresa(); 
+
+if (empty($_SESSION["idEmpresa"])) {
+
+
+    // if($_SESSION["idRol"]==2){
+
+    //   $oItem=new Data("usuario","idUsuario", $_SESSION["idUsuario"]); 
+
+    //   $valUser=$oItem->getDatos(); 
+
+    //   unset($oItem);  
+    //   $validarIngreso=$valUser["ingresoPerfilEmpresa"]; 
+    //   $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+
+    // }
+
+    // if($_SESSION["idRol"]==5){
+
+    //   $aEmpresa=$oEmpresa->getEmpresasExterno();
+    // }
+}
+if(!empty($_SESSION["idEmpresa"])){
+  // $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  $idEmpresa=$_SESSION['idEmpresa'];
+
+    $oLista=new Lista("tope");
+    $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+    $topes=$oLista->getlista();
+    unset($oLista);
+
+// print_r($topes);
+
+}
+
+?>
+<style type="text/css">
+  .hovernegro:hover{
+    background-color: black;
+    font-weight: bold;
+  }
+</style>
+
+<section class="section">
+  <form enctype="multipart/form-data" id="frmGuardar">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i data-feather="home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Medios magneticos</li>
+
+          <li class="breadcrumb-item">Topes</li>
+          <!-- <li class="breadcrumb-item">Formato 1001</li> -->
+
+        </ul>
+        <?php if (empty($_SESSION["idEmpresa"])) { ?>
+          <div class="card">
+            <div class="card-header">
+              
+                <h4>Por favor ingrese a trabajar a una empresa en la parte de <a href="listarempresas" class="hovernegro">listar empresas</a></h4>
+              
+              
+            </div>
+          </div>
+        <?php } ?>
+        <?php if (!empty($_SESSION["idEmpresa"])) { ?>
+
+          <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $idEmpresa ?>">
+        <div class="section-body">
+
+          <!-- <div class="row"> -->
+
+            <!-- <div class="col-md-12 col-lg-12"> -->
+
+              <div class="card">
+                
+
+                <div class="card-header">
+
+                  <h4>Topes</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control" name="" readonly value="Costos y deducciones">                     
+                  </div>
+
+                    </div>
+                    
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control moneda" name="datos[topeCostos]" id="datos[topeCostos]" value="<?php echo "$".number_format($topes[0]["topeCostos"] ,2,",",".")?>">                     
+                  </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control" name="" readonly value="Ingresos brutos, Dev., Reb. Dsctos en venta">                     
+                  </div>
+
+                    </div>
+                    
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control moneda" name="datos[topeIngresosBrutos]" id="datos[topeIngresosBrutos]" value="<?php echo "$".number_format($topes[0]["topeIngresosBrutos"] ,2,",",".")?>">                     
+                  </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control" name="" readonly value="Pasivos">                     
+                  </div>
+
+                    </div>
+                    
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control moneda" name="datos[topePasivos]" id="datos[topePasivos]" value="<?php echo "$".number_format($topes[0]["topePasivos"] ,2,",",".")?>">                     
+                  </div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control" name="" readonly value="Cuentas por cobrar">                     
+                  </div>
+
+                    </div>
+                    
+                    <div class="col-md-4 col-lg-4">
+                      <div class="form-group">
+                    <input type="text" class="form-control moneda" name="datos[topeCuentasCobrar]" id="datos[topeCuentasCobrar]" value="<?php echo "$".number_format($topes[0]["topeCuentasCobrar"] ,2,",",".")?>">                     
+                  </div>
+
+                    </div>
+                  </div>
+               
+                  </div>
+                  <div class="card-footer text-right">
+                      <a class="btn btn-primary mr-1" id="btnGuardar">GUARDAR</a>
+                    </div>
+
+                </div>
+
+            <!-- </div> -->
+
+        <!-- </div> -->
+
+    </div>
+  <? } ?>
+</form>
+
+</section>
+
+
+
+
+
+

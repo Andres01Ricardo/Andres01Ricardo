@@ -165,9 +165,9 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 
                  Swal.fire(
 
-                  'Algo ha salido mal!',
+                  'El impuesto ya se encuentra parametrizado!',
 
-                  'Verifique su conexión a internet',
+                  'Verifique en la lista',
 
                   'error'
 

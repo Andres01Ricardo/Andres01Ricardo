@@ -18,6 +18,52 @@ $("body").on("change","[name='datos[idDepartamentoResidencia]']",function(e){
       $("[name='datos[idCiudadResidencia]']").html("<option value=''>Seleccione una opción</option>");
     }
 })
+
+
+
+
+
+
+$("body").on("change","[name='datos[numeroDocumento]']",function(e){
+    var id=$(this).val(); 
+    if(id!=""){
+      $.ajax({
+        url:URL+"functions/nomina/consultarempleado.php", 
+        type:"POST", 
+        data: {"documentoEmpleado":id}, 
+        dataType: "json",
+        }).done(function(msg){  
+          if (msg.msg==false) {
+            Swal.fire({
+                icon: 'error',
+                title: "Este empleado ya existe!",
+                text: 'Por favor revise la lista de empleados',
+                closeOnConfirm: true,
+              })
+              // }).then((result) => {
+
+               // location.href="configurarcontableempresas";
+               // location.href="http://www.pagina2.com";
+
+              // })
+
+          }else{
+            console.log("no existe");
+          }
+
+      });
+
+    }else{
+
+      $("[name='datos[idCiudadResidencia]']").html("<option value=''>Seleccione una opción</option>");
+ 
+    }
+})
+
+
+
+
+
 $("body").on("click","[name='crearUsuarioSwitch']",function(e){
   if ($("#crearUsuarioSwitch").prop('checked')) {
     $("#divTipoTercero").css("display","block");

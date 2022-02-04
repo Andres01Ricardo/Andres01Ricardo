@@ -154,6 +154,10 @@ if($lista[0]["idRol"]==6){
   $_SESSION["idEmpresa"]=6;
 }
 
+if($lista[0]["idRol"]==1){
+  $_SESSION["idEmpresa"]=6;
+}
+
 if($lista[0]["idRol"]==7){
   $oItem = new Data('usuario_empresa',"idUsuario", $lista[0]["idUsuario"]);
   $aAcceso=$oItem->getDatos();

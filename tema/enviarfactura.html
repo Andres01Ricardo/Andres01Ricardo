@@ -6,6 +6,20 @@ require_once("class/empresa.php");
 
 
 
+$oItem=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]);
+$empresaDatos=$oItem->getDatos();
+unset($oItem);
+
+if ($_SESSION['idRol']!=3 && $_SESSION['idRol']!=4) {
+  // code...
+  if ($empresaDatos["manejaContabilidad"]==1) {
+    echo '<script>window.location.href="enviarfacturacompra"</script>'; 
+  }
+}
+
+
+
+
 $oFactura=new FacturaCompra(); 
 
 $oEmpresa=new Empresa(); 
@@ -27,6 +41,9 @@ if($_SESSION["idRol"]==2){
   $aEmpresas=$oEmpresa->getEmpresas();
 }
 
+
+
+
 $oLista = new Lista('unidad');
 
 $oLista->setOrden("nombre","ASC");
@@ -34,6 +51,9 @@ $oLista->setOrden("nombre","ASC");
 $aUnidades=$oLista->getLista();
 
 unset($oLista);
+
+
+
 
 
 $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idEmpresa"])); 
@@ -134,31 +154,9 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                     </div>
 
-                    <?php } 
-                    
-                    $oLista=new Lista("parametros_documentos");
-                    $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
-                    $oLista->setFiltro("tipo","!=",6);
-                    $parametros=$oLista->getLista();
-                    unset($oLista);
-                    ?>
-                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-2 <?php }else{ ?> col-md-4 <?php } ?>">
-                      <div class="form-group">
-                        <label class="negrita">Tipo documento<span class="requerido">*</span>:</label>
-                        <select class="form-control select2" name="datos[tipoDocumento]" id="tipoDocumento" required>
-                          <option value="">Seleccione una opción</option>
-                          <?php foreach($parametros as $iParametro){ 
-                            $oItem=new Data("tipos_documento_contable","idTiposDocumento",$iParametro["tipo"]);
-                            $letraTipo=$oItem->getDatos();
-                            unset($oItem);
-                            ?>
-                          <option value="<?php echo $iParametro['idParametrosDocumentos']; ?>"><?php echo $letraTipo["letra"].'-'.$iParametro["comprobante"].'-'.$iParametro["descripcion"]; ?></option>
-                        <?php } ?>
-                        </select>
-                      </div>
-                    </div>
+                    <?php } ?>
 
-                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-1 <?php }else{ ?> col-md-3 <?php } ?>">                  
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">                  
                   
                       <div class="form-group">
 
@@ -192,7 +190,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                     </div>
 
-                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-2 <?php }else{ ?> col-md-3 <?php } ?>">
+                    <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 
@@ -204,15 +202,11 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                     </div>
 
-
-                  </div>
-
-                  <div class="row">
                     <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-3 <?php }else{ ?> col-md-4 <?php } ?>">
 
                       <div class="form-group">
 
-                        <label class="negrita">Proveedor<span class="requerido">*</span>:</label>
+                        <label class="negrita">Tercero<span class="requerido">*</span>:</label>
 
                         <select class="form-control select2 mayusculas" name="datos[idTercero]" id="datos[idTercero]" required>
 
@@ -229,6 +223,10 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
                       </div>
 
                     </div>
+
+                  </div>
+
+                  <div class="row">
 
                     <div class="col-md-4">
 
@@ -259,6 +257,23 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
                       </div>
 
                     </div>
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Archivo 2:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file2" name="file2" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
 
                   </div>
 
@@ -281,20 +296,12 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
                         <thead>
 
                           <tr>
-                            <?php
-                              $oBodega=new Lista("bodega");
-                              $oBodega->setFiltro("idEmpresa","=",$idEmpresa);
-                              $aBodegas=$oBodega->getLista();
-                              unset($oBodega);
-                            ?>
 
                             <th class="text-center">#</th>
 
                             <th>Productos</th>
 
                             <th>Descripción</th>
-
-                            <th>Bodega</th>
 
                             <th>Cantidad</th>
 
@@ -330,18 +337,6 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
                                 <input type="hidden" name="item[0][idProducto]" id="item[0][idProducto]" class="form-control idProducto" ></td>
 
                               <td><input type="text" class="form-control descripcion mayusculas" name="item[0][descripcion]" id="item[0][descripcion]" placeholder="Descripción" required></td>
-
-                              <td><select class="form-control mayusculas idBodega" name="item[0][idBodega]" id="item[0][idBodega]" required>
-
-                                  <option value="">Seleccione una opción</option>
-
-                                  <?php foreach($aBodegas as $iBodegas){ ?>
-
-                                  <option value="<?php echo $iBodegas['idBodega']; ?>"><?php echo $iBodegas["codigo"].' '.$iBodegas["nombre"]; ?></option>
-
-                                  <?php } ?>
-
-                                </select></td>
 
                               <td><input type="text" class="form-control decimales cantidad" name="item[0][cantidad]" id="item[0][cantidad]" placeholder="Cantidad" required></td>
 
@@ -379,7 +374,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">SUBTOTAL:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">SUBTOTAL:</td>
 
                             <td><input type="text" class="form-control moneda" name="datos[subtotal]" id="datos[subtotal]" placeholder="SUBTOTAL" readonly></td>
 
@@ -389,7 +384,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">DESCUENTO:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">DESCUENTO:</td>
 
                             <td><input type="text" class="form-control moneda decimales " name="datos[descuento]" id="datos[descuento]" placeholder="DESCUENTO" value=0></td>
 
@@ -399,7 +394,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">IVA:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">IVA:</td>
 
                             <td><input type="text" class="form-control moneda" name="datos[iva]" id="datos[iva]" placeholder="IVA" readonly></td>
 
@@ -409,7 +404,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                           <tr>
 
-                            <td colspan="9" style="text-align: right;" class="negrita">TOTAL:</td>
+                            <td colspan="8" style="text-align: right;" class="negrita">TOTAL:</td>
 
                             <td><input type="text" class="form-control moneda" name="datos[total]" id="datos[total]" placeholder="TOTAL" readonly></td>
 
@@ -588,7 +583,7 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                       </div>
 
-                     <!--  <div class="col-md-4 ocultar" id="divCuentaContableTotal">
+                      <div class="col-md-4 ocultar" id="divCuentaContableTotal">
 
                         <div class="form-group">
 
@@ -602,33 +597,9 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
 
                         </div>
 
-                      </div> -->
+                      </div>
 
-                      <?php 
-                          $oItem=new Lista("banco_cuenta_contable");
-                          $oItem->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
-                          $aBancos=$oItem->getLista();
-                          unset($oItem); 
-                          ?>
-                          <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="negrita">Forma de pago:</label>
-                                <select class="form-control select2 dropup" name="datos[formaPagoFactura]" id="formaPagoFactura">
-                                  <optgroup label="Crear forma de pago">
-                                    <option value="">Seleccione</option>
-                                    <option value="0"><i class="fas fa-plus-circle" >+ NUEVO</i></option>
-                                    
-                                  </optgroup>
-                                  <optgroup label="Formas de pago existentes:">
-                                    <?php foreach ($aBancos as $key=> $value){  ?>
-                                      <option value="<?php echo $value["idBancoCuentaContable"]; ?>"><?php echo $value["nombre"]; ?></option>
-                                    <?php } ?>
-                                  </optgroup>
-                              </select>
 
-                            </div>
-
-                          </div>
 
                     </div> 
 
@@ -660,121 +631,8 @@ $aProveedores=$oFactura->getProveedoresEmpresa(array("idEmpresa"=>$_SESSION["idE
   $oItem->setFiltro("idEmpresa","=",$idEmpresa);
   $aParametros=$oItem->getLista();
   unset($oItem);
-
-
-  $oItem=new Lista("cuenta_bancaria");
-  $oItem->setFiltro("idEmpresa","=",$idEmpresa);
-  $aBancos=$oItem->getLista();
-  unset($oItem);
-
 }
 ?>
-
-
-
-
-
-
-<div class="modal fade bd-example-modal-lg" id="modalFormaPago" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabelFormaPago" aria-hidden="true">
-
-    <div class="modal-dialog modal-lg">
-
-      <div class="modal-content">
-
-        <div class="modal-header">
-
-          <h5 class="modal-title" id="myLargeModalLabelFormaPago">CREAR FORMA DE PAGO</h5>
-
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-
-            <span aria-hidden="true">&times;</span>
-
-          </button>
-
-        </div>
-
-        <div class="modal-body ui-front">
-
-          <form enctype="multipart/form-data" id="frmGuardarFormaPago">
-
-            <input type="hidden" name="datos[idEmpresa]" id="datos[idEmpresa]" value="<?php echo $idEmpresa; ?>">
-
-          <div class="row">
-          <div class=" col-md-6 ">
-            <div class="form-group">
-
-                <label class="negrita d-block">Nombre<span class="requerido">*</span>:</label>
-                <input type="text" class="form-control nombre" name="datos[nombre]" required>
-            </div>
-          </div>
-
-          <div class=" col-md-6 ">
-            <div class="form-group">
-              <label class="negrita d-block">Tipo cuenta<span class="requerido">*</span>:</label>
-
-                <select class="form-control mayusculas" id="idCuentaBancaria" name="datos[idCuentaBancaria]" required>
-
-                  <option value="">Seleccione una opción</option>
-                  <option value="0">CREDITO</option>
-                  <?php foreach($aBancos as $key=> $value){ ?>
-                  <option value="<?php echo $value['idCuentaBancaria'];?>"><?php echo $value['nombreCuenta'].'-'.$value['numeroCuenta'];?></option>
-                  <?php } ?>
-                </select>
-            </div>
-          </div>
-          <div class=" col-md-12 ml-auto">
-                <label class="negrita d-block">Cuenta contable<span class="requerido">*</span>:</label>
-            <div class="form-group">
-
-                <!-- <input type="text" class="form-control cuentaContable" name="datos[cuentaContable]" >
-                <input type="hidden" class="form-control idCuentaContable" name="datos[idCuentaContable]">
-                <input type="hidden" class="form-control naturaleza" name="datos[naturaleza]" id="naturaleza">  -->
-
-                <select class="form-control select2 " style="width:100%;" name="datos[idCuentaContable]" id="formaPagoCuenta" required>
-                  
-                </select>               
-              
-            </div>
-          </div>
-        </div>
-        
-
-          </form>
-
-        </div>
-
-        <div class="modal-footer bg-whitesmoke br">
-
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-
-            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardarFormaPago">Guardar</a>
-
-          </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="modal fade bd-example-modal-lg" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 
     <div class="modal-dialog modal-lg">

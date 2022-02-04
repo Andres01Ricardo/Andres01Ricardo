@@ -68,6 +68,80 @@ class Comprobantes extends Sql{
 
 	}
 
+
+
+	public function getFacturaCompra($empresa){
+
+		
+
+		if(!isset($_SESSION)){ session_start(); }
+
+		$sql="SELECT  fc.idFacturaCompra,fc.idUsuarioRegistra,fc.fechaRegistro,fc.idEmpresa, fc.fechaRecibido,fc.fechaPago,fc.idProveedor,fc.nroFactura,fc.archivo,fc.saldo,t.razonSocial
+			FROM factura_compra fc
+			INNER JOIN tercero t on fc.idProveedor = t.idTercero
+			WHERE (fc.estado=1 or fc.estado=2 or fc.estado=4) AND fc.idEmpresa=$empresa";
+
+	    $aFacturaCompra=$this->ejecutarSql($sql); 
+	    return $aFacturaCompra; 
+
+	}
+
+
+	public function getFacturaVenta($empresa){
+
+		
+
+		if(!isset($_SESSION)){ session_start(); }
+
+		$sql="SELECT  fc.idFacturaVenta,fc.idUsuarioRegistra,fc.fechaRegistro,fc.idEmpresa, fc.fechaFactura,fc.idCliente,fc.nroFactura,fc.archivo,fc.saldo,t.razonSocial
+			FROM factura_venta fc
+			INNER JOIN tercero t on fc.idCliente = t.idTercero
+			WHERE (fc.estado=1 or fc.estado=2 or fc.estado=4) AND fc.idEmpresa=$empresa";
+
+	    $aFacturaVenta=$this->ejecutarSql($sql); 
+	    return $aFacturaVenta; 
+
+	}
+
+
+
+
+
+
+
+	public function getFacturaCompraTercero($empresa,$idTercero){
+
+		
+
+		if(!isset($_SESSION)){ session_start(); }
+
+		$sql="SELECT  fc.idFacturaCompra,fc.idUsuarioRegistra,fc.fechaRegistro,fc.idEmpresa, fc.fechaRecibido,fc.fechaPago,fc.idProveedor,fc.nroFactura,fc.archivo,fc.saldo,t.razonSocial
+			FROM factura_compra fc
+			INNER JOIN tercero t on fc.idProveedor = t.idTercero
+			WHERE (fc.estado=1 or fc.estado=2 or fc.estado=4) AND fc.idEmpresa=$empresa AND fc.idProveedor=$idTercero";
+
+	    $aFacturaCompra=$this->ejecutarSql($sql); 
+	    return $aFacturaCompra; 
+
+	}
+
+
+	public function getFacturaVentaTercero($empresa,$idTercero){
+
+		
+
+		if(!isset($_SESSION)){ session_start(); }
+
+		$sql="SELECT  fc.idFacturaVenta,fc.idUsuarioRegistra,fc.fechaRegistro,fc.idEmpresa, fc.fechaFactura,fc.idCliente,fc.nroFactura,fc.archivo,fc.saldo,t.razonSocial
+			FROM factura_venta fc
+			INNER JOIN tercero t on fc.idCliente = t.idTercero
+			WHERE (fc.estado=1 or fc.estado=2 or fc.estado=4) AND fc.idEmpresa=$empresa AND fc.idCliente=$idTercero";
+
+	    $aFacturaVenta=$this->ejecutarSql($sql); 
+	    return $aFacturaVenta; 
+
+	}
+
 }
 
 ?>

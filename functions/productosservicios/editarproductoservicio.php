@@ -25,7 +25,12 @@ $id  = (isset($_REQUEST['id'] ) ? $_REQUEST['id'] : "" );
 if(!isset($_SESSION)){ session_start(); }
 
 
-
+if ($datos["inventario"]=='') {
+	$inventario=0;
+}
+if ($datos["inventario"]!='') {
+	$inventario=$datos["inventario"];
+}
 
 
 $oItem=new Data("producto_servicio","idProductoServicio",$id); 
@@ -33,7 +38,7 @@ $oItem=new Data("producto_servicio","idProductoServicio",$id);
 $oItem->nombre=$datos["nombreProducto"]; 
 $oItem->idGrupo=$datos["grupo"]; 
 $oItem->descripcion=$datos["descripcion"]; 
-$oItem->inventario=$datos["inventario"]; 
+$oItem->inventario=$inventario; 
 
 $oItem->guardar(); 
 unset($oItem);

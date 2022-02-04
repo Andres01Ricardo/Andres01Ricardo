@@ -83,6 +83,7 @@ if(!empty($_SESSION['idEmpresa'])){
                 <?php }else{ ?>
                 <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
                 <?php } ?>
+                
           <br>
           <br>
           <div class="row">
@@ -94,20 +95,25 @@ if(!empty($_SESSION['idEmpresa'])){
                   $tipoParametro=$oItem->getDatos();
                   unset($oItem);
                   ?>
-                <option value="<?php echo $valueP["tipo"].'-'.$valueP["comprobante"]; ?>"><?php echo $tipoParametro["letra"].' '.$valueP["comprobante"].' '.$valueP["descripcion"]; ?></option>         
+                <option value="<?php echo $valueP["tipo"].'-'.$valueP["comprobante"]; ?>"><?php echo $tipoParametro["letra"].' '.$valueP["comprobante"].' '.$valueP["descripcion"]; ?></option>
+                  
                 <?php } ?>
               </select>
             </div>
 
           </div>
-          <br>
+         
+                  <br>
 
     <div class="form-row align-items-center">
       <div class="col-auto my-1">
         <label class="negrita">DESDE: </label>
       </div>
+
       <div class="col-auto my-1">
+ 
         <input type="date" class="form-control" name="desde" id="desde"  required>
+        
       </div>
       <div class="col-auto my-1">
         <label class="negrita">HASTA: </label>

@@ -1,0 +1,428 @@
+<?php 
+
+include_once("class/exogenas.php");
+
+$oControl=new Control(); 
+$validarIngreso=1; 
+// $oEmpresa=new Empresa(); 
+
+if(!empty($_SESSION["idEmpresa"])){
+  // $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  $idEmpresa=$_SESSION['idEmpresa'];
+
+  
+  $fecha='2021-12-31';
+  // $fechaDesde='2021-01-01';
+
+  $oTerceroExogena=new Exogenas();
+  $aTerceroExogena=$oTerceroExogena->getExogena2276(array("idEmpresa"=>$idEmpresa,"hasta"=>$fecha,"idFormato"=>14));
+  unset($oTerceroExogena);
+
+  // print_r($aTerceroExogena);
+}
+
+?>
+<style type="text/css">
+  .hovernegro:hover{
+    background-color: black;
+    font-weight: bold;
+  }
+</style>
+
+<section class="section">
+  <form enctype="multipart/form-data" id="frmGuardar">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i data-feather="home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Medios magneticos</li>
+
+          <li class="breadcrumb-item">Generar informe exogenas</li>
+          <li class="breadcrumb-item">Formato 2276</li>
+
+        </ul>
+        <?php if (empty($_SESSION["idEmpresa"])) { ?>
+          <div class="card">
+            <div class="card-header">
+              
+                <h4>Por favor ingrese a trabajar a una empresa en la parte de <a href="listarempresas" class="hovernegro">listar empresas</a></h4>
+              
+              
+            </div>
+          </div>
+        <?php } ?>
+        <?php if (!empty($_SESSION["idEmpresa"])) { ?>
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+                
+
+                <div class="card-header">
+
+                  <h4>Formato 2276</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12">
+
+                      <table class="table table-striped table-bordered table-responsive mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <!-- <th class="text-center">#</th> -->
+                            <th style="width:5%">Concepto</th>
+
+                            <th style="width:5%">Tipo doc</th>
+                            <th style="width:5%">NID</th>
+
+                            <!-- <th style="width:5%">Dígito Verificación</th> -->
+
+                            <th style="width:20%">Primer apellido</th>
+
+                            <th style="width:20%">Segundo apellido</th>
+                            
+                            <th style="width:20%">Primer nombre</th>
+                            
+                            <th style="width:20%">Otros nombres</th>
+                            
+                             <th style="width:20%">Dirección</th>
+                            <th style="width:10%">Departamento</th>
+                            <th style="width:10%">Municipio</th>
+                            <th style="width:10%">País</th>
+                            
+                            <th style="width:20%">Pagos por Salarios (PASA)</th>
+
+                            <th style="width:20%">Pagos por emolumentos eclesiásticos (PAEC)</th>
+                            <th style="width:20%">Pagos por honorarios (PAHO)</th>
+                            <th style="width:20%">Pagos por servicios (PASE) </th>
+
+                            <th style="width:20%">Pagos por comisiones (PACO) </th>
+                            <th style="width:20%">Pagos por prestaciones sociales (PAPRE)  </th>
+                            <th style="width:20%">Pagos por viáticos (PAVIA)</th>
+                            
+                            <th style="width:20%">Pagos por gastos de representación (PAGA)</th>
+                            <th style="width:20%">Pagos por compensaciones trabajo asociado cooperativo (PATRA)</th>
+                            <th style="width:20%">Otros pagos  (POTRO) </th>
+                            <th style="width:20%">Pagos realizados con bonos electrónicos o de papel de serv-cheques etc.(PABO)</th>
+                            <th style="width:20%">Cesantías e Intereses Pagadas Periodo (CEIN)</th>
+                            <th style="width:20%">TOTAL INGRESOS BRUTOS</th>
+
+                            <th style="width:20%">Aportes Obligatorios por Salud (APOS)</th>
+                            <th style="width:20%">Aportes Obligatorios a fondos de pensiones y solidaridad pensional (APOF)</th>
+                            <th style="width:20%">Aportes Voluntarios a fondos de Pensiones y Cuentas AFC (APOV)</th>
+                            <th style="width:20%">Valor de las retenciones en la fuente por pagos de rentas de trabajo o pensiones</th>
+                            
+                            
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                        
+
+                          <?php 
+                          foreach($aTerceroExogena as $index => $terceroExogena){ 
+
+                            // print_r($terceroExogena);
+                            // print_r('+++++++++');
+
+                            $oLista=new Lista("tercero");
+                            $oLista->setFiltro("idTercero","=",$terceroExogena["idTercero"]);
+                            $tercero=$oLista->getLista();
+                            unset($oLista);
+
+                            // print_r($tercero);
+
+
+                            $oLista=new Lista("concepto_exogena");
+                            $oLista->setFiltro("idConceptoExogena","=",$terceroExogena["idConcepto"]);
+                            $concepto=$oLista->getLista();
+                            unset($oLista);
+
+
+
+                             switch ($terceroExogena["idTipoSuma"]) {
+                              case 1:
+                                $valor=$terceroExogena["debito"];
+                                break;
+                              case 2:
+                                $valor=$terceroExogena["credito"];
+                                break;
+                              case 3:
+                                $valor=$terceroExogena["debito"]-$terceroExogena["credito"];
+                                break;
+                              case 4:
+                                $valor=$terceroExogena["debito"]-$terceroExogena["credito"];
+                                break;
+                              case 5:
+                                $valor=$terceroExogena["debito"];
+                                break;
+                              
+                              default:
+                                // code...
+                                break;
+                            }
+
+                            if ($valor!=0) {
+                              
+                                if ($terceroExogena["idCategoria"]==25) {
+                                  $valor25=$valor;
+                                  $salud=$valor*(4/100);
+                                  $pension=$valor*(4/100);
+                                  }
+                                if ($terceroExogena["idCategoria"]==26) { $valor26=$valor; }
+                                if ($terceroExogena["idCategoria"]==27) { $valor27=$valor; }
+                                if ($terceroExogena["idCategoria"]==28) { $valor28=$valor; }
+                                if ($terceroExogena["idCategoria"]==29) { $valor29=$valor; }
+                                if ($terceroExogena["idCategoria"]==30) { $valor30=$valor; }
+                                if ($terceroExogena["idCategoria"]==31) { $valor31=$valor; }
+                                if ($terceroExogena["idCategoria"]==32) { $valor32=$valor; }
+                                if ($terceroExogena["idCategoria"]==33) { $valor33=$valor; }
+                                if ($terceroExogena["idCategoria"]==34) { $valor34=$valor; }
+                                if ($terceroExogena["idCategoria"]==35) { $valor35=$valor; }
+                                if ($terceroExogena["idCategoria"]==36) { $valor36=$valor; }
+                                if ($terceroExogena["idCategoria"]==37) { $valor37=$valor; }
+                                if ($terceroExogena["idCategoria"]==41) { $valor41=$valor; }
+                                if ($terceroExogena["idCategoria"]==42) { $valor42=$valor; }
+                                
+                              if ($terceroExogena["idTercero"]!= $aTerceroExogena[$index+1]["idTercero"]) {
+                              
+                            ?> 
+                            <tr>
+                              <td><?php echo $concepto[0]["concepto"]; ?></td>
+                              <td>
+                                <?php
+                                if ($tercero[0]["tipoPersona"]==1) {
+                                  echo "13";
+                                }
+                                if ($tercero[0]["tipoPersona"]==2) {
+                                  echo "31";
+                                }
+                                 ?>
+                              
+                              </td>
+                              <td><?php 
+                              echo $tercero[0]["nit"];
+                                
+                              ?></td>
+                             <!--  <td><?php 
+                              echo $tercero[0]["digitoVerificador"];
+                                
+                              ?></td> -->
+                              <td><?php 
+                              if ($tercero[0]["tipoPersona"]==1) {
+                                $nombreTercero=explode(" ", $tercero[0]["razonSocial"] );
+                                if (count($nombreTercero)==3) {
+                                  echo $nombreTercero[1];
+                                }
+                                if (count($nombreTercero)==4) {
+                                  echo $nombreTercero[2];
+                                }
+                              }
+                              ?></td>
+                              <td><?php 
+                              if ($tercero[0]["tipoPersona"]==1) {
+                                $nombreTercero=explode(" ", $tercero[0]["razonSocial"] );
+                                if (count($nombreTercero)==3) {
+                                  echo $nombreTercero[2];
+                                }
+                                if (count($nombreTercero)==4) {
+                                  echo $nombreTercero[3];
+                                }
+                              }
+                              ?></td>
+                              <td><?php 
+                              if ($tercero[0]["tipoPersona"]==1) {
+                                $nombreTercero=explode(" ", $tercero[0]["razonSocial"] );
+                                
+                                  echo $nombreTercero[0];
+                                
+                                
+                              }
+                              ?></td>
+                              <td>
+                                <?php 
+                              if ($tercero[0]["tipoPersona"]==1) {
+                                $nombreTercero=explode(" ", $tercero[0]["razonSocial"] );
+                                if (count($nombreTercero)==3) {
+                                  echo " ";
+                                }
+                                if (count($nombreTercero)==4) {
+                                  echo $nombreTercero[1];
+                                }
+                              }
+                              ?>
+                              </td>
+                              
+                              <td><?php echo $tercero[0]["direccion"] ?></td>
+                              
+                              <td><?php 
+                                $oItem=new Data("departamento","idDepartamento",$tercero[0]["idDepartamento"]);
+                                $departamento=$oItem->getDatos();
+                                unset($oItem);
+                                echo $departamento["codigoDepartamento"];
+                              ?></td>
+                                <td><?php 
+                                $oItem=new Data("ciudad","idCiudad",$tercero[0]["idCiudad"]);
+                                $ciudad=$oItem->getDatos();
+                                unset($oItem);
+                                echo $ciudad["codigoCiudad"];
+                              ?></td>
+                                <td><?php 
+                                $oItem=new Data("pais","idPais",$tercero[0]["idPais"]);
+                                $pais=$oItem->getDatos();
+                                unset($oItem);
+                                echo $pais["codigoPais"];
+                              ?></td>
+
+                              <td><?php 
+                              if ($valor25) {
+                                echo number_format($valor25 ,0,".",",");
+                                
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor26!="") {
+                                echo number_format($valor26 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor27!="") {
+                                echo number_format($valor27 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor28!="") {
+                                echo number_format($valor28 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor29!="") {
+                                echo number_format($valor29 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor30!="") {
+                                echo number_format($valor30 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor31!="") {
+                                echo number_format($valor31 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor32!="") {
+                                echo number_format($valor32 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor33!="") {
+                                echo number_format($valor33 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor34!="") {
+                                echo number_format($valor34 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor35!="") {
+                                echo number_format($valor35 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor36!="") {
+                                echo number_format($valor36 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor37!="") {
+                                echo number_format($valor37 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($salud!="") {
+                                echo number_format($salud ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($pension!="") {
+                                echo number_format($pension ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor41!="") {
+                                echo number_format($valor41 ,0,".",",");
+                              }
+                            ?></td>
+                              <td><?php 
+                              if ($valor42!="") {
+                                echo number_format($valor42 ,0,".",",");
+                              }
+                            ?></td>
+                              
+                            </tr>
+
+                          <?php 
+                            $valor26=0;
+                            $valor27=0;
+                            $valor28=0;
+                            $valor29=0;
+                            $valor30=0;
+                            $valor31=0;
+                            $valor32=0;
+                            $valor33=0;
+                            $valor34=0;
+                            $valor35=0;
+                            $valor36=0;
+                            $valor37=0;
+                            $valor41=0;
+                            $valor42=0;
+                            }
+                          }
+                        } 
+                        ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+                 <!--  <div class="card-footer text-right">
+                      <a class="btn btn-primary mr-1" id="btnGuardar">GUARDAR</a>
+                    </div>
+ -->
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+  <? } ?>
+</form>
+
+</section>
+

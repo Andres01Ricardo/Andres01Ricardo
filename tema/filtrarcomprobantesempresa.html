@@ -1,0 +1,105 @@
+<?php 
+require_once("class/empresa.php");
+
+
+//$oLista = new Lista('cuenta_contable');
+
+//$aDatos=$oLista->getLista();
+
+// $oLista=new Lista("empresa");
+// $aEmpresas=$oLista->getLista();
+// unset($oLista);  
+
+$validarIngreso=1; 
+// $oEmpresa=new Empresa(); 
+// if($_SESSION["idRol"]==5){
+
+//   $aEmpresas=$oEmpresa->getEmpresasExterno();
+// }
+
+if($_SESSION["idRol"]!=5){
+  $aEmpresas=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+}
+
+?>
+<style type="text/css">
+  .picker__box{
+       background-color: #0000;
+}
+</style>
+<div class="card card-body">
+  <h3>MOVIMIENTO GENERAL CUENTAS CONTABLE</h3>
+</div>
+  <hr>
+<div class="swal-overlay swal-overlay--show-modal" id="overlayImpuestos">
+    <div class="swal-modal popup" id="popupImpuestos">
+      
+          <h3 class="swal-title">ESCOJA LOS FILTROS</h3><br>
+            <form method="POST" action="movimientogeneralcuentasfiltrado">
+              <div class="swal-content">
+                <?php if (empty($_SESSION["idEmpresa"])) {
+                  // code...
+                 ?>
+                <label>EMPRESA</label>
+                <select class=" form-control" name="empresa" id="empresa" required>
+                  <option value="">Seleccione la empresa</option>
+                  <?php foreach($aEmpresas as $index => $iEmpresa){ ?>
+                  <option value="<?php echo $iEmpresa['idEmpresa']; ?>"><?php echo $iEmpresa['razonSocial']; ?></option>
+                  <?php } ?>
+                </select>
+              <?php }if (!empty($_SESSION["idEmpresa"])){ ?>
+                <input type="hidden" name="empresa" id="empresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
+              <?php } ?>
+          <br><br>
+
+    <div class="form-group">
+      <label>Mes consulta</label>
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <label class="negrita">MES: </label>
+        </div>
+
+        <div class="col-auto my-1">
+   
+          <input type="text" class="form-control" name="mes" id="mes"  >
+          
+        </div>
+        <div class="col-auto my-1">
+          <label class="negrita">AÑO: </label>
+        </div>
+        <div class="col-auto my-1">
+          <input type="date" class="form-control" name="anio" id="anio"  >
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Tipo documento</label>
+      <div class="form-row align-items-center">
+        <div class="col-auto my-1">
+          <label class="negrita">DESDE: </label>
+        </div>
+
+        <div class="col-auto my-1">
+
+          <input type="text" class="form-control cuentaContable" name="cuentaPrimera" id="cuentaPrimera"  >
+          <select class="form-control select2" id="cuentaPrimeraSelect">            
+          </select>
+          
+        </div>
+        <div class="col-auto my-1">
+          <label class="negrita">HASTA: </label>
+        </div>
+        <div class="col-auto my-1">
+          <input type="text" class="form-control cuentaContable" name="cuentaSegunda" id="cuentaSegunda"  >
+        </div>
+      </div>   
+    </div>   
+  </div>
+        <br><br>
+        <div class="swal-footer">
+          <button type="submit" class="btn btn-info" id="btnFiltrar">FILTRAR</button>
+        </div>
+      </form>
+  </div>
+</div>

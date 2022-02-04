@@ -63,11 +63,12 @@ $(document).ready(function(e){
 $("body").on("click touchstart",".sumarInsumo",function(e){
 
 	// $("#frmGuardar")[0].reset(); 
+ var idBodega = $(this).attr("bodega");
 
 	var codigo=$(this).parents("tr").find("td").eq(0).html()
   var producto=$(this).parents("tr").find("td").eq(1).html()
 
-	var unidad=$(this).parents("tr").find("td").eq(2).html()
+	var unidad=$(this).parents("tr").find("td").eq(3).html()
 
 	// var factura=$(this).parents("tr").find("td").eq(4).html()
 
@@ -84,6 +85,8 @@ $("body").on("click touchstart",".sumarInsumo",function(e){
 	// $("#empresa").val(empresa); 
     
  //    $("#total").val(total); 
+
+$("#idBodegaSumar").val(idBodega); 
 })
 
 
@@ -91,11 +94,12 @@ $("body").on("click touchstart",".sumarInsumo",function(e){
 $("body").on("click touchstart",".restarInsumo",function(e){
 
 	// $("#frmGuardar")[0].reset(); 
+  var idBodega = $(this).attr("bodega");
   var codigo=$(this).parents("tr").find("td").eq(0).html()
 
 	var insumo=$(this).parents("tr").find("td").eq(1).html()
 
-	var unidad=$(this).parents("tr").find("td").eq(2).html()
+	var unidad=$(this).parents("tr").find("td").eq(3).html()
 
 	// var factura=$(this).parents("tr").find("td").eq(4).html()
 
@@ -111,6 +115,7 @@ $("body").on("click touchstart",".restarInsumo",function(e){
 
 	$("#unidadRestar").val(unidad); 
 
+$("#idBodegaRestar").val(idBodega);
 })
 
 

@@ -37,6 +37,15 @@ $lista=$oLista->getLista();
 unset($oLista); 
 
 
+$empleado["valorSalario"]=str_replace("$", "", str_replace(".", "", $datos["valorSalario"]));
+
+$oItem=new Data("empleado_informacion_laboral","idEmpleadoInformacionLaboral",$lista[0]["idEmpleadoInformacionLaboral"]); 
+foreach ($empleado as $keyE => $valueE) {
+  $oItem->$keyE=$valueE; 
+}
+$oItem->guardar(); 
+unset($oItem); 
+
 
 $aCambio["idEmpresaNovedad"]=$idNovedad; 
 $aCambio["idEmpleado"]=$datos["idEmpleado"]; 

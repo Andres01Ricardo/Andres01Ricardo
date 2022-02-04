@@ -6,20 +6,64 @@ $desde=$_POST['periodoDesde'];
 $hasta=$_POST['periodoHasta'];
 $cliente=$_POST['cliente'];
 $oSaldos=new FacturaVenta();
+
+
+$oCuentasCobrar=new FacturaVenta();
 if($cliente ==0){
    
 
   $aSaldos=$oSaldos->getSaldosClientes($_SESSION["idEmpresa"],$desde,$hasta);
   unset($oSaldos);
+
+
+
+  $aFactura=$oCuentasCobrar->getCuentasCobrar($_SESSION["idEmpresa"],$desde,$hasta);
+  unset($oCuentasCobrar);
 }else{ 
 
   $aSaldos=$oSaldos->getSaldoCliente($_SESSION["idEmpresa"],$cliente,$desde,$hasta);
   unset($oSaldos);
 
+
+  $aFactura=$oCuentasCobrar->getCuentasCobrarCliente($_SESSION["idEmpresa"],$cliente,$desde,$hasta);
+  unset($oCuentasCobrar);
+
   $oCliente = new Data("cliente","idCliente",$cliente);
   $aCliente=$oCliente->getDatos();
   unset($oCliente);
 }
+
+
+$saldoFinal=0;
+foreach($aFactura as $index => $iFactura){ 
+
+  $oLista = new Lista('factura_venta_deduccion');
+  $oLista->setFiltro("idFacturaVenta","=",$iFactura['idFacturaVenta']);
+  $aDeduccion=$oLista->getLista();
+  unset($oLista);
+
+
+
+  if (empty($aDeduccion)) {
+    $saldoFinal=$saldoFinal+$iFactura["saldo"];
+  }
+  if (!empty($aDeduccion)) {
+    if ($iFactura["estado"]==4) {
+      $saldoFinal=$saldoFinal+$iFactura["saldo"];
+    }
+    if ($iFactura["estado"]==1 || $iFactura["estado"]==2) {
+      $retencion=0;
+      foreach ($aDeduccion as $keyde => $valuede) {
+        $retencion=$retencion+$valuede["valor"];
+      }
+      $saldoFinal=$saldoFinal+$iFactura["total"]-$retencion;  
+    }else{
+      $saldoFinal=$saldoFinal+$iFactura["saldo"];   
+    }
+  }
+
+}
+
 
 
 ?>
@@ -41,7 +85,7 @@ if($cliente ==0){
                           <i class="ti-arrow-up text-success"></i> <?php 
                          
 
-                          echo "$".number_format($aSaldos[0]["totalGeneral"],2,",","."); ?>
+                          echo "$".number_format($saldoFinal,2,",","."); ?>
                          
                         </h3>
                         <div><span class="text-muted">Desde: <?php echo $desde?> Hasta: <?php echo $hasta ?></span></div>

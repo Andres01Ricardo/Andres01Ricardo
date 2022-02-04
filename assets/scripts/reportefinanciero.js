@@ -25,13 +25,13 @@ graphFinanciero=function(){
         
 
         var aLabels=[]; 
-        console.log(msg.facturaCompraSumada);
+        // console.log(msg.facturaCompraSumada);
            
 
 
 
           msg.facturaVentaSumada.forEach(function(element,index){
-            console.log(element.valor);
+            // console.log(element.valor);
             // aCompra.push(parseInt(element.facturaCompraSumada.valor));
 
             aVenta.push(parseInt(element.valor));
@@ -42,7 +42,7 @@ graphFinanciero=function(){
           });
           var aCompras=[]; 
           msg.facturaCompraSumada.forEach(function(element,index){
-            console.log(element.valor);
+            // console.log(element.valor);
             // aCompra.push(parseInt(element.facturaCompraSumada.valor));
 
             aCompras.push(parseInt(element.valor));
@@ -53,7 +53,7 @@ graphFinanciero=function(){
           });
           var aGastos=[]; 
           msg.gastosOperacionales.forEach(function(element,index){
-            console.log(element.valor);
+            // console.log(element.valor);
             // aCompra.push(parseInt(element.facturaCompraSumada.valor));
 
             aGastos.push(parseInt(element.valor));
@@ -64,7 +64,7 @@ graphFinanciero=function(){
           });
           var aGastosVentas=[]; 
           msg.gastosOperacionalesVentas.forEach(function(element,index){
-            console.log(element.valor);
+            // console.log(element.valor);
             // aCompra.push(parseInt(element.facturaCompraSumada.valor));
 
             aGastosVentas.push(parseInt(element.valor));
@@ -73,196 +73,100 @@ graphFinanciero=function(){
             // aLabels.push(element.periodoAnio+'-'+element.periodoMes);
 
           });
-          console.log(aCompras);
-        
-
-                  
-
-                
-
-
+          // console.log(aCompras);
 
 var options2 = {
-
     series: [
-
       {
-
         name: "Ventas",
-
         data: aVenta,
-
       },
-
       {
-
         name: "Compras ",
-
         data: aCompras,
-
       },
       {
-
         name: "Gastos operacionales de admon",
-
         data: aGastos,
-
       },
       {
-
         name: "Gastos operacionales de ventas",
-
         data: aGastosVentas,
-
       },
-
     ],
-
     chart: {
-
       height: 300,
-
       type: "line",
-
       dropShadow: {
-
         enabled: true,
-
         opacity: 0.3,
-
         blur: 5,
-
         left: -7,
-
         top: 22,
-
       },
-
       toolbar: {
-
         show: true,
-
       },
-
     },
-
     colors: ["#6777EF", "#FEB019","#8BFFC1","#EF8BFF"],
-
     dataLabels: {
-
       enabled: false,
-
     },
-
     stroke: {
-
       show: true,
-
       curve: "smooth",
-
       width: 3,
-
       lineCap: "square",
-
     },
-
     xaxis: {
-
       axisBorder: {
-
         show: false,
-
       },
-
       axisTicks: {
-
         show: false,
-
       },
-
       crosshairs: {
-
         show: true,
-
       },
-
       categories: aLabels,
-
       labels: {
-
         offsetX: 0,
-
         offsetY: 5,
-
         style: {
-
           fontSize: "12px",
-
           fontFamily: "Segoe UI",
-
           cssClass: "apexcharts-xaxis-title",
-
         },
-
       },
-
     },
-
     yaxis: {
-
       labels: {
-
         offsetX: 0,
-
         offsetY: 0,
-
         style: {
-
           fontSize: "12px",
-
           fontFamily: "Segoe UI",
-
           cssClass: "apexcharts-yaxis-title",
-
         },
-
       },
-
     },
-
     legend: {
-
       show: false,
-
     },
-
     tooltip: {
-
       theme: "dark",
-
       marker: {
-
         show: true,
-
       },
-
-
       x: {
-
         show: true,
-
       },
       y: {
+            formatter: function (val) {                                     
+                return "$ " + format((val*1));
+            }
 
-                    formatter: function (val) {
-
-                                            
-
-                        return "$ " + format((val*1));
-
-                    }
-
-                }
+        }
 
     },
 
@@ -275,50 +179,30 @@ var options2 = {
   chart3.render();
 
 })
-
-
 	$.ajax({
-
 	    url:URL+"functions/dashboard/dashboardempresa.php", 
-
 	    type:"POST", 
-
 	    dataType: "json",
-
+      
 	    }).done(function(msg){  
 
-		// console.log(msg);
+		    console.log('acá');
+        console.log(msg);
+        console.log('hasta');
 	      $("#totalActivoCorriente").html(parseFloat(msg.indicador.totalActivoCorriente).toFixed(2)); 
-
 	      $("#totalPasivoCorriente").html(parseFloat(msg.indicador.totalPasivoCorriente).toFixed(2)); 
-
-
 	      $("#activo").html(parseFloat(msg.indicador.activo).toFixed(2)); 
-
 	      $("#pasivo").html(parseFloat(msg.indicador.pasivo).toFixed(2)); 
-
 	      $("#utilidadOperacional").html(parseFloat(msg.indicador.utilidadOperacional).toFixed(2)); 
-
 	      $("#totalPatrimonio").html(parseFloat(msg.indicador.totalPatrimonio).toFixed(2)); 
-
 	      $("#totalActivo").html(parseFloat(msg.indicador.totalActivo).toFixed(2)); 
-
 	      $("#totalPatrimonioA").html(parseFloat(msg.indicador.totalPatrimonio).toFixed(2));
-
 	      $("#totalActivoCorrienteC").html(parseFloat(msg.indicador.totalActivoCorriente).toFixed(2)); 
-
 	      $("#totalPasivoCorrienteC").html(parseFloat(msg.indicador.totalPasivoCorriente).toFixed(2)); 
-	      
-
-
 	      $("#indicadorLiquidez").html(parseFloat(msg.indicador.indiceLiquidez).toFixed(2)); 
-
 	      $("#indicadorSolidez").html(parseFloat(msg.indicador.solidez).toFixed(2)); 
-
 	      $("#capitalTrabajo").html(msg.indicador.capitalTrabajo); 
-
 	      $("#rentabilidadPatrimonio").html(parseFloat(msg.indicador.rentabilidadPatrimonio).toFixed(5)); 
-
 	      $("#rentabilidadActivo").html(parseFloat(msg.indicador.rentabilidadActivo).toFixed(2));
         // console.log(msg.gastos);
 			    	
@@ -435,6 +319,7 @@ var options2 = {
        // console.log(msg.rentabilidad);
         var  label2=[]; 
         var  datos2=[]; 
+        var ultimo=0;
 
         if(msg.rentabilidad!=null){
 
@@ -442,26 +327,38 @@ var options2 = {
 
           label2.push(element.periodo),
 
-            datos2.push(element.valor)
+            datos2.push(element.valor),
+
+            ultimo=element.valor
 
             })
 
         }
 
-
-
 let miCanvas2 = document.getElementById("utilidad").getContext("2d");
    // var label2= ['Oct-2020','Nov-2020','Dic-2020'];
    // var datos2= [1200600,3800000,18500400];
+   // var primer=parseFloat(datos2[0]);
+   ultimo=parseFloat(ultimo);
+   console.log(ultimo);
+   if (ultimo >=0) {
+      var color="rgb(84,255,198)";
+      var colorFondo="rgba(84,255,198,0.1)";
+    }
+    if (ultimo <0) {
+      var color="rgb(255,70,70)";
+      var colorFondo="rgba(255,70,70,0.1)";
+    }
 
    var stackedLine = new Chart(miCanvas2, {
     type: 'line',
     data:{
       
-      datasets:[{label:"UTILIDAD",
+      datasets:[{label:"UTILIDAD O PERDIDA",
         data: datos2,
-        borderColor:"rgb(84,255,198)",
-        backgroundColor:"rgba(84,255,198,0.1)",
+
+        borderColor:color,
+        backgroundColor:colorFondo,  
         
         lineTension: 0.5,
         order:1,
@@ -488,215 +385,45 @@ let miCanvas2 = document.getElementById("utilidad").getContext("2d");
     }
   }
   });
-
        am4core.useTheme(am4themes_animated);
-
         var  aData=[]; 
-
         if(msg.rentabilidad!=null){
-
           msg.rentabilidad.forEach(function(element,index){
-
           aData.push({
-
             "country": element.periodo,
-
             "visits": element.valor
-
           })
-
             })
 
         }
 
-        
-
-      
-
-
-// am4core.ready(function() {
-
-// // Themes begin
-// am4core.useTheme(am4themes_animated);
-// // Themes end
-
-// // Create chart instance
-// var chart = am4core.create("utilidad", am4charts.XYChart);
-
-// // Add data
-// // chart.data = aData;
-// chart.data = aData;
-
-// // Set input format for the dates
-// chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
-
-// // Create axes
-// var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-// var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
-// // Create series
-// var series = chart.series.push(new am4charts.LineSeries());
-// series.dataFields.valueY = "country";
-// series.dataFields.dateX = "visits";
-// series.tooltipText = "{value}"
-// series.strokeWidth = 2;
-// series.minBulletDistance = 15;
-
-// // Drop-shaped tooltips
-// series.tooltip.background.cornerRadius = 20;
-// series.tooltip.background.strokeOpacity = 0;
-// series.tooltip.pointerOrientation = "vertical";
-// series.tooltip.label.minWidth = 40;
-// series.tooltip.label.minHeight = 40;
-// series.tooltip.label.textAlign = "middle";
-// series.tooltip.label.textValign = "middle";
-
-// // Make bullets grow on hover
-// var bullet = series.bullets.push(new am4charts.CircleBullet());
-// bullet.circle.strokeWidth = 2;
-// bullet.circle.radius = 4;
-// bullet.circle.fill = am4core.color("#fff");
-
-// var bullethover = bullet.states.create("hover");
-// bullethover.properties.scale = 1.3;
-
-// // Make a panning cursor
-// chart.cursor = new am4charts.XYCursor();
-// chart.cursor.behavior = "panXY";
-// chart.cursor.xAxis = dateAxis;
-// chart.cursor.snapToSeries = series;
-
-// Create vertical scrollbar and place it before the value axis
-// chart.scrollbarY = new am4core.Scrollbar();
-// chart.scrollbarY.parent = chart.leftAxesContainer;
-// chart.scrollbarY.toBack();
-
-// // Create a horizontal scrollbar with previe and place it underneath the date axis
-// chart.scrollbarX = new am4charts.XYChartScrollbar();
-// chart.scrollbarX.series.push(series);
-// chart.scrollbarX.parent = chart.bottomAxesContainer;
-
-// dateAxis.start = 0.79;
-// dateAxis.keepSelection = true;
-
-
-// }); // end am4core.ready()
-   //    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-
-   //    categoryAxis.dataFields.category = "country";
-
-   //    categoryAxis.renderer.grid.template.location = 0;
-
-   //    categoryAxis.renderer.minGridDistance = 30;
-
-   //    categoryAxis.renderer.labels.template.horizontalCenter = "right";
-
-   //    categoryAxis.renderer.labels.template.verticalCenter = "middle";
-
-   //    categoryAxis.renderer.labels.template.rotation = 270;
-
-   //    categoryAxis.tooltip.disabled = true;
-
-   //    categoryAxis.renderer.minHeight = 110;
-
-   //    categoryAxis.renderer.labels.template.fill = am4core.color("#8e8da4");
-
-
-
-   //    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
-   //    valueAxis.renderer.minWidth = 50;
-
-   //    valueAxis.renderer.labels.template.fill = am4core.color("#8e8da4");
-
-
-   //    var series = chart.series.push(new am4charts.ColumnSeries());
-
-   //    series.sequencedInterpolation = true;
-
-   //    series.dataFields.valueY = "visits";
-
-   //    series.dataFields.categoryX = "country";
-
-   //    series.tooltipText = "[{categoryX}: bold]{valueY}[/]";
-
-   //    series.columns.template.strokeWidth = 0;
-
-
-
-
-
-   //    series.tooltip.pointerOrientation = "vertical";
-
-
-
-   //    series.columns.template.column.cornerRadiusTopLeft = 10;
-
-   //    series.columns.template.column.cornerRadiusTopRight = 10;
-
-   //    series.columns.template.column.fillOpacity = 0.8;
-
-
-
-   //  let hoverState = series.columns.template.column.states.create("hover");
-
-   //    hoverState.properties.cornerRadiusTopLeft = 0;
-
-   //    hoverState.properties.cornerRadiusTopRight = 0;
-
-   //    hoverState.properties.fillOpacity = 1;
-
-
- 		// series.columns.template.adapter.add("fill", (fill, target) => {
-
-   //      return chart.colors.getIndex(target.dataItem.index);
-
-   //    	});
-
-
-      // chart.cursor = new am4charts.XYCursor();
-
       var aActivo=[]; 
-
       var aPasivo=[]; 
-
       var aPatrimonio=[];
-
       var aLabel=[]; 
-      
       if(msg.situacion!=null){
-
           msg.situacion.forEach(function(element,index){
-
-          aActivo.push(element.activo);
-
-          aPasivo.push(element.pasivo);
-
-          aPatrimonio.push(element.patrimonio);
-
+          // var activo= parseInt(eliminarMoneda(element.activo,".",""));
+          // var pasivo= parseInt(eliminarMoneda(element.pasivo,".",""));
+          // var patrimonio= parseInt(eliminarMoneda(element.patrimonio,".",""));
+          // aActivo.push(activo);
+          aActivo.push(parseInt(element.activo));
+          // aPasivo.push(pasivo);
+          aPasivo.push(parseInt(element.pasivo));
+          // aPatrimonio.push(patrimonio);
+          aPatrimonio.push(parseInt(element.patrimonio));
           aLabel.push(element.periodo);
-
           })};
-
           var options = {
           series: [{
-
                 name: 'TOTAL ACTIVO',
-
                 data: aActivo
-
             }, {
-
                 name: 'TOTAL PASIVO',
-
                 data: aPasivo
-
             }, {
-
                 name: 'TOTAL PATRIMONIO',
-
                 data: aPatrimonio
-
             }],
           chart: {
           height: 350,
@@ -751,32 +478,14 @@ let miCanvas2 = document.getElementById("utilidad").getContext("2d");
             text: 'Meses'
           }
         },
-       
-        // yaxis: {
-        //   title: {
-        //     text: 'Temperature'
-        //   },
-        //   min: 5,
-        //   max: 40
-        // },
+
         yaxis: {
-
-                title: {
-
-                    text: '$ (Millones)'
-
-                },
-
+                
                 labels: {
-
                     style: {
-
                         color: '#8e8da4',
-
                     }
-
                 }
-
             },
         legend: {
           position: 'top',
@@ -786,27 +495,46 @@ let miCanvas2 = document.getElementById("utilidad").getContext("2d");
           offsetX: -5
         },
         tooltip: {
-              theme: "dark",
-
+      theme: "dark",
       marker: {
-
         show: true,
-
       },
-
-                y: {
-
-                    formatter: function (val) {
-
-                                            
-
-                        return "$ " + format((val*1));
-
-                    }
-
-                }
-
+      x: {
+        show: true,
+      },
+      y: {
+            formatter: function (val) { 
+            // var valor=parseInt(val);                                    
+                return "$ " + format((val*1));
+                // return val;
             }
+
+        }
+
+    },
+      //   tooltip: {
+      //         theme: "dark",
+      // marker: {
+      //   show: true,
+      // },
+      //           y: {
+      //             // label: function(tooltipItem, data) {
+      //             //     return "$" + Number(tooltipItem.yLabel).toFixed(0).replace(/./g, function(c, i, a) {
+      //             //         return i > 0 && c !== "." && (a.length - i) % 3 === 0 ? "," + c : c;
+      //             //     });
+      //             // }
+      //               formatter: function (val) {
+      //                 // var valor =parseFloat(val);
+      //                 // var valor =val.toString().formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
+      //                 // var valor =new Intl.NumberFormat().format(val.toString());
+      //                   return "$ " + format(val*1);
+      //                   // return valor;
+      //                   // return val*1;
+      //                   // return "$" + Number(val).toFixed(0).replace(/./g, function(c, i, a)
+      //               }
+      //           },
+
+      //       }
         };
 
         // var chart2 = new ApexCharts(document.querySelector("#chart"), options);
@@ -1256,7 +984,7 @@ var myChart = new Chart(ctx, {
 //         for (var key in msg.solidezAcumulado) {
 //           aSolidezAcumulado.push(key);
 //       }
-//           console.log(aSolidezAcumulado);
+          // console.log(aSolidezAcumulado);
 
 
         
@@ -1264,7 +992,7 @@ var myChart = new Chart(ctx, {
 //         for (var key in msg.solidezAcumulado) {
 //           aSolidezAcumuladoValues.push(msg.solidezAcumulado[key]);
 //       }
-//           console.log(aSolidezAcumuladoValues);
+          // console.log(aSolidezAcumuladoValues);
 
 
 
@@ -1868,7 +1596,12 @@ var myChart = new Chart(ctx, {
 
 });
 
- });
+ }).fail( function( jqXHR, textStatus, errorThrown) {
+
+    console.log(errorThrown, textStatus, jqXHR);
+  // console.log(textStatus);
+  // console.log(errorThrown);
+});
 
     
 

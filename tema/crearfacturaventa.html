@@ -49,6 +49,18 @@ if(!empty($_SESSION["idEmpresa"])){
 
   $aClientes=$oClientes->getClientesEmpresa(); 
 
+
+
+  $oItem=new Data("empresa","idEmpresa",$_SESSION["idEmpresa"]);
+  $empresaDatos=$oItem->getDatos();
+  unset($oItem);
+
+  if ($_SESSION['idRol']!=3 && $_SESSION['idRol']!=4) {
+    if ($empresaDatos["manejaContabilidad"]==1) {
+      echo '<script>window.location.href="crearfacturaventac"</script>'; 
+    }
+  }
+  
 }
 
 
@@ -107,113 +119,59 @@ if(!empty($_SESSION["idEmpresa"])){
           </div>
 
           <div class="row">
-
             <div class="col-md-12 col-lg-12">
-
               <div class="card">
-
                 <div class="card-header">
-
                   <h4>Información General</h4>
-
                 </div>
-
                 <div class="card-body">
-
                   <div class="row">
-
                     <?php if(empty($_SESSION['idEmpresa'])){ ?>
-
                     <div class=" col-md-4 ">
-
                       <div class="form-group">
-
                           <label class="negrita d-block">Empresa<span class="requerido">*</span>:</label>
-
                           <select class="form-control select2" name="datos[idEmpresa]" id="datos[idEmpresa]" required>
-
                           <option value="">Seleccione una opción</option>
-
                           <?php foreach($aEmpresas as $iItem){ ?>
-
                           <option value="<?php echo $iItem['idEmpresa']; ?>"><?php echo $iItem["razonSocial"]; ?></option>
-
                         <?php } ?>
-
                         </select>
-
                       </div>
-
                     </div>
-
                     <?php } ?>
-
                     <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
-
                       <div class="form-group">
-
                         <label class="negrita">Fecha factura<span class="requerido">*</span>:</label>
-
                         <input type="text" readonly class="form-control datepicker" name="datos[fechaFactura]" id="datos[fechaFactura]" required>
-
                       </div>
-
                     </div>
-
-                    
-
                     <div class="<?php if(empty($_SESSION['idEmpresa'])){ ?> col-md-4 <?php }else{ ?> col-md-6 <?php } ?>">
-
                       <div class="form-group">
-
-                        <label class="negrita">Cliente<span class="requerido">*</span>:</label>
-
+                        <label class="negrita">Tercero<span class="requerido">*</span>:</label>
                         <select class="form-control select2 mayusculas" name="datos[idCliente]" id="datos[idCliente]" required>
-
                           <option value="">Seleccione una opción</option>
-
                           <?php foreach($aClientes as $iCliente){ ?>
-
                           <option value="<?php echo $iCliente["idTercero"]; ?>"><?php echo $iCliente["nit"].' - '.$iCliente["razonSocial"]; ?></option>
-
                         <?php } ?>
-
                         </select>
-
                       </div>
-
                     </div>
-
                   </div>
-
                   <div class="row">
-
-
-                    <div class="col-md-4">
-
+                    <div class="col-md-3">
                       <div class="form-group">
-
                         <label class="negrita">Fecha vencimiento factura<span class="requerido">*</span>:</label>
-
                         <input type="text" readonly class="form-control datepicker" name="datos[fechaVencimientoFactura]" id="datos[fechaVencimientoFactura]" required>
-
                       </div>
-
                     </div>
-
-                    <div class="col-md-4">
-
+                    <div class="col-md-3">
                       <div class="form-group">
-
                           <label class="negrita">N° Factura<span class="requerido">*</span>:</label>
-
                           <input type="text" class="form-control mayusculas" name="datos[nroFactura]" id="datos[nroFactura]" placeholder="N° Factura" required>
-
                       </div>
-
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -222,6 +180,24 @@ if(!empty($_SESSION["idEmpresa"])){
                         <div class="custom-file">
 
                           <input type="file" class="custom-file-input" id="file" name="file" >
+
+                          <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Archivo 2<span class="requerido">*</span>:</label>
+
+                        <div class="custom-file">
+
+                          <input type="file" class="custom-file-input" id="file2" name="file2" >
 
                           <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
 
@@ -519,6 +495,11 @@ if(!empty($_SESSION["idEmpresa"])){
                         </div>
 
                       </div>
+
+
+
+
+
                   </div>
               </div>
 

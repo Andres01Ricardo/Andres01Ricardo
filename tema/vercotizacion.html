@@ -66,10 +66,9 @@ unset($oLista);
 
 
 	<br><br>
-	<input type="hidden" name="" id="" value="<?php echo ?>">
 
 <div class="card card-body table-responsive" id="muestra" style="font-size: 95%;">
-	<table class="table" >
+	<table class="table">
 	  <thead >
 	    <tr style="text-align: center; font-size: 25px;">
 	      <th scope="col"><img width="70" height="70" alt="image" src="<?php echo $URL.$aEmpresa['logo']; ?>" ></th>
@@ -110,10 +109,10 @@ unset($oLista);
 <br><br>
 <hr>
 <div class="row">
-	<div class="col-md-1 col-lg-1"></div>
-		<div class="col-md-8 col-lg-8"><span>Sr.(es):
+	<div class="col-md-2 col-lg-2"></div>
+		<div class="col-md-4 col-lg-4"><span>Sr.(es):
 <?php echo $aCliente['nombre'].' '.$aCliente['apellidos'];?></span></div>
-<div class="col-md-3 col-lg-3"><span>Empresa:
+<div class="col-md-4 col-lg-4"><span>Empresa:
 <?php echo $aCliente['empresa'];?></span></div>
 	</div>
 	<br>
@@ -133,7 +132,7 @@ unset($oLista);
 </div>
 <hr>
 <br>
-	<table class="table table-striped" cellpadding="20" id="tablamuestra">
+	<table class="table-striped" cellpadding="20" id="tablamuestra">
 	  <thead style="background-color: #87BFFE; color: white; font-size: 20px;">
 	    <tr style="height: 50px;">
 	      <th scope="col">Detalle producto</th>
@@ -257,3 +256,39 @@ function imprim2(){
     $('[data-toggle="tooltip"]').tooltip();
 </script>  
 
+<!-- 
+<script type="text/javascript">
+	function exportTableToExcel(tableID, filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+    
+    // Specify file name
+    filename = filename?filename+'.xls':'excel_data.xls';
+    
+    // Create download link element
+    downloadLink = document.createElement("a");
+    
+    document.body.appendChild(downloadLink);
+    
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+    
+        // Setting the file name
+        downloadLink.download = filename;
+        
+        //triggering the function
+        downloadLink.click();
+    }
+}
+</script>
+
+
+ -->

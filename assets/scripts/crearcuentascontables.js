@@ -258,6 +258,27 @@ autocompletec=function(){
 
         var ids=ui.item.value;
 
+
+
+
+        if ($("#idGrupo").val()==12 && ids==134) {
+
+          $("#divPorcentajeRetencion").css("display","block");
+          $("#porcentajeRetencion").attr("required","required");
+          $('#tercero option[value="3"]').prop('selected', true)
+          
+        }else if ($("#idGrupo").val()==3 && ids==33) {
+
+          $("#divPorcentajeRetencion").css("display","block");
+          $("#porcentajeRetencion").attr("required","required");
+          $('#tercero option[value="3"]').prop('selected', true)
+
+        }else{
+            $("#divPorcentajeRetencion").css("display","none");
+            $("#porcentajeRetencion").removeAttr("required");
+            $('#tercero option[value="1"]').prop('selected', true)
+        }
+
         $.ajax({
 
         url:URL+"functions/cuentascontables/cargarsubcuentas.php", 

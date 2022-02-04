@@ -24,6 +24,15 @@ if(!isset($_SESSION)){ session_start(); }
     $fecha=date("Y-m-d H:i:s");
 
 
+    $oLista=new Lista("producto_servicio");
+    $oLista->setFiltro("idEmpresa","=",$empresa);
+    $oLista->setFiltro("codigo","=",$datos["codigoProducto"]);
+    $productoExiste=$oLista->getlista();
+    unset($oLista);
+
+    if (empty($productoExiste)) {
+        // code...
+
         $aItem["idUsuario"]=$_SESSION["idUsuario"];
         $aItem["fechaRegistro"]= date("Y-m-d");
         
@@ -31,6 +40,7 @@ if(!isset($_SESSION)){ session_start(); }
         $aItem["nombre"]=$datos["producto"];
         $aItem["tipo"]='1';
         $aItem["idEmpresa"]=$empresa;
+        $aItem["manejaInventario"]="1";
 
         
         $oItem=new Data("producto_servicio","idProductoServicio"); 
@@ -43,7 +53,11 @@ if(!isset($_SESSION)){ session_start(); }
         
            unset($oItem);
 
-$msg=true; 
+        $msg=true; 
+
+    }else{
+        $msg=false;
+    }
 
 echo json_encode(array("msg"=>$msg));
 

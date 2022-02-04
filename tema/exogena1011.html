@@ -1,0 +1,180 @@
+<?php 
+
+include_once("class/exogenas.php");
+
+$oControl=new Control(); 
+$validarIngreso=1; 
+// $oEmpresa=new Empresa(); 
+
+
+if(!empty($_SESSION["idEmpresa"])){
+  // $aEmpresa=$oEmpresa->getEmpresas(array("ingresoPerfilEmpresa"=>$validarIngreso));
+  $idEmpresa=$_SESSION['idEmpresa'];
+
+  
+  $fecha='2021-12-31';
+  // $fechaDesde='2021-01-01';
+
+  $oTerceroExogena=new Exogenas();
+  $aTerceroExogena=$oTerceroExogena->getExogena1005(array("idEmpresa"=>$idEmpresa,"hasta"=>$fecha,"idFormato"=>10));
+  unset($oTerceroExogena);
+
+  // print_r($aTerceroExogena);
+}
+
+?>
+<style type="text/css">
+  .hovernegro:hover{
+    background-color: black;
+    font-weight: bold;
+  }
+</style>
+
+<section class="section">
+  <form enctype="multipart/form-data" id="frmGuardar">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i data-feather="home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Medios magneticos</li>
+
+          <li class="breadcrumb-item">Generar informe exogenas</li>
+          <li class="breadcrumb-item">Formato 1011</li>
+
+        </ul>
+        <?php if (empty($_SESSION["idEmpresa"])) { ?>
+          <div class="card">
+            <div class="card-header">
+              
+                <h4>Por favor ingrese a trabajar a una empresa en la parte de <a href="listarempresas" class="hovernegro">listar empresas</a></h4>
+              
+              
+            </div>
+          </div>
+        <?php } ?>
+        <?php if (!empty($_SESSION["idEmpresa"])) { ?>
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+                
+
+                <div class="card-header">
+
+                  <h4>Formato 1011</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-4 col-lg-4">
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+
+                      <table class="table table-striped table-bordered  mayusculas" id="tableEnterprise">
+
+                        <thead>
+
+                          <tr>
+
+                            <!-- <th class="text-center">#</th> -->
+                            <th >Concepto</th>
+
+                            <th >Saldos al 31 de diciembre (SAL)</th>
+                            <!-- <th style="width:5%">NID</th>
+
+                            <th style="width:5%">Dígito Verificación</th>
+
+                            <th style="width:20%">Primer apellido</th>
+
+                            <th style="width:20%">Segundo apellido</th>
+                            
+                            <th style="width:20%">Primer nombre</th>
+                            
+                            <th style="width:20%">Otros nombres</th>
+                            
+                            <th style="width:20%">Razón social</th>
+                            
+                            <th style="width:20%">Dirección</th>
+
+                            <th>Código dep</th>
+                            <th>Código mun</th>
+                            <th>País</th>
+
+
+                            <th style="width:20%">Valor patrimonial acciones o aportes al 31 de diciembre (VAL) </th>
+
+                            <th style="width:20%">Porcentaje de participación (POR)</th>
+                            <th style="width:20%">Porcentaje de participación (posición decimal) (DEC)</th> -->
+
+                            <!-- <th style="width:20%">Devoluciones rebajas y descuentos (DEV)</th> -->
+                            
+
+                            
+                            
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+                        
+
+                          <?php 
+                          foreach($aTerceroDetalladoCuenta as $index => $exogenaParametrizada){ 
+
+                            // $oLista=new Lista("cuenta_contable");
+                            // $oLista->setFiltro("idCuentaContable","=",$exogenaParametrizada["idCuentaContable"]);
+                            // $cuenta=$oLista->getLista();
+                            // unset($oLista);
+                            $oLista=new Lista("tercero");
+                            $oLista->setFiltro("idTercero","=",$exogenaParametrizada["idTercero"]);
+                            $tercero=$oLista->getLista();
+                            unset($oLista);
+                            ?> 
+                            <tr>
+                              <td>8207</td>
+                              
+                              <td><?php echo number_format($exogenaParametrizada["debito"]-$exogenaParametrizada["credito"],2,".",","); ?></td>
+                              
+                            </tr>
+                          <?php 
+                        } 
+                        ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+                 <!--  <div class="card-footer text-right">
+                      <a class="btn btn-primary mr-1" id="btnGuardar">GUARDAR</a>
+                    </div>
+ -->
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+  <? } ?>
+</form>
+
+</section>
+

@@ -49,14 +49,9 @@ foreach ($item as $key => $value) {
     $aDatos["digitoVerificador"]=$value["digitoVerificador"];
     $aDatos["razonSocial"]=$value["razonSocial"]; 
     $aDatos["email"]='nocorreo@n.com';
-    if (strlen($value["telefono"])>10) {
-        $aDatos["telefono"]=$value["telefono"]; 
-        $aDatos["celular"]=0;
-    }
-    if (strlen($value["telefono"])<11) {
-        $aDatos["telefono"]=$value["telefono"]; 
-        $aDatos["celular"]=$value["telefono"];
-    }
+    
+    $aDatos["telefono"]=$value["telefono"]; 
+       
     $ciudad=trim(explode("-", $value["ciudad"])[0]);
     
     $oItem=new Lista("ciudad");
@@ -80,14 +75,12 @@ foreach ($item as $key => $value) {
     }
 
     
-    $aDatos["responsableIva"]=1;
     $aDatos["direccion"]=$value["direccion"];
+    $aDatos["responsableIva"]=1;
     $aDatos["fechaRegistro"]=date("Y-m-d H:i:s");
     $aDatos["idUsuarioRegistra"]=$_SESSION["idUsuario"]; 
     $aDatos["periodoPago"]='30';
-    $aDatos["nombreComercial"]=$value["razonSocial"];
     
-    $aDatos["genero"]=1;
     $aDatos["tipoTercero"]=7;
     
     $oItem=new Data("tercero","idTercero");

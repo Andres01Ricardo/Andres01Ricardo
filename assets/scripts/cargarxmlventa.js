@@ -295,13 +295,12 @@ sHtmlA+='<tr>'+
       '<input type="hidden" name="item['+i+'][idProducto]" id="item['+i+'][idProducto]" class="form-control idProducto mayusculas" required >'+
       '<td><input type="text" name="item['+i+'][producto]" id="item['+i+'][producto]" class="form-control producto mayusculas" required ></td>'+
       '<td><input type="text" name="item['+i+'][descripcion]" id="item['+i+'][descripcion]" class="form-control descripcion mayusculas" value="'+producto+'" required readonly></td>'+
-
-        '<td><input type="text" name="item['+i+'][cantidad]" id="item['+i+'][cantidad]" class="form-control cantidad decimales" value="'+cantidad+'" readonly></td>'+
-        '<td><input type="text" name="item['+i+'][valorUnitario]" id="item['+i+'][precio]" class="form-control precio decimales" value="'+precio+'" readonly></td>'+
-        '<input type="hidden" name="item['+i+'][idUnidad]" id="item['+i+'][idUnidad]" class="form-control idUnidad" value="1" readonly>'+
-        '<td><input type="text" name="item['+i+'][subtotal]" id="item['+i+'][subtotal]" class="form-control subtotal decimales" value="'+subtotal+'" readonly></td>'+
-        '<td><input type="text" name="item['+i+'][iva]" id="item['+i+'][iva]" class="form-control iva decimales" value="'+iva+'" readonly></td>'+
-        '<td><input type="text" name="item['+i+'][total]" id="item['+i+'][total]" class="form-control total decimales" value="'+total+'" readonly></td>'+
+      '<td><input type="text" name="item['+i+'][cantidad]" id="item['+i+'][cantidad]" class="form-control cantidad decimales" value="'+cantidad+'" readonly></td>'+
+      '<td><input type="text" name="item['+i+'][valorUnitario]" id="item['+i+'][precio]" class="form-control precio decimales" value="'+precio+'" readonly></td>'+
+      '<input type="hidden" name="item['+i+'][idUnidad]" id="item['+i+'][idUnidad]" class="form-control idUnidad" value="1" readonly>'+
+      '<td><input type="text" name="item['+i+'][subtotal]" id="item['+i+'][subtotal]" class="form-control subtotal decimales" value="'+subtotal+'" readonly></td>'+
+      '<td><input type="text" name="item['+i+'][iva]" id="item['+i+'][iva]" class="form-control iva decimales" value="'+iva+'" readonly></td>'+
+      '<td><input type="text" name="item['+i+'][total]" id="item['+i+'][total]" class="form-control total decimales" value="'+total+'" readonly></td>'+
     '</tr>'; 
 
 		}
@@ -862,7 +861,8 @@ $("body").on("click","#btnAgregar",function(e){
 
     if(base!=""){
 
-      base=eliminarMoneda(eliminarMoneda(eliminarMoneda(base,".",""),"$",""),",",".");
+      // base=eliminarMoneda(eliminarMoneda(eliminarMoneda(base,".",""),"$",""),",",".");
+      base=eliminarMoneda(eliminarMoneda(base,".",""),"$","");
 
     }
 
@@ -922,7 +922,7 @@ $("body").on("change","#tipoDeduccion",function(e){
 
     $(".valor").addClass("col-md-2").removeClass("col-md-3")
 
-    $("#valor").attr("readonly","readonly"); 
+    // $("#valor").attr("readonly","readonly"); 
 
      $.ajax({
 
@@ -1016,6 +1016,7 @@ $("body").on("change","#baseImpuestos",function(e){
 
 
     $("#valor").val(valor).trigger("change"); 
+    // $("#valor").val(Math.round(valor)).trigger("change"); 
     $("#valor").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});	
 
   }
@@ -1310,3 +1311,37 @@ calcularDeduccion=function(){
 //   // $("[name='datos[totalPago]']").val(pago).trigger("change");
 
 // }
+
+
+
+$("body").on("click touchstart",".btnEliminar",function(e){
+
+  $(this).parents("tr").css("background-color","#f0d0d0"); 
+
+  var elemento=this; 
+
+  setTimeout(function(){
+
+    $(elemento).parents("tr").remove();
+
+    $("#tableDeducciones tbody tr").each(function(index,element){
+
+      $(element).find(".tipoDeduccion").attr("id","item["+index+"][tipoDeduccion]").attr("name","item["+index+"][tipoDeduccion]")
+
+      $(element).find(".concepto").attr("id","item["+index+"][concepto]").attr("name","item["+index+"][concepto]")
+
+      $(element).find(".idConcepto").attr("id","item["+index+"][idConcepto]").attr("name","item["+index+"][idConcepto]")
+
+      $(element).find(".baseImpuestos").attr("id","item["+index+"][baseImpuestos]").attr("name","item["+index+"][baseImpuestos]")
+
+      $(element).find(".valor").attr("id","item["+index+"][valor]").attr("name","item["+index+"][valor]")
+
+    })
+
+    
+
+    calcularDeduccion(); 
+
+  },500)
+
+})

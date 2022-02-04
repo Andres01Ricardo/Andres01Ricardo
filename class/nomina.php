@@ -21,13 +21,13 @@ class Nomina extends Sql{
 		}
 
 		
-		if($_SESSION["idRol"]==2){
-			if ($aData["ingresoPerfilEmpresa"]==0) {
-				$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
-			}else{
-				$condicion="";
-			}
-		}		
+		// if($_SESSION["idRol"]==2){
+		// 	if ($aData["ingresoPerfilEmpresa"]==0) {
+		// 		$condicion.=" AND ue.idUsuario=".$_SESSION["idUsuario"]; 
+		// 	}else{
+		// 		$condicion="";
+		// 	}
+		// }		
 
 		$sql="SELECT en.idEmpresaNovedad, en.fechaRegistro, en.estado, CONCAT(e.nombre,' ',e.apellido) as empleado, em.razonSocial, n.nombre as novedad,  CONCAT(u.nombreUsuario,' ',u.apellidoUsuario) as usuarioRegistra,n.idNovedades
 

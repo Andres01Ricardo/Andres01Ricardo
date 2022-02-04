@@ -103,7 +103,7 @@ $(document).ready(function(e){
         data: {"idEmpresa":idEmpresa}, 
         dataType: "json",
         }).done(function(msg){  
-          console.log(msg);
+          // console.log(msg);
           var sHtml="<option value=''>Seleccione una opción</option>"; 
           msg.forEach(function(element,index){
             sHtml+="<option value='"+element.idComprobanteRecurrente+"'>"+element.nombre+"</option>"; 
@@ -133,7 +133,7 @@ aDatosT=[];
       dataType: "json",
 
       }).done(function(msg){
-      console.log(msg);
+      // console.log(msg);
        
 
         msg.forEach(function(element,index){
@@ -177,7 +177,7 @@ aDatosT=[];
       data: {"idEmpresa":0}, 
       dataType: "json",
       }).done(function(msg){
-        console.log(msg);
+        // console.log(msg);
         msg.forEach(function(element,index){
           aDatosGrupo.push({
               value: element.idGrupo,
@@ -197,7 +197,7 @@ $("body").on("change","#idComprobanteRecurrente",function(e){
         data: {"idComprobanteRecurrente":idComprobanteRecurrente}, 
         dataType: "json",
         }).done(function(msg){  
-          console.log(msg);
+          // console.log(msg);
           $("#tableProductos tbody tr").remove(); 
           var sHtml='';  
           msg.forEach(function(element,index){
@@ -253,7 +253,7 @@ if (element.saldoCredito=="0") {
     data: {"idComprobanteRecurrente":idComprobanteRecurrente}, 
     dataType: "json",
     }).done(function(msg){  
-      console.log(msg);
+      // console.log(msg);
       var sHtml="<option value=''>Seleccione una opción</option>"; 
       msg.forEach(function(element,index){
         sHtml+="<option value='"+element.idComprobanteRecurrente+"'>"+element.nombre+"</option>"; 
@@ -528,6 +528,50 @@ autocomplete=function(){
  //--------------------------------------------------------------------------------------------------------
 
 
+  if (index>0) {
+    var idTercero=$("#item[0][idTercero]").val(); 
+    var idEmpresa=$("#idEmpresa").val();
+    var idTipoDocumento=$("#tipoDocumento").val();
+    if(idTipoDocumento!=""){
+    
+        if (idTipoDocumento==7 || idTipoDocumento==15) {
+
+          $("#index").val(index);
+          $.ajax({
+            url:URL+"functions/comprobantes/consultarfacturacruceTercero.php", 
+            type:"POST", 
+            data: {"idTercero":idTercero,"idEmpresa":idEmpresa,"idTipoDocumento":idTipoDocumento}, 
+            dataType: "json",
+            }).done(function(msg){
+              // console.log(msg);
+              // console.log('**');
+              // console.log(msg.facturas);
+              if (idTipoDocumento==7) {
+                var idFacturaCompra=0;
+                var  sHtmlC='<optgroup label="Pendiente por pagar"><option value="">Seleccione</option>'; 
+                msg.facturas.forEach(function(element,index){
+                  idFacturaCompra=parseInt(element.idFacturaCompra);
+                  sHtmlC+='<option value="'+idFacturaCompra+'" saldo="'+element.saldo+'" nroFactura="'+element.nroFactura+'" tercero="'+element.razonSocial+'">Nro Factura: '+element.nroFactura+'   |        SALDO: '+element.saldo+'       |           Tercero: '+element.razonSocial+'</option>'; 
+                });
+              }
+              if (idTipoDocumento==15) {
+                var  sHtmlC='<optgroup label="Pendiente por cobrar"><option value="">Seleccione</option>'; 
+                    msg.facturas.forEach(function(element,index){
+                      idFacturaVenta=parseInt(element.idFacturaVenta);
+                    sHtmlC+='<option value="'+idFacturaVenta+'" saldo="'+element.saldo+'"  nroFactura="'+element.nroFactura+'" tercero="'+element.razonSocial+'" >Nro Factura: '+element.nroFactura+'   |        SALDO: '+element.saldo+'       |           Tercero: '+element.razonSocial+'</option>'; 
+                  })
+              }
+                  sHtmlC+="</optgroup>"; 
+                $("[name='factura[0][cruceFactura]']").html(sHtmlC);
+                // $("[name='factura[0][cruceFactura]']").attr("required",true);
+
+                // $('#facturaCruce').modal('show');
+          });
+        }
+    }
+  }
+
+
 
 
 
@@ -555,7 +599,7 @@ aDatosT=[];
       dataType: "json",
 
       }).done(function(msg){
-      console.log(msg);
+      // console.log(msg);
        
 
         msg.forEach(function(element,index){
@@ -769,8 +813,8 @@ autocompleteT=function(){
       focus: function( event, ui ) {
         var index=$(this).index(".nit");
         // $( ".nit" ).eq(index).val( ui.item.label );
-        $( ".idTercero" ).eq(index).val( ui.item.value );
-        $( ".tipoTercero" ).eq(index).val( ui.item.tipo );
+        // $( ".idTercero" ).eq(index).val( ui.item.value );
+        // $( ".tipoTercero" ).eq(index).val( ui.item.tipo );
         return false;
       },
       select: function( event, ui ) {
@@ -780,6 +824,52 @@ autocompleteT=function(){
         $( ".tipoTercero" ).eq(index).val( ui.item.tipo );
         $( ".letreroTercero" ).eq(index).addClass('ocultar');
         var id=ui.item.value;
+
+
+        
+    var idTercero=ui.item.value; 
+    var idEmpresa=$("#idEmpresa").val();
+    var idTipoDocumento=$("#tipoDocumento").val();
+    if(idTipoDocumento!=""){
+    
+        if (idTipoDocumento==7 || idTipoDocumento==15) {
+
+          $("#index").val(index);
+          $.ajax({
+            url:URL+"functions/comprobantes/consultarfacturacruceTercero.php", 
+            type:"POST", 
+            data: {"idTercero":idTercero,"idEmpresa":idEmpresa,"idTipoDocumento":idTipoDocumento}, 
+            dataType: "json",
+            }).done(function(msg){
+              // console.log(msg);
+              // console.log('**');
+              // console.log(msg.facturas);
+              if (idTipoDocumento==7) {
+                var idFacturaCompra=0;
+                var  sHtmlC='<optgroup label="Pendiente por pagar"><option value="">Seleccione</option>'; 
+                msg.facturas.forEach(function(element,index){
+                  idFacturaCompra=parseInt(element.idFacturaCompra);
+                  sHtmlC+='<option value="'+idFacturaCompra+'" saldo="'+element.saldo+'" nroFactura="'+element.nroFactura+'" tercero="'+element.razonSocial+'">Nro Factura: '+element.nroFactura+'   |        SALDO: '+element.saldo+'       |           Tercero: '+element.razonSocial+'</option>'; 
+                });
+              }
+              if (idTipoDocumento==15) {
+                var  sHtmlC='<optgroup label="Pendiente por cobrar"><option value="">Seleccione</option>'; 
+                    msg.facturas.forEach(function(element,index){
+                      idFacturaVenta=parseInt(element.idFacturaVenta);
+                    sHtmlC+='<option value="'+idFacturaVenta+'" saldo="'+element.saldo+'"  nroFactura="'+element.nroFactura+'" tercero="'+element.razonSocial+'" >Nro Factura: '+element.nroFactura+'   |        SALDO: '+element.saldo+'       |           Tercero: '+element.razonSocial+'</option>'; 
+                  })
+              }
+                  sHtmlC+="</optgroup>"; 
+                $("[name='factura[0][cruceFactura]']").html(sHtmlC);
+                // $("[name='factura[0][cruceFactura]']").attr("required",true);
+
+                // $('#facturaCruce').modal('show');
+          });
+        }
+    }else{
+      $("[name='datos[comprobante]']").html("<option value=''>Seleccione una opción</option>");
+    }
+
         return false;
       },
       change: function(event, ui){
@@ -793,6 +883,66 @@ autocompleteT=function(){
     })
 }
 
+
+$("[name='datos[cruce]']").on('change',function(){
+  // alert($(this).val());
+  if ($(this).val()==0) {
+    $("#btnGuardarCruce").removeClass('ocultar');
+    $("#cerrarModal").addClass('ocultar');
+    $("#divCruzar").css("display","block");
+  }
+  if ($(this).val()==1) {
+    $("#divCruzar").css("display","none"); 
+    $("#cerrarModal").removeClass('ocultar');
+    $("#btnGuardarCruce").addClass('ocultar');
+  }
+
+})
+
+
+
+
+$("body").on("click","#btnGuardarCruce",function(e){
+
+var cant=$("#tableCruzar tbody tr").length; 
+var sHtml=' <td><input type="hidden" name="cruce['+cant+'][idFactura]" id="cruce['+cant+'][idFactura]" value="'+$("#cruceFactura option:selected").val()+'"><input type="hidden" name="cruce['+cant+'][index]" id="cruce['+cant+'][index]" value="'+$("#index").val()+'"><input type="text" class="form-control mayusculas" name="cruce['+cant+'][nroFactura]" id="cruce['+cant+'][nroFactura]" value="'+$("#cruceFactura option:selected").attr("nroFactura")+'" readonly></td>';
+
+sHtml+='<td><input type="text" class="form-control mayusculas" name="cruce['+cant+'][tercero]" id="cruce['+cant+'][tercero]" value="'+$("#cruceFactura option:selected").attr("tercero")+'" readonly></td>';
+sHtml+='<td><input type="text" class="form-control mayusculas moneda saldo" name="cruce['+cant+'][saldo]" id="cruce['+cant+'][saldo]" value="'+$("#cruceFactura option:selected").attr("saldo")+'" readonly></td>';
+
+
+
+
+
+
+
+if ($("#tipoDocumento").val()==7) {
+  //debito
+// [name='factura[0][cruceFactura]']
+
+  $("[name='item["+$("#index").val()+"][debito]']").val($("#cruceFactura option:selected").attr("saldo")).trigger('change');
+  $("[name='item["+$("#index").val()+"][credito]']").attr("disabled","disabled");
+
+  // saldoF.value=;
+
+}
+
+if ($("#tipoDocumento").val()==15) {
+//credito
+  $("[name='item["+$("#index").val()+"][credito]']").val($("#cruceFactura option:selected").attr("saldo")).trigger('change');
+  $("[name='item["+$("#index").val()+"][debito]']").attr("disabled","disabled");
+  // var saldoF=document.getElementById("item["+$("#index").val()+"][credito]");
+  // saldoF.value=$("#cruceFactura option:selected").attr("saldo");
+
+}
+
+
+
+  $("#tableCruzar tbody").append("<tr>"+sHtml+"</tr>"); 
+  $(".saldo").formatCurrency({decimalSymbol:',',digitGroupSymbol:'.'});
+  $('#facturaCruce').modal('hide');
+  $("#divTablaCruzar").css("display","block");
+})
 
 // autocompleteTer=function(){
 
@@ -840,46 +990,57 @@ $('.decimales').keyup(function () {
 // })
 
 $("body").on("change","[name='datos[tipoDocumento]']",function(e){
-
     var id=$(this).val(); 
     var idEmpresa=$("#idEmpresa").val();
-
-
     if(id!=""){
-
       $.ajax({
-
         url:URL+"functions/comprobantes/parametrosdocumentos.php", 
-
         type:"POST", 
-
         data: {"idTipoDocumento":id,"idEmpresa":idEmpresa}, 
-
         dataType: "json",
-
         }).done(function(msg){  
-
           var sHtml="<option value=''>Seleccione una opción</option>"; 
-
           msg.comprobante.forEach(function(element,index){
-
             sHtml+="<option value='"+element.comprobante+"'>"+element.comprobante+' - '+element.descripcion+"</option>"; 
-
           })
-
           $("[name='datos[comprobante]']").html(sHtml);
-
       });
-
+        // if (id==7 || id==15) {
+        //   $.ajax({
+        //     url:URL+"functions/comprobantes/consultarfacturacruce.php", 
+        //     type:"POST", 
+        //     data: {"idTipoDocumento":id,"idEmpresa":idEmpresa}, 
+        //     dataType: "json",
+        //     }).done(function(msg){
+        //       console.log(msg);
+        //       console.log('**');
+        //       console.log(msg.facturas);
+        //       if (id==7) {
+        //         var idFacturaCompra=0;
+        //         var  sHtmlC='<optgroup label="Pendiente por pagar"><option value="">Seleccione</option>'; 
+        //         msg.facturas.forEach(function(element,index){
+        //           idFacturaCompra=parseInt(element.idFacturaCompra);
+        //           sHtmlC+='<option value="'+idFacturaCompra+'" saldo="'+element.saldo+'" >Nro Factura: '+element.nroFactura+'   |        SALDO: '+element.saldo+'       |           Tercero: '+element.razonSocial+'</option>'; 
+        //         });
+        //       }
+        //       if (id==15) {
+        //         var  sHtmlC='<optgroup label="Pendiente por cobrar"><option value="">Seleccione</option>'; 
+        //             msg.facturas.forEach(function(element,index){
+        //               idFacturaVenta=parseInt(element.idFacturaVenta);
+        //             sHtmlC+='<option value="'+idFacturaVenta+'" saldo="'+element.saldo+'" >Nro Factura: '+element.nroFactura+'   |        SALDO: '+element.saldo+'       |           Tercero: '+element.razonSocial+'</option>'; 
+        //           })
+        //       }
+        //           sHtmlC+="</optgroup>"; 
+        //         $("#cruceFactura").html(sHtmlC);
+        //         $("#cruceFactura").attr("required",true);
+        //   });
+        // }
     }else{
-
       $("[name='datos[comprobante]']").html("<option value=''>Seleccione una opción</option>");
-
     }
-
-    
-
 });
+
+
 
 
 $("#tableProductos").on("input", "input", function() {
@@ -1119,10 +1280,16 @@ $("body").on("click","#agregar",function(e){
   $("#tableProductos tbody tr:last").find(".idSubcentroCosto").attr("id","item["+cant+"][idSubcentroCosto]").attr("name","item["+cant+"][idSubcentroCosto]").attr("r","1").val(""); 
   $("#tableProductos tbody tr:last").find(".letreroSubcentroCosto").attr("id","item["+cant+"][letreroSubcentroCosto]").addClass('ocultar').val("");
 
-  $("#tableProductos tbody tr:last").find(".nit").attr("id","item["+cant+"][nit]").attr("name","item["+cant+"][nit]").val(""); 
-  $("#tableProductos tbody tr:last").find(".idTercero").attr("id","item["+cant+"][idTercero]").attr("name","item["+cant+"][idTercero]").val(""); 
+
+  var num=cant-1;
+  var ter=document.getElementById('item['+num+'][nit]').value;
+
+
+
+  $("#tableProductos tbody tr:last").find(".nit").attr("id","item["+cant+"][nit]").attr("name","item["+cant+"][nit]").val(ter); 
+  $("#tableProductos tbody tr:last").find(".idTercero").attr("id","item["+cant+"][idTercero]").attr("name","item["+cant+"][idTercero]"); 
   $("#tableProductos tbody tr:last").find(".letreroTercero").attr("id","item["+cant+"][letreroTercero]").addClass('ocultar').val("");
-  $("#tableProductos tbody tr:last").find(".tipoTercero").attr("id","item["+cant+"][tipoTercero]").attr("name","item["+cant+"][tipoTercero]").val(""); 
+  $("#tableProductos tbody tr:last").find(".tipoTercero").attr("id","item["+cant+"][tipoTercero]").attr("name","item["+cant+"][tipoTercero]"); 
   $("#tableProductos tbody tr:last").find(".descripcion").attr("id","item["+cant+"][descripcion]").attr("name","item["+cant+"][descripcion]").val(""); 
   $("#tableProductos tbody tr:last").find(".base").attr("id","item["+cant+"][base]").attr("name","item["+cant+"][base]").val(""); 
   $("#tableProductos tbody tr:last").find(".naturaleza").attr("id","item["+cant+"][naturaleza]").attr("name","item["+cant+"][naturaleza]").val(''); 
@@ -1189,6 +1356,14 @@ $("body").on("click",".eliminar",function(e){
 
 })
 
+verificar_factura=function (){
+  var control=true;
+  // if ($("#cruceFactura").val()!="") {
+    // control=false;
+  // }
+  return control;
+}
+
 
 $("body").on("click","#btnGuardarTercero",function(e){
   e.preventDefault();
@@ -1218,11 +1393,11 @@ $("body").on("click","#btnGuardarTercero",function(e){
             if(msg.msg){
               Swal.fire(
                 {
-                icon: 'success',
-                title: 'tercero guardado!',
-                text: 'con exito',
-                closeOnConfirm: true,
-              }
+                  icon: 'success',
+                  title: 'tercero guardado!',
+                  text: 'con exito',
+                  closeOnConfirm: true,
+                }
               ).then((result) => {
                     var tipoDetalle=3;
                     var idEmpresa=$("[name='datos[idEmpresa]']").val();
@@ -1233,7 +1408,7 @@ $("body").on("click","#btnGuardarTercero",function(e){
                           data: {"idEmpresa":idEmpresa,"tipoDetalle":tipoDetalle}, 
                           dataType: "json",
                           }).done(function(msg){
-                          console.log(msg);
+                          // console.log(msg);
                             msg.forEach(function(element,index){
                               if (element.idCliente !=null) {
                                    var tipo='c'; 
@@ -1398,10 +1573,10 @@ $("body").on("click","#btnGuardar",function(e){
     var diferenciaTotal=eliminarMoneda(eliminarMoneda(diferencia.value,"$",""),",","");  
     if (diferenciaTotal!=0) {
       Swal.fire(
-                  'Algo ha salido mal!',
-                  'debitos y creditos no coinciden',
-                  'error'
-                )
+          'Algo ha salido mal!',
+          'debitos y creditos no coinciden',
+          'error'
+        )
       diferencia.style.color='red';
     }else{
       if (verificar_id_cuenta_contable()) {
@@ -1410,9 +1585,73 @@ $("body").on("click","#btnGuardar",function(e){
           if (verificar_centro_costo()) {
             if (verificar_subcentro_costo()) {
               if(true === $("#frmGuardar").parsley().validate()){
-                   Swal.fire({
+                if ($("#tipoDocumento").val()==7 || $("#tipoDocumento").val()==15) {
+                  
+
+                  
+                  var cant=$("#tableCruzar tbody tr").length; 
+                  if (cant!=0) {
+                    var saldos =[];
+
+                    for (let i = 0; i < cant; i++) {
+                      // 0[i]
+                      let nroF=$("[name='cruce["+i+"][nroFactura]']").val();
+                      let saldo=$("[name='cruce["+i+"][saldo]']").val();
+                      // let saldoFactura = parseFloat(saldo.replace(",","."));
+                      let saldoFactura =parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda(saldo,"$",""),".",""),",","."));
+
+                      // console.log('saldo:');
+                      // console.log(saldo);
+                      
+                      let index=$("[name='cruce["+i+"][index]']").val();
+                      // console.log('index:');
+                      // console.log(index);
+                      var debito=$("[name='item["+index+"][debito]']").val();
+                      
+                      // console.log('length');
+                        // console.log(debito.length); 
+                        // console.log('paso');
+                      // if ($("[name='item["+index+"][debito]']").val().length!=0) {
+                      if (debito.length >0) {
+
+
+                        var total=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda(debito,"$",""),".",""),",","."));
+                        // console.log('debito:');
+                      }
+                      if (debito.length==0) {
+                        var total='';
+                      }
+                      // console.log($("[name='item["+index+"][debito]']").val());
+                      // console.log(total);
+                      if (total==0 || total=='' ) {
+                        var credito=$("[name='item["+index+"][credito]']").val();
+
+                        total=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda(credito,"$",""),".",""),",","."));
+                        // console.log('credito:');
+                      }
+
+                        // console.log(total);
+                      let pagoFactura = saldoFactura-total;
+                      
+                        // console.log('saldo:');
+                        // console.log(saldoFactura);
+                        // console.log('total:');
+                        // console.log(pagoFactura);
+
+                      saldos.push(nroF,pagoFactura);
+                    }
+
+                  }
+                  // $("#tableCruzar tbody").append("<tr>"+sHtml+"</tr>");
+
+
+
+
+
+                  Swal.fire({
                     title: '¿Está seguro?',
-                    text: 'Está a punto de contabilizar el comprobante!',
+                    // text: 'Está a punto de contabilizar el comprobante, queda un saldo pendiente en la(s) factura(s) de: '+saldos,
+                    text: 'Está a punto de contabilizar el comprobante',
                     icon: 'warning', 
                     showCancelButton: true,
                     showLoaderOnConfirm: true,
@@ -1441,11 +1680,12 @@ $("body").on("click","#btnGuardar",function(e){
                           }
                           ).then((result) => {
                            location.reload(); 
+                           // location.href="vercomprobante"+msg.idComprobante; 
                           })
                         }else{
                            Swal.fire(
-                            'Algo ha salido mal!',
-                            'Verifique su conexión a internet',
+                            'El número de comprobante ya existe!',
+                            'Verifiquelo y vuelva a contabilizarlo',
                             'error'
                           )
                         }
@@ -1453,6 +1693,58 @@ $("body").on("click","#btnGuardar",function(e){
                     });
                   }
                 })
+
+                }else{
+
+                    Swal.fire({
+                        title: '¿Está seguro?',
+                        text: 'Está a punto de contabilizar el comprobante!',
+                        icon: 'warning', 
+                        showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        confirmButtonText: `Si, Guardar!`,
+                        cancelButtonText:'Cancelar',
+                        preConfirm: function(result) {
+                          return new Promise(function(resolve) {
+                            var formu = document.getElementById("frmGuardar");
+                            var data = new FormData(formu);
+                            $.ajax({
+                            url:URL+"functions/comprobantes/guardarcomprobante.php", 
+                            type:"POST", 
+                            data: data,
+                            contentType:false, 
+                            processData:false, 
+                            dataType: "json",
+                            cache:false 
+                          }).done(function(msg){  
+                            if(msg.msg){
+                              Swal.fire(
+                                {
+                                icon: 'success',
+                                title: 'comprobante contabilizado!',
+                                text: 'con exito',
+                                closeOnConfirm: true,
+                              }
+                              ).then((result) => {
+                               location.reload();
+                                // location.href="vercomprobante"+msg.idComprobante; 
+                              })
+                            }else{
+                               Swal.fire(
+                                'Algo ha salido mal!',
+                                'Verifique su conexión a internet',
+                                'error'
+                              )
+                            }
+                          });
+                        });
+                      }
+                    })
+
+                   }
+
+
+        // ---------------------------------------------------------
               }
             }else{
             Swal.fire(
@@ -1818,3 +2110,47 @@ $('.decimales').keyup(function () {
 
 
 $('[data-toggle="tooltip"]').tooltip();
+
+
+
+
+
+$("body").on("change","[name='datos[numeroComprobante]']",function(e){
+
+      var idEmpresa=$("#idEmpresa").val();
+      var tipoDocumento=$("#tipoDocumento").val();
+      var comprobante=$("#comprobante").val();
+      var numero=$(this).val();
+
+      console.log(idEmpresa);
+      console.log(tipoDocumento);
+      console.log(comprobante);
+      console.log(numero);
+    
+      $.ajax({
+        url:URL+"functions/comprobantes/consultarcomprobante.php", 
+        type:"POST", 
+        data: {"tipoDocumento":tipoDocumento,"idEmpresa":idEmpresa,"comprobante":comprobante,"numero":numero}, 
+        dataType: "json",
+
+        }).done(function(msg){  
+            
+
+          if (msg.comprobante==false) {
+            // $("#tabla").css("display","none");
+            // $("#divBtnGuardar").css("display","none");
+            Swal.fire({
+                icon:'error',
+                title:"El comprobante ya existe",
+                text:"verifique en listar comprobantes",
+                closeOnConfirm:true,
+              }).then((result)=>{
+
+              })
+            }else{
+              $("#tabla").css("display","block");
+              $("#divBtnGuardar").css("display","block");
+            }
+      });    
+
+});

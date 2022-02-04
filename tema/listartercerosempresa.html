@@ -30,7 +30,7 @@ if (!empty($_SESSION["idEmpresa"])) {
 
 
 
-
+// print_r($aProveedores);
 ?>
 
 <section class="section">
@@ -48,6 +48,7 @@ if (!empty($_SESSION["idEmpresa"])) {
           <li class="breadcrumb-item">Terceros</li>
 
           <li class="breadcrumb-item">Listar terceros</li>
+          <input type="hidden" name="idEmpresa" id="idEmpresa" value="<?php echo $id; ?>">
 
         </ul>
 
@@ -93,7 +94,7 @@ if (!empty($_SESSION["idEmpresa"])) {
 
                             <th>Telefono</th>
                             
-                            <th>Celular</th>
+                            <th>Acciones</th>
 
 
                             <!-- <th>Acciones</th> -->
@@ -132,19 +133,15 @@ if (!empty($_SESSION["idEmpresa"])) {
                               <td><?php echo $iProveedor["direccion"]; ?></td>
 
                               <td><?php echo $iProveedor["telefono"]; ?></td>
-                              <td><?php echo $iProveedor["celular"]; ?></td>
+                              <td>
+                                <a href="<?php echo $URL; ?>editartercero/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FF9B31;font-size: 19px;"></i></a>
+                                <a href="javascript:void(0)" id="btnEliminar" name="btnEliminar[<?php echo $index?>]" class="eliminar" value="<?php echo $id; ?>" ><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a>
+                              
 
-                              <!-- <td class="centrar"> -->
+                              </td>
 
                                 <!-- <a  href="<?php echo $URL; ?>vertercero/<?php echo $id ?>" data-toggle="tooltip" data-placement="top" title="Ver Información"><i class="far fa-eye" style="color: #5098FF;font-size: 20px;"></i></a> -->
 
-                                <!-- <a href="<?php echo $URL; ?>editartercero/<?php echo $id; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FF9B31;font-size: 22px;"></i></a> -->
-
-                                <?php if($_SESSION["idRol"]!=3){ ?>
-
-                                <!-- <a href="" data-toggle="tooltip" data-placement="top" title="Asociar empresas"><i class="fas fa-sitemap" style="color: #A2D7FF;font-size: 22px;"></i></a> -->
-
-                                <?php } ?>
 
                               <!-- </td> -->
                           </tr>

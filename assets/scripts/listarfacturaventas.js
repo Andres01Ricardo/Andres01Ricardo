@@ -34,20 +34,6 @@
 
 // $(document).ready(function(){
   $( window ).on( "load", function() {
-
-
-    jQuery.fn.dataTable.Api.register( 'sum()', function ( ) {
-    return this.flatten().reduce( function ( a, b ) {
-      if ( typeof a === 'string' ) {
-        a = a.replace(/[^\d.-]/g, '') * 1;
-      }
-      if ( typeof b === 'string' ) {
-        b = b.replace(/[^\d.-]/g, '') * 1;
-      }
-      return a + b;
-    }, 0);
-  });
-  
 //   var empresa=document.getElementById('nombreEmpresa').value;
 // var logo=document.getElementById('logoEmpresa').value;
 // var nit=document.getElementById('nitEmpresa').value;
@@ -55,11 +41,6 @@
 // var telefono=document.getElementById('telefonoEmpresa').value;
 // var url=document.getElementById('url').value;
     var table = $('#tableFacturas').DataTable({
-      drawCallback: function () {
-        var api = this.api();
-        var total = api.column( 5, {"filter":"applied"}).data().sum();
-        $('#monto').html(total);
-      },
       orderCellsTop: true,
        fixedHeader: true,
        
@@ -124,22 +105,6 @@
         } );
     } );   
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

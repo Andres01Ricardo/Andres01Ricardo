@@ -12,7 +12,7 @@ unset($oLista);
             <form method="POST" action="reporteimpuestos">
               <div class="swal-content">
               	<?php $rol= $_SESSION["idRol"];
-			  if(empty($_SESSION["idEmpresa"])){ ?>
+			  if($rol==1 || $rol==2){ ?>
 
 			      <div class="form-row align-items-center">
 			        <div class="col-auto my-1">
@@ -23,9 +23,7 @@ unset($oLista);
 			          </select>
 			        </div>
 			      </div>
-			      <?php }else{ ?>
-                <input type="hidden" id="selectIdEmpresa" name="selectIdEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
-                <?php } ?>
+			      <?php } ?>
 					<label class="negrita">IMPUESTO</label>
 					
 					<div >

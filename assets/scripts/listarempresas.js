@@ -79,67 +79,50 @@ $("body").on("click touchstart",".ingresarRol",function(e){
 
 	var texto=$(this).parents("tr").find("td").eq(3).html(); 
 
-	Swal.fire({
+
+// swal({   
+//                   title: "Algo ha salido mal!",   
+//                   text: msg.msg,
+//                   type: "error",        
+//                   closeOnConfirm: true 
+//                   }).then((element)=>{
+
+//                   }) 
+
+
+	swal({
 
           title: 'Está seguro?',
-
           text: 'Está a punto de cambiar al perfil de '+texto+'!',
-
           icon: 'warning', 
-
           showCancelButton: true,
-
           showLoaderOnConfirm: true,
-
           confirmButtonText: `Si, Ingresar!`,
-
           cancelButtonText:'Cancelar',
-
           preConfirm: function(result) {
-
           return new Promise(function(resolve) {
-
-            
 
             var data = new FormData();
 
             data.append("id",id)
 
             $.ajax({
-
             url:URL+"functions/sesion/cambiarsesionrol.php", 
-
             type:"POST", 
-
             data: data,
-
             contentType:false, 
-
             processData:false, 
-
             dataType: "json",
-
             cache:false 
-
             }).done(function(msg){  
-
               if(msg.msg){
-
                  window.location.href="inicio"; 
-
               }else{
-
                  Swal.fire(
-
                   'Algo ha salido mal!',
-
                   'Verifique su conexión a internet',
-
                   'error'
-
                 ).then((result) => {
-
-                  
 
                 })
 
@@ -175,7 +158,7 @@ $("body").on("click touchstart",".ingresar",function(e){
 
     var texto=$(this).parents("tr").find("td").eq(3).html(); 
 
-    Swal.fire({
+    Swal({
 
           title: 'Está seguro?',
 

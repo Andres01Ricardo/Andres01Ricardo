@@ -52,14 +52,13 @@ $oLista->setFiltro("idEmpresa","=",$idEmpresa);
 
 $lista=$oLista->getLista();
 
-
+unset($oLista);
 
 $salario=$lista[0]["valorSalario"]; 
 
 $riesgo=$lista[0]["riesgoLaboral"];
 
 $auxilioTransporte=$lista[0]["auxilioTransporte"];
-
 
 
 $oLista = new Lista('empresa_novedad');
@@ -131,7 +130,7 @@ unset($oItem);
 
 if($lista[0]["tipoContrato"]!=2){
 
-	$aDeduccionesley[0]["valor"]=($aLey["saludEmpleado"]/100)*$salario;
+	$aDeduccionesley[0]["valor"]=round(($aLey["saludEmpleado"]/100)*$salario);
 
 	$aDeduccionesley[0]["descripcion"]="Salud ".$aLey["saludEmpleado"]."%";
 
@@ -143,7 +142,7 @@ if($lista[0]["tipoContrato"]!=2){
 
 
 
-	$aDeduccionesley[1]["valor"]=($aLey["pensionEmpleado"]/100)*$salario;
+	$aDeduccionesley[1]["valor"]=round(($aLey["pensionEmpleado"]/100)*$salario);
 
 	$aDeduccionesley[1]["descripcion"]="Pension ".$aLey["pensionEmpleado"]."%";
 
@@ -155,7 +154,7 @@ if($lista[0]["tipoContrato"]!=2){
 
 
 
-	$aDeduccionesley[2]["valor"]=($aLey["riesgo".$riesgo]/100)*$salario;
+	$aDeduccionesley[2]["valor"]=round(($aLey["riesgo".$riesgo]/100)*$salario);
 
 	$aDeduccionesley[2]["descripcion"]="ARL (".$aNivel[$riesgo].") ".$aLey["riesgo".$riesgo]."%";
 
@@ -167,7 +166,7 @@ if($lista[0]["tipoContrato"]!=2){
 
 
 
-	$aDeduccionesley[3]["valor"]=($aLey["cajaCompensacion"]/100)*$salario;
+	$aDeduccionesley[3]["valor"]=round(($aLey["cajaCompensacion"]/100)*$salario);
 
 	$aDeduccionesley[3]["descripcion"]="Caja Compensación ".$aLey["cajaCompensacion"]."%";
 
@@ -179,7 +178,7 @@ if($lista[0]["tipoContrato"]!=2){
 
 
 
-	$aDeduccionesley[4]["valor"]=($aLey["saludEmpleador"]/100)*$salario;
+	$aDeduccionesley[4]["valor"]=round(($aLey["saludEmpleador"]/100)*$salario);
 
 	$aDeduccionesley[4]["descripcion"]="Salud ".$aLey["saludEmpleador"]."%";
 
@@ -191,7 +190,7 @@ if($lista[0]["tipoContrato"]!=2){
 
 
 
-	$aDeduccionesley[5]["valor"]=($aLey["pensionEmpleador"]/100)*$salario;
+	$aDeduccionesley[5]["valor"]=round(($aLey["pensionEmpleador"]/100)*$salario);
 
 	$aDeduccionesley[5]["descripcion"]="Pension ".$aLey["pensionEmpleador"]."%";
 
@@ -219,7 +218,7 @@ unset($oItem);
 
 $fecha=$aPeriodo[1]."-".str_pad($aPeriodo[0], 2, "0", STR_PAD_LEFT); 
 
-
+$permiso=0;
 
 $aPeriodo[0]=str_pad($aPeriodo[0], 2, "0", STR_PAD_LEFT); 
 
@@ -278,6 +277,30 @@ foreach ($listaN as $key => $value) {
 		case 2:
 
 			//codigo por preguntar
+
+			$oLista = new Lista('empleado_permiso');
+			$oLista->setFiltro("idEmpresaNovedad","=",$value["idEmpresaNovedad"]);
+			// $oLista->setFiltro("idEmpleado","=",$fecha);
+			$aPermiso=$oLista->getLista();
+			unset($oLista);
+
+
+			// $permiso=1;
+
+			if ($aPermiso[0]["tipoPermiso"]==2) {
+				// code...
+				$diasPago=$diasPago-$aPermiso[0]["totalDias"];
+
+				$permiso=$aPermiso[0]["totalDias"];
+							
+			}
+
+			// if ($aPermiso[0]["tipoPermiso"]==2) {
+			// 	// code...
+			// 	$diasPago=$diasPago-$aPermiso[0]["totalDias"];
+			
+			// }
+
 
 		break;
 
@@ -453,9 +476,9 @@ foreach ($listaN as $key => $value) {
 						
 
 
-						$aDeduccionesley[0]["valor"]=($aLey["saludEmpleado"]/100)*($valorIncapacidad+$valorRestante);
+						$aDeduccionesley[0]["valor"]=round(($aLey["saludEmpleado"]/100)*($valorIncapacidad+$valorRestante));
 						
-						$aDeduccionesley[1]["valor"]=($aLey["pensionEmpleado"]/100)*($valorIncapacidad+$valorRestante);
+						$aDeduccionesley[1]["valor"]=round(($aLey["pensionEmpleado"]/100)*($valorIncapacidad+$valorRestante));
 
 
 						// $aDeduccionesley[2]["valor"]=floatval((($aLey["riesgo".$riesgo]/100)*$salario)/30)*$diasPago;
@@ -621,6 +644,8 @@ $aArray=array(
 	"vacaciones"=>$vacaciones,
 
 	"Incapacidad"=>$Incapacidad,
+
+	"permiso"=>$permiso,
 
 ); 
 

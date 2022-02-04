@@ -58,79 +58,6 @@ $meses[12]="Diciembre";
 
 
 
-
-// $nuevafecha = strtotime ( '-1 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha = date ( 'n' , $nuevafecha );
-
-
-// $nuevafecha2 = strtotime ( '-2 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha2 = date ( 'n' , $nuevafecha2 );
-
-
-// $nuevafecha3 = strtotime ( '-3 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha3 = date ( 'n' , $nuevafecha3 );
-
-// $nuevafecha4 = strtotime ( '-4 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha4 = date ( 'n' , $nuevafecha4 );
-
-// $nuevafecha5 = strtotime ( '-5 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha5 = date ( 'n' , $nuevafecha5 );
-
-// $nuevafecha6 = strtotime ( '-6 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha6 = date ( 'n' , $nuevafecha6 );
-
-// $nuevafecha7 = strtotime ( '-7 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha7 = date ( 'n' , $nuevafecha7 );
-
-// $nuevafecha8 = strtotime ( '-8 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha8 = date ( 'n' , $nuevafecha8 );
-
-// $nuevafecha9 = strtotime ( '-9 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha9 = date ( 'n' , $nuevafecha9 );
-
-// $nuevafecha10 = strtotime ( '-10 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha10 = date ( 'n' , $nuevafecha10 );
-
-// $nuevafecha11 = strtotime ( '-11 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha11 = date ( 'n' , $nuevafecha11 );
-
-// $nuevafecha12 = strtotime ( '-12 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha12 = date ( 'n' , $nuevafecha12 );
-
-// $nuevafecha13 = strtotime ( '-13 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha13 = date ( 'n' , $nuevafecha13 );
-
-// $nuevafecha14 = strtotime ( '-14 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha14 = date ( 'n' , $nuevafecha14 );
-
-
-// $nuevafecha15 = strtotime ( '-15 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha15 = date ( 'n' , $nuevafecha15 );
-
-// $nuevafecha16 = strtotime ( '-16 Months' , strtotime ( date('Y-m') ) ) ;
-
-// $nuevafecha16 = date ( 'n' , $nuevafecha16 );
-// // print_r($nuevafecha17);
-// // print_r('+');
-// $nuevafecha17 = strtotime ( '-17 Months' , strtotime ( date('Y-m') ) ) ;
-// $nuevafecha17 = date ( 'n' , $nuevafecha17 );
-
-
 $nuevafecha = date('n-Y', strtotime('-1 month'));
 
 // $nuevafecha = date ( 'n' , $nuevafecha );
@@ -208,6 +135,21 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
 // print_r($fechaP);
 // print_r('+');
 
+
+
+
+
+require_once("class/empleados.php"); 
+
+$oEmpleado=new Empleados();  
+$aFiltro["estado"]=1; 
+$aFiltro["idEmpresa"]=$_SESSION['idEmpresa']; 
+$aEmpleados=$oEmpleado->getEmpleadosEmpresa($aFiltro);
+
+// print_r($aEmpleados);
+
+
+
 ?>
 
 <style type="text/css">
@@ -245,6 +187,22 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
           <li class="breadcrumb-item">Crear Nomina</li>
 
         </ul>
+
+        <?php if (empty($_SESSION["idEmpresa"])) {  ?>
+          <div class="section-body">
+            <div class="row">
+              <div class="col-md-12 col-lg-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Por favor ingrese a la empresa en la cual va a trabajar la nómina</h4>
+                  </div>
+                </div>  
+              </div>
+            </div>  
+          </div>
+        <?php } ?>
+
+        <?php if (!empty($_SESSION["idEmpresa"])) {  ?>
         <div class="section-body">
           <div class="row">
             <div class="col-md-12 col-lg-12">
@@ -269,8 +227,39 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
                     </div>
                   <?php }if (!empty($_SESSION['idEmpresa'])) { ?>
                     <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>">
-                  <?php } ?>
-                   <div class="col-md-4">
+                  <?php } 
+
+                  $oLista=new Lista("parametros_documentos");
+                    $oLista->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
+                    // $oLista->setFiltro("tipo","=",6);
+                    $parametros=$oLista->getLista();
+                    unset($oLista);
+                  ?>
+
+                  <div class=" col-md-3">
+                      <div class="form-group">
+                          <label class="negrita">Tipo documento<span class="requerido">*</span>:</label>
+                        <select class="form-control select2" name="datos[tipoDocumento]" id="tipoDocumento" required>
+                          <option value="">Seleccione una opción</option>
+                          <?php foreach($parametros as $iParametro){ 
+                            $oItem=new Data("tipos_documento_contable","idTiposDocumento",$iParametro["tipo"]);
+                            $letraTipo=$oItem->getDatos();
+                            unset($oItem);
+                            ?>
+                          <option value="<?php echo $iParametro['idParametrosDocumentos']; ?>" numeracion="<?php echo $iParametro['numeracionActual']; ?>" ><?php echo $letraTipo["letra"].$iParametro["comprobante"].'-'.$iParametro["descripcion"]; ?></option>
+                        <?php } ?>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3 ">
+                      <div class="form-group">
+                        <label class="negrita">Número<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control " name="datos[numeroComprobante]" id="numeroComprobante" required >
+                      </div>
+                    </div>
+
+                   <div class="col-md-3">
 
                       <div class="form-group">
 
@@ -304,25 +293,26 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
                       </div>
 
                     </div>
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-3"> -->
 
-                      <div class="form-group">
+                      <!-- <div class="form-group"> -->
 
-                        <label class="negrita">Tiempo Pago<span class="requerido">*</span>:</label>
+                        <!-- <label class="negrita">Tiempo Pago<span class="requerido">*</span>:</label> -->
+                        <input type="hidden" name="datos[tiempoPago]" id="datos[tiempoPago]" value="2">
+                        <input type="hidden" name="datos[permiso]" id="permiso" >
+                        <!-- <select class="form-control mayusculas" name="datos[tiempoPago]" id="datos[tiempoPago]" > -->
 
-                        <select class="form-control mayusculas" name="datos[tiempoPago]" id="datos[tiempoPago]" >
-
-                          <option value="">Seleccione una opción</option>
+                          <!-- <option value="">Seleccione una opción</option>
 
                           <option value="1">Primera Quincena</option>
 
                           <option value="2">Segunda Quincena</option>
 
-                        </select>
+                        </select> -->
 
-                      </div>
+                      <!-- </div> -->
 
-                    </div>
+                    <!-- </div> -->
 
                   </div>
 
@@ -337,7 +327,9 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
                         <select class="form-control select2 mayusculas" name="datos[idEmpleado]" id="datos[idEmpleado]" required>
 
                           <option value="">Seleccione una opción</option>
-
+                          <?php foreach ($aEmpleados as $key => $value) {  ?>
+                            <option value='<?php echo $value["idEmpleado"] ?>'><?php echo $value["nombre"]." ".$value["apellido"] ?></option>
+                          <?php } ?>
                           
 
                         </select>
@@ -350,11 +342,10 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
 
                       <div class="form-group">
 
-                          <label class="negrita">Salario Base<span class="requerido">*</span>:</label>
-
-                          <input type="text" class="form-control mayusculas moneda" name="datos[salario]" id="datos[salario]" placeholder="Salario Base" readonly required>
-                          <input type="hidden" name="datos[salarioIncapacidad]" id="salarioIncapacidad">
-                          <input type="hidden" name="datos[diasIncapacidad]" id="diasIncapacidad">
+                        <label class="negrita">Salario Base<span class="requerido">*</span>:</label>
+                        <input type="text" class="form-control mayusculas moneda" name="datos[salario]" id="datos[salario]" placeholder="Salario Base" readonly required>
+                        <input type="hidden" name="datos[salarioIncapacidad]" id="salarioIncapacidad">
+                        <input type="hidden" name="datos[diasIncapacidad]" id="diasIncapacidad">
 
                       </div>
 
@@ -397,54 +388,30 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
                       <input type="hidden" name="datos[vacacionesControl]" id="vacacionesControl">
                     </div>
                   </div>
-
                   </div>
-
                   <div class="card-header">
-
                     <h4>Adiciones</h4>
-
                   </div>
-
                   <div class="card-body">
-
                     <div class="row">
-
                     <div class="col-md-12 col-lg-12">
-
                       <table class="table table-striped mayusculas" id="tableAdiciones">
-
                         <thead>
-
                           <tr>
-
                             <th style="width: 2%" class="text-center">#</th>
-
                             <th>Concepto</th>
-
                             <th style="width: 30%">Valor</th>
-
-                            <!-- <th style="width: 10%">Sumar para seguridad social</th> -->
+                            <th style="width: 30%">Cuenta Contable</th>
                             <th style="width: 10%">Eliminar</th>
-
                           </tr>
-
                         </thead>
-
                         <tbody>
-
-                            
-
                         </tbody>
 
                       </table>
-
                     </div>
-
                   </div>
-
                   </div>
-
                   <div class="card-header">
 
                     <h4>Deducciones de ley</h4>
@@ -465,20 +432,26 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
                           <label>Días seguridad social</label>
                           <input type="text" name="datos[diasSeguridadSocial]" id="diasSeguridadSocial" class="form-control numero" placeholder="cantidad días">
                         </div>
+                        
                       </div>
                     </div>
+
                     <div class="row">
+
                     <div class="col-md-12 col-lg-12">
+
                       <table class="table table-striped mayusculas" id="tableDeduccionesLey">
+
                         <thead>
 
                           <tr>
 
                             <th style="width: 2%" class="text-center">#</th>
 
-                            <th>Concepto</th>
+                            <th style="width: 28%">Concepto</th>
 
                             <th style="width: 30%">Valor</th>
+                            <th style="width: 30%">Tercero</th>
 
                             <th style="width: 10%">Eliminar</th>
 
@@ -646,6 +619,7 @@ $nuevafecha17 = date('n-Y', strtotime('-17 month'));
         </div>
 
     </div>
+    <?php } ?>
 
 </section>
 

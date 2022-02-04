@@ -132,6 +132,12 @@ $fRetencion=$oRetencion->getRetencion($_SESSION["idEmpresa"]);
 unset($oRetencion);
 
 
+$oRetencion=new Dashboard(); 
+$fAutoRetencion=$oRetencion->getAutoRetencion($_SESSION["idEmpresa"]);
+unset($oRetencion);
+
+// print_r($fAutoRetencion);
+
 $oLista = new Lista('impuesto_pagado');
 
 $oLista->setFiltro("tipoImpuesto","=","RETENCION");
@@ -155,7 +161,7 @@ $oListaExtra->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
 $aRetencionExtra=$oListaExtra->getLista();
 
 
-$dRetencion = $fRetencion[0]["retencion"]-$retencionPagados+$aRetencionExtra[0]["valor"];
+$dRetencion = $fRetencion[0]["retencion"]+$fAutoRetencion[0]["retencion"]-$retencionPagados+$aRetencionExtra[0]["valor"];
 // $dRetencion = $fRetencion[0]["retencion"]-$retencionPagados;
 
 
@@ -172,6 +178,9 @@ $fReteIVA=$oReteIVA->getReteIVA($_SESSION["idEmpresa"]);
 
 $ivaFinal=$fIVA[0]["iva"]-$fIVAC[0]["iva"];
 
+
+// print_r($fIVA);
+// print_r($fIVAC);
 
 $oLista = new Lista('impuesto_pagado');
 
@@ -194,7 +203,7 @@ $oListaExtraIVA->setFiltro("idEmpresa","=",$_SESSION["idEmpresa"]);
 
 $aRetencionExtraIVA=$oListaExtraIVA->getLista();
 
-$dIVA = $fIVA[0]["iva"]-$IVAPagados+$aRetencionExtraIVA[0]["valor"];
+$dIVA = $fIVA[0]["iva"]-$fIVAC[0]["iva"]-$IVAPagados+$aRetencionExtraIVA[0]["valor"];
 
 // $dIVA = $ivaFinal-$IVAPagados;
 

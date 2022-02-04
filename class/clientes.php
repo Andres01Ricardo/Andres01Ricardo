@@ -74,7 +74,7 @@ class Clientes extends Sql{
 
 			INNER JOIN usuario as u ON(u.idUsuario=p.idUsuarioRegistra)
 
-			  WHERE 0=0 ".$condicion." AND (p.tipoTercero=1 or p.tipoTercero=4 or p.tipoTercero=5 or p.tipoTercero=7) GROUP BY p.idTercero ORDER BY p.razonSocial ASC";
+			  WHERE 0=0 ".$condicion." GROUP BY p.idTercero ORDER BY p.razonSocial ASC";
 
 
 			

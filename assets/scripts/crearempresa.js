@@ -70,7 +70,7 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 
           Swal.fire({
 
-        title: 'Está seguro?',
+        title: '¿Está seguro?',
 
         text: 'Está a punto de guardar una nueva empresa!',
 

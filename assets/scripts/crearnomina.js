@@ -45,6 +45,39 @@ $(document).ready(function(e){
 
       });
 
+
+
+       $.ajax({
+
+        url:URL+"functions/nomina/consultarparametrizacionnomina.php", 
+
+        type:"POST", 
+
+        data: {"idEmpresa":id}, 
+
+        dataType: "json",
+
+        }).done(function(msg){  
+
+          console.log(msg);
+
+          if (msg.msg==false) {
+            Swal.fire({
+              icon: 'error',
+              title: "Faltan cosas por parametrizar en la nómina!",
+              text: 'Por favor revise la parametrización',
+              closeOnConfirm: true,
+            }).then((result) => {
+
+             location.href="configurarcontableempresas";
+             // location.href="http://www.pagina2.com";
+
+            })
+          }
+
+
+      });
+
   }
 })
 
@@ -129,6 +162,10 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
     var periodoPago=$("#periodoPago").val(); 
 
     if(idEmpleado!=""&&idPeriodo!=""){
+      
+
+      
+
 
       $.ajax({
 
@@ -156,6 +193,10 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
           var vacacionesControl=msg.vacaciones;
           // var incapacidadControl=msg.incapacidad;
 
+          var permiso =msg.permiso;
+
+          $("[name='datos[permiso]']").val(msg.permiso);
+
           var sHtmlA=""; 
 
 
@@ -169,28 +210,37 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
               $("#diasIncapacidad").val(element.diasIncapacidad);
 
               console.log(element.valorIncapacidad);
+              if (element.idTipo==4) {
+              var incluir ='<td><input type="text" name="adiciones['+index+'][cuentaContable]" id="adiciones['+index+'][cuentaContable]" readonly required value="no aplica">';
 
-              sHtmlA+='<tr>'+
+            }
+            if (element.idTipo!=4) {
+              var incluir ='<td><select class="form-control select2 cuentaContable " name="adiciones['+index+'][cuentaContable]" id="adiciones['+index+'][cuentaContable]" required ></select>';
 
-                      '<td class="text-center">'+(index+1)+'</td>'+
+            }
+    sHtmlA+='<tr>'+
 
-                      '<td><input type="text" name="adiciones['+index+'][producto]" id="adiciones['+index+'][producto]" class="form-control producto mayusculas" value="'+element.texto+'" required placeholder="Detalle">'+
+            '<td class="text-center">'+(index+1)+'</td>'+
 
-                        '<input type="hidden" name="adiciones['+index+'][idProducto]" id="adiciones['+index+'][idProducto]" class="form-control idProducto" value="'+element.idTipo+'"></td>'+
-                        '<input type="hidden" name="adiciones['+index+'][idNovedad]" id="adiciones['+index+'][idNovedad]" class="form-control idNovedad" value="'+element.idNovedad+'"></td>'+
+            '<td><input type="text" name="adiciones['+index+'][producto]" id="adiciones['+index+'][producto]" class="form-control producto mayusculas" value="'+element.texto+'" required placeholder="Detalle">'+
 
-                      '<td><input type="text" class="form-control moneda mayusculas valor" readonly value="'+element.valor+'" name="adiciones['+index+'][valor]" id="adiciones['+index+'][valor]" placeholder="valor" required></td>'+
+              '<input type="hidden" name="adiciones['+index+'][idProducto]" id="adiciones['+index+'][idProducto]" class="form-control idProducto" value="'+element.idTipo+'"></td>'+
+              '<input type="hidden" name="adiciones['+index+'][idNovedad]" id="adiciones['+index+'][idNovedad]" class="form-control idNovedad" value="'+element.idNovedad+'"></td>'+
 
-                      '<td style="text-align:center"><a href="javascript:void(0)"  data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a></td>'+
+            '<td><input type="text" class="form-control moneda mayusculas valor" readonly value="'+element.valor+'" name="adiciones['+index+'][valor]" id="adiciones['+index+'][valor]" placeholder="valor" required></td>'+
+            
+            incluir+
 
-                    '</tr>';  
+
+
+            '<td style="text-align:center"><a href="javascript:void(0)"  data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a></td>'+
+
+          '</tr>';  
 
             })
 
           }
-
-          
-
+// <input type="text" class="form-control moneda mayusculas valor" readonly value="'+element.valor+'" name="adiciones['+index+'][valor]" id="adiciones['+index+'][valor]" placeholder="valor" required></td>
           
 
           $("#tableAdiciones tbody").html(sHtmlA);
@@ -212,7 +262,7 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
               clase='empleador'; 
 
             }
-            if (element.concepto==3 || element.concepto==4) {
+            if (element.concepto==3 ) {
               // alert('ingreso');
               element.valor=(element.valor/30)*msg.diasPago;
               // alert(element.valor);
@@ -228,7 +278,10 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
 
                       '<input type="hidden" name="ley['+index+'][tipoConcepto]" id="ley['+index+'][tipoConcepto]" class="form-control idProducto" value="'+element.concepto+'"></td>'+
 
+
                     '<td><input type="text" class="form-control moneda mayusculas valor '+clase+'" readonly value="'+element.valor+'" name="ley['+index+'][valor]" id="ley['+index+'][valor]" placeholder="valor" required></td>'+
+                      
+                    '<td><select class="form-control terceroCargar" name="ley['+index+'][tercero]" id="ley['+index+'][tercero]" required ></select>'+
 
                     '<td style="text-align:center"><a href="javascript:void(0)"  data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a></td>'+
 
@@ -268,33 +321,117 @@ $("body").on("change","[name='datos[idEmpleado]'], [name='datos[periodo]']",func
                     '<td><input type="text" class="form-control moneda mayusculas valor" readonly value="'+element.valor+'" name="deducciones['+index+'][valor]" id="deducciones['+index+'][valor]" placeholder="valor" required></td>'+
 
                     '<td style="text-align:center"><a href="javascript:void(0)"  data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-icon btn-sm btn-danger eliminar"><i class="fas fa-trash"></i></a></td>'+
-
                   '</tr>'; 
-
           })
-
           }
 
-          
-
           $("#tableDeducciones tbody").html(sHtmlD);
-
-
-
           $(".valor").trigger("change"); 
-
           calcularSalario(); 
           calcularProvisiones();
 
+          cargarCuentas();
+
+          cargarTerceros();
       });
-
     }else{
-
     }
-
-    
-
 })
+
+
+cargarCuentas=function(){
+  // var salarioBase=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[salario]']").val(),"$",""),".",""),",","."));
+  
+  var idEmpresa=$("[name='datos[idEmpresa]'").val();
+  console.log(idEmpresa);
+
+      $.ajax({
+        url:URL+"functions/cuentascontables/cargarcuentascontables.php", 
+        type:"POST", 
+        data: {"idEmpresa":idEmpresa}, 
+        dataType: "json",
+        }).done(function(msg){  
+          // var $aDatos=[];
+          console.log(msg);
+          if (msg.length==0) {
+            $(".cuentaContable").val('No hay cuentas contables creadas');
+            $(".cuentaContable").attr('disabled','disabled');
+
+          }
+          if (msg.length!=0) {
+            var sHtmlC='<option value="">Seleccione</option>';
+
+          msg.forEach(function(element,index){
+            sHtmlC+='<option value="'+element.idCuentaContable+'">'+element.codigoCuentaContable+' - '+element.nombre+'</option>';
+            
+          })
+          $(".cuentaContable").attr("required","required");
+          $(".cuentaContable").select2();
+          $(".cuentaContable").html(sHtmlC);
+          
+          // autocomplete(); 
+        }
+      }); 
+
+}
+
+
+$("body").on("change",".cuentaContable",function(e){
+  if ($(this).val()!="") {
+  
+    $(this).removeAttr("required");
+  
+  }
+
+  if ($(this).val()=="") {
+  
+    $(this).attr("required","required");
+  
+  }
+  
+})
+
+
+cargarTerceros=function(){
+  // var salarioBase=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[salario]']").val(),"$",""),".",""),",","."));  
+  var idEmpresa=$("[name='datos[idEmpresa]'").val();
+  console.log(idEmpresa);
+
+          $.ajax({
+            url:URL+"functions/terceros/cargarterceros.php", 
+            type:"POST", 
+            data: {"idEmpresa":idEmpresa}, 
+            dataType: "json",
+            }).done(function(msg){
+            // console.log(msg);
+            var sHtmlT='<option value="">Seleccione</option>';
+              msg.forEach(function(element,index){
+                  sHtmlT+='<option value="'+element[0]+'">'+element.nit+' - '+element.razonSocial+'</option>';
+              })
+              // $(".terceroCargar").addClass("select2");
+              $(".terceroCargar").attr("required","required");
+              $('.terceroCargar').select2();
+              $(".terceroCargar").html(sHtmlT).trigger("change");
+        }); 
+  }
+      
+
+$("body").on("change",".terceroCargar",function(e){
+  if ($(this).val()!="") {
+  
+    $(this).removeAttr("required");
+  
+  }
+
+  if ($(this).val()=="") {
+  
+    $(this).attr("required","required");
+  
+  }
+  
+})
+
+
 
 calcularProvisiones=function(){
   var salarioBase=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($("[name='datos[salario]']").val(),"$",""),".",""),",","."));
@@ -319,9 +456,41 @@ calcularProvisiones=function(){
 
   var cesantias=((salarioDias+valorAuxilioTransporte)*8.333)/100;
   cesantias=Math.round(cesantias);
-  var interesesCesantias=((cesantias)*12)/100;
+  var interesesCesantias=((cesantias))/100;
   interesesCesantias=Math.round(interesesCesantias);
-  var prima=((salarioDias+valorAuxilioTransporte)*8.333)/100;
+
+  var permiso =$("#permiso").val();
+  // console.log(permiso);
+  if (permiso==0) {
+
+    var prima=((salarioDias+valorAuxilioTransporte)*8.333)/100;
+  }
+
+  if (permiso!=0) {
+      var diaPrima=parseInt(diasTrabajados)+parseInt(permiso);
+      var salarioDiasPermiso= (salarioBase/30)*(diaPrima);
+      salarioDiasPermiso=Math.round(salarioDiasPermiso);
+      console.log('salarioBase:');
+      console.log(salarioBase);
+
+      console.log('diasTrabajados:');
+      console.log(diasTrabajados);
+
+      console.log('permiso:');
+      console.log(permiso);
+
+      console.log('salarioDiasPermiso:');
+      console.log(salarioDiasPermiso);
+      
+      var valorAuxilioTransportePermiso=(auxilioTransporte/30)*(diaPrima);
+      valorAuxilioTransportePermiso=Math.round(valorAuxilioTransportePermiso);
+
+      console.log('valorAuxilioTransportePermiso:');
+      console.log(valorAuxilioTransportePermiso);
+      
+      var prima=((salarioDiasPermiso+valorAuxilioTransportePermiso)*8.333)/100;
+  }
+
   prima=Math.round(prima);
   var vacaciones=((salarioDias)*4.166)/100;
   vacaciones=Math.round(vacaciones);
@@ -348,11 +517,14 @@ calcularSalario=function(){
   $("#tableAdiciones .valor").each(function(index,element){
 
     var valor=0; 
+    console.log($("[name='adiciones["+index+"][idProducto]']").val());
+    if ($("[name='adiciones["+index+"][idProducto]']").val()!=4) {
 
-    if($(element).val()!=""){valor=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($(element).val(),"$",""),".",""),",",".")); }
+      if($(element).val()!=""){valor=parseFloat(eliminarMoneda(eliminarMoneda(eliminarMoneda($(element).val(),"$",""),".",""),",",".")); }
 
-    adiciones+=valor
+      adiciones+=valor
     
+    }
 
   })
 // alert(adiciones);
@@ -550,111 +722,116 @@ $("body").on("click touchstart","#btnGuardar",function(e){
 
   e.preventDefault();
 
-  Swal.fire({
+  var adicionRequerido=0;
+  var terceroRequerido=0;
+  $('.cuentaContable').each(function() { 
 
-    title: 'Está seguro?',
+    if ($(this).attr('required')=='required') {
+      adicionRequerido=1;
+    }
 
-    text: 'Está a punto de registrar la nomina de este empleado!',
+  })
 
-    icon: 'warning', 
+  $('.terceroCargar').each(function() { 
 
-    showCancelButton: true,
+    if ($(this).attr('required')=='required') {
+      terceroRequerido=1;
 
-    showLoaderOnConfirm: true,
+      console.log('falta tercero')
+    }
 
-    confirmButtonText: `Si, Continuar!`,
+  })
 
-    cancelButtonText:'Cancelar',
 
-    preConfirm: function(result) {
+    if (adicionRequerido==0) {
+      if (terceroRequerido==0) {
 
-        return new Promise(function(resolve) {
 
-          var formu = document.getElementById("frmGuardar");
-
-  
-
-          var data = new FormData(formu);
-
-          $.ajax({
-
-          url:URL+"functions/nomina/crearnomina.php", 
-
-          type:"POST", 
-
-          data: data,
-
-          contentType:false, 
-
-          processData:false, 
-
-          dataType: "json",
-
-          cache:false 
-
-          }).done(function(msg){  
-
-            if(msg.msg){
-
-              Swal.fire(
-
-                {
-
-                icon: 'success',
-
-                title: 'Nomina Registrada!',
-
-                text: 'con exito',
-
-                closeOnConfirm: true,
-
-              }
-
-              ).then((result) => {
-
-               location.reload(); 
-
-              })
-
-            }else{
-
-              if(msg.tipo==1){
-
-                Swal.fire(
-
-                'Algo ha salido mal!',
-
-                  'La nomina de este mes ya fué finalizada',
-
-                  'error'
-
-                ).then((result) => {
-
-                  
-
-                })
-
-              }else{
-
-                Swal.fire(
-
-                'Algo ha salido mal!',
-
-                'Ya se ha registrado la nomina a este empleado',
-
-                'error'
-
-              )
-
-              }
-
+        Swal.fire({
+          title: 'Está seguro?',
+          text: 'Está a punto de registrar la nomina de este empleado!',
+          icon: 'warning', 
+          showCancelButton: true,
+          showLoaderOnConfirm: true,
+          confirmButtonText: `Si, Continuar!`,
+          cancelButtonText:'Cancelar',
+          preConfirm: function(result) {
+              return new Promise(function(resolve) {
+                var formu = document.getElementById("frmGuardar");
+                var data = new FormData(formu);
+                $.ajax({
+                url:URL+"functions/nomina/crearnomina.php", 
+                type:"POST", 
+                data: data,
+                contentType:false, 
+                processData:false, 
+                dataType: "json",
+                cache:false 
+                }).done(function(msg){  
+                  if(msg.msg){
+                    if (msg.empleado!=0 && msg.empleador!=0 && msg.provisiones!=0) {
+                        Swal.fire({
+                          icon: 'success',
+                          title: "Nómina creada con exito!",
+                          text: 'comprobantes: '+msg.empleado+' , '+msg.empleador+' , '+msg.provisiones,
+                          closeOnConfirm: true,
+                        }
+                        ).then((result) => {
+                         location.reload();  
+                        })
+                       }
+                      else{
+                        Swal.fire({
+                          icon: 'success',
+                          title: "Nomina creada con exito!",
+                          text: 'no se pudo crear los comprobantes faltan cosas por parametrizar ',
+                          closeOnConfirm: true,
+                        }).then((result) => {
+                         location.reload();  
+                        })
+                       }
+                  }else{
+                    if(msg.tipo==1){
+                      Swal.fire(
+                      'Algo ha salido mal!',
+                        'La nomina de este mes ya fué finalizada',
+                        'error'
+                      ).then((result) => {
+                      })
+                    }else{
+                      Swal.fire(
+                      'Algo ha salido mal!',
+                      'Ya se ha registrado la nomina a este empleado',
+                      'error'
+                    )
+                    }
+                  }
+              });    
+              });
             }
-        });    
-
-        });
-
-      }
-
+        })
+      }else{
+      Swal.fire(
+        'Falta terceros por seleccionar en las deducciones de ley!',
+          'por favor seleccione los terceros antes de continuar',
+          'error'
+        )
+    }
+    }else{
+      Swal.fire(
+        'Falta cuentas contables por seleccionar en las adiciones!',
+          'por favor seleccione las cuenta antes de continuar',
+          'error'
+        )
+    }
   })
 
-  })
+
+
+
+$("body").on("change","[name='datos[tipoDocumento]']",function(e){
+  var numero =$("#tipoDocumento").find("option:selected").attr("numeracion");
+  console.log(numero);
+
+  $("#numeroComprobante").val(numero);
+});

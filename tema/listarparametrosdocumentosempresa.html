@@ -54,6 +54,8 @@ $aParametro=$oParametro->getParametrosDocumentos($id);
 
                             <th>Numeración actual</th>
 
+                            <th>Editar # actual</th>
+
                           </tr>
 
                         </thead>
@@ -75,13 +77,8 @@ $aParametro=$oParametro->getParametrosDocumentos($id);
 
 
                                 <td><?php echo $iParametro["numeracionInicial"]; ?></td>
-                              <td >
-                                <?php 
-                                  
-                                  echo $iParametro["numeracionActual"];
-
-                                   ?>
-                              </td>
+                              <td ><?php echo $iParametro["numeracionActual"]; ?></td>
+                              <td><a href="javascript:void(0)" id="<?php echo $iParametro['idParametrosDocumentos']; ?>" class="parametro" data-toggle="modal" data-target="#modal" ><i class="fas fa-pencil-alt" data-toggle="tooltip" data-placement="top" title="Editar numeracion" style="color: #FCA929;font-size: 19px;"></i></a> </td>
                             </tr>
                             <?php } ?>
         
@@ -97,3 +94,83 @@ $aParametro=$oParametro->getParametrosDocumentos($id);
 
                   </div>
                 </div>
+
+
+
+
+
+
+
+
+
+  <div class="modal fade bd-example-modal-lg" id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5 class="modal-title" id="myLargeModalLabel">Modificar numeración</h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+
+        </div>
+
+        <div class="modal-body">
+
+          <form enctype="multipart/form-data" id="frmGuardar" >
+
+            <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $id; ?>">
+
+            <div class="row">
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Numeración actual:</label>
+
+                  <input type="text" class="form-control" id="comprobante" name="datos[comprobante]" required readonly>
+                  
+
+                </div>
+
+              </div>
+
+              <div class="col-md-6">
+
+                <div class="form-group">
+
+                  <label class="negrita">Numeración actual:</label>
+
+                  <input type="text" class="form-control" id="numeracionActual" name="datos[numeracionActual]" required >
+                  <input type="hidden" name="datos[idParametrosDocumentos]" id="idParametrosDocumentos">
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div class="modal-footer bg-whitesmoke br">
+
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+            <a class="btn btn-primary" href="javascript:void(0)" id="btnGuardar">Guardar</a>
+            
+
+          </div>
+
+      </div>
+
+    </div>
+
+  </div>

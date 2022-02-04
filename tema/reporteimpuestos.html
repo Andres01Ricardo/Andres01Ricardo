@@ -2,20 +2,14 @@
 
 require_once("functions/impuestos/impuestospagados.php"); 
 
-
-if (!empty($_SESSION["idEmpresa"])) {
-  $idEmpresa=$_SESSION['idEmpresa'];
-}
-if (empty($_SESSION["idEmpresa"])) {
-  $idEmpresa=$_POST['selectIdEmpresa'];
-}
+$_SESSION['idEmpresa']=$_POST['selectIdEmpresa'];
 $desde=$_POST['periodoDesde'];
 $hasta=$_POST['periodoHasta'];
 $impuesto=$_POST['impuesto'];
 
 $oImpuestos=new Impuestos(); 
 
-$aImpuestos=$oImpuestos->getImpuestosPagadosFiltro($idEmpresa,$desde,$hasta,$impuesto);
+$aImpuestos=$oImpuestos->getImpuestosPagadosFiltro($_SESSION["idEmpresa"],$desde,$hasta,$impuesto);
 unset($oImpuestos); 
 
 ?>

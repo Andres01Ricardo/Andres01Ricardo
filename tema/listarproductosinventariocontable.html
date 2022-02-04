@@ -1,0 +1,158 @@
+<?php 
+
+// $aProductos=include_once ("functions/productosservicios/listarproductos.php");
+
+// $oControl=new Control(); 
+
+// print_r($aProductos);
+$oLista = new Lista("producto_servicio");
+$oLista->setFiltro("idEmpresa","=",$_SESSION['idEmpresa']);
+$aProductos=$oLista->getLista();
+unset($oLista);
+
+?>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Productos</li>
+
+          <li class="breadcrumb-item">Listar productos</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Lista de productos</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-12 col-lg-12 table-responsive">
+
+                      <table class="table table-striped mayusculas" id="tableProductos">
+
+                        <thead>
+
+                          <tr>
+
+                            <th class="text-center">#</th>
+
+                            <!-- <th>Grupo</th> -->
+
+                            <th>Código</th>
+
+                            <th>Producto</th>
+
+                            <th>Grupo</th>
+
+                            <!-- <th>Cogido cuenta contable</th> -->
+                            
+                            <th>Acciones</th>
+
+                          </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                          <?php 
+
+
+                          foreach($aProductos as $index => $productoS){  
+                            // print_r($productoS);
+
+
+                            $oItem=new Data("grupo_inventario","idGrupoInventario",$productoS["idGrupo"]);
+                            $grupo=$oItem->getDatos();
+                            unset($oItem);
+                            ?>
+
+                            <tr>
+
+                              <td><?php echo $index+1; ?></td>
+
+                              
+
+                              <td><?php echo $productoS["codigo"]; ?></td>
+
+                              <td><?php echo $productoS["nombre"]; ?></td>
+
+                              <td><?php echo $grupo["codigo"].' '.$grupo["nombre"]; ?></td>
+
+                              
+
+                              
+                              
+
+                              <td class="centrar">
+
+                                <a href="<?php echo $URL; ?>editarproductocontable/<?php echo $productoS['idProductoServicio']; ?>" data-toggle="tooltip" data-placement="top" title="Editar" ><i class="fas fa-pencil-alt" style="color: #FFAE30;font-size: 22px;"></i></a>
+
+                                 <!-- <a href="javascript:void(0)" id="btnEliminar" name="btnEliminarSubcentro[<?php echo $indexS?>]" value="<?php echo $productoS['idProductoServicio'] ?>"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 22px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a> -->
+
+                              </td>
+
+
+                            </tr>
+
+                          <?php } ?>
+
+                        </tbody>
+
+                      </table>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="settingSidebar">
+
+<!-- <a href="javascript:void(0)" class="settingPanelToggle"> <i class="fa fa-spin fa-cog"></i>
+
+</a> -->
+
+<div class="settingSidebar-body ps-container ps-theme-default">
+
+  <div class="fade show active" id="body-view">
+
+    
+
+  </div>
+
+</div>
+
+</div>
+

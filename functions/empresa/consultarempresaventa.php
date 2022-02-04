@@ -42,6 +42,6 @@ unset($oItem);
 // print_r($_SESSION["idUsuario"]);
 
 
-echo json_encode(array("idEmpresa"=>$aEmpresa['idEmpresa'],"idCliente"=>$aCliente['idCliente']));
+echo json_encode(array("idEmpresa"=>$aEmpresa['idEmpresa'],"idCliente"=>$aCliente['idTercero']));
 
 ?>

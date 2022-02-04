@@ -274,7 +274,7 @@ $meses[12]="Diciembre";
                           <div class="col-md-4">
                             <div class="form-group">
                               <label class="negrita">Aplica 4x1.000:</label>
-                              <select class="form-control" id="cuatroMil">
+                              <select class="form-control" id="cuatroMil" name="cuatroMil">
                                 <option value="1" <?php if ($aDatos['aplicaCuatroMil']==1) {
                                   echo 'selected';
                                 } ?> >SI</option>
@@ -288,7 +288,15 @@ $meses[12]="Diciembre";
                           <div class="col-md-4">
                             <div class="form-group">
                               <label class="negrita">Cuenta Principal:</label>
-                              <input type="text" class="form-control " value="<?php echo $aDatos['cuentaPrincipal']==1?'Si':'No'; ?>" readonly>
+                              <!-- <input type="text" class="form-control " value="<?php echo $aDatos['cuentaPrincipal']==1?'Si':'No'; ?>" readonly> -->
+                              <select class="form-control" id="cuentaPrincipal" name="cuentaPrincipal">
+                                <option value="1" <?php if ($aDatos['cuentaPrincipal']==1) {
+                                  echo 'selected';
+                                } ?> >SI</option>
+                                <option value="0" <?php if ($aDatos['cuentaPrincipal']==0) {
+                                  echo 'selected';
+                                } ?> >NO</option>
+                              </select>
                             </div>
                           </div>
                         </div>
@@ -319,8 +327,8 @@ $meses[12]="Diciembre";
                                   <th>Tipo Movimiento</th>
                                   <th>Descripción</th>
                                   <th>Valor Movimiento</th>
-                                  <th>Saldo Actual</th>
                                   <th>Saldo Anterior</th>
+                                  <th>Saldo Actual</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -344,13 +352,16 @@ $meses[12]="Diciembre";
 
                                     <td><?php echo $iMovimiento["tipoMovimiento"]; ?></td>
 
-                                    <td><?php echo $iMovimiento["descripcionMovimiento"]; ?></td>
+                                    <td ><?php echo $iMovimiento["descripcionMovimiento"]; ?></td>
 
-                                    <td><?php echo "$".number_format($valor,2,",","."); ?></td>
+                                    <td <?php if ($valor<0) {
+                                      echo "style='color:red;'";
+                                    } ?>>
+                                      <?php echo "$".number_format($valor,2,",","."); ?></td>
 
-                                    <td><?php echo "$".number_format($iMovimiento["saldoActual"],2,",","."); ?></td>
+                                    <td><?php echo "$".number_format($iMovimiento["saldoAnterior"],2,",","."); ?></td> 
+                                    <td><?php echo "$".number_format($iMovimiento["saldoActual"],2,",","."); ?></td> 
 
-                                    <td><?php echo "$".number_format($iMovimiento["saldoAnterior"],2,",","."); ?></td>
 
                                   </tr>
 

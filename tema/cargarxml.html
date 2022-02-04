@@ -1,3 +1,6 @@
+<?php if(!isset($_SESSION)){ session_start(); } ?>
+
+
 <div class="card">
 	<div class="card-body">
 <form enctype="multipart/form-data" id="frmCargar">
@@ -5,7 +8,7 @@
 			<div class="col-md-3">
 				<div class="form-group">
 					<label>cargar xml</label>
-					<input type="file" name="xml" id="xml" class="form-control">
+					<input type="file" name="xml" id="xml" accept="text/xml" class="form-control">
 					
 				</div>
 			</div>
@@ -21,15 +24,11 @@
 
 
 <form enctype="multipart/form-data" id="frmGuardar">
-	<?php if(!empty($_SESSION['idEmpresa'])){ ?>
+	
 
 <input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>" required>
 
-<?php }else{ ?>
 
-<input type="hidden" name="datos[idEmpresa]" id="idEmpresa" value="<?php echo $_SESSION['idEmpresa']; ?>" required>
-
-<?php } ?>
 	<div class="row">
 		<div class="col-md-3">
 			 <div class="form-group">
@@ -97,6 +96,23 @@
           </div>
 
         </div>
+        <div class="col-md-4">
+
+          <div class="form-group">
+
+            <label class="negrita">Segundo archivo:</label>
+
+            <div class="custom-file">
+
+              <input type="file" class="custom-file-input" id="file2" name="file2" >
+
+              <label class="custom-file-label" for="customFile">Seleccionar archivo</label>
+
+            </div>
+
+          </div>
+
+        </div>
 		<!-- <div class="col-md-2">
 			<div class="form-group">
 				<label>Direccion:</label>
@@ -112,7 +128,7 @@
 	</div>
 		<fieldset class="border p-2">
 			 <legend  class="w-auto">Proveedor</legend>
-			 <input type="hidden" name="datos[idProveedor]" id="idProveedor" >
+			 <input type="hidden" name="datos[idTercero]" id="idProveedor" >
 			 <input type="hidden" name="datos[digitoVerificador]" id="digitoVerificadorEmisor" >
 	<div class="row">
 

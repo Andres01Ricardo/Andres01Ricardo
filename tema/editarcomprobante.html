@@ -57,32 +57,13 @@ unset($oLista);
 
 
 
-
-
-
-
-
-
-
 // $oItem=new Data("comprobante","idComprobante",$aDatos[0]["idComprobante"]); 
 // $aComprobante=$oItem->getDatos(); 
 
 
-
-
-
-
 $oLista = new Lista('departamento');
-
 $aDepartamento=$oLista->getLista();
-
 unset($oLista);
-
-
-
-
-
-
 
 
 
@@ -91,8 +72,53 @@ $oLista = new Lista('parametros_documentos');
 $oLista->setFiltro('idEmpresa','=',$aComprobante["idEmpresa"]);
 $oLista->setFiltro('tipo','=',$aComprobante["idTipo"]);
 $parametrosDocumentos=$oLista->getLista();
-
 unset($oLista);
+
+
+$tipoFactura=0;
+
+
+  $oLista = new Lista('factura_compra_comprobante');
+  $oLista->setFiltro('idComprobante','=',$id);
+  $oLista->setFiltro('estado','=',1);
+  $facturaCompraComprobante=$oLista->getLista();
+  unset($oLista);
+
+if (!empty($facturaCompraComprobante)) {
+
+  $oItem=new Data("factura_compra","idFacturaCompra",$facturaCompraComprobante[0]["idFacturaCompra"]);
+  $factura=$oItem->getDatos();
+  unset($oItem);
+
+  $nroFactura=$factura["nroFactura"];
+  $idFactura=$factura["idFacturaCompra"];
+  $tipoFactura=1;
+
+}
+if (empty($facturaCompraComprobante)) {
+
+
+    $oLista = new Lista('factura_venta_comprobante');
+    $oLista->setFiltro('idComprobante','=',$id);
+    $oLista->setFiltro('estado','=',1);
+    $facturaVentaComprobante=$oLista->getLista();
+    unset($oLista);
+
+  if (!empty($facturaVentaComprobante)) {  
+
+    $oItem=new Data("factura_venta","idFacturaVenta",$facturaVentaComprobante[0]["idFacturaVenta"]);
+    $factura=$oItem->getDatos();
+    unset($oItem);
+
+    $nroFactura=$factura["nroFactura"];
+    $idFactura=$factura["idFacturaVenta"];
+    $tipoFactura=2;
+
+    // print_r($factura);
+
+  }
+}
+
 
 
 
@@ -142,16 +168,23 @@ unset($oLista);
                     <div class="col-md-3">
                       <div class="form-group">
                         <label>Empresa<span class="requerido">*</span>:</label>
-                        <!-- <select class="form-control" name="datos[idEmpresa]" id="idEmpresa" required>
-                          <option value="">Seleccione</option>
-                          <?php foreach($aEmpresa as $index => $iEmpresa){?>
-                            <option value='<?php echo $iEmpresa["idEmpresa"]; ?>'><?php echo $iEmpresa["razonSocial"]; ?></option>
-                          <?php } ?>
-                        </select> -->
                         <input type="text" class="form-control" name="datos[empresa]" id="empresa" required readonly value="<?php echo $aEmpresa['razonSocial'];?>">
                         <input type="hidden" class="form-control" name="datos[idEmpresa]" id="idEmpresa" required readonly value="<?php echo $aEmpresa['idEmpresa'];?>">
                       </div>
                     </div>
+                    <?php if ($tipoFactura!=0) { ?>
+                      
+                    
+                    <div class="col-md-3">
+                      <div class="form-group">
+                        <label class="negrita">Factura<span class="requerido">*</span>:</label>
+                        <input type="text"  class="form-control " name="datos[factura]" id="factura" value="<?php echo $nroFactura;?>"  disabled readonly>
+                        <input type="hidden"  class="form-control " name="datos[idFactura]" id="idFactura" value="<?php echo $idFactura;?>" >
+                        <input type="hidden"  class="form-control " name="datos[tipoFactura]" id="tipoFactura" value="<?php echo $tipoFactura;?>" >
+                      </div>
+                    </div>
+
+                  <?php } ?>
 
                     <div class="col-md-3">
 
@@ -160,34 +193,24 @@ unset($oLista);
                         <label class="negrita">Tipo<span class="requerido">*</span>:</label>
 
                         <select class="custom-select" name="datos[tipoDocumento]" id="tipoDocumento"   required>
-					      <option value="">Seleccione una opción</option>
-
-			                <?php foreach($tiposDocumento as $item){ ?>
-			                	<option  value='<?php echo $item["idTiposDocumento"]; ?>' <?php if($item["idTiposDocumento"]==$aComprobante["idTipo"]){echo 'selected';} ?>  ><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
-					      	<?php } ?>
-					    </select>
-
+          					      <option value="">Seleccione una opción</option>
+          			                <?php foreach($tiposDocumento as $item){ ?>
+          			                	<option  value='<?php echo $item["idTiposDocumento"]; ?>' <?php if($item["idTiposDocumento"]==$aComprobante["idTipo"]){echo 'selected';} ?>  ><?php echo $item["letra"].' - '.$item["descripcion"]; ?></option>
+          					      	<?php } ?>
+          					    </select>
                       </div>
-
                     </div>
 
                     <div class="col-md-3">
-
                       <div class="form-group">
-
                         <label class="negrita">Comprobante<span class="requerido">*</span>:</label>
-
-                        
                         <select class="custom-select" name="datos[comprobante]" id="comprobante"   required>
-					               <option value="">Seleccione una opción</option>
-
-                      <?php foreach($parametrosDocumentos as $itemP){ ?>
-                        <option  value='<?php echo $itemP["comprobante"]; ?>' <?php if($itemP["comprobante"]==$aComprobante["comprobante"]){echo 'selected';} ?>  ><?php echo $itemP["comprobante"].' - '.$itemP["descripcion"]; ?></option>
-                      <?php } ?>
+					                <option value="">Seleccione una opción</option>
+                          <?php foreach($parametrosDocumentos as $itemP){ ?>
+                          <option  value='<?php echo $itemP["comprobante"]; ?>' <?php if($itemP["comprobante"]==$aComprobante["comprobante"]){echo 'selected';} ?>  ><?php echo $itemP["comprobante"].' - '.$itemP["descripcion"]; ?></option>
+                        <?php } ?>
 					              </select>
-
                       </div>
-
                     </div>
 
                     <div class="col-md-3">
@@ -303,13 +326,31 @@ unset($oLista);
                                 <span name="item[0][letreroCuentaContable]" id="item[0][letreroCuentaContable]" class="ocultar letreroCuentaContable" style="color: red;">Cuenta no seleccionada correctamente</span>
                                 <input type="hidden" name="item[<?php echo $key; ?>][idCuentaContable]" id="item[<?php echo $key; ?>][idCuentaContable]" class="form-control idCuentaContable" value="<?php echo $cuentaC['idCuentaContable'];?>"></td>
 
-                              <td><input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $key; ?>][centroCosto]" id="item[<?php echo $key; ?>][centroCosto]" placeholder="centro costo" value="<?php echo $centroCos["codigoCentroCosto"].' - '.$centroCos["centroCosto"]; ?>">
+                              <td>
+                                <?php if (!empty($centroCos["codigoCentroCosto"]) && empty(!$centroCos["centroCosto"])) { ?>
+                                  
+
+                                <input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $key; ?>][centroCosto]" id="item[<?php echo $key; ?>][centroCosto]" placeholder="centro costo" value="<?php echo $centroCos["codigoCentroCosto"].' - '.$centroCos["centroCosto"]; ?>">
                                 
                                 <input type="hidden" name="item[<?php echo $key; ?>][idCentroCosto]" id="item[<?php echo $key; ?>][idCentroCosto]" class="form-control idCentroCosto" value="<?php echo $centroCos["idCentroCosto"];?>"></td>
 
-                              <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]" placeholder="subcentro costo" value="<?php echo $subcentroCos["codigoSubcentroCosto"].' - '.$subcentroCos["subcentroCosto"]; ?>">
+                                <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]" placeholder="subcentro costo" value="<?php echo $subcentroCos["codigoSubcentroCosto"].' - '.$subcentroCos["subcentroCosto"]; ?>">
                                 
                                 <input type="hidden" name="item[<?php echo $key; ?>][idSubcentroCosto]" id="item[<?php echo $key; ?>][idSubcentroCosto]" class="form-control idSubcentroCosto" value="<?php echo $subcentroCos["idSubcentroCosto"];?>"></td>
+                                <?php } ?>
+                                <?php if (empty($centroCos["codigoCentroCosto"]) && empty($centroCos["centroCosto"])) { ?>
+                                <input type="text" class="form-control centroCosto mayusculas" name="item[<?php echo $key; ?>][centroCosto]" id="item[<?php echo $key; ?>][centroCosto]" placeholder="centro costo" value="" >
+                                
+                                <input type="hidden" name="item[<?php echo $key; ?>][idCentroCosto]" id="item[<?php echo $key; ?>][idCentroCosto]" class="form-control idCentroCosto" value="" ></td>
+
+
+                                <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]" placeholder="subcentro costo" value="" >
+                                
+                                <input type="hidden" name="item[<?php echo $key; ?>][idSubcentroCosto]" id="item[<?php echo $key; ?>][idSubcentroCosto]" class="form-control idSubcentroCosto" value="" ></td>
+
+                                <?php } ?>
+
+                              
 
                               <!-- <td><input type="text" class="form-control subcentroCosto mayusculas" name="item[<?php echo $key; ?>][subcentroCosto]" id="item[<?php echo $key; ?>][subcentroCosto]"  required></td> -->
 
@@ -321,12 +362,10 @@ unset($oLista);
                               <td><input type="text" class="form-control  descripcion mayusculas" name="item[<?php echo $key; ?>][descripcion]" id="item[<?php echo $key; ?>][descripcion]" value="<?php echo $value['descripcion'];?>" placeholder="Descripción" required ></td>
                               
                               <td><input type="text" class="form-control  base moneda " name="item[<?php echo $key; ?>][base]" id="item[<?php echo $key;?>][base]"
-                              value="<?php 
-                              if($value['base']!=0){
-                                echo $value['base'];  
-                              }
-                              
-                            ?>" placeholder="Base/cruce" readonly></td>
+                              value="<?php if($value['base']!=0){
+                                // echo $value['base'];  
+                               echo "$".number_format($value['base'],2,",",".");
+                              }  ?>" placeholder="Base/cruce" ></td>
 
                               <?php if ($value["naturaleza"]=='debito') {
                                 $debitoV="$".number_format($value['saldoDebito'],2,",",".");
@@ -361,11 +400,12 @@ unset($oLista);
                       </table>
 
                     </div>
+                    
                     <br>
                   <fieldset class="border p-2">
                     <div class="form-group">
                       <h4>Observaciones</h4>
-                          <textarea class="form-control" name="datos[obsevaciones]" id="datos[obsevaciones]"><?php echo $aComprobante["observaciones"]; ?></textarea>
+                      <textarea class="form-control" name="datos[obsevaciones]" id="datos[obsevaciones]"><?php echo $aComprobante["observaciones"]; ?></textarea>
 
 
                     </div>
@@ -477,14 +517,6 @@ unset($oLista);
       <div class="modal-body">
         <form enctype="multipart/form-data" id="frmRetencion">
           <input type="hidden" name="index" id="index">
-          <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio"name="datos[dc]"  id="debito" value="debito" >
-              <label class="form-check-label" for="debito">DEBITO</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="datos[dc]"   id="credito" value="credito">
-              <label class="form-check-label"  for="credito">CREDITO</label>
-            </div>
 
           <div class="form-group">
             <div class="form-group">
@@ -511,8 +543,16 @@ unset($oLista);
               
              
             </div>
+          
           </div>
-
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio"name="datos[dc]"  id="debito" value="debito" >
+              <label class="form-check-label" for="debito">DEBITO</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="datos[dc]"   id="credito" value="credito">
+              <label class="form-check-label"  for="credito">CREDITO</label>
+            </div>
          
         </form>
       </div>

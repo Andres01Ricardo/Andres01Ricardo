@@ -12,26 +12,26 @@ date_default_timezone_set("America/Bogota");
 
 require_once("class/facturaventa.php");
 
-$desde=$_POST['periodoDesde'];
-$hasta=$_POST['periodoHasta'];
-$cliente=$_POST['cliente'];
+// $desde=$_POST['periodoDesde'];
+// $hasta=$_POST['periodoHasta'];
+// $cliente=$_POST['cliente'];
 
 
 $oCuentasCobrar=new FacturaVenta();
-if($cliente ==0){
+// if($cliente ==0){
    
 
-  $aFactura=$oCuentasCobrar->getCuentasCobrar($_SESSION["idEmpresa"],$desde,$hasta);
+  $aFactura=$oCuentasCobrar->getCuentasCobrar($_SESSION["idEmpresa"]);
   unset($oCuentasCobrar);
-}else{ 
+// }else{ 
 
-  $aFactura=$oCuentasCobrar->getCuentasCobrarCliente($_SESSION["idEmpresa"],$cliente,$desde,$hasta);
-  unset($oCuentasCobrar);
+//   $aFactura=$oCuentasCobrar->getCuentasCobrarCliente($_SESSION["idEmpresa"],$cliente,$desde,$hasta);
+//   unset($oCuentasCobrar);
 
-  $oCliente = new Data("tercero","idTercero",$cliente);
-  $aCliente=$oCliente->getDatos();
-  unset($oCliente);
-}
+//   $oCliente = new Data("tercero","idTercero",$cliente);
+//   $aCliente=$oCliente->getDatos();
+//   unset($oCliente);
+// }
 
 
 ?>
@@ -56,7 +56,7 @@ if($cliente ==0){
 
                     <div class="col-md-12 col-lg-12">
 
-                      <table class="table table-hover mayusculas" id="tableEnterprise" style="text-align: center;">
+                      <table class="table table-hover table-bordered mayusculas" id="tableEnterprise" style="text-align: center;">
 
                         <thead>
 
@@ -64,9 +64,10 @@ if($cliente ==0){
 
                             <th class="text-center">#</th>
                             
-                            <th>Nro factura</th>
 
                             <th>Cliente</th>
+
+                            <th>Nro factura</th>
 
                             <th>Fecha factura</th>
 
@@ -83,29 +84,23 @@ if($cliente ==0){
                         <tbody>
 
                           <?php foreach($aFactura as $index => $iFactura){ 
-
-
-
                           $oItem=new Data("tercero","idTercero", $iFactura["idCliente"]); 
-
                           $aCliente=$oItem->getDatos(); 
-
                           unset($oItem); 
 
                           $oLista = new Lista('factura_venta_deduccion');
                           $oLista->setFiltro("idFacturaVenta","=",$iFactura['idFacturaVenta']);
                           $aDeduccion=$oLista->getLista();
                           unset($oLista);
-
                             ?> 
 
                             <tr>
 
                               <td><?php echo $index+1; ?></td>
 
-                              <td><?php echo $iFactura["nroFactura"]; ?></td>
-
                               <td><?php echo $aCliente["razonSocial"]; ?></td>
+
+                              <td><?php echo $iFactura["nroFactura"]; ?></td>
 
                               <td><?php echo $iFactura["fechaFactura"]; ?></td>
 
@@ -115,39 +110,65 @@ if($cliente ==0){
 
                               if (empty($aDeduccion)) {
                                 echo "$".number_format($iFactura["saldo"],2,",",".");
+                                $total=$total+$iFactura["saldo"];
+                                $saldo=$saldo+$iFactura["saldo"];
+                                // print_r('aca1');
                               }
                               if (!empty($aDeduccion)) {
                                 if ($iFactura["estado"]==4) {
                                   echo "$".number_format($iFactura["saldo"],2,",",".");
+                                  $total=$total+$iFactura["saldo"];
+                                  $saldo=$saldo+$iFactura["saldo"];
+                                  // print_r('aca2');
                                 }
-                                if ($iFactura["estado"]==1 || $iFactura["estado"]==2) {
+                                elseif ($iFactura["estado"]==1 || $iFactura["estado"]==2) {
                                   $retencion=0;
                                   foreach ($aDeduccion as $keyde => $valuede) {
                                     $retencion=$retencion+$valuede["valor"];
                                   }
                                   echo "$".number_format($iFactura["total"]-$retencion,2,",",".");  
                                   $total=$total+$iFactura["total"]-$retencion;
+                                  $saldo=$saldo+$iFactura["total"]-$retencion;
                                 }else{
                                   echo "$".number_format($iFactura["saldo"],2,",",".");   
                                   $total=$total+$iFactura["saldo"];
+                                  $saldo=$saldo+$iFactura["saldo"];
                                 }
                               }
 
                                ?></td>
                           
                               <td class="centrar">                  
-                                <a href="<?php echo $URL.$iFactura['archivo']; ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" class="btn btn-icon btn-sm btn-warning"><i class="fas fa-file"></i></a>
+                                <!-- <a href="<?php echo $URL.$iFactura['archivo']; ?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" class="btn btn-icon btn-sm btn-warning"><i class="fas fa-file"></i></a> -->
+
+                                <a href="<?php echo $URL.$iFactura['archivo'];?>" target="_blank" data-toggle="tooltip" data-placement="top" title="Ver factura" ><i class="fas fa-file" style="color: #FFAE30;font-size: 18px;"></i></a>
                               </td>
                             </tr>
 
-                          <?php } ?>
+                          <?php 
+                          if ($iFactura["idCliente"]!= $aFactura[$index+1]["idCliente"]) {
+                            ?>
+                            <tr>
+                              <td class="negrita">TOTAL</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td class="negrita"><?php echo "$".number_format($saldo,2,",","."); ?></td>
+                              <td></td>
+                            </tr>
+                            <?php
+                            $saldo=0;
+                          }
+                        } ?>
                           <tr>
-                            <td class="negrita">TOTAL</td>
                             <td></td>
+                            <td class="negrita">TOTAL GENERAL</td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td class="negrita"><?php echo "$".number_format($total,2,",","."); ?></td>
+                            <td></td>
                           </tr>
 
                         </tbody>
@@ -158,7 +179,7 @@ if($cliente ==0){
 
                   </div>
 
-                  <a href="filtrarcuentascobrar" type="button" class="btn btn-info">Nuevo filtro</a>
+                  <!-- <a href="filtrarcuentascobrar" type="button" class="btn btn-info">Nuevo filtro</a> -->
                   </div>
 
                 </div>

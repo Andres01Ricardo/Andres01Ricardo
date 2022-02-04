@@ -101,6 +101,7 @@ $("body").on("click touchstart","#btnGuardar",function(e){
     var nombreCuenta=$("#nombreCuenta").val();
     var numeroCuenta=$("#numeroCuenta").val();
     var cuatroMil=$("#cuatroMil").val();
+    var cuentaPrincipal=$("#cuentaPrincipal").val();
 
 
       
@@ -117,7 +118,7 @@ $("body").on("click touchstart","#btnGuardar",function(e){
             $.ajax({
             url:URL+"functions/cuentabancaria/editarcuentabancaria.php", 
             type:"POST", 
-            data: {"idCuenta":idCuenta,"nombreCuenta":nombreCuenta,"numeroCuenta":numeroCuenta,"cuatroMil":cuatroMil},
+            data: {"idCuenta":idCuenta,"nombreCuenta":nombreCuenta,"numeroCuenta":numeroCuenta,"cuatroMil":cuatroMil,"cuentaPrincipal":cuentaPrincipal},
             dataType: "json",
             }).done(function(msg){  
               if(msg.msg){

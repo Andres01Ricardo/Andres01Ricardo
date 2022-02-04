@@ -24,7 +24,7 @@ date_default_timezone_set("America/Bogota");
 
 $datos  = (isset($_REQUEST['datos'] ) ? $_REQUEST['datos'] : "" );
 
-
+if(!isset($_SESSION)){ session_start(); }
 
 
 if ($datos["tipoNovedad"]==4) {
@@ -41,18 +41,31 @@ if ($datos["tipoNovedad"]==4) {
 
     // $aDatos["estado"]=1; 
 
-
     $oItem=new Data("empleado_vacaciones","idEmpresaNovedad",$datos["idNovedad"]); 
-
     foreach($aDatos  as $key => $value){
-
         $oItem->$key=$value; 
-
     }
-
     $oItem->guardar();  
-
     unset($oItem);
+
+
+    $oItem=new Data("empleado_vacaciones","idEmpresaNovedad",$datos["idNovedad"]);
+    $empleadoV=$oItem->getDatos();
+    unset($oItem);
+
+
+    $datosNovedad["fechaRegistro"]=date('Y-m-d H:i:s');
+    $datosNovedad["idUsuarioRegistra"]=$_SESSION['idUsuario'];
+
+    $oItem=new Data("empresa_novedad","idEmpresaNovedad",$empleadoV["idEmpresaNovedad"]); 
+    foreach($datosNovedad  as $keyN => $valueN){
+        $oItem->$keyN=$valueN; 
+    }
+    $oItem->guardar();  
+    unset($oItem);
+
+
+    
 }
 
 
@@ -69,14 +82,33 @@ if ($datos["tipoNovedad"]==7) {
     $oItem=new Data("empleado_auxilios_extralegales","idEmpresaNovedad",$datos["idNovedad"]); 
 
     foreach($aDatosA  as $keyA => $valueA){
-
         $oItem->$keyA=$valueA; 
-
     }
-
     $oItem->guardar();  
-
     unset($oItem);
+
+
+
+
+
+    $oItem=new Data("empleado_auxilios_extralegales","idEmpresaNovedad",$datos["idNovedad"]);
+    $empleadoV=$oItem->getDatos();
+    unset($oItem);
+
+
+    $datosNovedad["fechaRegistro"]=date('Y-m-d H:i:s');
+    $datosNovedad["idUsuarioRegistra"]=$_SESSION['idUsuario'];
+
+    $oItem=new Data("empresa_novedad","idEmpresaNovedad",$empleadoV["idEmpresaNovedad"]); 
+    foreach($datosNovedad  as $keyN => $valueN){
+        $oItem->$keyN=$valueN; 
+    }
+    $oItem->guardar();  
+    unset($oItem);
+
+
+
+    
 }
 
     

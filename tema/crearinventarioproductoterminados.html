@@ -35,6 +35,13 @@ $oItem=new Data("empresa","idEmpresa",$idEmpresa);
 $aEmpresa=$oItem->getDatos();
 unset($oItem);
 
+
+$oLista = new Lista('bodega');
+$oLista->setFiltro("idEmpresa","=",$idEmpresa);
+$bodegas=$oLista->getLista();
+unset($oLista);
+
+
 ?>
 
 
@@ -81,6 +88,7 @@ unset($oItem);
                               <th>PRODUCTO<a href="javascript:void(0)" id="btnAgregarProducto" class="btn btn-light" title="AGREGAR PRODUCTO NUEVO" data-toggle="tooltip"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 25px;"></i> </a></th>
                               <th>CATEGORIA<a href="javascript:void(0)" id="btnAgregarCat" class="btn btn-light" title="AGREGAR CATERGORIA NUEVA" data-toggle="tooltip"> <i class="fas fa-plus-circle" style="color:#0090E7;font-size: 25px;"></i> </a></th>
                               <th>UNIDAD</th>
+                              <th>BODEGA</th>
                               <th>CANTIDAD</th>
                               <th>STOCK MÍNIMO</th>
                             </tr>
@@ -101,6 +109,14 @@ unset($oItem);
                                     <option value="">Seleccione una opción</option>
                                     <?php foreach($aUnidades as $iUnidades){ ?>
                                     <option value="<?php echo $iUnidades['idUnidad'];?>"><?php echo $iUnidades["nombre"]; ?></option>
+                                    <?php } ?>
+                                  </select>
+                                  </td>
+
+                                  <td><select class="form-control select2 mayusculas bodega" name="datos[bodega]" id="bodega" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <?php foreach($bodegas as $bodega){ ?>
+                                    <option value="<?php echo $bodega['idBodega'];?>"><?php echo $bodega["nombre"]; ?></option>
                                     <?php } ?>
                                   </select>
                                   </td>
@@ -133,9 +149,10 @@ unset($oItem);
                         <thead>
                           <tr>
                             <th>CÓDIGO</th>
-                            <th>CATEGORIA</th>
                             <th>PRODUCTO</th>
+                            <th>CATEGORIA</th>
                             <th>UNIDAD</th>
+                            <th>BODEGA</th>
                             <th>EXISTENCIA</th>
                             <th>STOCK MÍNIMO</th>
                             <!-- <th>VALOR UNITARIO</th>
@@ -159,20 +176,29 @@ unset($oItem);
                             $oItem = new Data("categoria_inventario","idCategoriaInventario",$value["idCategoria"]);
                             $categoria=$oItem->getDatos();
                             unset($oLista);
+
+                            $oItem = new Data("bodega","idBodega",$value["idBodega"]);
+                            $bodegaProducto=$oItem->getDatos();
+                            unset($oLista);
+
+                            if (!empty($producto)) {
+                              
+                            
                            ?>
                             <tr>
                               <td><?php echo $producto["codigo"];?></td>
+                              <td><?php echo $producto["nombre"];?></td>
                               <td>
                                 <?php echo $categoria["nombre"];?>
                               </td>
-                              <td><?php echo $producto["nombre"];?></td>
                               <td> <?php echo $unidad["nombre"]; ?> </td>
+                              <td> <?php echo $bodegaProducto["nombre"]; ?> </td>
                                 <td><?php echo $value["existencia"]; ?></td>
                                 <td><?php echo $value["stockMinimo"]; ?></td>
                               <!-- <td><input type="text" class="form-control moneda numero valorUnitario mayusculas" name="datos[valorUnitario]" id="valorUnitario" placeholder="Valor Unitario" required ></td>
                               <td><input type="text" class="form-control moneda total mayusculas" name="datos[total]" id="total" placeholder="TOTAL" required readonly></td> -->
                             </tr>
-                          <?php } ?>
+                          <?php }} ?>
                         </tbody>
                       </table>
                   </div>

@@ -45,6 +45,7 @@ unset($oLista);
               <th>COSTO</th>
               <th>VENTA</th>
               <th>DEVOLUCIÓN</th>
+              <th>ACCIONES</th>
             </tr>
           </thead>
           <tbody>
@@ -83,17 +84,19 @@ unset($oLista);
               <td><?php echo $aVenta['codigoCuenta'].' '.$aVenta['nombre']; ?></td>
               <td><?php echo $aDevolucion['codigoCuenta'].' '.$aDevolucion['nombre']; ?></td>
               <!-- <td><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idCentroCostoContable']; ?>" class="eliminarCuenta"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td> -->
+              <td><a href="<?php echo $URL; ?>editargrupo/<?php echo $value['idGrupoInventario'] ?>" class="datatooltip" data-toggle="tooltip" data-placement="top" title="Editar"><i class="fas fa-pencil-alt" style="color: #942E2E;font-size: 19px;"></i></a><a href="javascript:void(0)"  name="btnEliminar[<?php echo $index?>]" value="<?php echo $value['idGrupoInventario']; ?>" class="eliminar"><i class="fas fa-trash" style="color: #FF5D5D;font-size: 19px;" data-toggle="tooltip" data-placement="top" title="Eliminar"  ></i></a></td>
             </tr>
           <?php } ?>
           <tr>
             <td><select class="select2 form-control" name="datos[idLineaInventario]" id="idLineaInventario" required> </select></td>
             
-            <td><input type="text" name="datos[codigo]" id="codigo" class="form-control"></td>
-            <td><input type="text" name="datos[nombre]" id="nombre" class="form-control"></td>
-            <td><select class="select2 form-control" name="datos[idCuentaInventario]" id="idCuentaInventario" required> </select></td>
-            <td><select class="select2 form-control" name="datos[idCuentaCosto]" id="idCuentaCosto" required></select></td>
-            <td><select class="select2 form-control" name="datos[idCuentaVenta]" id="idCuentaVenta" required></select></td>
-            <td><select class="select2 form-control" name="datos[idCuentaDevolucion]" id="idCuentaDevolucion" required> </select></td>
+            <td><input type="text" name="datos[codigo]" id="codigo" class="form-control" required></td>
+            <td><input type="text" name="datos[nombre]" id="nombre" class="form-control" required></td>
+            <td><select class="select2 form-control" name="datos[idCuentaInventario]" id="idCuentaInventario" > </select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaCosto]" id="idCuentaCosto" ></select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaVenta]" id="idCuentaVenta" ></select></td>
+            <td><select class="select2 form-control" name="datos[idCuentaDevolucion]" id="idCuentaDevolucion" > </select></td>
+
           </tr>
           </tbody>
         </table>

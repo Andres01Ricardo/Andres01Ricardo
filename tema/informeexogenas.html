@@ -45,21 +45,31 @@
 		                	<div class="row">
 		                		<div class="col-md-4">
 		                			<label>Año de proceso</label>
-		                			<select class="form-control">
-		                				<option>2020</option>
+		                			<select class="form-control" name="anio" id="anio">
+		                				<option>2021</option>
 		                			</select>
 		                		</div>
 		                		<div class="col-md-6">
 		                			<label>Formato</label>
-		                			<select class="form-control select2">
-		                				<option value="1001" >1001 - Pagos o abonos en cuenta y retenciones practicadas</option>
-										<option value="1003" >1003 - Retenciones en la fuente que le practicaron</option>
-										<option value="1005" >1005 - Impuesto a las Ventas por Pagar (Descontable)</option>
-										<option value="1006" >1006 - Impuesto a las Ventas por Pagar (Generado) e Impuesto al Consumo</option>
-										<option value="1007" >1007 - Ingresos Recibidos</option>
-										<option value="1008" >1008 - Saldos de cuentas por cobrar al 31 de diciembre</option>
-										<option value="1009" >1009 - Saldos de cuentas por pagar al 31 de diciembre</option>
-										<option value="2276" >2276 - Información de rentas de trabajo y pensiones</option>
+		                			<select class="form-control select2" name="formato" id="formato">
+
+		                				<option value="1001">1001 -  Pagos y Abonos en cuenta y retenciones</option>
+														<option value="1003">1003 -  Retenciones en la fuente que le practicaron</option>
+														<!-- <option value="1004">1004 -  Descuentos tributarios Solicitados</option> -->
+														<option value="1005">1005 -  Impuesto de IVA descontable</option>
+														<option value="1006">1006 -  Impuesto de IVA generado</option>
+														<option value="1007">1007 -  Ingresos Recibidos</option>
+														<option value="1008">1008 -  Saldos de cuentas por Cobrar</option>
+														<option value="1009">1009 -  Saldo de Cuentas por Pagar</option>
+														<option value="1010">1010 -  Socios, accionistas, cooperados y comuneros</option>
+														<option value="1011">1011 -  Declaraciones tributarias</option>
+														<option value="1012">1012 - Información     de      declaraciones      tributarias, acciones, inversiones en bonos, cuentas de ahorro y corrientes</option>
+														<!-- <option value="1647">1647 - Ingresos recibidos para terceros</option> -->
+														<!-- <option value="2275">2275 - Ingresos No constitutivos de Renta ni Ganancia Ocasional</option> -->
+														<option value="2276">2276 - Información Certificado De Ingresos Y Retenciones Para Personas Naturales Empleados</option>
+														<!-- <option value="2278">2278 - Información de la Compra de Bonos electrónicos</option> -->
+														<!-- <option value="2280">2280 - Mujeres Victima de la Violencia</option> -->
+
 		                			</select>
 		                		</div>
 		                	</div>

@@ -90,7 +90,7 @@ $idC=$oControl->encriptar($aEncript);
                         <th> <?php echo date('Y-m-d');?> </th>
                       </tr>
                       <tr>
-                        <th> No. <?php echo $aTipo['letra'].$aComprobante['comprobante'].$aComprobante['numero'];?></th>
+                        <th> No. <?php echo $aTipo['letra'].'-'.$aComprobante['comprobante'].'-'.$aComprobante['numero'];?></th>
                         <th>Nit: <?php echo $aEmpresa['nit'];?>-<?php echo $aEmpresa['digitoVerificador'];?></th>
                         <!-- <th> </th> -->
                         <th>Fecha: <?php echo $aComprobante['fecha'] ?> </th>
@@ -153,9 +153,16 @@ $idC=$oControl->encriptar($aEncript);
                             <td>
                               <?php if ($iComprobante["base"]!='0') {
                                 if (is_numeric($iComprobante["base"])) {
-                                  echo "$".number_format($iComprobante["base"],2,",",".");
+                                  $base=$iComprobante["base"];
+                                  // if ($iComprobante["base"]>=10000000) {
+                                  //   $base=$iComprobante["base"]/100;
+                                  // }
+                                  // if ($iComprobante["base"]<10000000 || $iComprobante["base"]>22000000) {
+                                  //   $base=$iComprobante["base"];
+                                  // }
+                                  echo "$".number_format($base,0,",",".");
                                 }else{
-                                  echo $iComprobante["base"];
+                                  echo $iComprobante["cruce"];
                                 }
                                 
                               }?>
