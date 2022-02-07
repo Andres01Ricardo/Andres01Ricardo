@@ -226,8 +226,6 @@ if ($aFormaPago[0]["idCuentaBancaria"]!=0) {
     $aDatos["saldo"]=0;
 
 
-
-
     $totalFactura=str_replace("$", "", str_replace(".", "", $datos["totalPago"]));
     $idCuenta=$aFormaPago[0]["idCuentaBancaria"];
 
@@ -293,47 +291,26 @@ $idfactura=$oItem->ultimoId();
 
 unset($oItem);
 
-
 foreach ($item as $key => $value) {
 
     $aItem["idFacturaVenta"]=$idfactura; 
-
     $aItem["detalleProducto"]=$value["producto"]; 
-
     $aItem["idProductoServicio"]=$value["idProducto"]==""?0:$value["idProducto"]; 
-
     $aItem["descripcion"]=$value["descripcion"]; 
-
     $aItem["idUnidad"]=$value["idUnidad"]; 
-
     $aItem["cantidad"]=$value["cantidad"]; 
-
     $aItem["idBodega"]=$value["idBodega"]; 
-
     $aItem["iva"]=$value["iva"]; 
-
     $aItem["valorUnitario"]=str_replace("$", "", str_replace(".", "", $value["valorUnitario"])); 
-
     $aItem["subtotal"]=str_replace("$", "", str_replace(".", "", $value["subtotal"])); 
-
     $aItem["total"]=str_replace("$", "", str_replace(".", "", $value["total"]));
 
-
-
     $oItem=new Data("factura_venta_item","idFacturaVentaItem"); 
-
     foreach($aItem  as $key => $valueFVI){
-
         $oItem->$key=$valueFVI; 
-
     }
-
     $oItem->guardar(); 
-
     unset($oItem);
-
-
-
 
 
     $oLista=new Lista("producto_servicio");
@@ -343,15 +320,11 @@ foreach ($item as $key => $value) {
 
     if (!empty($aProductoCuenta)) {
 
-
         $oLista=new Data("empresa","idEmpresa",$datos["idEmpresa"]);
         $aEmpresaDatos=$oLista->getDatos();
         unset($oLista);
-
         // $oLista->setFiltro("idEmpresa","=",$datos["idEmpresa"]);
-        
         if ($aEmpresaDatos['manejaContabilidad']==1 && $aEmpresaDatos['manejaInventario']==1) {
-
 
             $oLista = new Lista('inventario_inicial');
             $oLista->setFiltro("idEmpresa","=",$datos['idEmpresa']);
@@ -361,7 +334,6 @@ foreach ($item as $key => $value) {
             unset($oLista);
 
             if (empty($aInventario)) {
-
                 $aItem["idProducto"]=$value["idProducto"];
                 $aItem["idUnidad"]=$value["idUnidad"];
                 $aItem["idCategoria"]=0;
@@ -379,10 +351,7 @@ foreach ($item as $key => $value) {
                 }
                     $oItem->guardar(); 
                    unset($oItem);
-
             }  
-
-
 
             $moverInventario["tipoMovimiento"]=2;
             $moverInventario["fechaRegistro"]=date('Y-m-d H:i:s');

@@ -315,7 +315,9 @@ unset($oLista);
                       </div>
                       <div class="col-md-2">
                         <div class="form-group">
-                                <input class="form-check-input menu" type="checkbox" name="datos[contabilidad]" id="datos[contabilidad]" value="1">
+                                <input class="form-check-input menu" type="checkbox" name="datos[contabilidad]" id="datos[contabilidad]" value="1" <?php if ($aDatos["manejaContabilidad"]==1) {
+                                  echo "checked";
+                                }?>>
                                 <label class="form-check-label" for="defaultCheck1">¿MANEJA CONTABILIDAD SMARTBUSS?</label>
                               </div>
                       </div>

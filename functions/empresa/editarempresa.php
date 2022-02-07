@@ -214,9 +214,19 @@ $aDatos["telefono"]=$datos["telefono"];
 $aDatos["idDepartamento"]=$datos["idDepartamento"]; 
 $aDatos["idCiudad"]=$datos["idCiudad"]; 
 $aDatos["direccion"]=$datos["direccion"]; 
-// $aDatos["logo"]=$sFoto; 
-$aDatos["camaraComercio"]=$sCamara; 
-$aDatos["rut"]=$sRut; 
+
+// if ($sFoto!="") {
+    
+    $aDatos["logo"]=$sFoto; 
+// }
+// if ($sCamara!="") {
+    
+    $aDatos["camaraComercio"]=$sCamara; 
+// }
+// if ($sRut!="") {
+    
+    $aDatos["rut"]=$sRut; 
+// }
 
 $aDatos["manejaInventario"]=$datos["inventario"]==""?0:1;
 $aDatos["manejaContabilidad"]=$datos["contabilidad"]==""?0:1; 

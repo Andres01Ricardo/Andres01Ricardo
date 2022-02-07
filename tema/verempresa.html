@@ -1,197 +1,378 @@
-<?php 
-$oControl=new Control(); 
-$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
-if($id==""){
-  echo '<script>window.history.back()</script>'; 
-}
-$decrip["cadena"]=$id; 
-$id=$oControl->desencriptar($decrip); 
-
-$oItem=new Data("empresa","idEmpresa",$id); 
-$aDatos=$oItem->getDatos(); 
-unset($oItem); 
-
-$oItem=new Data("representante_legal","idEmpresa",$id); 
-$aDatosRepresentante=$oItem->getDatos(); 
-unset($oItem);
-
-
-$oItem=new Data("departamento","idDepartamento", $aDatos["idDepartamento"]); 
-$aDepartamento=$oItem->getDatos(); 
-unset($oItem); 
-
-$oItem=new Data("ciudad","idCiudad", $aDatos["idCiudad"]); 
-$aCiudad=$oItem->getDatos(); 
-unset($oItem); 
-
-
-$oItem=new Data("tipo_documento","idTipoDocumento", $aDatosRepresentante["tipoDocumento"]); 
-$aTipoDoc=$oItem->getDatos(); 
-unset($oItem);
-
-$tipoDoc=$aTipoDoc["nombre"];
-
-$digito=$aDatos["digitoVerificador"]==""?"":"-".$aDatos["digitoVerificador"]; 
-
-$logo="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
-if($aDatos["logo"]!=""){
-    $logo=$URL.$aDatos["logo"]; 
-}
-?>
-
-<style type="text/css">
-  input[readonly]{
-    background-color: #FFFF !important;
-    text-transform: uppercase;
-  }
-</style>
-<section class="section">
-        <ul class="breadcrumb breadcrumb-style ">
-          <li class="breadcrumb-item">
-            <a href="<?php echo $URL; ?>">
-              <i class="fas fa-home"></i></a>
-          </li>
-          <li class="breadcrumb-item">Empresas</li>
-          <li class="breadcrumb-item">Ver empresa</li>
-        </ul>
-        <div class="section-body">
-          <div class="row">
-            <div class="col-md-12 col-lg-12">
-              <div class="card">
-                <div class="card-header">
-                  <h4>Información General</h4>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-3 centrar">
-                      <div class="foto-empresa" style="background-image: url(<?php echo $logo; ?>)">
-                        
-                      </div>
-                    </div>
-                    <div class="col-md-9">
-                      <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Tipo persona:</label>
-                         <input type="text" class="form-control numero" value="<?php echo $aDatos["tipoPersona"]==1?"Persona Natural":"Persona Juridica"; ?>" readonly>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">NIT:</label>
-                        <input type="text" class="form-control" readonly value="<?php echo $aDatos["nit"].$digito; ?>">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Razón Social:</label>
-                        <input type="text" class="form-control" readonly value="<?php echo $aDatos["razonSocial"]; ?>">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Email:</label>
-                        <input type="email" class="form-control" readonly value="<?php echo $aDatos["email"]; ?>">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Telefono:</label>
-                        <input type="text" class="form-control " readonly value="<?php echo $aDatos["telefono"]; ?>">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Ciudad:</label>
-                        <input type="text" class="form-control " readonly value="<?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?>">
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="form-group">
-                        <label class="negrita">Dirección:</label>
-                        <input type="text" class="form-control " readonly value="<?php echo $aDatos["direccion"]; ?>">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Camara Comercio:</label>
-                        <div class="custom-file">
-                          
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">RUT:</label>
-                        <div class="custom-file">
-                          
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                    </div>
-                  </div>
-                  
-                  </div>
-                  <div class="card-header">
-                    <h4>Representante Legal</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="row">
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label class="negrita">Tipo Documento:</label>
-                          <input type="text" class="form-control " readonly value="<?php echo $tipoDoc; ?>">
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label class="negrita">N° Documento:</label>
-                          <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["numeroDocumento"]; ?>">
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label class="negrita">Nombres:</label>
-                          <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["nombres"]; ?>">
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="form-group">
-                          <label class="negrita">Apellidos:</label>
-                          <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["apellidos"]; ?>">
-                        </div>
-                      </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Email:</label>
-                        <input type="email" class="form-control" readonly value="<?php echo $aDatosRepresentante["email"]; ?>">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Telefono:</label>
-                        <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["telefono"]; ?>">
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="negrita">Cedula Representante Legal:</label>
-                        <div class="custom-file">
-                          
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?php 
+
+$oControl=new Control(); 
+
+$id=(isset($_REQUEST['id'] ) ? $_REQUEST['id'] : '' );
+
+if($id==""){
+
+  echo '<script>window.history.back()</script>'; 
+
+}
+
+$decrip["cadena"]=$id; 
+
+$id=$oControl->desencriptar($decrip); 
+
+
+
+$oItem=new Data("empresa","idEmpresa",$id); 
+$aDatos=$oItem->getDatos(); 
+unset($oItem); 
+
+
+// print_r($aDatos["logo"]);
+// print_r($aDatos);
+
+
+
+$oItem=new Data("representante_legal","idEmpresa",$id); 
+$aDatosRepresentante=$oItem->getDatos(); 
+unset($oItem);
+
+
+$oItem=new Data("departamento","idDepartamento", $aDatos["idDepartamento"]); 
+$aDepartamento=$oItem->getDatos(); 
+unset($oItem); 
+
+
+
+$oItem=new Data("ciudad","idCiudad", $aDatos["idCiudad"]); 
+$aCiudad=$oItem->getDatos(); 
+unset($oItem); 
+
+
+$oItem=new Data("tipo_documento","idTipoDocumento", $aDatosRepresentante["tipoDocumento"]); 
+$aTipoDoc=$oItem->getDatos(); 
+unset($oItem);
+
+
+$tipoDoc=$aTipoDoc["nombre"];
+
+$digito=$aDatos["digitoVerificador"]==""?"":"-".$aDatos["digitoVerificador"]; 
+
+$logo="https://via.placeholder.com/250x250/CCC?text=SIN%20FOTO"; 
+if($aDatos["logo"]!=""){
+
+    $logo=$URL.$aDatos["logo"]; 
+
+}
+
+// print_r($logo);
+
+?>
+
+
+
+<style type="text/css">
+
+  input[readonly]{
+
+    background-color: #FFFF !important;
+
+    text-transform: uppercase;
+
+  }
+
+</style>
+
+<section class="section">
+
+        <ul class="breadcrumb breadcrumb-style ">
+
+          <li class="breadcrumb-item">
+
+            <a href="<?php echo $URL; ?>">
+
+              <i class="fas fa-home"></i></a>
+
+          </li>
+
+          <li class="breadcrumb-item">Empresas</li>
+
+          <li class="breadcrumb-item">Ver empresa</li>
+
+        </ul>
+
+        <div class="section-body">
+
+          <div class="row">
+
+            <div class="col-md-12 col-lg-12">
+
+              <div class="card">
+
+                <div class="card-header">
+
+                  <h4>Información General</h4>
+
+                </div>
+
+                <div class="card-body">
+
+                  <div class="row">
+
+                    <div class="col-md-3 centrar">
+
+                      <div class="foto-empresa" style="background-image: url(<?php echo $logo; ?>)">
+
+                        
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-9">
+
+                      <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Tipo persona:</label>
+
+                         <input type="text" class="form-control numero" value="<?php echo $aDatos["tipoPersona"]==1?"Persona Natural":"Persona Juridica"; ?>" readonly>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">NIT:</label>
+
+                        <input type="text" class="form-control" readonly value="<?php echo $aDatos["nit"].$digito; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Razón Social:</label>
+
+                        <input type="text" class="form-control" readonly value="<?php echo $aDatos["razonSocial"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Email:</label>
+
+                        <input type="email" class="form-control" readonly value="<?php echo $aDatos["email"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono:</label>
+
+                        <input type="text" class="form-control " readonly value="<?php echo $aDatos["telefono"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Ciudad:</label>
+
+                        <input type="text" class="form-control " readonly value="<?php echo $aCiudad["nombre"]." - ".$aDepartamento["nombre"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Dirección:</label>
+
+                        <input type="text" class="form-control " readonly value="<?php echo $aDatos["direccion"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Camara Comercio:</label>
+
+                        <div class="custom-file">
+
+                          
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">RUT:</label>
+
+                        <div class="custom-file">
+
+                          
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                    </div>
+
+                  </div>
+
+                  
+
+                  </div>
+
+                  <div class="card-header">
+
+                    <h4>Representante Legal</h4>
+
+                  </div>
+
+                  <div class="card-body">
+
+                    <div class="row">
+
+                      <div class="col-md-3">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Tipo Documento:</label>
+
+                          <input type="text" class="form-control " readonly value="<?php echo $tipoDoc; ?>">
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3">
+
+                        <div class="form-group">
+
+                          <label class="negrita">N° Documento:</label>
+
+                          <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["numeroDocumento"]; ?>">
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Nombres:</label>
+
+                          <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["nombres"]; ?>">
+
+                        </div>
+
+                      </div>
+
+                      <div class="col-md-3">
+
+                        <div class="form-group">
+
+                          <label class="negrita">Apellidos:</label>
+
+                          <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["apellidos"]; ?>">
+
+                        </div>
+
+                      </div>
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Email:</label>
+
+                        <input type="email" class="form-control" readonly value="<?php echo $aDatosRepresentante["email"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Telefono:</label>
+
+                        <input type="text" class="form-control" readonly value="<?php echo $aDatosRepresentante["telefono"]; ?>">
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                      <div class="form-group">
+
+                        <label class="negrita">Cedula Representante Legal:</label>
+
+                        <div class="custom-file">
+
+                          
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+

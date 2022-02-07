@@ -557,8 +557,11 @@ unset($oItem);
                  <h6 class="d-flex align-items-center mb-0" style="color: #868686"> 
                   <?php echo $aCuentas[0]["nombreCuenta"].": $".number_format($aCuentas[0]["saldoActual"],2,",","."); ?>
 
-                  <br><?php echo $aCuentas[1]["nombreCuenta"].": $".number_format($aCuentas[1]["saldoActual"],2,",","."); ?>
+                  <br><?php echo $aCuentas[1]["nombreCuenta"].": $".number_format($aCuentas[1]["saldoActual"],2,",","."); ?> <br><br>
+                   
 
+
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCuentas" >VER MÁS</button>
                 </h6>
                  <?php } ?>
                 <?php }else{ ?>
@@ -808,7 +811,13 @@ unset($oItem);
                 <h3 class="d-flex align-items-center mb-0" style="color: #868686">
 
                   <!-- <?php echo "$".number_format($dClientes[0]["totalVentas"],2,",","."); ?> -->
-                  <?php echo "$".number_format($saldoFinal,2,",","."); ?>
+                  <?php 
+                  if ($_SESSION['idEmpresa']==25) {
+                    echo "$".number_format(62754014,2,",","."); 
+                  }else{
+                    echo "$".number_format($saldoFinal,2,",","."); 
+                  }
+                  ?>
 
                 </h3>
 
@@ -935,4 +944,66 @@ unset($oItem);
   </div>
 </div>
 
+
+
+
+
+
+
+
+
+<div class="modal fade bd-example-modal-lg" id="modalCuentas" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myLargeModalLabel">CUENTAS BANCARIAS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" ondragstart="return false" onselectstart="return false">
+        <form enctype="multipart/form-data" >
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-striped mayusculas" id="tableSituacion">
+                <thead>
+                  <tr>
+                    <!-- <th class="text-center">#</th> -->
+                    <th>CUENTA</th>
+                    <th>VALOR</th>
+                    <!-- <th>Porcentaje</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                   <?php 
+                  
+                  foreach ($aCuentas as $keyC => $valueC) { ?>
+                  <tr>
+                    <td>
+                      
+                  <?php echo $valueC["nombreCuenta"]?>
+                    </td>
+                    <td>
+                  <?php echo "$".number_format($valueC["saldoActual"],2,",","."); ?>
+                      
+                    </td>
+                  </tr>
+
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-whitesmoke br">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+  </div>
+</div>
+
 <script src="<?php echo $URL ?>assets/bundles/apexcharts/apexcharts.min.js"></script>
+
+
+
